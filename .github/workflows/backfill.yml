@@ -1,0 +1,41 @@
+name: Backfill Historical Races
+
+on:
+  workflow_dispatch:
+    inputs:
+      year:
+        description: "収集する年（例: 2016）"
+        required: true
+        type: string
+      courses:
+        description: "競馬場コード（カンマ区切り、空欄で全10場）例: 05,06,09"
+        required: false
+        type: string
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Run bulk collection
+        run: |
+          if [ -n "${{ inputs.courses }}" ]; then
+            python scraper/bulk_collect.py --year ${{ inputs.year }} --courses ${{ inputs.courses }}
+          else
+            python scraper/bulk_collect.py --year ${{ inputs.year }}
+          fi
+      - name: Commit collected data
+        run: |
+          git config user.name "keiba-bot"
+          git config user.email "keiba-bot@users.noreply.github.com"
+          git add -f data/keiba.db
+          git diff --cached --quiet || git commit -m "backfill ${{ inputs.year }}"
+          git push

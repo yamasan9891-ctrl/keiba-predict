@@ -3,7 +3,6 @@ __pycache__/
 *.pyc
 data/raw/*.csv
 data/processed/*.csv
-data/keiba.db
 output/*.html
 model/artifacts/*.pkl
 static_site/dist/index.html
