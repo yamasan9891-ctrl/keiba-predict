@@ -28,9 +28,9 @@ jobs:
       - name: Run bulk collection
         run: |
           if [ -n "${{ inputs.courses }}" ]; then
-            python scraper/bulk_collect.py --year ${{ inputs.year }} --courses ${{ inputs.courses }}
+            python -u scraper/bulk_collect.py --year ${{ inputs.year }} --courses ${{ inputs.courses }}
           else
-            python scraper/bulk_collect.py --year ${{ inputs.year }}
+            python -u scraper/bulk_collect.py --year ${{ inputs.year }}
           fi
       - name: Commit collected data
         run: |
