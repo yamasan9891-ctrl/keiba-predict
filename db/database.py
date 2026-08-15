@@ -79,11 +79,18 @@ def init_db():
 def upsert_race(conn, race: dict):
     cols = list(race.keys())
     placeholders = ", ".join(["?"] * len(cols))
-    updates = ", ".join([f"{c}=excluded.{c}" for c in cols if c != "race_id"])
-    sql = (
-        f"INSERT INTO races ({', '.join(cols)}) VALUES ({placeholders}) "
-        f"ON CONFLICT(race_id) DO UPDATE SET {updates}"
-    )
+    update_cols = [c for c in cols if c != "race_id"]
+    if update_cols:
+        updates = ", ".join([f"{c}=excluded.{c}" for c in update_cols])
+        sql = (
+            f"INSERT INTO races ({', '.join(cols)}) VALUES ({placeholders}) "
+            f"ON CONFLICT(race_id) DO UPDATE SET {updates}"
+        )
+    else:
+        sql = (
+            f"INSERT INTO races ({', '.join(cols)}) VALUES ({placeholders}) "
+            f"ON CONFLICT(race_id) DO NOTHING"
+        )
     conn.execute(sql, [race[c] for c in cols])
 
 

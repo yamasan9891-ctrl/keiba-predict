@@ -197,10 +197,13 @@ def save_to_db(df: pd.DataFrame, meta: dict = None) -> None:
     meta["race_id"] = race_id
 
     rename = {
-        "着順": "finish_pos", "枠番": "post_position", "馬番": "horse_number",
-        "斤量": "weight_carried", "単勝": "win_odds", "人気": "popularity",
-        "馬体重": "horse_weight_raw", "上がり": "last_3f", "通過": "passing",
+        "着 順": "finish_pos", "枠": "post_position", "馬 番": "horse_number",
+        "斤量": "weight_carried", "単勝 オッズ": "win_odds", "人 気": "popularity",
+        "馬体重 (増減)": "horse_weight_raw", "後3F": "last_3f", "コーナー 通過順": "passing",
         "馬名": "horse_name",
+        "着順": "finish_pos", "枠番": "post_position", "馬番": "horse_number",
+        "単勝": "win_odds", "人気": "popularity", "馬体重": "horse_weight_raw",
+        "上がり": "last_3f", "通過": "passing",
     }
     d = df.rename(columns={k: v for k, v in rename.items() if k in df.columns})
 
