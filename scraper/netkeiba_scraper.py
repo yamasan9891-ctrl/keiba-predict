@@ -103,7 +103,7 @@ def fetch_race_result(race_id: str) -> pd.DataFrame:
         if table is None:
             raise RuntimeError(f"結果テーブルが見つかりません: {url} / {url2}")
 
-    df = pd.read_html(io.StringIO(str(table)))
+    df = pd.read_html(io.StringIO(str(table)))[0]
     df.columns = [str(c).strip() for c in df.columns]
 
     horse_ids, jockey_ids = [], []
@@ -149,7 +149,7 @@ def fetch_shutuba(race_id: str) -> pd.DataFrame:
     if table is None:
         raise RuntimeError(f"出馬表テーブルが見つかりません: {url}")
 
-    df = pd.read_html(io.StringIO(str(table)))
+    df = pd.read_html(io.StringIO(str(table)))[0]
     if isinstance(df.columns, pd.MultiIndex):
         df.columns = ["_".join(map(str, c)).strip() for c in df.columns]
 
@@ -174,7 +174,7 @@ def fetch_horse_past_results(horse_id: str, n_races: int = 10) -> pd.DataFrame:
     if table is None:
         return pd.DataFrame()
 
-    df = pd.read_html(io.StringIO(str(table)))
+    df = pd.read_html(io.StringIO(str(table)))[0]
     df["horse_id"] = horse_id
     return df.head(n_races)
 
