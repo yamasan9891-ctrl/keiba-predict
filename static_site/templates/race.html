@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ race.race_name }} 予想 | keiba-predict</title>
+<style>
+  :root { --accent:#0f6e4f; --bg:#f7f5f0; --card:#fff; --text:#1c1c1c; --muted:#6b6b6b; --gold:#b8860b; }
+  * { box-sizing: border-box; }
+  body { font-family:"Hiragino Sans","Yu Gothic",sans-serif; background:var(--bg); color:var(--text); margin:0; padding:16px 12px 60px; }
+  .wrap { max-width: 760px; margin:0 auto; }
+  a.back { font-size:12px; color:var(--muted); text-decoration:none; }
+  h1 { font-size:19px; margin:10px 0 2px; }
+  .meta { font-size:12px; color:var(--muted); margin-bottom:14px; }
+  .section-title { font-size:14px; font-weight:700; margin: 22px 0 8px; color:var(--accent); }
+  .card { background:var(--card); border-radius:10px; padding:14px; box-shadow:0 1px 3px rgba(0,0,0,0.06); margin-bottom:12px; }
+  .race-summary { font-size:13px; line-height:1.7; }
+
+  .best-bet { background: linear-gradient(135deg,#fff8e6,#fff); border:2px solid var(--gold); }
+  .best-bet .label { font-size:11px; color:var(--gold); font-weight:700; }
+  .best-bet .horses { font-size:17px; font-weight:800; margin:4px 0; }
+  .best-bet .stats { font-size:13px; color:var(--muted); }
+  .best-bet .ev { color:var(--gold); font-weight:800; }
+
+  .dark-horse-card { background:#f3eefc; border:2px solid #8a5fd6; }
+  .dark-horse-item { padding:8px 0; border-bottom:1px dashed #d9cdf2; }
+  .dark-horse-item:last-child { border-bottom:none; }
+  .dark-horse-item .dh-name { font-weight:700; font-size:14px; color:#4b2e91; }
+  .dark-horse-item .dh-stats { font-size:12.5px; color:#6b6b6b; }
+  .dh-badge { display:inline-block; font-size:11px; background:#8a5fd6; color:white; padding:1px 8px; border-radius:8px; margin-left:6px; }
+
+  table { width:100%; border-collapse: collapse; font-size:12.5px; }
+  th, td { padding:7px 6px; text-align:center; border-bottom:1px solid #eee; }
+  th { background:var(--accent); color:white; font-weight:600; font-size:11.5px; }
+  td.horses-cell { text-align:left; }
+  tr.positive td.ev-cell { color: var(--accent); font-weight:700; }
+
+  .horse-item { border-bottom:1px solid #eee; padding:10px 0; }
+  .horse-item:last-child { border-bottom:none; }
+  .horse-head { display:flex; justify-content:space-between; align-items:baseline; }
+  .horse-name { font-weight:700; font-size:14px; }
+  .horse-prob { font-size:13px; color:var(--accent); font-weight:700; }
+  .horse-reason { font-size:12.5px; color:#444; margin-top:4px; line-height:1.6; }
+
+  .win5-row { font-size:13px; padding:6px 0; border-bottom:1px dashed #eee; }
+  .win5-rank { display:inline-block; width:20px; color:var(--muted); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="../index.html">← 今週のレース一覧に戻る</a>
+  <h1>{{ race.course }} {{ race.race_number }}R　{{ race.race_name }}</h1>
+  <div class="meta">{{ race.surface }}{{ race.distance }}m ／ 馬場:{{ race.track_condition or "-" }} ／ 天候:{{ race.weather or "-" }}{% if race.is_handicap %} ／ ハンデ戦{% endif %}</div>
+
+  <div class="card race-summary">{{ race_summary_text }}</div>
+
+  {% if best_bet %}
+  <div class="section-title">🏆 最も期待値が高い買い目</div>
+  <div class="card best-bet">
+    <div class="label">{{ best_bet.bet_type }}</div>
+    <div class="horses">{{ best_bet.horses }}</div>
+    <div class="stats">オッズ {{ "%.1f"|format(best_bet.odds) }}倍 ／ 的中確率 {{ "%.2f"|format(best_bet.probability * 100) }}% ／ <span class="ev">期待値 {{ "%.0f"|format(best_bet.ev * 100) }}%</span></div>
+  </div>
+  {% endif %}
+
+  {% if dark_horses %}
+  <div class="section-title">🔮 穴馬候補（人気薄だが期待値プラス）</div>
+  <div class="card dark-horse-card">
+    {% for d in dark_horses %}
+    <div class="dark-horse-item">
+      <span class="dh-name">{{ d.name }}</span><span class="dh-badge">{{ d.popularity }}番人気</span>
+      <div class="dh-stats">単勝オッズ {{ "%.1f"|format(d.odds) }}倍 ／ 勝率推定 {{ "%.1f"|format(d.probability * 100) }}% ／ 期待値 {{ "%.0f"|format(d.ev * 100) }}%</div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <div class="section-title">出走馬の予想と理由</div>
+  <div class="card">
+    {% for h in horses %}
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name">{{ h.horse_number }}. {{ h.name }}</span>
+        <span class="horse-prob">複勝圏内 {{ "%.0f"|format(h.place_probability * 100) }}%</span>
+      </div>
+      <div class="horse-reason">{{ h.reason }}</div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="section-title">馬券種別 買い目一覧（期待値100%超のみ抜粋）</div>
+  {% for bet_type, rows in ev_tables.items() %}
+  <div class="card">
+    <table>
+      <thead><tr><th colspan="4">{{ bet_type }}</th></tr>
+      <tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
+      <tbody>
+        {% for r in rows %}
+        <tr class="{{ 'positive' if r.ev > 1.0 else '' }}">
+          <td class="horses-cell">{{ r.horses }}</td>
+          <td>{{ "%.1f"|format(r.odds) }}</td>
+          <td>{{ "%.2f"|format(r.probability * 100) }}%</td>
+          <td class="ev-cell">{{ "%.0f"|format(r.ev * 100) }}%</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="4">期待値100%超の買い目はありませんでした</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endfor %}
+
+  {% if win5 %}
+  <div class="section-title">🎯 WIN5 買い目候補</div>
+  <div class="card">
+    <div class="meta">対象: {{ win5.race_labels|join(' / ') }}</div>
+    {% for c in win5.combos %}
+    <div class="win5-row"><span class="win5-rank">{{ loop.index }}.</span>{{ c.horses|join(' - ') }}　的中確率 {{ "%.3f"|format(c.probability * 100) }}%{% if c.ev %}　推定EV {{ "%.0f"|format(c.ev * 100) }}%{% endif %}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <div class="meta" style="margin-top:20px;">
+    本ページの予想は参考情報です。的中・利益を保証しません。馬券の購入は必ずご自身でIPAT等の公式ルートから行ってください。
+  </div>
+</div>
+</body>
+</html>

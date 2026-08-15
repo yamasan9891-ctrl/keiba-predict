@@ -1,0 +1,51 @@
+name: Weekly Keiba Update
+
+on:
+  schedule:
+    # 毎週木曜 21:00 JST (=12:00 UTC) に実行。曜日・時間は好みに変更可
+    - cron: "0 12 * * 4"
+  workflow_dispatch: {}   # 手動実行ボタンも使えるようにする
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run weekly pipeline
+        run: python weekly_pipeline.py
+
+      - name: Commit updated data & site
+        run: |
+          git config user.name "keiba-bot"
+          git config user.email "keiba-bot@users.noreply.github.com"
+          git add data/keiba.db static_site/dist model/artifacts
+          git diff --cached --quiet || git commit -m "weekly update: $(date +'%Y-%m-%d')"
+          git push
+
+  deploy-pages:
+    needs: update
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: static_site/dist
+      - uses: actions/deploy-pages@v4
