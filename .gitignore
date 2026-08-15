@@ -1,0 +1,11 @@
+venv/
+__pycache__/
+*.pyc
+data/raw/*.csv
+data/processed/*.csv
+data/keiba.db
+output/*.html
+model/artifacts/*.pkl
+static_site/dist/index.html
+static_site/dist/races/
+result_log.txt
