@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ログイン - keiba-predict</title>
+<style>
+  body { font-family: sans-serif; background: #f7f5f0; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+  .box { background: white; padding: 28px 24px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); width: 90%; max-width: 320px; }
+  h1 { font-size: 18px; margin: 0 0 16px; }
+  input { width: 100%; padding: 10px; margin-bottom: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 15px; box-sizing: border-box; }
+  button { width: 100%; padding: 10px; background: #0f6e4f; color: white; border: none; border-radius: 6px; font-size: 15px; }
+  .flash { color: #b00020; font-size: 13px; margin-bottom: 10px; }
+</style>
+</head>
+<body>
+  <div class="box">
+    <h1>keiba-predict</h1>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}{% for m in messages %}<div class="flash">{{ m }}</div>{% endfor %}{% endif %}
+    {% endwith %}
+    <form method="post">
+      <input type="password" name="password" placeholder="合言葉" autofocus required>
+      <button type="submit">入る</button>
+    </form>
+  </div>
+</body>
+</html>

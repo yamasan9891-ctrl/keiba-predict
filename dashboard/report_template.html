@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>予想レポート - {{ race_id }}</title>
+<style>
+  :root {
+    --accent: #0f6e4f;
+    --bg: #f7f5f0;
+    --card: #ffffff;
+    --text: #1c1c1c;
+    --muted: #6b6b6b;
+    --gold: #b8860b;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Hiragino Sans", "Yu Gothic", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    margin: 0;
+    padding: 24px 16px 60px;
+  }
+  .header {
+    max-width: 720px;
+    margin: 0 auto 20px;
+  }
+  .header h1 {
+    font-size: 20px;
+    margin: 0 0 4px;
+  }
+  .header p {
+    color: var(--muted);
+    font-size: 13px;
+    margin: 0;
+  }
+  .disclaimer {
+    max-width: 720px;
+    margin: 0 auto 20px;
+    background: #fff8e6;
+    border: 1px solid #f0d98c;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 12px;
+    color: #6b5200;
+  }
+  table {
+    max-width: 720px;
+    margin: 0 auto;
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  th, td {
+    padding: 10px 8px;
+    text-align: center;
+    font-size: 13px;
+    border-bottom: 1px solid #eee;
+  }
+  th {
+    background: var(--accent);
+    color: white;
+    font-weight: 600;
+  }
+  tr:last-child td { border-bottom: none; }
+  td.name { text-align: left; font-weight: 600; }
+  .rank-1 td.prob { color: var(--gold); font-weight: 700; }
+  .rank-2 td.prob, .rank-3 td.prob { font-weight: 700; color: var(--accent); }
+  .bar-bg {
+    background: #e9e5da;
+    border-radius: 4px;
+    height: 8px;
+    width: 80px;
+    margin: 0 auto;
+    overflow: hidden;
+  }
+  .bar-fill {
+    background: var(--accent);
+    height: 100%;
+  }
+  .footer {
+    max-width: 720px;
+    margin: 20px auto 0;
+    font-size: 12px;
+    color: var(--muted);
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+  <div class="header">
+    <h1>予想レポート — レースID {{ race_id }}</h1>
+    <p>生成日時: {{ generated_at }}</p>
+  </div>
+
+  <div class="disclaimer">
+    このレポートは参考情報です。的中・利益を保証するものではありません。
+    馬券の購入は必ずご自身でIPAT等の公式ルートから行ってください。
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>順位</th>
+        <th>馬番</th>
+        <th>馬名</th>
+        <th>人気</th>
+        <th>単勝</th>
+        <th>複勝圏内 予想確率</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in rows %}
+      <tr class="{% if loop.index == 1 %}rank-1{% elif loop.index <= 3 %}rank-2{% endif %}">
+        <td>{{ loop.index }}</td>
+        <td>{{ row.horse_number }}</td>
+        <td class="name">{{ row.name }}</td>
+        <td>{{ row.popularity }}</td>
+        <td>{{ row.win_odds }}</td>
+        <td class="prob">
+          {{ "%.1f"|format(row.place_probability * 100) }}%
+          <div class="bar-bg"><div class="bar-fill" style="width: {{ (row.place_probability * 100)|round(1) }}%;"></div></div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div class="footer">
+    keiba-predict / 本ソフトウェアは自動購入を行いません。購入は自己責任で。
+  </div>
+</body>
+</html>

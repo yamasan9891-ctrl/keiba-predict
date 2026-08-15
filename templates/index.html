@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>keiba-predict</title>
+<style>
+  body { font-family: sans-serif; background: #f7f5f0; margin: 0; padding: 20px 16px 60px; color: #1c1c1c; }
+  .wrap { max-width: 480px; margin: 0 auto; }
+  h1 { font-size: 19px; }
+  .status { font-size: 13px; padding: 8px 12px; border-radius: 8px; margin-bottom: 16px; }
+  .status.ok { background: #e6f4ea; color: #0f6e4f; }
+  .status.ng { background: #fdeaea; color: #b00020; }
+  .card { background: white; border-radius: 10px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); margin-bottom: 16px; }
+  input { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 15px; box-sizing: border-box; }
+  button { width: 100%; padding: 11px; background: #0f6e4f; color: white; border: none; border-radius: 6px; font-size: 15px; }
+  .flash { color: #b00020; font-size: 13px; margin-bottom: 10px; }
+  ul { list-style: none; padding: 0; margin: 0; }
+  li a { display: block; padding: 10px 4px; border-bottom: 1px solid #eee; text-decoration: none; color: #1c1c1c; font-size: 14px; }
+  .top-bar { display: flex; justify-content: space-between; align-items: center; }
+  .top-bar a { font-size: 12px; color: #6b6b6b; }
+  .hint { font-size: 12px; color: #6b6b6b; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top-bar">
+    <h1>keiba-predict</h1>
+    <a href="{{ url_for('logout') }}">ログアウト</a>
+  </div>
+
+  {% if model_ready %}
+    <div class="status ok">学習済みモデル: 読み込み済み</div>
+  {% else %}
+    <div class="status ng">学習済みモデルが未配置です。ローカルで学習後、model/artifacts/model.pkl をサーバーに配置してください</div>
+  {% endif %}
+
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}{% for m in messages %}<div class="flash">{{ m }}</div>{% endfor %}{% endif %}
+  {% endwith %}
+
+  <div class="card">
+    <form method="post" action="{{ url_for('run') }}">
+      <input type="text" name="race_id" placeholder="レースID（例: 202506050811）" inputmode="numeric" required>
+      <button type="submit">予想レポートを作成</button>
+    </form>
+    <p class="hint">出馬表の取得〜予想〜レポート表示まで数秒〜十数秒かかります</p>
+  </div>
+
+  {% if report_ids %}
+  <div class="card">
+    <p class="hint">過去のレポート</p>
+    <ul>
+      {% for rid in report_ids %}
+      <li><a href="{{ url_for('report', race_id=rid) }}">{{ rid }}</a></li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+</div>
+</body>
+</html>
