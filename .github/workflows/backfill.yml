@@ -1,4 +1,3 @@
-cat > .github/workflows/backfill.yml << 'PYEOF'
 name: Backfill Historical Races
 
 on:
@@ -43,4 +42,3 @@ jobs:
           git add -f data/keiba.db
           git diff --cached --quiet || git commit -m "backfill (final safety commit): ${{ inputs.year }}年"
           git push || echo "push対象なし、またはpush失敗（既にcommit済みの可能性）"
-PYEOF
