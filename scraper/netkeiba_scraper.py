@@ -86,7 +86,17 @@ def _find_result_table(soup: BeautifulSoup):
         table = soup.find("table", class_=cls)
         if table is not None:
             return table
-    return soup.find("table")
+    return None
+
+
+def _looks_like_valid_result_table(df: pd.DataFrame) -> bool:
+    if df is None or len(df) < 3:
+        return False
+    cols = [str(c) for c in df.columns]
+    return any(
+        ("着" in c and "順" in c) or ("馬" in c and "番" in c) or c == "馬名"
+        for c in cols
+    )
 
 
 def fetch_race_result(race_id: str) -> pd.DataFrame:
@@ -95,16 +105,21 @@ def fetch_race_result(race_id: str) -> pd.DataFrame:
     soup = BeautifulSoup(html, "html.parser")
 
     table = _find_result_table(soup)
-    if table is None:
+    df = None
+    if table is not None:
+        df = pd.read_html(io.StringIO(str(table)))[0]
+        df.columns = [str(c).strip() for c in df.columns]
+
+    if not _looks_like_valid_result_table(df):
         url2 = f"https://db.netkeiba.com/race/{race_id}/"
         html = _polite_get(url2)
         soup = BeautifulSoup(html, "lxml")
         table = _find_result_table(soup)
-        if table is None:
-            raise RuntimeError(f"結果テーブルが見つかりません: {url} / {url2}")
-
-    df = pd.read_html(io.StringIO(str(table)))[0]
-    df.columns = [str(c).strip() for c in df.columns]
+        if table is not None:
+            df = pd.read_html(io.StringIO(str(table)))[0]
+            df.columns = [str(c).strip() for c in df.columns]
+        if not _looks_like_valid_result_table(df):
+            raise RuntimeError(f"有効な結果テーブルが見つかりません（存在しないレースの可能性）: {race_id}")
 
     horse_ids, jockey_ids = [], []
     for row in table.find_all("tr")[1:]:
