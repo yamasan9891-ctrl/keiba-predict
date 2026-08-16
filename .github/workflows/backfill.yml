@@ -1,3 +1,4 @@
+cat > .github/workflows/backfill.yml << 'PYEOF'
 name: Backfill Historical Races
 
 on:
@@ -8,7 +9,7 @@ on:
         required: true
         type: string
       courses:
-        description: "競馬場コード（カンマ区切り、空欄で全10場）例: 05,06,09"
+        description: "競馬場コード（カンマ区切り）例: 05,06 ※2〜3場ずつ推奨"
         required: false
         type: string
 
@@ -25,6 +26,10 @@ jobs:
           python-version: "3.11"
       - name: Install dependencies
         run: pip install -r requirements.txt
+      - name: Configure git
+        run: |
+          git config user.name "keiba-bot"
+          git config user.email "keiba-bot@users.noreply.github.com"
       - name: Run bulk collection
         run: |
           if [ -n "${{ inputs.courses }}" ]; then
@@ -32,10 +37,10 @@ jobs:
           else
             python -u scraper/bulk_collect.py --year ${{ inputs.year }}
           fi
-      - name: Commit collected data
+      - name: Commit any remaining data
+        if: always()
         run: |
-          git config user.name "keiba-bot"
-          git config user.email "keiba-bot@users.noreply.github.com"
           git add -f data/keiba.db
-          git diff --cached --quiet || git commit -m "backfill ${{ inputs.year }}"
-          git push
+          git diff --cached --quiet || git commit -m "backfill (final safety commit): ${{ inputs.year }}年"
+          git push || echo "push対象なし、またはpush失敗（既にcommit済みの可能性）"
+PYEOF

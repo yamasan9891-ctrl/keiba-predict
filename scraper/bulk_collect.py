@@ -1,7 +1,9 @@
+cat > scraper/bulk_collect.py << 'PYEOF'
 """
 過去レース一括収集（総当たり方式）
 """
 import argparse
+import subprocess
 import sys
 import time
 from pathlib import Path
@@ -16,15 +18,30 @@ COURSE_CODES = {
 }
 
 
+def _git_commit_and_push(message: str):
+    try:
+        subprocess.run(["git", "add", "-f", "data/keiba.db"], check=True)
+        result = subprocess.run(["git", "diff", "--cached", "--quiet"])
+        if result.returncode == 0:
+            print("  (変更なし、commitスキップ)")
+            return
+        subprocess.run(["git", "commit", "-m", message], check=True)
+        subprocess.run(["git", "push"], check=True)
+        print(f"  → git push完了: {message}")
+    except subprocess.CalledProcessError as e:
+        print(f"  [警告] git commit/push失敗: {e}")
+
+
 def collect_year(year: int, courses: list = None, max_kai: int = 6,
                   max_day: int = 12, max_race: int = 12,
-                  max_consecutive_misses: int = 30) -> dict:
+                  max_consecutive_misses: int = 30, commit_per_course: bool = True) -> dict:
     init_db()
     courses = courses or list(COURSE_CODES.keys())
     stats = {"success": 0, "skipped_existing": 0, "not_found": 0}
 
     for course_code in courses:
         course_name = COURSE_CODES.get(course_code, course_code)
+        course_success = 0
         for kai in range(1, max_kai + 1):
             consecutive_misses = 0
             for day in range(1, max_day + 1):
@@ -42,6 +59,7 @@ def collect_year(year: int, courses: list = None, max_kai: int = 6,
                         df = fetch_race_result(race_id)
                         save_to_db(df)
                         stats["success"] += 1
+                        course_success += 1
                         day_found_any = True
                         consecutive_misses = 0
                         print(f"  ✓ {race_id} ({course_name}) 収集成功")
@@ -49,6 +67,11 @@ def collect_year(year: int, courses: list = None, max_kai: int = 6,
                         stats["not_found"] += 1
                 if not day_found_any:
                     consecutive_misses += 1
+
+        if commit_per_course and course_success > 0:
+            print(f"=== {course_name} 完了（{course_success}件新規収集）。pushします ===")
+            _git_commit_and_push(f"backfill {year}年 {course_name} ({course_success}件)")
+
     return stats
 
 
@@ -69,3 +92,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+PYEOF
