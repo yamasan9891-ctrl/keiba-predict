@@ -1,4 +1,3 @@
-cat > scraper/bulk_collect.py << 'PYEOF'
 """
 過去レース一括収集（総当たり方式）
 """
@@ -92,4 +91,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-PYEOF
