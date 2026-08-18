@@ -1,0 +1,34 @@
+name: Auto Backfill (Scheduled)
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  auto-backfill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Configure git
+        run: |
+          git config user.name "keiba-bot"
+          git config user.email "keiba-bot@users.noreply.github.com"
+      - name: Show current progress
+        run: python -u scraper/auto_backfill.py --status
+      - name: Collect next chunk
+        run: python -u scraper/auto_backfill.py
+      - name: Commit any remaining data
+        if: always()
+        run: |
+          git add -f data/keiba.db data/backfill_state.json
+          git diff --cached --quiet || git commit -m "auto-backfill safety commit"
+          git push || echo "push対象なし、または失敗（既にcommit済みの可能性）"
