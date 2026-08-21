@@ -55,8 +55,22 @@ CREATE TABLE IF NOT EXISTS entries (
     FOREIGN KEY (race_id) REFERENCES races(race_id)
 );
 
+CREATE TABLE IF NOT EXISTS horses (
+    horse_id TEXT PRIMARY KEY,
+    horse_name TEXT,
+    father TEXT,
+    father_father TEXT,
+    father_mother TEXT,
+    mother TEXT,
+    mother_father TEXT,
+    mother_mother TEXT,
+    fetched_at TEXT DEFAULT (datetime('now'))
+);
+
 CREATE INDEX IF NOT EXISTS idx_entries_horse ON entries(horse_id);
 CREATE INDEX IF NOT EXISTS idx_races_date ON races(race_date);
+CREATE INDEX IF NOT EXISTS idx_horses_father ON horses(father);
+CREATE INDEX IF NOT EXISTS idx_horses_motherfather ON horses(mother_father);
 """
 
 
@@ -111,6 +125,38 @@ def upsert_entries(conn, entries: list[dict]):
 def race_exists(conn, race_id: str) -> bool:
     row = conn.execute("SELECT 1 FROM races WHERE race_id = ?", (race_id,)).fetchone()
     return row is not None
+
+def upsert_horse(conn, horse: dict):
+    cols = list(horse.keys())
+    placeholders = ", ".join(["?"] * len(cols))
+    update_cols = [c for c in cols if c != "horse_id"]
+    if update_cols:
+        updates = ", ".join([f"{c}=excluded.{c}" for c in update_cols])
+        sql = (
+            f"INSERT INTO horses ({', '.join(cols)}) VALUES ({placeholders}) "
+            f"ON CONFLICT(horse_id) DO UPDATE SET {updates}"
+        )
+    else:
+        sql = (
+            f"INSERT INTO horses ({', '.join(cols)}) VALUES ({placeholders}) "
+            f"ON CONFLICT(horse_id) DO NOTHING"
+        )
+    conn.execute(sql, [horse[c] for c in cols])
+
+
+def horse_exists(conn, horse_id: str) -> bool:
+    row = conn.execute("SELECT 1 FROM horses WHERE horse_id = ?", (horse_id,)).fetchone()
+    return row is not None
+
+
+def distinct_horse_ids_without_pedigree(conn) -> list:
+    rows = conn.execute("""
+        SELECT DISTINCT e.horse_id
+        FROM entries e
+        LEFT JOIN horses h ON e.horse_id = h.horse_id
+        WHERE e.horse_id IS NOT NULL AND h.horse_id IS NULL
+    """).fetchall()
+    return [r["horse_id"] for r in rows]
 
 
 if __name__ == "__main__":
