@@ -42,11 +42,13 @@ CREATE TABLE IF NOT EXISTS entries (
     horse_name TEXT,
     jockey_id TEXT,
     jockey_name TEXT,
+    trainer_name TEXT,       -- 調教師（厩舎）
     weight_carried REAL,     -- 斤量
     horse_weight REAL,
     horse_weight_diff REAL,
     running_style TEXT,      -- 逃げ / 先行 / 差し / 追込（推定含む）
     last_3f REAL,            -- 上がり3F（秒）
+    finish_time REAL,        -- 走破タイム（秒）※コース補正の基礎データ
     finish_pos INTEGER,      -- 確定済みレースのみ
     win_odds REAL,
     popularity INTEGER,
@@ -88,6 +90,23 @@ def get_conn():
 def init_db():
     with get_conn() as conn:
         conn.executescript(SCHEMA)
+        _migrate_schema(conn)
+
+
+def _migrate_schema(conn):
+    """
+    既存のDBファイルに、後から追加されたカラムがない場合に追加する
+    （CREATE TABLE IF NOT EXISTSは既存テーブルにカラムを追加してくれないため）。
+    """
+    migrations = {
+        "entries": [("finish_time", "REAL"), ("trainer_name", "TEXT")],
+    }
+    for table, columns in migrations.items():
+        existing = {row["name"] for row in conn.execute(f"PRAGMA table_info({table})").fetchall()}
+        for col_name, col_type in columns:
+            if col_name not in existing:
+                conn.execute(f"ALTER TABLE {table} ADD COLUMN {col_name} {col_type}")
+                print(f"[migration] {table}.{col_name} を追加しました")
 
 
 def upsert_race(conn, race: dict):

@@ -265,12 +265,26 @@ def save_to_db(df: pd.DataFrame, meta: dict = None) -> None:
         "着 順": "finish_pos", "枠": "post_position", "馬 番": "horse_number",
         "斤量": "weight_carried", "単勝 オッズ": "win_odds", "人 気": "popularity",
         "馬体重 (増減)": "horse_weight_raw", "後3F": "last_3f", "コーナー 通過順": "passing",
-        "馬名": "horse_name",
+        "馬名": "horse_name", "タイム": "finish_time_raw", "厩舎": "trainer_name",
         "着順": "finish_pos", "枠番": "post_position", "馬番": "horse_number",
         "単勝": "win_odds", "人気": "popularity", "馬体重": "horse_weight_raw",
         "上がり": "last_3f", "通過": "passing",
     }
     d = df.rename(columns={k: v for k, v in rename.items() if k in df.columns})
+
+    def _parse_finish_time(raw) -> float:
+        """'1:33.4'（1分33秒4）のような表記を秒数(93.4)に変換する"""
+        if raw is None or (isinstance(raw, float) and pd.isna(raw)):
+            return None
+        s = str(raw).strip()
+        m = re.match(r"(?:(\d+):)?(\d+)\.(\d+)", s)
+        if not m:
+            return None
+        minutes = int(m.group(1)) if m.group(1) else 0
+        seconds = int(m.group(2))
+        frac = int(m.group(3))
+        frac_digits = len(m.group(3))
+        return minutes * 60 + seconds + frac / (10 ** frac_digits)
 
     entries = []
     n_horses = len(d)
@@ -291,11 +305,13 @@ def save_to_db(df: pd.DataFrame, meta: dict = None) -> None:
             "horse_name": r.get("horse_name"),
             "jockey_id": r.get("jockey_id"),
             "jockey_name": None,
+            "trainer_name": r.get("trainer_name"),
             "weight_carried": float(r["weight_carried"]) if pd.notna(r.get("weight_carried")) else None,
             "horse_weight": float(w_match.group(1)) if w_match else None,
             "horse_weight_diff": float(wd_match.group(1)) if wd_match else None,
             "running_style": infer_running_style(r.get("passing"), n_horses) if "passing" in d.columns else None,
             "last_3f": float(r["last_3f"]) if pd.notna(r.get("last_3f")) else None,
+            "finish_time": _parse_finish_time(r.get("finish_time_raw")),
             "finish_pos": finish_pos,
             "win_odds": float(r["win_odds"]) if pd.notna(r.get("win_odds")) else None,
             "popularity": int(r["popularity"]) if pd.notna(r.get("popularity")) else None,
