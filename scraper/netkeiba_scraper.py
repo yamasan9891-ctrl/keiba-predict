@@ -176,11 +176,61 @@ def fetch_shutuba(race_id: str) -> pd.DataFrame:
             horse_ids.append(_extract_id(horse_link["href"]))
             jockey_ids.append(_extract_id(jockey_link["href"]) if jockey_link else None)
 
+    # 以前はここでhorse_ids/jockey_idsを集めるだけでdfに反映し忘れていたバグを修正
+    if len(horse_ids) == len(df):
+        df["horse_id"] = horse_ids
+        df["jockey_id"] = jockey_ids
+
     df["race_id"] = race_id
+    df.attrs["meta"] = fetch_race_meta(race_id, soup)
     return df
 
 
-def fetch_horse_past_results(horse_id: str, n_races: int = 10) -> pd.DataFrame:
+def fetch_race_ids_for_date(date_str: str) -> list:
+    """
+    指定日（YYYYMMDD形式）に開催される全レースのrace_idを取得する。
+    race.netkeiba.com/top/race_list.html?kaisai_date=YYYYMMDD を利用。
+    """
+    url = f"https://race.netkeiba.com/top/race_list.html?kaisai_date={date_str}"
+    html = _polite_get(url)
+    soup = BeautifulSoup(html, "html.parser")
+
+    race_ids = set()
+    for a in soup.find_all("a", href=True):
+        href = a["href"]
+        match = re.search(r"race_id=(\d{12})", href)
+        if match:
+            race_ids.add(match.group(1))
+
+    return sorted(race_ids)
+
+
+def get_upcoming_weekend_dates(reference_date=None) -> list:
+    """
+    基準日から見て、直近の土曜・日曜の日付（YYYYMMDD形式）を返す。
+    JRAは基本的に土日開催（一部金曜ナイター等の例外はここでは考慮しない）。
+    reference_date省略時は実行時点の日付を使う。
+    """
+    import datetime as _dt
+    ref = reference_date or _dt.date.today()
+    # 月曜=0 ... 土曜=5, 日曜=6
+    days_until_saturday = (5 - ref.weekday()) % 7
+    saturday = ref + _dt.timedelta(days=days_until_saturday)
+    sunday = saturday + _dt.timedelta(days=1)
+    return [saturday.strftime("%Y%m%d"), sunday.strftime("%Y%m%d")]
+
+
+def fetch_this_week_race_ids() -> list:
+    """今週末（土日）に開催される全レースのrace_idをまとめて取得する"""
+    all_ids = []
+    for date_str in get_upcoming_weekend_dates():
+        try:
+            ids = fetch_race_ids_for_date(date_str)
+            print(f"  {date_str}: {len(ids)}レース")
+            all_ids.extend(ids)
+        except Exception as e:
+            print(f"  [警告] {date_str} の取得に失敗: {e}")
+    return all_ids
     url = f"https://db.netkeiba.com/horse/{horse_id}/"
     html = _polite_get(url)
     soup = BeautifulSoup(html, "lxml")

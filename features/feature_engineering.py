@@ -1,152 +1,117 @@
 """
-特徴量エンジニアリング
+特徴量エンジニアリング（DB直結版）
 
-data/raw/ にある result_*.csv / horse_history_*.csv を読み込み、
-モデル学習・推論に使える特徴量テーブルを作って data/processed/ に保存する。
+data/keiba.db から races / entries / horses を結合して読み込み、
+モデル学習・推論に使える特徴量テーブルを作る。
 
-特徴量の例:
-  - 斤量、馬体重（増減）、枠番、馬番
-  - 直近成績（平均着順、複勝率、直近3走の着順推移）
-  - 騎手の勝率（簡易集計）
-  - 単勝人気（市場の評価をそのまま特徴量として利用）
+【重要】以前はdata/raw/のCSVファイルを読む設計だったが、実際の収集データは
+すべてSQLite DB（data/keiba.db）に保存されるようになったため、こちらに一本化した。
+
+特徴量:
+  - レース属性: 距離, 芝/ダート, 馬場状態, ハンデ戦か
+  - 出走馬属性: 斤量, 馬体重(増減), 枠番, 馬番, 脚質, 上がり3F
+  - 市場評価: 単勝人気, 単勝オッズ（市場がどう評価しているかも重要な特徴量）
+  - 血統: 父, 母父（BMS）※カテゴリ変数としてLightGBMにそのまま渡す
+  - 過去成績（対象レースより前の情報のみを使用し、リーク防止）:
+      直近平均着順, 複勝率, 出走数, 直近3走平均着順
 """
-import glob
-import re
+import sys
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
-import sys
 sys.path.append(str(Path(__file__).resolve().parent.parent))
-from config import DATA_RAW_DIR, DATA_PROCESSED_DIR, TARGET_COL
+from config import DATA_PROCESSED_DIR, TARGET_COL
+from db.database import get_conn, init_db
 
 
-def _to_number(series: pd.Series) -> pd.Series:
-    """全角数字や単位混じりの文字列を数値に変換"""
-    return pd.to_numeric(
-        series.astype(str).str.replace(r"[^0-9\.\-]", "", regex=True),
-        errors="coerce",
-    )
+def load_race_entries(conn) -> pd.DataFrame:
+    """races + entries + horses を結合した生データを読み込む"""
+    query = """
+        SELECT
+            e.race_id, e.horse_number, e.post_position, e.horse_id, e.horse_name,
+            e.jockey_id, e.weight_carried, e.horse_weight, e.horse_weight_diff,
+            e.running_style, e.last_3f, e.finish_pos, e.win_odds, e.popularity, e.is_placed,
+            r.distance, r.surface, r.track_condition, r.weather, r.is_handicap, r.grade,
+            h.father, h.mother_father
+        FROM entries e
+        LEFT JOIN races r ON e.race_id = r.race_id
+        LEFT JOIN horses h ON e.horse_id = h.horse_id
+        WHERE e.finish_pos IS NOT NULL
+    """
+    return pd.read_sql_query(query, conn)
 
 
-def load_all_results() -> pd.DataFrame:
-    files = glob.glob(str(DATA_RAW_DIR / "result_*.csv"))
-    if not files:
-        raise FileNotFoundError(
-            "data/raw/ に result_*.csv がありません。先に "
-            "scraper/netkeiba_scraper.py --mode result を実行してください。"
-        )
-    dfs = [pd.read_csv(f, encoding="utf-8-sig") for f in files]
-    return pd.concat(dfs, ignore_index=True)
+def _add_horse_history_features(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    馬ごとの過去成績を、リーク防止のため「そのレースより前の情報だけ」で計算する。
+    """
+    df = df.sort_values(["horse_id", "race_id"]).reset_index(drop=True)
+
+    def _expanding_stats(group: pd.DataFrame) -> pd.DataFrame:
+        finish = group["finish_pos"].astype(float)
+        prior = finish.shift(1)
+        group["avg_finish_pos"] = prior.expanding().mean()
+        group["n_races"] = prior.expanding().count()
+        group["best_finish_pos"] = prior.expanding().min()
+        group["place_rate"] = prior.expanding().apply(lambda s: (s <= 3).mean() if len(s) else np.nan)
+        group["recent3_avg_finish_pos"] = prior.rolling(3, min_periods=1).mean()
+        # 上がり3Fは「そのレース自体の結果」なので予想時点では存在しない（リークになる）。
+        # 代わりに「過去レースの上がり3F平均」を使う（これなら予想時点でも計算可能）。
+        prior_3f = group["last_3f"].shift(1)
+        group["avg_last_3f"] = prior_3f.expanding().mean()
+        # running_styleも「そのレースの実際の通過順位」から算出されたものなのでリークになる。
+        # 代わりに「直前のレースでの脚質」を、その馬の傾向の目安として使う。
+        group["prior_running_style"] = group["running_style"].shift(1)
+        return group
+
+    df = df.groupby("horse_id", group_keys=False).apply(_expanding_stats)
+    return df
 
 
-def load_all_histories() -> pd.DataFrame:
-    files = glob.glob(str(DATA_RAW_DIR / "horse_history_*.csv"))
-    if not files:
-        return pd.DataFrame()
-    dfs = [pd.read_csv(f, encoding="utf-8-sig") for f in files]
-    return pd.concat(dfs, ignore_index=True)
+CATEGORICAL_COLS = ["prior_running_style", "surface", "track_condition", "father", "mother_father"]
+
+FEATURE_COLS = [
+    "post_position", "horse_number", "weight_carried", "win_odds", "popularity",
+    "horse_weight", "horse_weight_diff",
+    "distance", "is_handicap",
+    "avg_finish_pos", "n_races", "best_finish_pos", "place_rate", "recent3_avg_finish_pos",
+    "avg_last_3f",
+] + CATEGORICAL_COLS
 
 
-def build_features(results: pd.DataFrame, histories: pd.DataFrame) -> pd.DataFrame:
-    df = results.copy()
+def build_features(df: pd.DataFrame) -> pd.DataFrame:
+    df = df.copy()
+    df[TARGET_COL] = (df["finish_pos"] <= 3).astype(int)
+    df["is_handicap"] = df["is_handicap"].fillna(0).astype(int)
 
-    # 列名はnetkeibaのHTML構造次第で変わり得るため、存在チェックしながら処理
-    rename_map = {
-        "着順": "finish_pos",
-        "枠番": "post_position",
-        "馬番": "horse_number",
-        "斤量": "weight_carried",
-        "単勝": "win_odds",
-        "人気": "popularity",
-        "馬体重": "horse_weight_raw",
-    }
-    df = df.rename(columns={k: v for k, v in rename_map.items() if k in df.columns})
+    df = _add_horse_history_features(df)
 
-    if "finish_pos" in df.columns:
-        df["finish_pos_num"] = _to_number(df["finish_pos"])
-        df[TARGET_COL] = (df["finish_pos_num"] <= 3).astype(int)
-
-    for col in ["weight_carried", "win_odds", "popularity", "post_position", "horse_number"]:
+    for col in CATEGORICAL_COLS:
         if col in df.columns:
-            df[col] = _to_number(df[col])
-
-    # 馬体重は "480(+2)" のような形式 → 体重と増減を分離
-    if "horse_weight_raw" in df.columns:
-        weight = df["horse_weight_raw"].astype(str)
-        df["horse_weight"] = weight.str.extract(r"(\d+)").astype(float)
-        df["horse_weight_diff"] = weight.str.extract(r"\(([+\-]?\d+)\)").astype(float)
-
-    # 過去成績集計（馬ごと）
-    if not histories.empty and "horse_id" in histories.columns:
-        hist_features = _aggregate_horse_history(histories)
-        df = df.merge(hist_features, on="horse_id", how="left")
+            df[col] = df[col].astype("category")
 
     return df
 
 
-def _aggregate_horse_history(histories: pd.DataFrame) -> pd.DataFrame:
-    """過去走から馬ごとの集計特徴量を作る"""
-    h = histories.copy()
-    finish_col = "着順" if "着順" in h.columns else None
-    if finish_col is None:
-        return pd.DataFrame(columns=["horse_id"])
-
-    h["finish_num"] = _to_number(h[finish_col])
-
-    agg = h.groupby("horse_id")["finish_num"].agg(
-        avg_finish_pos="mean",
-        n_races="count",
-        best_finish_pos="min",
-    ).reset_index()
-    agg["place_rate"] = h.groupby("horse_id")["finish_num"].apply(
-        lambda s: (s <= 3).mean()
-    ).values
-
-    # 直近3走の平均（現在の並びが新しい順という前提。異なる場合は要調整）
-    recent3 = (
-        h.sort_values(["horse_id"])
-        .groupby("horse_id")
-        .head(3)
-        .groupby("horse_id")["finish_num"]
-        .mean()
-        .rename("recent3_avg_finish_pos")
-        .reset_index()
-    )
-    agg = agg.merge(recent3, on="horse_id", how="left")
-    return agg
-
-
-FEATURE_COLS = [
-    "post_position",
-    "horse_number",
-    "weight_carried",
-    "win_odds",
-    "popularity",
-    "horse_weight",
-    "horse_weight_diff",
-    "avg_finish_pos",
-    "n_races",
-    "best_finish_pos",
-    "place_rate",
-    "recent3_avg_finish_pos",
-]
-
-
 def main():
-    results = load_all_results()
-    histories = load_all_histories()
-    features = build_features(results, histories)
+    init_db()
+    with get_conn() as conn:
+        raw = load_race_entries(conn)
+
+    if raw.empty:
+        print("DBに確定済みレースデータがありません。先にscraperでデータ収集してください。")
+        return
+
+    features = build_features(raw)
 
     out_path = DATA_PROCESSED_DIR / "features.csv"
     features.to_csv(out_path, index=False, encoding="utf-8-sig")
     print(f"保存しました: {out_path} ({len(features)}行, {len(features.columns)}列)")
+
     present = [c for c in FEATURE_COLS if c in features.columns]
-    missing = [c for c in FEATURE_COLS if c not in features.columns]
-    print(f"利用可能な特徴量: {present}")
-    if missing:
-        print(f"欠けている特徴量（要データ拡充）: {missing}")
+    print(f"利用可能な特徴量({len(present)}個): {present}")
 
 
 if __name__ == "__main__":

@@ -20,7 +20,7 @@ from sklearn.model_selection import GroupKFold
 import sys
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 from config import DATA_PROCESSED_DIR, MODEL_DIR, TARGET_COL
-from features.feature_engineering import FEATURE_COLS
+from features.feature_engineering import FEATURE_COLS, CATEGORICAL_COLS
 
 
 def load_features() -> pd.DataFrame:
@@ -29,7 +29,13 @@ def load_features() -> pd.DataFrame:
         raise FileNotFoundError(
             "features.csv がありません。先に features/feature_engineering.py を実行してください。"
         )
-    return pd.read_csv(path, encoding="utf-8-sig")
+    df = pd.read_csv(path, encoding="utf-8-sig")
+    # CSV保存でcategory型は失われる（文字列に戻る）ため、学習前に再度category型へ戻す
+    # （LightGBMはcategory型の列をそのままカテゴリ特徴量として扱える）
+    for col in CATEGORICAL_COLS:
+        if col in df.columns:
+            df[col] = df[col].astype("category")
+    return df
 
 
 def train():
@@ -50,6 +56,7 @@ def train():
     X = df[cols]
     y = df[TARGET_COL]
     groups = df["race_id"] if "race_id" in df.columns else np.arange(len(df))
+    cat_features = [c for c in CATEGORICAL_COLS if c in cols]
 
     # レース単位でCVを分割する（同じレースの馬が train/valid に分かれて
     # リークするのを防ぐため）
@@ -73,6 +80,7 @@ def train():
         model.fit(
             X_tr, y_tr,
             eval_set=[(X_va, y_va)],
+            categorical_feature=cat_features,
             callbacks=[lgb.early_stopping(30, verbose=False)],
         )
         pred = model.predict_proba(X_va)[:, 1]
@@ -95,7 +103,7 @@ def train():
         colsample_bytree=0.8,
         random_state=42,
     )
-    final_model.fit(X, y)
+    final_model.fit(X, y, categorical_feature=cat_features)
 
     joblib.dump({"model": final_model, "features": cols}, MODEL_DIR / "model.pkl")
     print(f"モデルを保存しました: {MODEL_DIR / 'model.pkl'}")

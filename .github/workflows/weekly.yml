@@ -9,6 +9,7 @@ on:
 jobs:
   update:
     runs-on: ubuntu-latest
+    timeout-minutes: 120
     permissions:
       contents: write
     steps:
@@ -21,16 +22,26 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Run weekly pipeline
-        run: python weekly_pipeline.py
-
-      - name: Commit updated data & site
+      - name: Configure git
         run: |
           git config user.name "keiba-bot"
           git config user.email "keiba-bot@users.noreply.github.com"
-          git add data/keiba.db static_site/dist model/artifacts
+
+      - name: Build features from DB
+        run: python -u features/feature_engineering.py
+
+      - name: Train model (fresh, using all accumulated data)
+        run: python -u model/train.py
+
+      - name: Run weekly pipeline (fetch races, predict, generate site)
+        run: python -u weekly_pipeline.py
+
+      - name: Commit updated data & site
+        if: always()
+        run: |
+          git add -f data/keiba.db static_site/dist
           git diff --cached --quiet || git commit -m "weekly update: $(date +'%Y-%m-%d')"
-          git push
+          git push || echo "push対象なし、または失敗"
 
   deploy-pages:
     needs: update
