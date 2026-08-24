@@ -1,0 +1,38 @@
+name: Auto Backfill Dates (Scheduled)
+
+on:
+  schedule:
+    # 3時間ごとに未取得の開催日を300件ずつ埋める
+    - cron: "30 */3 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  backfill-dates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Configure git
+        run: |
+          git config user.name "keiba-bot"
+          git config user.email "keiba-bot@users.noreply.github.com"
+
+      - name: Backfill dates
+        run: python -u scraper/backfill_dates.py --limit 300
+
+      - name: Commit any remaining data
+        if: always()
+        run: |
+          git add -f data/keiba.db
+          git diff --cached --quiet || git commit -m "backfill dates safety commit"
+          git push || echo "push対象なし、または失敗"
