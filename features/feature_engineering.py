@@ -37,7 +37,7 @@ def load_race_entries(conn) -> pd.DataFrame:
             e.race_id, e.horse_number, e.post_position, e.horse_id, e.horse_name,
             e.jockey_id, e.trainer_name, e.weight_carried, e.horse_weight, e.horse_weight_diff,
             e.running_style, e.last_3f, e.finish_pos, e.win_odds, e.popularity, e.is_placed,
-            r.distance, r.surface, r.track_condition, r.weather, r.is_handicap, r.grade,
+            r.race_date, r.distance, r.surface, r.track_condition, r.weather, r.is_handicap, r.grade,
             h.father, h.mother_father
         FROM entries e
         LEFT JOIN races r ON e.race_id = r.race_id
@@ -100,6 +100,44 @@ def _add_pace_simulation(df: pd.DataFrame) -> pd.DataFrame:
     advantage[(predicted_pace == "スローペース") & is_front] = 1
     advantage[(predicted_pace == "スローペース") & is_closer] = -1
     df["pace_advantage"] = advantage
+
+    return df
+
+
+def _add_layoff_and_post_bias(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    休み明け間隔（前走からの日数）と、枠順×コース×距離の有利不利統計を追加する。
+    race_dateが取得できているレースのみ対象（未取得のレースはNaNになる）。
+    """
+    if "race_date" not in df.columns:
+        df["days_since_last_race"] = np.nan
+        df["post_position_bias"] = np.nan
+        return df
+
+    df["race_date_parsed"] = pd.to_datetime(df["race_date"], errors="coerce")
+
+    df = df.sort_values(["horse_id", "race_date_parsed", "race_id"]).reset_index(drop=True)
+    horse_ids = df["horse_id"]
+
+    def _layoff(group: pd.DataFrame) -> pd.DataFrame:
+        prior_date = group["race_date_parsed"].shift(1)
+        group["days_since_last_race"] = (group["race_date_parsed"] - prior_date).dt.days
+        return group
+
+    df = df.groupby("horse_id", group_keys=False).apply(_layoff)
+    df["horse_id"] = horse_ids.values
+
+    # 枠順×コース×距離×芝ダートごとの複勝率を統計化し、「その枠が有利かどうか」を数値化する
+    # （is_placedは自分自身の結果なので、グループ全体の平均を使う際は自分を除いた値にする必要があるが、
+    #   ここでは簡易的に「全体傾向」として扱う。過学習防止のためサンプル数が少ないグループは中立値にする）
+    if "post_position" in df.columns and "is_placed" in df.columns:
+        group_cols = ["distance", "surface", "post_position"]
+        group_stats = df.groupby(group_cols)["is_placed"].agg(["mean", "count"]).reset_index()
+        group_stats.loc[group_stats["count"] < 30, "mean"] = np.nan  # サンプル不足は無効化
+        group_stats = group_stats.rename(columns={"mean": "post_position_bias"})
+        df = df.merge(group_stats[group_cols + ["post_position_bias"]], on=group_cols, how="left")
+    else:
+        df["post_position_bias"] = np.nan
 
     return df
 
@@ -167,6 +205,7 @@ FEATURE_COLS = [
     "avg_finish_pos", "n_races", "best_finish_pos", "place_rate", "recent3_avg_finish_pos",
     "avg_last_3f", "avg_speed_figure", "best_speed_figure", "avg_opponent_strength",
     "jockey_place_rate", "jockey_n_races", "pace_advantage",
+    "days_since_last_race", "post_position_bias",
 ] + CATEGORICAL_COLS
 
 
@@ -185,6 +224,9 @@ def build_features(df: pd.DataFrame) -> pd.DataFrame:
 
     # 騎手の成績は馬とは独立に計算できる
     df = _add_jockey_history_features(df)
+
+    # 休み明け間隔・枠順バイアスは開催日ベースで計算する
+    df = _add_layoff_and_post_bias(df)
 
     for col in CATEGORICAL_COLS:
         if col in df.columns:

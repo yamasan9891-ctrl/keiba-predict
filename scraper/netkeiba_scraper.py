@@ -63,10 +63,22 @@ def fetch_race_meta(race_id: str, soup: BeautifulSoup = None) -> dict:
     grade_match = re.search(r"(G1|G2|G3|GI|GII|GIII|Ｇ1|Ｇ2|Ｇ3|OP|オープン|L)", (race_name or "") + full_text)
     is_handicap = 1 if ("ハンデ" in full_text or "ハンデ" in (race_name or "")) else 0
 
+    # 開催日（例: "2026年8月22日" または "8月22日"）を抽出
+    date_match = re.search(r"(?:(\d{4})年)?(\d{1,2})月(\d{1,2})日", full_text)
+    race_date = None
+    if date_match:
+        year_str = date_match.group(1) or race_id[:4]  # 年が書かれていなければrace_idの先頭4桁を使う
+        month, day = int(date_match.group(2)), int(date_match.group(3))
+        race_date = f"{year_str}-{month:02d}-{day:02d}"
+
+    # 開催競馬場（例: "3回東京8日"のような表記から競馬場名を抽出）
+    course_match = re.search(r"\d+回(東京|中山|阪神|京都|中京|新潟|福島|小倉|札幌|函館)\d+日", full_text)
+    course = course_match.group(1) if course_match else None
+
     return {
         "race_id": race_id,
-        "race_date": None,
-        "course": None,
+        "race_date": race_date,
+        "course": course,
         "distance": int(distance_match.group(1)) if distance_match else None,
         "surface": surface_match.group(1) if surface_match else None,
         "track_condition": condition_match.group(1) if condition_match else None,
