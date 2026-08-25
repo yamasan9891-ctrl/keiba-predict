@@ -5,105 +5,205 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{ race.race_name }} 予想 | keiba-predict</title>
 <style>
-  :root { --accent:#0f6e4f; --bg:#f7f5f0; --card:#fff; --text:#1c1c1c; --muted:#6b6b6b; --gold:#b8860b; }
+  :root {
+    --bg: #0b0f0d;
+    --surface: #131a16;
+    --surface-2: #1a2420;
+    --line: #26332c;
+    --amber: #f0a202;
+    --amber-dim: #8a6417;
+    --amber-glow: rgba(240,162,2,0.35);
+    --green: #4caf6e;
+    --red: #d64550;
+    --text: #ece7da;
+    --text-dim: #8d9690;
+  }
   * { box-sizing: border-box; }
-  body { font-family:"Hiragino Sans","Yu Gothic",sans-serif; background:var(--bg); color:var(--text); margin:0; padding:16px 12px 60px; }
-  .wrap { max-width: 760px; margin:0 auto; }
-  a.back { font-size:12px; color:var(--muted); text-decoration:none; }
-  h1 { font-size:19px; margin:10px 0 2px; }
-  .meta { font-size:12px; color:var(--muted); margin-bottom:14px; }
-  .section-title { font-size:14px; font-weight:700; margin: 22px 0 8px; color:var(--accent); }
-  .card { background:var(--card); border-radius:10px; padding:14px; box-shadow:0 1px 3px rgba(0,0,0,0.06); margin-bottom:12px; }
-  .race-summary { font-size:13px; line-height:1.7; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Hiragino Sans", "Yu Gothic", -apple-system, sans-serif;
+    padding: 0 0 60px;
+  }
+  .mono { font-family: "SFMono-Regular", "Menlo", "Consolas", monospace; font-variant-numeric: tabular-nums; }
+  a { color: inherit; }
 
-  .best-bet { background: linear-gradient(135deg,#fff8e6,#fff); border:2px solid var(--gold); }
-  .best-bet .label { font-size:11px; color:var(--gold); font-weight:700; }
-  .best-bet .horses { font-size:17px; font-weight:800; margin:4px 0; }
-  .best-bet .stats { font-size:13px; color:var(--muted); }
-  .best-bet .ev { color:var(--gold); font-weight:800; }
+  header {
+    padding: 16px 16px 18px;
+    border-bottom: 1px solid var(--line);
+  }
+  .back { font-size: 12px; color: var(--text-dim); text-decoration: none; }
+  .back:active { color: var(--amber); }
+  h1 { font-size: 18px; margin: 10px 0 4px; font-weight: 800; }
+  .race-meta { font-size: 11.5px; color: var(--text-dim); }
+  .race-meta .mono { color: var(--text-dim); }
 
-  .dark-horse-card { background:#f3eefc; border:2px solid #8a5fd6; }
-  .dark-horse-item { padding:8px 0; border-bottom:1px dashed #d9cdf2; }
-  .dark-horse-item:last-child { border-bottom:none; }
-  .dark-horse-item .dh-name { font-weight:700; font-size:14px; color:#4b2e91; }
-  .dark-horse-item .dh-stats { font-size:12.5px; color:#6b6b6b; }
-  .dh-badge { display:inline-block; font-size:11px; background:#8a5fd6; color:white; padding:1px 8px; border-radius:8px; margin-left:6px; }
+  main { max-width: 760px; margin: 0 auto; padding: 0 14px; }
 
-  table { width:100%; border-collapse: collapse; font-size:12.5px; }
-  th, td { padding:7px 6px; text-align:center; border-bottom:1px solid #eee; }
-  th { background:var(--accent); color:white; font-weight:600; font-size:11.5px; }
-  td.horses-cell { text-align:left; }
-  tr.positive td.ev-cell { color: var(--accent); font-weight:700; }
+  .section-title {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--amber-dim);
+    margin: 28px 0 10px;
+    display: flex; align-items: baseline; gap: 8px;
+  }
+  .section-title::after { content:""; flex:1; height:1px; background:var(--line); }
 
-  .horse-item { border-bottom:1px solid #eee; padding:10px 0; }
-  .horse-item:last-child { border-bottom:none; }
-  .horse-head { display:flex; justify-content:space-between; align-items:baseline; }
-  .horse-name { font-weight:700; font-size:14px; }
-  .horse-prob { font-size:13px; color:var(--accent); font-weight:700; }
-  .horse-reason { font-size:12.5px; color:#444; margin-top:4px; line-height:1.6; }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+  }
+  .summary-text { font-size: 13px; line-height: 1.75; color: var(--text-dim); }
 
-  .win5-row { font-size:13px; padding:6px 0; border-bottom:1px dashed #eee; }
-  .win5-rank { display:inline-block; width:20px; color:var(--muted); }
+  /* --- 最も期待値が高い買い目：signature element --- */
+  .best-bet {
+    position: relative;
+    background: linear-gradient(180deg, #1a1408 0%, var(--surface) 70%);
+    border: 1px solid var(--amber-dim);
+    box-shadow: 0 0 0 1px rgba(240,162,2,0.08), 0 8px 24px -12px var(--amber-glow);
+  }
+  .best-bet .tag {
+    font-size: 10.5px; font-weight: 800; letter-spacing: 0.1em;
+    color: var(--amber); text-transform: uppercase;
+  }
+  .best-bet .type { font-size: 11px; color: var(--text-dim); margin-top: 6px; }
+  .best-bet .horses {
+    font-size: 20px; font-weight: 800; margin: 6px 0 10px;
+    color: var(--text);
+  }
+  .best-bet .stat-row { display: flex; }
+  .best-bet .stat { margin-right: 22px; }
+  .best-bet .stat .label { font-size: 10px; color: var(--text-dim); letter-spacing: 0.05em; }
+  .best-bet .stat .value { font-size: 17px; font-weight: 800; margin-top: 2px; }
+  .best-bet .stat.ev .value { color: var(--amber); }
+
+  /* --- 穴馬候補 --- */
+  .dark-horse-card { border-left: 3px solid var(--green); }
+  .dark-horse-item { padding: 9px 0; border-bottom: 1px solid var(--line); }
+  .dark-horse-item:last-child { border-bottom: none; }
+  .dh-name { font-weight: 700; font-size: 14px; }
+  .dh-badge {
+    display: inline-block; font-size: 10px; font-weight: 700;
+    background: rgba(76,175,110,0.14); color: var(--green);
+    border: 1px solid #2e5c3e; border-radius: 3px; padding: 1px 7px; margin-left: 7px;
+  }
+  .dh-stats { font-size: 11.5px; color: var(--text-dim); margin-top: 3px; }
+
+  /* --- 出走馬一覧 --- */
+  .horse-item { padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .horse-item:last-child { border-bottom: none; }
+  .horse-head { display: flex; justify-content: space-between; align-items: baseline; }
+  .horse-name { font-weight: 700; font-size: 14px; }
+  .horse-num { color: var(--amber-dim); margin-right: 4px; }
+  .horse-prob { font-size: 13px; font-weight: 700; color: var(--green); }
+  .horse-reason { font-size: 12px; color: var(--text-dim); margin-top: 5px; line-height: 1.65; }
+
+  /* --- EVテーブル --- */
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th {
+    background: var(--surface-2);
+    color: var(--text-dim);
+    font-weight: 700;
+    font-size: 10.5px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 8px 6px;
+    border-bottom: 1px solid var(--line);
+  }
+  td {
+    padding: 8px 6px;
+    text-align: center;
+    border-bottom: 1px solid var(--line);
+  }
+  td.horses-cell { text-align: left; }
+  tr:last-child td { border-bottom: none; }
+  td.ev-cell { color: var(--green); font-weight: 700; }
+
+  /* --- WIN5 --- */
+  .win5-row { font-size: 12.5px; padding: 7px 0; border-bottom: 1px dashed var(--line); }
+  .win5-row:last-child { border-bottom: none; }
+  .win5-rank { display: inline-block; width: 18px; color: var(--amber-dim); }
+
+  .disclaimer {
+    margin-top: 26px;
+    font-size: 11px;
+    color: var(--text-dim);
+    text-align: center;
+    line-height: 1.7;
+  }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <a class="back" href="../index.html">← 今週のレース一覧に戻る</a>
+<header>
+  <a class="back" href="../index.html">← 今週のレース一覧</a>
   <h1>{{ race.course }} {{ race.race_number }}R　{{ race.race_name }}</h1>
-  <div class="meta">{{ race.surface }}{{ race.distance }}m ／ 馬場:{{ race.track_condition or "-" }} ／ 天候:{{ race.weather or "-" }}{% if race.is_handicap %} ／ ハンデ戦{% endif %}</div>
+  <div class="race-meta mono">{{ race.surface }}{{ race.distance }}m ／ 馬場:{{ race.track_condition or "-" }} ／ 天候:{{ race.weather or "-" }}{% if race.is_handicap %} ／ HANDICAP{% endif %}</div>
+</header>
 
-  <div class="card race-summary">{{ race_summary_text }}</div>
+<main>
+  <div class="card summary-text">{{ race_summary_text }}</div>
 
   {% if best_bet %}
-  <div class="section-title">🏆 最も期待値が高い買い目</div>
+  <div class="section-title">Best Value</div>
   <div class="card best-bet">
-    <div class="label">{{ best_bet.bet_type }}</div>
+    <div class="tag">最も期待値が高い買い目</div>
+    <div class="type">{{ best_bet.bet_type }}</div>
     <div class="horses">{{ best_bet.horses }}</div>
-    <div class="stats">オッズ {{ "%.1f"|format(best_bet.odds) }}倍 ／ 的中確率 {{ "%.2f"|format(best_bet.probability * 100) }}% ／ <span class="ev">期待値 {{ "%.0f"|format(best_bet.ev * 100) }}%</span></div>
+    <div class="stat-row mono">
+      <div class="stat"><div class="label">ODDS</div><div class="value">{{ "%.1f"|format(best_bet.odds) }}</div></div>
+      <div class="stat"><div class="label">WIN%</div><div class="value">{{ "%.1f"|format(best_bet.probability * 100) }}%</div></div>
+      <div class="stat ev"><div class="label">EV</div><div class="value">{{ "%.0f"|format(best_bet.ev * 100) }}%</div></div>
+    </div>
   </div>
   {% endif %}
 
   {% if dark_horses %}
-  <div class="section-title">🔮 穴馬候補（人気薄だが期待値プラス）</div>
+  <div class="section-title">Dark Horses</div>
   <div class="card dark-horse-card">
     {% for d in dark_horses %}
     <div class="dark-horse-item">
       <span class="dh-name">{{ d.name }}</span><span class="dh-badge">{{ d.popularity }}番人気</span>
-      <div class="dh-stats">単勝オッズ {{ "%.1f"|format(d.odds) }}倍 ／ 勝率推定 {{ "%.1f"|format(d.probability * 100) }}% ／ 期待値 {{ "%.0f"|format(d.ev * 100) }}%</div>
+      <div class="dh-stats mono">ODDS {{ "%.1f"|format(d.odds) }} ／ WIN% {{ "%.1f"|format(d.probability * 100) }}% ／ EV {{ "%.0f"|format(d.ev * 100) }}%</div>
     </div>
     {% endfor %}
   </div>
   {% endif %}
 
-  <div class="section-title">出走馬の予想と理由</div>
+  <div class="section-title">出走馬</div>
   <div class="card">
     {% for h in horses %}
     <div class="horse-item">
       <div class="horse-head">
-        <span class="horse-name">{{ h.horse_number }}. {{ h.name }}</span>
-        <span class="horse-prob">複勝圏内 {{ "%.0f"|format(h.place_probability * 100) }}%</span>
+        <span class="horse-name"><span class="horse-num mono">{{ h.horse_number }}</span>{{ h.name }}</span>
+        <span class="horse-prob mono">{{ "%.0f"|format(h.place_probability * 100) }}%</span>
       </div>
       <div class="horse-reason">{{ h.reason }}</div>
     </div>
     {% endfor %}
   </div>
 
-  <div class="section-title">馬券種別 買い目一覧（期待値100%超のみ抜粋）</div>
+  <div class="section-title">買い目一覧（EV100%超）</div>
   {% for bet_type, rows in ev_tables.items() %}
-  <div class="card">
+  <div class="card" style="padding:0; overflow:hidden;">
     <table>
-      <thead><tr><th colspan="4">{{ bet_type }}</th></tr>
-      <tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
+      <thead><tr><th colspan="4" style="text-align:left; padding-left:12px;">{{ bet_type }}</th></tr>
+      <tr><th>買い目</th><th>ODDS</th><th>WIN%</th><th>EV</th></tr></thead>
       <tbody>
         {% for r in rows %}
-        <tr class="{{ 'positive' if r.ev > 1.0 else '' }}">
+        <tr>
           <td class="horses-cell">{{ r.horses }}</td>
-          <td>{{ "%.1f"|format(r.odds) }}</td>
-          <td>{{ "%.2f"|format(r.probability * 100) }}%</td>
-          <td class="ev-cell">{{ "%.0f"|format(r.ev * 100) }}%</td>
+          <td class="mono">{{ "%.1f"|format(r.odds) }}</td>
+          <td class="mono">{{ "%.1f"|format(r.probability * 100) }}%</td>
+          <td class="ev-cell mono">{{ "%.0f"|format(r.ev * 100) }}%</td>
         </tr>
         {% else %}
-        <tr><td colspan="4">期待値100%超の買い目はありませんでした</td></tr>
+        <tr><td colspan="4" style="color:var(--text-dim);">該当なし</td></tr>
         {% endfor %}
       </tbody>
     </table>
@@ -111,18 +211,16 @@
   {% endfor %}
 
   {% if win5 %}
-  <div class="section-title">🎯 WIN5 買い目候補</div>
+  <div class="section-title">WIN5 候補</div>
   <div class="card">
-    <div class="meta">対象: {{ win5.race_labels|join(' / ') }}</div>
+    <div class="race-meta mono" style="margin-bottom:8px;">{{ win5.race_labels|join(' / ') }}</div>
     {% for c in win5.combos %}
-    <div class="win5-row"><span class="win5-rank">{{ loop.index }}.</span>{{ c.horses|join(' - ') }}　的中確率 {{ "%.3f"|format(c.probability * 100) }}%{% if c.ev %}　推定EV {{ "%.0f"|format(c.ev * 100) }}%{% endif %}</div>
+    <div class="win5-row mono"><span class="win5-rank">{{ loop.index }}</span>{{ c.horses|join(' - ') }}　{{ "%.3f"|format(c.probability * 100) }}%{% if c.ev %}　EV{{ "%.0f"|format(c.ev * 100) }}%{% endif %}</div>
     {% endfor %}
   </div>
   {% endif %}
 
-  <div class="meta" style="margin-top:20px;">
-    本ページの予想は参考情報です。的中・利益を保証しません。馬券の購入は必ずご自身でIPAT等の公式ルートから行ってください。
-  </div>
-</div>
+  <div class="disclaimer">本ページの予想は参考情報です。的中・利益を保証しません。<br>馬券の購入は必ずご自身でIPAT等の公式ルートから行ってください。</div>
+</main>
 </body>
 </html>

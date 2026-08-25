@@ -5,44 +5,191 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>今週のレース予想 | keiba-predict</title>
 <style>
-  :root { --accent:#0f6e4f; --bg:#f7f5f0; --card:#fff; --text:#1c1c1c; --muted:#6b6b6b; }
+  :root {
+    --bg: #0b0f0d;
+    --surface: #131a16;
+    --surface-2: #1a2420;
+    --line: #26332c;
+    --amber: #f0a202;
+    --amber-dim: #8a6417;
+    --green: #4caf6e;
+    --red: #d64550;
+    --text: #ece7da;
+    --text-dim: #8d9690;
+  }
   * { box-sizing: border-box; }
-  body { font-family:"Hiragino Sans","Yu Gothic",sans-serif; background:var(--bg); color:var(--text); margin:0; padding:20px 14px 60px; }
-  .wrap { max-width: 720px; margin:0 auto; }
-  h1 { font-size:20px; margin:0 0 4px; }
-  .updated { color:var(--muted); font-size:12px; margin-bottom:18px; }
-  .day-block { margin-bottom: 22px; }
-  .day-title { font-size:14px; font-weight:700; color: var(--accent); margin-bottom: 8px; }
-  .race-card { display:block; background:var(--card); border-radius:10px; padding:12px 14px; margin-bottom:8px; text-decoration:none; color:var(--text); box-shadow:0 1px 3px rgba(0,0,0,0.06); }
-  .race-card .name { font-weight:700; font-size:14px; }
-  .race-card .meta { font-size:12px; color:var(--muted); margin-top:2px; }
-  .badge { display:inline-block; font-size:11px; padding:2px 8px; border-radius: 10px; margin-left:6px; }
-  .badge.win5 { background:#fdecc8; color:#8a5a00; }
-  .badge.handicap { background:#e3ecfb; color:#1c4e9c; }
-  .disclaimer { font-size:12px; color:var(--muted); background:#fff8e6; border:1px solid #f0d98c; border-radius:8px; padding:10px 14px; margin-bottom:20px; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Hiragino Sans", "Yu Gothic", -apple-system, sans-serif;
+    padding: 0 0 64px;
+  }
+  .mono { font-family: "SFMono-Regular", "Menlo", "Consolas", monospace; font-variant-numeric: tabular-nums; }
+
+  header {
+    padding: 28px 18px 20px;
+    border-bottom: 1px solid var(--line);
+    background:
+      repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(240,162,2,0.02) 3px, rgba(240,162,2,0.02) 4px),
+      var(--bg);
+  }
+  .eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    color: var(--amber-dim);
+    text-transform: uppercase;
+    margin: 0 0 8px;
+  }
+  h1 {
+    font-size: 22px;
+    letter-spacing: 0.02em;
+    margin: 0 0 6px;
+    font-weight: 800;
+  }
+  .updated {
+    color: var(--text-dim);
+    font-size: 12px;
+  }
+  .updated .dot { color: var(--green); }
+
+  main { max-width: 720px; margin: 0 auto; padding: 0 14px; }
+
+  .notice {
+    margin-top: 18px;
+    font-size: 12.5px;
+    color: var(--text-dim);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--amber-dim);
+    border-radius: 4px;
+    padding: 11px 14px;
+    line-height: 1.6;
+  }
+
+  .day-block { margin-top: 26px; }
+  .day-title {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--amber);
+    margin: 0 0 10px;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .day-title::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--line);
+  }
+
+  .race-card {
+    display: block;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin-bottom: 8px;
+    text-decoration: none;
+    color: var(--text);
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+  .race-card:active { background: var(--surface-2); }
+  .race-card .row1 {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .race-card .name { font-weight: 700; font-size: 14.5px; }
+  .race-card .rnum { color: var(--amber); font-weight: 800; margin-right: 6px; }
+  .race-card .meta {
+    font-size: 11.5px;
+    color: var(--text-dim);
+    margin-top: 5px;
+    letter-spacing: 0.02em;
+  }
+  .badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 2px 7px;
+    border-radius: 3px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+  .badge.win5 { background: rgba(240,162,2,0.15); color: var(--amber); border: 1px solid var(--amber-dim); }
+  .badge.handicap { background: rgba(76,175,110,0.12); color: var(--green); border: 1px solid #2e5c3e; }
+
+  .empty-state {
+    margin-top: 40px;
+    text-align: center;
+    padding: 40px 20px;
+    border: 1px dashed var(--line);
+    border-radius: 8px;
+  }
+  .empty-state .board {
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    color: var(--amber-dim);
+    margin-bottom: 10px;
+  }
+  .empty-state .board::before { content: "◆ "; }
+  .empty-state p {
+    color: var(--text-dim);
+    font-size: 13px;
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  footer {
+    max-width: 720px;
+    margin: 40px auto 0;
+    padding: 16px 14px 0;
+    border-top: 1px solid var(--line);
+    font-size: 11px;
+    color: var(--text-dim);
+    text-align: center;
+  }
 </style>
 </head>
 <body>
-<div class="wrap">
+<header>
+  <p class="eyebrow">JRA Prediction Engine</p>
   <h1>今週のレース予想</h1>
-  <div class="updated">最終更新: {{ generated_at }}</div>
-  <div class="disclaimer">予想は参考情報です。的中・利益を保証しません。購入は必ずご自身の判断でIPAT等の公式ルートから。</div>
+  <p class="updated mono"><span class="dot">●</span> LAST SYNC {{ generated_at }}</p>
+</header>
 
-  {% for day in days %}
-  <div class="day-block">
-    <div class="day-title">{{ day.date }}（{{ day.weekday }}）</div>
-    {% for race in day.races %}
-    <a class="race-card" href="races/{{ race.race_id }}.html">
-      <div class="name">
-        {{ race.course }} {{ race.race_number }}R　{{ race.race_name }}
-        {% if race.is_win5_race %}<span class="badge win5">WIN5</span>{% endif %}
-        {% if race.is_handicap %}<span class="badge handicap">ハンデ</span>{% endif %}
-      </div>
-      <div class="meta">{{ race.surface }}{{ race.distance }}m ／ {{ race.track_condition or "-" }} ／ {{ race.n_horses }}頭</div>
-    </a>
+<main>
+  <div class="notice">予想は参考情報です。的中・利益を保証しません。購入は必ずご自身の判断でIPAT等の公式ルートから行ってください。</div>
+
+  {% if days %}
+    {% for day in days %}
+    <div class="day-block">
+      <div class="day-title mono">{{ day.date }} {{ day.weekday }}</div>
+      {% for race in day.races %}
+      <a class="race-card" href="races/{{ race.race_id }}.html">
+        <div class="row1">
+          <span class="name"><span class="rnum mono">{{ race.race_number }}R</span>{{ race.course }} {{ race.race_name }}</span>
+        </div>
+        <div class="meta mono">{{ race.surface }}{{ race.distance }}m ／ {{ race.track_condition or "-" }} ／ {{ race.n_horses }}頭
+          {% if race.is_win5_race %}<span class="badge win5">WIN5</span>{% endif %}
+          {% if race.is_handicap %}<span class="badge handicap">HANDICAP</span>{% endif %}
+        </div>
+      </a>
+      {% endfor %}
+    </div>
     {% endfor %}
-  </div>
-  {% endfor %}
-</div>
+  {% else %}
+    <div class="empty-state">
+      <div class="board mono">BOARD STANDING BY</div>
+      <p>今週開催レースの出馬表はまだ公開されていません。<br>公開され次第、自動で予想を反映します（木曜更新）。</p>
+    </div>
+  {% endif %}
+</main>
+
+<footer>keiba-predict — 自動購入は行いません。すべての投票判断はご自身で。</footer>
 </body>
 </html>
