@@ -41,20 +41,23 @@ def _polite_get(url: str) -> str:
     return resp.text
 
 
-def fetch_race_meta(race_id: str, soup: BeautifulSoup = None) -> dict:
-    if soup is None:
-        url = f"https://race.netkeiba.com/race/result.html?race_id={race_id}&rf=race_list"
-        html = _polite_get(url)
-        soup = BeautifulSoup(html, "html.parser")
-
-    race_name_el = soup.find("div", class_=SELECTORS["race_name_class"])
-    race_data01 = soup.find("div", class_=SELECTORS["race_data_class"])
-    race_data02 = soup.find("div", class_=SELECTORS["race_data02_class"])
+def _extract_meta_from_soup(race_id: str, soup: BeautifulSoup) -> dict:
+    """soupから各種メタ情報を抽出する共通ロジック（race.netkeiba.com / db.netkeiba.com どちらにも使う）"""
+    race_name_el = soup.find("div", class_=SELECTORS["race_name_class"]) or soup.find(class_=SELECTORS["race_name_class"])
+    race_data01 = soup.find("div", class_=SELECTORS["race_data_class"]) or soup.find(class_=SELECTORS["race_data_class"])
+    race_data02 = soup.find("div", class_=SELECTORS["race_data02_class"]) or soup.find(class_=SELECTORS["race_data02_class"])
 
     race_name = race_name_el.get_text(strip=True) if race_name_el else None
     data01_text = race_data01.get_text(" ", strip=True) if race_data01 else ""
     data02_text = race_data02.get_text(" ", strip=True) if race_data02 else ""
     full_text = f"{data01_text} {data02_text}"
+
+    # db.netkeiba.com側は開催日が別の場所（smalltxt等）に入っていることがあるため、
+    # ページ全体のテキストも保険として日付検索の対象に含める
+    full_text_for_date = full_text
+    if not re.search(r"\d{1,2}月\d{1,2}日", full_text_for_date):
+        page_text = soup.get_text(" ", strip=True)
+        full_text_for_date = full_text + " " + page_text[:500]
 
     surface_match = re.search(r"(芝|ダート|障害)", data01_text)
     distance_match = re.search(r"(\d{3,4})m", data01_text)
@@ -63,16 +66,14 @@ def fetch_race_meta(race_id: str, soup: BeautifulSoup = None) -> dict:
     grade_match = re.search(r"(G1|G2|G3|GI|GII|GIII|Ｇ1|Ｇ2|Ｇ3|OP|オープン|L)", (race_name or "") + full_text)
     is_handicap = 1 if ("ハンデ" in full_text or "ハンデ" in (race_name or "")) else 0
 
-    # 開催日（例: "2026年8月22日" または "8月22日"）を抽出
-    date_match = re.search(r"(?:(\d{4})年)?(\d{1,2})月(\d{1,2})日", full_text)
+    date_match = re.search(r"(?:(\d{4})年)?(\d{1,2})月(\d{1,2})日", full_text_for_date)
     race_date = None
     if date_match:
-        year_str = date_match.group(1) or race_id[:4]  # 年が書かれていなければrace_idの先頭4桁を使う
+        year_str = date_match.group(1) or race_id[:4]
         month, day = int(date_match.group(2)), int(date_match.group(3))
         race_date = f"{year_str}-{month:02d}-{day:02d}"
 
-    # 開催競馬場（例: "3回東京8日"のような表記から競馬場名を抽出）
-    course_match = re.search(r"\d+回(東京|中山|阪神|京都|中京|新潟|福島|小倉|札幌|函館)\d+日", full_text)
+    course_match = re.search(r"\d+回(東京|中山|阪神|京都|中京|新潟|福島|小倉|札幌|函館)\d+日", full_text_for_date)
     course = course_match.group(1) if course_match else None
 
     return {
@@ -88,6 +89,36 @@ def fetch_race_meta(race_id: str, soup: BeautifulSoup = None) -> dict:
         "grade": grade_match.group(1) if grade_match else None,
         "is_win5_race": 0,
     }
+
+
+def fetch_race_meta(race_id: str, soup: BeautifulSoup = None) -> dict:
+    """
+    レースのメタ情報を取得する。soup未指定の場合、
+    まずrace.netkeiba.com（直近レース向け）を試し、開催日が取れなければ
+    db.netkeiba.com（過去レースのアーカイブ、通常こちらの方が古いレースの情報が充実）を試す。
+    """
+    if soup is not None:
+        return _extract_meta_from_soup(race_id, soup)
+
+    url = f"https://race.netkeiba.com/race/result.html?race_id={race_id}&rf=race_list"
+    html = _polite_get(url)
+    soup1 = BeautifulSoup(html, "html.parser")
+    meta = _extract_meta_from_soup(race_id, soup1)
+
+    if meta.get("race_date") is None:
+        try:
+            url2 = f"https://db.netkeiba.com/race/{race_id}/"
+            html2 = _polite_get(url2)
+            soup2 = BeautifulSoup(html2, "lxml")
+            meta2 = _extract_meta_from_soup(race_id, soup2)
+            # db側で取れた項目があれば、race.netkeiba.com側の結果を補完する
+            for key, value in meta2.items():
+                if value is not None and meta.get(key) is None:
+                    meta[key] = value
+        except Exception:
+            pass
+
+    return meta
 
 
 def _find_result_table(soup: BeautifulSoup):
