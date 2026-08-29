@@ -37,7 +37,12 @@ def _polite_get(url: str) -> str:
     resp = _session.get(url, timeout=15)
     _last_request_time = time.time()
     resp.raise_for_status()
-    resp.encoding = resp.apparent_encoding
+    # db.netkeiba.com は EUC-JP 固定（自動判定(apparent_encoding)が不安定で文字化けすることがあるため）。
+    # race.netkeiba.com は UTF-8 系のため従来通り自動判定に任せる。
+    if "db.netkeiba.com" in url:
+        resp.encoding = "euc-jp"
+    else:
+        resp.encoding = resp.apparent_encoding
     return resp.text
 
 
