@@ -16,6 +16,11 @@ from scraper.bulk_collect import _git_commit_and_push
 
 
 def fetch_pedigree(horse_id: str) -> dict:
+    """
+    馬の血統情報を取得する。
+    まず馬個別ページ(db.netkeiba.com/horse/<id>)のプロフィール欄を試し、
+    見つからなければ専用の血統ページ(db.netkeiba.com/horse/ped/<id>)を試す。
+    """
     url = f"https://db.netkeiba.com/horse/{horse_id}"
     html = _polite_get(url)
     soup = BeautifulSoup(html, "html.parser")
@@ -26,20 +31,44 @@ def fetch_pedigree(horse_id: str) -> dict:
         h1 = name_el.find("h1")
         horse_name = h1.get_text(strip=True) if h1 else None
 
-    ped_el = soup.find("dd", class_="DB_ProfHead_dd_01") or soup.find("table", class_="blood_table")
     labels = ["father", "father_father", "father_mother", "mother", "mother_father", "mother_mother"]
-    values = {label: None for label in labels}
+    values = _extract_pedigree_links(soup, labels)
 
-    if ped_el is not None:
-        links = [a.get_text(strip=True) for a in ped_el.find_all("a")]
-        for label, value in zip(labels, links):
-            values[label] = value or None
+    if all(v is None for v in values.values()):
+        # プロフィールページに血統が無ければ専用の血統ページを試す
+        try:
+            ped_url = f"https://db.netkeiba.com/horse/ped/{horse_id}"
+            ped_html = _polite_get(ped_url)
+            ped_soup = BeautifulSoup(ped_html, "html.parser")
+            values = _extract_pedigree_links(ped_soup, labels)
+        except Exception:
+            pass
 
     return {
         "horse_id": horse_id,
         "horse_name": horse_name,
         **values,
     }
+
+
+def _extract_pedigree_links(soup: BeautifulSoup, labels: list) -> dict:
+    """血統表らしき要素を複数パターンで探し、リンクテキストを順番にlabelsへ割り当てる"""
+    candidates = [
+        soup.find("dd", class_="DB_ProfHead_dd_01"),
+        soup.find("table", class_="blood_table"),
+        soup.find("table", class_="Blood_Table"),
+        soup.find("div", class_="blood_table"),
+    ]
+    values = {label: None for label in labels}
+    for ped_el in candidates:
+        if ped_el is None:
+            continue
+        links = [a.get_text(strip=True) for a in ped_el.find_all("a") if a.get_text(strip=True)]
+        if len(links) >= 2:  # 最低でも父・母くらいは取れていること
+            for label, value in zip(labels, links):
+                values[label] = value or None
+            break
+    return values
 
 
 def collect_pedigrees(limit: int = 200, commit_every: int = 50):
