@@ -169,11 +169,17 @@ def horse_exists(conn, horse_id: str) -> bool:
 
 
 def distinct_horse_ids_without_pedigree(conn) -> list:
+    """
+    entriesに登場するが、まだhorsesテーブルに血統情報が無い馬のID一覧。
+    「horsesテーブルに行自体が無い」馬に加えて、「行はあるが血統抽出に
+    失敗してfatherが空のまま」の馬（過去のバグ等で取得漏れになったもの）も対象にする。
+    """
     rows = conn.execute("""
         SELECT DISTINCT e.horse_id
         FROM entries e
         LEFT JOIN horses h ON e.horse_id = h.horse_id
-        WHERE e.horse_id IS NOT NULL AND h.horse_id IS NULL
+        WHERE e.horse_id IS NOT NULL
+          AND (h.horse_id IS NULL OR h.father IS NULL)
     """).fetchall()
     return [r["horse_id"] for r in rows]
 
