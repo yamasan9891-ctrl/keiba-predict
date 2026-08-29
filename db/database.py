@@ -179,7 +179,7 @@ def distinct_horse_ids_without_pedigree(conn) -> list:
         FROM entries e
         LEFT JOIN horses h ON e.horse_id = h.horse_id
         WHERE e.horse_id IS NOT NULL
-          AND (h.horse_id IS NULL OR h.father IS NULL)
+          AND (h.horse_id IS NULL OR h.father IS NULL OR h.mother_father IS NULL)
     """).fetchall()
     return [r["horse_id"] for r in rows]
 

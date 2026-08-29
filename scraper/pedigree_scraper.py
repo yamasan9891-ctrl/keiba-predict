@@ -31,6 +31,9 @@ CELL_POSITIONS = {
 }
 
 
+_INVALID_NAMES = {"血統", "産駒", ""}
+
+
 def _cell_name(td) -> str:
     """td内のリンクから馬名テキストだけを取り出す（改行や英語表記部分は除く）"""
     if td is None:
@@ -39,7 +42,11 @@ def _cell_name(td) -> str:
     if a is None:
         return None
     first_text = a.find(string=True)
-    return first_text.strip() if first_text else None
+    name = first_text.strip() if first_text else None
+    # 「血統」「産駒」タブへのリンク文字を誤って拾ってしまうケースへのガード
+    if name in _INVALID_NAMES:
+        return None
+    return name
 
 
 def _parse_blood_table(table) -> dict:
