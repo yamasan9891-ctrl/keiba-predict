@@ -13,7 +13,6 @@
     --amber: #f0a202;
     --amber-dim: #8a6417;
     --green: #4caf6e;
-    --red: #d64550;
     --text: #ece7da;
     --text-dim: #8d9690;
   }
@@ -27,127 +26,98 @@
   }
   .mono { font-family: "SFMono-Regular", "Menlo", "Consolas", monospace; font-variant-numeric: tabular-nums; }
 
-  header {
-    padding: 28px 18px 20px;
-    border-bottom: 1px solid var(--line);
-  }
-  .eyebrow {
-    font-size: 11px;
-    letter-spacing: 0.14em;
-    color: var(--amber-dim);
-    text-transform: uppercase;
-    margin: 0 0 8px;
-    font-weight: 700;
-  }
-  h1 {
-    font-size: 22px;
-    margin: 0 0 6px;
-    font-weight: 800;
-  }
-  .updated {
-    color: var(--text-dim);
-    font-size: 12px;
-  }
+  header { padding: 20px 14px 14px; border-bottom: 1px solid var(--line); }
+  .eyebrow { font-size: 11px; letter-spacing: 0.14em; color: var(--amber-dim); text-transform: uppercase; margin: 0 0 6px; font-weight: 700; }
+  h1 { font-size: 20px; margin: 0 0 6px; font-weight: 800; }
+  .updated { color: var(--text-dim); font-size: 11.5px; }
   .updated .dot { color: var(--green); }
 
-  main { max-width: 720px; margin: 0 auto; padding: 0 14px; }
-
   .notice {
-    margin-top: 18px;
-    font-size: 12.5px;
+    margin: 14px 14px 0;
+    font-size: 12px;
     color: var(--text-dim);
     background: var(--surface);
     border: 1px solid var(--line);
     border-left: 3px solid var(--amber-dim);
     border-radius: 6px;
-    padding: 11px 14px;
+    padding: 10px 12px;
     line-height: 1.6;
   }
 
-  .day-block { margin-top: 26px; }
+  .day-block { margin-top: 20px; }
   .day-title {
-    font-size: 14px;
-    font-weight: 800;
-    color: var(--text);
-    margin: 0 0 10px;
-    display: flex;
-    align-items: baseline;
-    gap: 8px;
+    font-size: 14px; font-weight: 800; color: var(--text);
+    margin: 0 14px 10px; display: flex; align-items: baseline; gap: 8px;
   }
-  .day-title::after {
-    content: "";
-    flex: 1;
-    height: 1px;
-    background: var(--line);
-  }
+  .day-title::after { content:""; flex:1; height:1px; background: var(--line); }
 
-  .race-card {
-    display: block;
+  /* --- netkeiba風：開催場を列で横並び、横スクロール --- */
+  .venue-scroll {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 0 14px 6px;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+  }
+  .venue-col {
+    flex: 0 0 auto;
+    width: 78vw;
+    max-width: 260px;
+    scroll-snap-align: start;
     background: var(--surface);
     border: 1px solid var(--line);
     border-radius: 8px;
-    padding: 14px 16px;
-    margin-bottom: 8px;
+    overflow: hidden;
+  }
+  .venue-col-head {
+    background: var(--surface-2);
+    padding: 9px 12px;
+    font-weight: 800;
+    font-size: 13.5px;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .venue-col-head .n {
+    font-size: 10.5px; color: var(--text-dim); font-weight: 500;
+  }
+  .race-row {
+    display: block;
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--line);
     text-decoration: none;
     color: var(--text);
   }
-  .race-card:active { background: var(--surface-2); }
-  .race-card .row1 {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-  }
-  .race-card .name { font-weight: 700; font-size: 14.5px; }
-  .race-card .rnum {
+  .race-row:last-child { border-bottom: none; }
+  .race-row:active { background: var(--surface-2); }
+  .race-row .rnum {
     display: inline-block; color: var(--bg); background: var(--amber-dim);
-    font-weight: 800; font-size: 11px; padding: 1px 6px; border-radius: 4px; margin-right: 8px;
+    font-weight: 800; font-size: 10.5px; padding: 1px 6px; border-radius: 4px; margin-right: 7px;
   }
-  .race-card .meta {
-    font-size: 11.5px;
-    color: var(--text-dim);
-    margin-top: 6px;
-  }
+  .race-row .rname { font-size: 12.5px; font-weight: 600; }
+  .race-row .rmeta { font-size: 10.5px; color: var(--text-dim); margin-top: 3px; }
   .badge {
-    display: inline-block;
-    font-size: 10px;
-    font-weight: 700;
-    padding: 2px 7px;
-    border-radius: 3px;
-    margin-left: 6px;
+    display: inline-block; font-size: 9px; font-weight: 700;
+    padding: 1px 5px; border-radius: 3px; margin-left: 5px;
   }
   .badge.win5 { background: rgba(240,162,2,0.15); color: var(--amber); border: 1px solid var(--amber-dim); }
   .badge.handicap { background: rgba(76,175,110,0.12); color: var(--green); border: 1px solid #2e5c3e; }
 
+  .scroll-hint { font-size: 10.5px; color: var(--text-dim); padding: 0 14px; margin-top: 4px; }
+
   .empty-state {
-    margin-top: 40px;
-    text-align: center;
-    padding: 40px 20px;
-    border: 1px dashed var(--line);
-    border-radius: 8px;
+    margin: 40px 14px 0; text-align: center; padding: 40px 20px;
+    border: 1px dashed var(--line); border-radius: 8px;
   }
-  .empty-state .board {
-    font-size: 13px;
-    letter-spacing: 0.08em;
-    color: var(--amber-dim);
-    margin-bottom: 10px;
-    font-weight: 700;
-  }
+  .empty-state .board { font-size: 13px; letter-spacing: 0.08em; color: var(--amber-dim); margin-bottom: 10px; font-weight: 700; }
   .empty-state .board::before { content: "◆ "; }
-  .empty-state p {
-    color: var(--text-dim);
-    font-size: 13px;
-    line-height: 1.7;
-    margin: 0;
-  }
+  .empty-state p { color: var(--text-dim); font-size: 13px; line-height: 1.7; margin: 0; }
 
   footer {
-    max-width: 720px;
-    margin: 40px auto 0;
-    padding: 16px 14px 0;
-    border-top: 1px solid var(--line);
-    font-size: 11px;
-    color: var(--text-dim);
-    text-align: center;
+    max-width: 720px; margin: 40px auto 0; padding: 16px 14px 0;
+    border-top: 1px solid var(--line); font-size: 11px; color: var(--text-dim); text-align: center;
   }
 </style>
 </head>
@@ -155,746 +125,582 @@
 <header>
   <p class="eyebrow">JRA Prediction Engine</p>
   <h1>今週のレース予想</h1>
-  <p class="updated mono"><span class="dot">●</span> 最終更新 2026-08-30 10:59</p>
+  <p class="updated mono"><span class="dot">●</span> 最終更新 2026-08-30 13:30</p>
 </header>
 
-<main>
-  <div class="notice">予想は参考情報です。的中・利益を保証しません。購入は必ずご自身の判断でIPAT等の公式ルートから行ってください。</div>
+<div class="notice">予想は参考情報です。的中・利益を保証しません。購入は必ずご自身の判断でIPAT等の公式ルートから行ってください。</div>
+
 
   
-    
-    <div class="day-block">
-      <div class="day-title mono">2026-08-29 </div>
+  <div class="day-block">
+    <div class="day-title mono">2026-08-29 </div>
+    <div class="venue-scroll">
       
-      <a class="race-card" href="races/202601020301.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">01R</span>札幌 3歳未勝利</span>
+      <div class="venue-col">
+        <div class="venue-col-head">
+          中京
+          <span class="n">12R</span>
         </div>
-        <div class="meta mono">ダート1700m ／ 稍重 ／ 14頭
+        
+        <a class="race-row" href="races/202607030301.html">
+          <span class="rnum mono">01R</span><span class="rname">2歳未勝利</span>
           
           
-        </div>
-      </a>
+          <div class="rmeta mono">芝2000m ／ 良 ／ 11頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202607030302.html">
+          <span class="rnum mono">02R</span><span class="rname">2歳未勝利</span>
+          
+          
+          <div class="rmeta mono">ダート1800m ／ 稍重 ／ 12頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202607030303.html">
+          <span class="rnum mono">03R</span><span class="rname">2歳新馬</span>
+          
+          
+          <div class="rmeta mono">芝1400m ／ 良 ／ 12頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202607030304.html">
+          <span class="rnum mono">04R</span><span class="rname">3歳未勝利</span>
+          
+          
+          <div class="rmeta mono">芝2200m ／ 良 ／ 16頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202607030305.html">
+          <span class="rnum mono">05R</span><span class="rname">3歳未勝利</span>
+          
+          
+          <div class="rmeta mono">芝2000m ／ 良 ／ 13頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202607030306.html">
+          <span class="rnum mono">06R</span><span class="rname">清洲特別</span>
+          
+          
+          <div class="rmeta mono">ダート1200m ／ 稍重 ／ 13頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202607030307.html">
+          <span class="rnum mono">07R</span><span class="rname">長篠S</span>
+          
+          
+          <div class="rmeta mono">芝1400m ／ 良 ／ 15頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202607030308.html">
+          <span class="rnum mono">08R</span><span class="rname">桑名特別</span>
+          
+          
+          <div class="rmeta mono">芝1400m ／ 良 ／ 14頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202607030309.html">
+          <span class="rnum mono">09R</span><span class="rname">3歳以上1勝クラス</span>
+          
+          
+          <div class="rmeta mono">ダート1800m ／ 稍重 ／ 9頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202607030310.html">
+          <span class="rnum mono">10R</span><span class="rname">3歳以上1勝クラス</span>
+          
+          
+          <div class="rmeta mono">ダート1400m ／ 稍重 ／ 16頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202607030311.html">
+          <span class="rnum mono">11R</span><span class="rname">3歳以上1勝クラス</span>
+          
+          
+          <div class="rmeta mono">芝1600m ／ 良 ／ 13頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202607030312.html">
+          <span class="rnum mono">12R</span><span class="rname">3歳未勝利</span>
+          
+          
+          <div class="rmeta mono">ダート1800m ／ 稍重 ／ 14頭</div>
+        </a>
+        
+      </div>
       
-      <a class="race-card" href="races/202601020302.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">02R</span>札幌 2歳未勝利</span>
+      <div class="venue-col">
+        <div class="venue-col-head">
+          新潟
+          <span class="n">12R</span>
         </div>
-        <div class="meta mono">芝1500m ／ 稍重 ／ 13頭
+        
+        <a class="race-row" href="races/202604030301.html">
+          <span class="rnum mono">01R</span><span class="rname">3歳以上障害未勝利</span>
           
           
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202601020303.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">03R</span>札幌 2歳未勝利</span>
-        </div>
-        <div class="meta mono">芝1800m ／ 稍重 ／ 11頭
+          <div class="rmeta mono">芝2850m ／ 良 ／ 12頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202604030302.html">
+          <span class="rnum mono">02R</span><span class="rname">3歳未勝利</span>
           
           
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202601020304.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">04R</span>札幌 3歳未勝利</span>
-        </div>
-        <div class="meta mono">ダート1000m ／ 稍重 ／ 12頭
+          <div class="rmeta mono">ダート1800m ／ 稍重 ／ 15頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202604030303.html">
+          <span class="rnum mono">03R</span><span class="rname">2歳未勝利</span>
           
           
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202601020305.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">05R</span>札幌 2歳新馬</span>
-        </div>
-        <div class="meta mono">ダート1700m ／ 稍重 ／ 14頭
+          <div class="rmeta mono">芝1600m ／ 良 ／ 11頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202604030304.html">
+          <span class="rnum mono">04R</span><span class="rname">2歳新馬</span>
           
           
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202601020306.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">06R</span>札幌 3歳未勝利</span>
-        </div>
-        <div class="meta mono">芝1500m ／ 稍重 ／ 14頭
+          <div class="rmeta mono">芝1400m ／ 良 ／ 18頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202604030305.html">
+          <span class="rnum mono">05R</span><span class="rname">3歳未勝利</span>
           
           
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202601020307.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">07R</span>札幌 3歳以上1勝クラス</span>
-        </div>
-        <div class="meta mono">芝1200m ／ 稍重 ／ 16頭
+          <div class="rmeta mono">芝2200m ／ 稍重 ／ 18頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202604030306.html">
+          <span class="rnum mono">06R</span><span class="rname">新発田城特別</span>
           
           
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202601020308.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">08R</span>札幌 3歳以上1勝クラス</span>
-        </div>
-        <div class="meta mono">ダート1700m ／ 稍重 ／ 11頭
-          
-          
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202601020309.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">09R</span>札幌 3歳以上1勝クラス</span>
-        </div>
-        <div class="meta mono">芝1800m ／ 稍重 ／ 12頭
-          
-          
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202601020310.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">10R</span>札幌 すずらん賞</span>
-        </div>
-        <div class="meta mono">芝1200m ／ 稍重 ／ 12頭
-          
-          
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202601020311.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">11R</span>札幌 札幌日刊スポーツ杯</span>
-        </div>
-        <div class="meta mono">芝2000m ／ 稍重 ／ 14頭
-          
-          
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202601020312.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">12R</span>札幌 千歳特別</span>
-        </div>
-        <div class="meta mono">ダート1700m ／ 稍重 ／ 12頭
-          
-          
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202604030301.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">01R</span>新潟 3歳以上障害未勝利</span>
-        </div>
-        <div class="meta mono">芝2850m ／ 良 ／ 12頭
-          
-          
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202604030302.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">02R</span>新潟 3歳未勝利</span>
-        </div>
-        <div class="meta mono">ダート1800m ／ 稍重 ／ 15頭
-          
-          
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202604030303.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">03R</span>新潟 2歳未勝利</span>
-        </div>
-        <div class="meta mono">芝1600m ／ 良 ／ 11頭
-          
-          
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202604030304.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">04R</span>新潟 2歳新馬</span>
-        </div>
-        <div class="meta mono">芝1400m ／ 良 ／ 18頭
-          
-          
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202604030305.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">05R</span>新潟 3歳未勝利</span>
-        </div>
-        <div class="meta mono">芝2200m ／ 稍重 ／ 18頭
-          
-          
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202604030306.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">06R</span>新潟 新発田城特別</span>
-        </div>
-        <div class="meta mono">ダート1800m ／ 稍重 ／ 15頭
-          
-          
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202604030307.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">07R</span>新潟 赤倉特別</span>
-        </div>
-        <div class="meta mono">芝2000m ／ 稍重 ／ 17頭
+          <div class="rmeta mono">ダート1800m ／ 稍重 ／ 15頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202604030307.html">
+          <span class="rnum mono">07R</span><span class="rname">赤倉特別</span>
           
           <span class="badge handicap">ハンデ</span>
-        </div>
-      </a>
+          <div class="rmeta mono">芝2000m ／ 稍重 ／ 17頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202604030308.html">
+          <span class="rnum mono">08R</span><span class="rname">BSN賞</span>
+          
+          
+          <div class="rmeta mono">ダート1800m ／ 稍重 ／ 11頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202604030309.html">
+          <span class="rnum mono">09R</span><span class="rname">3歳以上1勝クラス</span>
+          
+          
+          <div class="rmeta mono">芝2200m ／ 稍重 ／ 13頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202604030310.html">
+          <span class="rnum mono">10R</span><span class="rname">3歳以上1勝クラス</span>
+          
+          
+          <div class="rmeta mono">芝1400m ／ 稍重 ／ 18頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202604030311.html">
+          <span class="rnum mono">11R</span><span class="rname">3歳未勝利</span>
+          
+          
+          <div class="rmeta mono">芝2000m ／ 稍重 ／ 18頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202604030312.html">
+          <span class="rnum mono">12R</span><span class="rname">3歳未勝利</span>
+          
+          
+          <div class="rmeta mono">ダート1200m ／ 稍重 ／ 15頭</div>
+        </a>
+        
+      </div>
       
-      <a class="race-card" href="races/202604030308.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">08R</span>新潟 BSN賞</span>
+      <div class="venue-col">
+        <div class="venue-col-head">
+          札幌
+          <span class="n">12R</span>
         </div>
-        <div class="meta mono">ダート1800m ／ 稍重 ／ 11頭
+        
+        <a class="race-row" href="races/202601020301.html">
+          <span class="rnum mono">01R</span><span class="rname">3歳未勝利</span>
           
           
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202604030309.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">09R</span>新潟 3歳以上1勝クラス</span>
-        </div>
-        <div class="meta mono">芝2200m ／ 稍重 ／ 13頭
+          <div class="rmeta mono">ダート1700m ／ 稍重 ／ 14頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202601020302.html">
+          <span class="rnum mono">02R</span><span class="rname">2歳未勝利</span>
           
           
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202604030310.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">10R</span>新潟 3歳以上1勝クラス</span>
-        </div>
-        <div class="meta mono">芝1400m ／ 稍重 ／ 18頭
+          <div class="rmeta mono">芝1500m ／ 稍重 ／ 13頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202601020303.html">
+          <span class="rnum mono">03R</span><span class="rname">2歳未勝利</span>
           
           
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202604030311.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">11R</span>新潟 3歳未勝利</span>
-        </div>
-        <div class="meta mono">芝2000m ／ 稍重 ／ 18頭
+          <div class="rmeta mono">芝1800m ／ 稍重 ／ 11頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202601020304.html">
+          <span class="rnum mono">04R</span><span class="rname">3歳未勝利</span>
           
           
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202604030312.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">12R</span>新潟 3歳未勝利</span>
-        </div>
-        <div class="meta mono">ダート1200m ／ 稍重 ／ 15頭
+          <div class="rmeta mono">ダート1000m ／ 稍重 ／ 12頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202601020305.html">
+          <span class="rnum mono">05R</span><span class="rname">2歳新馬</span>
           
           
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202607030301.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">01R</span>中京 2歳未勝利</span>
-        </div>
-        <div class="meta mono">芝2000m ／ 良 ／ 11頭
+          <div class="rmeta mono">ダート1700m ／ 稍重 ／ 14頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202601020306.html">
+          <span class="rnum mono">06R</span><span class="rname">3歳未勝利</span>
           
           
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202607030302.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">02R</span>中京 2歳未勝利</span>
-        </div>
-        <div class="meta mono">ダート1800m ／ 稍重 ／ 12頭
+          <div class="rmeta mono">芝1500m ／ 稍重 ／ 14頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202601020307.html">
+          <span class="rnum mono">07R</span><span class="rname">3歳以上1勝クラス</span>
           
           
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202607030303.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">03R</span>中京 2歳新馬</span>
-        </div>
-        <div class="meta mono">芝1400m ／ 良 ／ 12頭
+          <div class="rmeta mono">芝1200m ／ 稍重 ／ 16頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202601020308.html">
+          <span class="rnum mono">08R</span><span class="rname">3歳以上1勝クラス</span>
           
           
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202607030304.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">04R</span>中京 3歳未勝利</span>
-        </div>
-        <div class="meta mono">芝2200m ／ 良 ／ 16頭
+          <div class="rmeta mono">ダート1700m ／ 稍重 ／ 11頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202601020309.html">
+          <span class="rnum mono">09R</span><span class="rname">3歳以上1勝クラス</span>
           
           
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202607030305.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">05R</span>中京 3歳未勝利</span>
-        </div>
-        <div class="meta mono">芝2000m ／ 良 ／ 13頭
+          <div class="rmeta mono">芝1800m ／ 稍重 ／ 12頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202601020310.html">
+          <span class="rnum mono">10R</span><span class="rname">すずらん賞</span>
           
           
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202607030306.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">06R</span>中京 清洲特別</span>
-        </div>
-        <div class="meta mono">ダート1200m ／ 稍重 ／ 13頭
+          <div class="rmeta mono">芝1200m ／ 稍重 ／ 12頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202601020311.html">
+          <span class="rnum mono">11R</span><span class="rname">札幌日刊スポーツ杯</span>
           
           
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202607030307.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">07R</span>中京 長篠S</span>
-        </div>
-        <div class="meta mono">芝1400m ／ 良 ／ 15頭
+          <div class="rmeta mono">芝2000m ／ 稍重 ／ 14頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202601020312.html">
+          <span class="rnum mono">12R</span><span class="rname">千歳特別</span>
           
           
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202607030308.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">08R</span>中京 桑名特別</span>
-        </div>
-        <div class="meta mono">芝1400m ／ 良 ／ 14頭
-          
-          
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202607030309.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">09R</span>中京 3歳以上1勝クラス</span>
-        </div>
-        <div class="meta mono">ダート1800m ／ 稍重 ／ 9頭
-          
-          
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202607030310.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">10R</span>中京 3歳以上1勝クラス</span>
-        </div>
-        <div class="meta mono">ダート1400m ／ 稍重 ／ 16頭
-          
-          
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202607030311.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">11R</span>中京 3歳以上1勝クラス</span>
-        </div>
-        <div class="meta mono">芝1600m ／ 良 ／ 13頭
-          
-          
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202607030312.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">12R</span>中京 3歳未勝利</span>
-        </div>
-        <div class="meta mono">ダート1800m ／ 稍重 ／ 14頭
-          
-          
-        </div>
-      </a>
+          <div class="rmeta mono">ダート1700m ／ 稍重 ／ 12頭</div>
+        </a>
+        
+      </div>
       
     </div>
-    
-    <div class="day-block">
-      <div class="day-title mono">2026-08-30 </div>
-      
-      <a class="race-card" href="races/202601020401.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">01R</span>札幌 3歳未勝利</span>
-        </div>
-        <div class="meta mono">ダート1700m ／ 稍重 ／ 14頭
-          
-          
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202601020402.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">02R</span>札幌 2歳未勝利</span>
-        </div>
-        <div class="meta mono">芝1200m ／ 良 ／ 14頭
-          
-          
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202601020403.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">03R</span>札幌 3歳未勝利</span>
-        </div>
-        <div class="meta mono">ダート1700m ／ 稍重 ／ 14頭
-          
-          
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202601020404.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">04R</span>札幌 3歳未勝利</span>
-        </div>
-        <div class="meta mono">芝2000m ／ 良 ／ 16頭
-          
-          
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202601020405.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">05R</span>札幌 2歳新馬</span>
-        </div>
-        <div class="meta mono">芝1800m ／ 良 ／ 8頭
-          
-          
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202601020406.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">06R</span>札幌 3歳以上1勝クラス</span>
-        </div>
-        <div class="meta mono">ダート1700m ／ 稍重 ／ 12頭
-          
-          
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202601020407.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">07R</span>札幌 3歳以上1勝クラス</span>
-        </div>
-        <div class="meta mono">ダート1000m ／ 稍重 ／ 12頭
-          
-          
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202601020408.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">08R</span>札幌 3歳以上1勝クラス</span>
-        </div>
-        <div class="meta mono">芝1500m ／ 良 ／ 14頭
-          
-          
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202601020409.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">09R</span>札幌 3歳以上1勝クラス</span>
-        </div>
-        <div class="meta mono">ダート1700m ／ 稍重 ／ 11頭
-          
-          
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202601020410.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">10R</span>札幌 HBC賞</span>
-        </div>
-        <div class="meta mono">芝1200m ／ 良 ／ 16頭
-          
-          <span class="badge handicap">ハンデ</span>
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202601020411.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">11R</span>札幌 日高S</span>
-        </div>
-        <div class="meta mono">芝1500m ／ 良 ／ 14頭
-          
-          
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202601020412.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">12R</span>札幌 北辰特別</span>
-        </div>
-        <div class="meta mono">芝2600m ／ 良 ／ 14頭
-          
-          
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202604030401.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">01R</span>新潟 3歳以上障害未勝利</span>
-        </div>
-        <div class="meta mono">芝2850m ／ 良 ／ 13頭
-          
-          
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202604030402.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">02R</span>新潟 2歳新馬</span>
-        </div>
-        <div class="meta mono">ダート1800m ／ 良 ／ 13頭
-          
-          
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202604030403.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">03R</span>新潟 2歳未勝利</span>
-        </div>
-        <div class="meta mono">芝2000m ／ 良 ／ 8頭
-          
-          
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202604030404.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">04R</span>新潟 2歳新馬</span>
-        </div>
-        <div class="meta mono">芝1800m ／ 良 ／ 11頭
-          
-          
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202604030405.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">05R</span>新潟 3歳未勝利</span>
-        </div>
-        <div class="meta mono">芝1400m ／ 良 ／ 18頭
-          
-          
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202604030406.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">06R</span>新潟 両津湾特別</span>
-        </div>
-        <div class="meta mono">ダート1800m ／ 良 ／ 15頭
-          
-          
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202604030407.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">07R</span>新潟 日本海S</span>
-        </div>
-        <div class="meta mono">芝2200m ／ 良 ／ 12頭
-          
-          
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202604030408.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">08R</span>新潟 新潟記念</span>
-        </div>
-        <div class="meta mono">芝2000m ／ 稍重 ／ 11頭
-          
-          
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202604030409.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">09R</span>新潟 閃光特別</span>
-        </div>
-        <div class="meta mono">芝1000m ／ 稍重 ／ 18頭
-          
-          
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202604030410.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">10R</span>新潟 3歳未勝利</span>
-        </div>
-        <div class="meta mono">ダート1800m ／ 稍重 ／ 15頭
-          
-          
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202604030411.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">11R</span>新潟 3歳以上1勝クラス</span>
-        </div>
-        <div class="meta mono">芝1800m ／ 稍重 ／ 14頭
-          
-          
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202604030412.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">12R</span>新潟 3歳以上1勝クラス</span>
-        </div>
-        <div class="meta mono">ダート1200m ／ 稍重 ／ 15頭
-          
-          
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202607030401.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">01R</span>中京 2歳未勝利</span>
-        </div>
-        <div class="meta mono">芝1400m ／ 良 ／ 10頭
-          
-          
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202607030402.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">02R</span>中京 2歳新馬</span>
-        </div>
-        <div class="meta mono">芝1600m ／ 良 ／ 10頭
-          
-          
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202607030403.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">03R</span>中京 2歳新馬</span>
-        </div>
-        <div class="meta mono">芝2000m ／ 良 ／ 11頭
-          
-          
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202607030404.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">04R</span>中京 3歳未勝利</span>
-        </div>
-        <div class="meta mono">ダート1400m ／ 稍重 ／ 16頭
-          
-          
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202607030405.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">05R</span>中京 3歳以上1勝クラス</span>
-        </div>
-        <div class="meta mono">ダート1800m ／ 稍重 ／ 13頭
-          
-          
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202607030406.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">06R</span>中京 白川郷S</span>
-        </div>
-        <div class="meta mono">ダート1900m ／ 稍重 ／ 16頭
-          
-          <span class="badge handicap">ハンデ</span>
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202607030407.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">07R</span>中京 中京2歳S</span>
-        </div>
-        <div class="meta mono">芝1400m ／ 良 ／ 9頭
-          
-          
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202607030408.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">08R</span>中京 熊野特別</span>
-        </div>
-        <div class="meta mono">芝2200m ／ 良 ／ 15頭
-          
-          
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202607030409.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">09R</span>中京 3歳未勝利</span>
-        </div>
-        <div class="meta mono">ダート1800m ／ 稍重 ／ 15頭
-          
-          
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202607030410.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">10R</span>中京 3歳以上1勝クラス</span>
-        </div>
-        <div class="meta mono">芝2000m ／ 良 ／ 10頭
-          
-          
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202607030411.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">11R</span>中京 3歳未勝利</span>
-        </div>
-        <div class="meta mono">芝1400m ／ 良 ／ 18頭
-          
-          
-        </div>
-      </a>
-      
-      <a class="race-card" href="races/202607030412.html">
-        <div class="row1">
-          <span class="name"><span class="rnum mono">12R</span>中京 3歳以上1勝クラス</span>
-        </div>
-        <div class="meta mono">ダート1200m ／ 稍重 ／ 14頭
-          
-          
-        </div>
-      </a>
-      
-    </div>
-    
+    <div class="scroll-hint">← スワイプで他の開催場を見る →</div>
+  </div>
   
-</main>
+  <div class="day-block">
+    <div class="day-title mono">2026-08-30 </div>
+    <div class="venue-scroll">
+      
+      <div class="venue-col">
+        <div class="venue-col-head">
+          中京
+          <span class="n">12R</span>
+        </div>
+        
+        <a class="race-row" href="races/202607030401.html">
+          <span class="rnum mono">01R</span><span class="rname">2歳未勝利</span>
+          
+          
+          <div class="rmeta mono">芝1400m ／ 良 ／ 10頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202607030402.html">
+          <span class="rnum mono">02R</span><span class="rname">2歳新馬</span>
+          
+          
+          <div class="rmeta mono">芝1600m ／ 良 ／ 10頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202607030403.html">
+          <span class="rnum mono">03R</span><span class="rname">2歳新馬</span>
+          
+          
+          <div class="rmeta mono">芝2000m ／ 良 ／ 11頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202607030404.html">
+          <span class="rnum mono">04R</span><span class="rname">3歳未勝利</span>
+          
+          
+          <div class="rmeta mono">ダート1400m ／ 稍重 ／ 16頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202607030405.html">
+          <span class="rnum mono">05R</span><span class="rname">3歳以上1勝クラス</span>
+          
+          
+          <div class="rmeta mono">ダート1800m ／ 稍重 ／ 13頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202607030406.html">
+          <span class="rnum mono">06R</span><span class="rname">白川郷S</span>
+          
+          <span class="badge handicap">ハンデ</span>
+          <div class="rmeta mono">ダート1900m ／ 稍重 ／ 16頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202607030407.html">
+          <span class="rnum mono">07R</span><span class="rname">中京2歳S</span>
+          
+          
+          <div class="rmeta mono">芝1400m ／ 良 ／ 9頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202607030408.html">
+          <span class="rnum mono">08R</span><span class="rname">熊野特別</span>
+          
+          
+          <div class="rmeta mono">芝2200m ／ 良 ／ 15頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202607030409.html">
+          <span class="rnum mono">09R</span><span class="rname">3歳未勝利</span>
+          
+          
+          <div class="rmeta mono">ダート1800m ／ 稍重 ／ 15頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202607030410.html">
+          <span class="rnum mono">10R</span><span class="rname">3歳以上1勝クラス</span>
+          
+          
+          <div class="rmeta mono">芝2000m ／ 良 ／ 10頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202607030411.html">
+          <span class="rnum mono">11R</span><span class="rname">3歳未勝利</span>
+          
+          
+          <div class="rmeta mono">芝1400m ／ 良 ／ 18頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202607030412.html">
+          <span class="rnum mono">12R</span><span class="rname">3歳以上1勝クラス</span>
+          
+          
+          <div class="rmeta mono">ダート1200m ／ 稍重 ／ 14頭</div>
+        </a>
+        
+      </div>
+      
+      <div class="venue-col">
+        <div class="venue-col-head">
+          新潟
+          <span class="n">12R</span>
+        </div>
+        
+        <a class="race-row" href="races/202604030401.html">
+          <span class="rnum mono">01R</span><span class="rname">3歳以上障害未勝利</span>
+          
+          
+          <div class="rmeta mono">芝2850m ／ 良 ／ 13頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202604030402.html">
+          <span class="rnum mono">02R</span><span class="rname">2歳新馬</span>
+          
+          
+          <div class="rmeta mono">ダート1800m ／ 良 ／ 13頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202604030403.html">
+          <span class="rnum mono">03R</span><span class="rname">2歳未勝利</span>
+          
+          
+          <div class="rmeta mono">芝2000m ／ 良 ／ 8頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202604030404.html">
+          <span class="rnum mono">04R</span><span class="rname">2歳新馬</span>
+          
+          
+          <div class="rmeta mono">芝1800m ／ 良 ／ 11頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202604030405.html">
+          <span class="rnum mono">05R</span><span class="rname">3歳未勝利</span>
+          
+          
+          <div class="rmeta mono">芝1400m ／ 良 ／ 18頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202604030406.html">
+          <span class="rnum mono">06R</span><span class="rname">両津湾特別</span>
+          
+          
+          <div class="rmeta mono">ダート1800m ／ 良 ／ 15頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202604030407.html">
+          <span class="rnum mono">07R</span><span class="rname">日本海S</span>
+          
+          
+          <div class="rmeta mono">芝2200m ／ 良 ／ 12頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202604030408.html">
+          <span class="rnum mono">08R</span><span class="rname">新潟記念</span>
+          
+          
+          <div class="rmeta mono">芝2000m ／ 稍重 ／ 11頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202604030409.html">
+          <span class="rnum mono">09R</span><span class="rname">閃光特別</span>
+          
+          
+          <div class="rmeta mono">芝1000m ／ 稍重 ／ 18頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202604030410.html">
+          <span class="rnum mono">10R</span><span class="rname">3歳未勝利</span>
+          
+          
+          <div class="rmeta mono">ダート1800m ／ 稍重 ／ 15頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202604030411.html">
+          <span class="rnum mono">11R</span><span class="rname">3歳以上1勝クラス</span>
+          
+          
+          <div class="rmeta mono">芝1800m ／ 稍重 ／ 14頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202604030412.html">
+          <span class="rnum mono">12R</span><span class="rname">3歳以上1勝クラス</span>
+          
+          
+          <div class="rmeta mono">ダート1200m ／ 稍重 ／ 15頭</div>
+        </a>
+        
+      </div>
+      
+      <div class="venue-col">
+        <div class="venue-col-head">
+          札幌
+          <span class="n">12R</span>
+        </div>
+        
+        <a class="race-row" href="races/202601020401.html">
+          <span class="rnum mono">01R</span><span class="rname">3歳未勝利</span>
+          
+          
+          <div class="rmeta mono">ダート1700m ／ 稍重 ／ 14頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202601020402.html">
+          <span class="rnum mono">02R</span><span class="rname">2歳未勝利</span>
+          
+          
+          <div class="rmeta mono">芝1200m ／ 良 ／ 14頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202601020403.html">
+          <span class="rnum mono">03R</span><span class="rname">3歳未勝利</span>
+          
+          
+          <div class="rmeta mono">ダート1700m ／ 稍重 ／ 14頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202601020404.html">
+          <span class="rnum mono">04R</span><span class="rname">3歳未勝利</span>
+          
+          
+          <div class="rmeta mono">芝2000m ／ 良 ／ 16頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202601020405.html">
+          <span class="rnum mono">05R</span><span class="rname">2歳新馬</span>
+          
+          
+          <div class="rmeta mono">芝1800m ／ 良 ／ 8頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202601020406.html">
+          <span class="rnum mono">06R</span><span class="rname">3歳以上1勝クラス</span>
+          
+          
+          <div class="rmeta mono">ダート1700m ／ 稍重 ／ 12頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202601020407.html">
+          <span class="rnum mono">07R</span><span class="rname">3歳以上1勝クラス</span>
+          
+          
+          <div class="rmeta mono">ダート1000m ／ 稍重 ／ 12頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202601020408.html">
+          <span class="rnum mono">08R</span><span class="rname">3歳以上1勝クラス</span>
+          
+          
+          <div class="rmeta mono">芝1500m ／ 良 ／ 14頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202601020409.html">
+          <span class="rnum mono">09R</span><span class="rname">3歳以上1勝クラス</span>
+          
+          
+          <div class="rmeta mono">ダート1700m ／ 稍重 ／ 11頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202601020410.html">
+          <span class="rnum mono">10R</span><span class="rname">HBC賞</span>
+          
+          <span class="badge handicap">ハンデ</span>
+          <div class="rmeta mono">芝1200m ／ 良 ／ 16頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202601020411.html">
+          <span class="rnum mono">11R</span><span class="rname">日高S</span>
+          
+          
+          <div class="rmeta mono">芝1500m ／ 良 ／ 14頭</div>
+        </a>
+        
+        <a class="race-row" href="races/202601020412.html">
+          <span class="rnum mono">12R</span><span class="rname">北辰特別</span>
+          
+          
+          <div class="rmeta mono">芝2600m ／ 良 ／ 14頭</div>
+        </a>
+        
+      </div>
+      
+    </div>
+    <div class="scroll-hint">← スワイプで他の開催場を見る →</div>
+  </div>
+  
+
 
 <footer>keiba-predict — 自動購入は行いません。すべての投票判断はご自身で。</footer>
 </body>
