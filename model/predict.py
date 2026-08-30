@@ -24,11 +24,26 @@ from scraper.netkeiba_scraper import fetch_shutuba
 
 def _shutuba_to_entry_rows(shutuba_df: pd.DataFrame, race_meta: dict, conn) -> pd.DataFrame:
     """出馬表を、load_race_entries()と同じ列構成のDataFrameに変換する（未確定情報はNaN）"""
-    rename = {
-        "馬 番": "horse_number", "枠": "post_position", "斤量": "weight_carried",
-        "単勝 オッズ": "win_odds", "人 気": "popularity", "馬名": "horse_name",
-    }
-    df = shutuba_df.rename(columns={k: v for k, v in rename.items() if k in shutuba_df.columns})
+    # 出馬表の列名は結果ページと違いスペースなし・改行入り等クセがあるため、
+    # 完全一致ではなく部分一致で柔軟にマッピングする
+    def _match_col(columns, *keywords):
+        for col in columns:
+            col_norm = str(col).replace("\n", "").replace(" ", "")
+            if all(kw in col_norm for kw in keywords):
+                return col
+        return None
+
+    cols = shutuba_df.columns
+    rename = {}
+    for target, keywords in [
+        ("horse_number", ("馬番",)), ("post_position", ("枠",)),
+        ("weight_carried", ("斤量",)), ("win_odds", ("オッズ",)),
+        ("popularity", ("人気",)), ("horse_name", ("馬名",)),
+    ]:
+        found = _match_col(cols, *keywords)
+        if found is not None:
+            rename[found] = target
+    df = shutuba_df.rename(columns=rename)
 
     race_id = race_meta.get("race_id")
     rows = []
@@ -73,7 +88,12 @@ def _shutuba_to_entry_rows(shutuba_df: pd.DataFrame, race_meta: dict, conn) -> p
     return pd.DataFrame(rows)
 
 
-def predict(race_id: str) -> pd.DataFrame:
+def predict(race_id: str, historical: pd.DataFrame = None) -> pd.DataFrame:
+    """
+    historical を渡すと、過去データの再読み込み・再計算をスキップして高速化する
+    （週次パイプラインのように多レースを連続予想する場合に重要）。
+    省略時はこの呼び出し内でDBから読み込む（単発のCLI実行用）。
+    """
     model_path = MODEL_DIR / "model.pkl"
     if not model_path.exists():
         raise FileNotFoundError("model/artifacts/model.pkl がありません。先に model/train.py を実行してください。")
@@ -87,7 +107,8 @@ def predict(race_id: str) -> pd.DataFrame:
     race_meta["race_id"] = race_id
 
     with get_conn() as conn:
-        historical = load_race_entries(conn)
+        if historical is None:
+            historical = load_race_entries(conn)
         shutuba_rows = _shutuba_to_entry_rows(shutuba, race_meta, conn)
 
     # 過去データ＋今回の出馬表を結合して、学習時と全く同じ計算式で特徴量を作る
