@@ -1,51 +1,55 @@
 """
-オッズスクレイパー（馬連・馬単・3連複・3連単）
+オッズスクレイパー（検証済み版）
 
-netkeibaのオッズページ（race.netkeiba.com/odds/index.html?type=...&race_id=...）から
-各馬券種のオッズを取得する。ページ構成はJSで描画される部分もあり、単純な requests+BeautifulSoup
-では取得できないことがある点に注意（その場合はSelenium等のブラウザ自動化が別途必要）。
+race.netkeiba.com/api/api_get_jra_odds.html?race_id=X&type=N という
+JSON APIから直接オッズを取得する（HTML内のテーブルはJSで後から埋まる
+プレースホルダーのため、直接APIを叩く方式にしている）。
 
-まずは以下を試し、取得できなければ selenium 版に切り替えてください
-（このファイルはネットワーク制限のある環境で書いているため未検証です）。
-
-各関数は {horse_or_tuple: odds(float)} の辞書を返す。
+typeの値（実際のレースで検証済み）:
+  4 = 馬連   (組み合わせ, 例: 16頭ならC(16,2)=120通り)
+  6 = 馬単   (順列, 16頭なら16×15=240通り、順序あり)
+  7 = 3連複  (組み合わせ, 16頭ならC(16,3)=560通り)
+  8 = 3連単  (順列, 16頭なら16×15×14=3360通り、順序あり)
 """
-import re
+import json
+import time
 from pathlib import Path
 
 import requests
-from bs4 import BeautifulSoup
 
 import sys
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 from config import REQUEST_HEADERS, SCRAPE_INTERVAL_SEC
-import time
 
 _session = requests.Session()
 _session.headers.update(REQUEST_HEADERS)
 _last = 0.0
 
+ODDS_TYPES = {
+    "umaren": 4,
+    "umatan": 6,
+    "sanrenpuku": 7,
+    "sanrentan": 8,
+}
 
-def _get(url):
+
+def _get(url: str, params: dict) -> dict:
     global _last
     elapsed = time.time() - _last
     if elapsed < SCRAPE_INTERVAL_SEC:
         time.sleep(SCRAPE_INTERVAL_SEC - elapsed)
-    r = _session.get(url, timeout=15)
+    r = _session.get(url, params=params, timeout=15)
     _last = time.time()
     r.raise_for_status()
-    r.encoding = r.apparent_encoding
-    return r.text
+    return json.loads(r.text)
 
 
-# netkeibaのodds typeパラメータ（変更されている可能性があるため要確認）
-ODDS_TYPES = {
-    "umaren": 4,
-    "umatan": 5,
-    "wide": 7,
-    "sanrenpuku": 8,
-    "sanrentan": 6,
-}
+def _parse_odds_value(raw) -> float:
+    """'1,027.8' のようなカンマ区切り文字列をfloatに変換する"""
+    try:
+        return float(str(raw).replace(",", ""))
+    except (ValueError, TypeError):
+        return None
 
 
 def fetch_odds(race_id: str, bet_type: str) -> dict:
@@ -53,49 +57,53 @@ def fetch_odds(race_id: str, bet_type: str) -> dict:
     bet_type: 'umaren' | 'umatan' | 'sanrenpuku' | 'sanrentan'
     戻り値の例:
       umaren     -> {frozenset({'1','5'}): 6.2, ...}
-      umatan     -> {('1','5'): 12.3, ...}
+      umatan     -> {('1','5'): 12.3, ...}   # 1着→2着の順
       sanrenpuku -> {frozenset({'1','5','8'}): 25.4, ...}
-      sanrentan  -> {('1','5','8'): 120.5, ...}
-    馬番を文字列のまま使う（features側で馬番→馬名変換して表示する）
+      sanrentan  -> {('1','5','8'): 120.5, ...}  # 1着→2着→3着の順
+    馬番は先頭ゼロを外した文字列（'01'ではなく'1'）で統一する。
     """
     if bet_type not in ODDS_TYPES:
         raise ValueError(f"未対応のbet_type: {bet_type}")
 
     type_num = ODDS_TYPES[bet_type]
-    url = f"https://race.netkeiba.com/odds/index.html?type={type_num}&race_id={race_id}"
-    html = _get(url)
-    soup = BeautifulSoup(html, "lxml")
+    url = "https://race.netkeiba.com/api/api_get_jra_odds.html"
+    data = _get(url, {"race_id": race_id, "type": type_num})
+
+    odds_root = data.get("data", {}).get("odds", {})
+    if not odds_root:
+        print(f"[警告] {bet_type} のオッズが空でした（発売前 or race_id不正の可能性）: {race_id}")
+        return {}
+
+    # typeキー直下、または数字キーの入れ子になっている場合の両方に対応
+    inner = odds_root.get(str(type_num)) or odds_root.get(type_num)
+    if inner is None:
+        # 想定外の構造の場合、最初に見つかった辞書値を使う
+        for v in odds_root.values():
+            if isinstance(v, dict):
+                inner = v
+                break
+    if inner is None:
+        return {}
 
     result = {}
-    tables = soup.find_all("table")
-    for table in tables:
-        for row in table.find_all("tr"):
-            cells = row.find_all(["td", "th"])
-            text_cells = [c.get_text(strip=True) for c in cells]
-            numbers_in_row = [c for c in text_cells if re.fullmatch(r"\d+", c)]
-            odds_cells = [c for c in text_cells if re.fullmatch(r"\d+\.\d", c)]
-            if not odds_cells:
-                continue
-            odds_val = float(odds_cells[-1])
+    for key, value in inner.items():
+        # keyは2桁ごとの馬番連結（例: "0102" = 1番→2番, "010203" = 1番→2番→3番）
+        digits = [key[i:i+2] for i in range(0, len(key), 2)]
+        horse_nums = [str(int(d)) for d in digits]  # 先頭ゼロを除去
 
-            if bet_type == "umaren" and len(numbers_in_row) >= 2:
-                key = frozenset(numbers_in_row[:2])
-                result[key] = odds_val
-            elif bet_type == "umatan" and len(numbers_in_row) >= 2:
-                key = (numbers_in_row[0], numbers_in_row[1])
-                result[key] = odds_val
-            elif bet_type == "sanrenpuku" and len(numbers_in_row) >= 3:
-                key = frozenset(numbers_in_row[:3])
-                result[key] = odds_val
-            elif bet_type == "sanrentan" and len(numbers_in_row) >= 3:
-                key = (numbers_in_row[0], numbers_in_row[1], numbers_in_row[2])
-                result[key] = odds_val
+        odds_val = _parse_odds_value(value[0] if isinstance(value, list) else value)
+        if odds_val is None:
+            continue
 
-    if not result:
-        print(
-            f"[警告] {bet_type} のオッズが1件も取得できませんでした。"
-            f"netkeibaのページ構造（JS描画など）に合わせてこの関数の実装を見直してください: {url}"
-        )
+        if bet_type == "umaren":
+            result[frozenset(horse_nums[:2])] = odds_val
+        elif bet_type == "umatan":
+            result[tuple(horse_nums[:2])] = odds_val
+        elif bet_type == "sanrenpuku":
+            result[frozenset(horse_nums[:3])] = odds_val
+        elif bet_type == "sanrentan":
+            result[tuple(horse_nums[:3])] = odds_val
+
     return result
 
 
