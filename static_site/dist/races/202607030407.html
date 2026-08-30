@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>中京2歳S 予想 | keiba-predict</title>
+<style>
+  :root {
+    --bg: #0b0f0d;
+    --surface: #131a16;
+    --surface-2: #1a2420;
+    --line: #26332c;
+    --amber: #f0a202;
+    --amber-dim: #8a6417;
+    --amber-glow: rgba(240,162,2,0.35);
+    --green: #4caf6e;
+    --red: #d64550;
+    --text: #ece7da;
+    --text-dim: #8d9690;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Hiragino Sans", "Yu Gothic", -apple-system, sans-serif;
+    padding: 0 0 60px;
+  }
+  .mono { font-family: "SFMono-Regular", "Menlo", "Consolas", monospace; font-variant-numeric: tabular-nums; }
+  a { color: inherit; }
+
+  header {
+    padding: 16px 16px 18px;
+    border-bottom: 1px solid var(--line);
+  }
+  .back { font-size: 12px; color: var(--text-dim); text-decoration: none; }
+  .back:active { color: var(--amber); }
+  h1 { font-size: 18px; margin: 10px 0 4px; font-weight: 800; }
+  .race-meta { font-size: 11.5px; color: var(--text-dim); }
+  .race-meta .mono { color: var(--text-dim); }
+
+  main { max-width: 760px; margin: 0 auto; padding: 0 14px; }
+
+  .section-title {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--amber-dim);
+    margin: 28px 0 10px;
+    display: flex; align-items: baseline; gap: 8px;
+  }
+  .section-title::after { content:""; flex:1; height:1px; background:var(--line); }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+  }
+  .summary-text { font-size: 13px; line-height: 1.75; color: var(--text-dim); }
+
+  /* --- 最も期待値が高い買い目：signature element --- */
+  .best-bet {
+    position: relative;
+    background: linear-gradient(180deg, #1a1408 0%, var(--surface) 70%);
+    border: 1px solid var(--amber-dim);
+    box-shadow: 0 0 0 1px rgba(240,162,2,0.08), 0 8px 24px -12px var(--amber-glow);
+  }
+  .best-bet .tag {
+    font-size: 10.5px; font-weight: 800; letter-spacing: 0.1em;
+    color: var(--amber); text-transform: uppercase;
+  }
+  .best-bet .type { font-size: 11px; color: var(--text-dim); margin-top: 6px; }
+  .best-bet .horses {
+    font-size: 20px; font-weight: 800; margin: 6px 0 10px;
+    color: var(--text);
+  }
+  .best-bet .stat-row { display: flex; }
+  .best-bet .stat { margin-right: 22px; }
+  .best-bet .stat .label { font-size: 10px; color: var(--text-dim); letter-spacing: 0.05em; }
+  .best-bet .stat .value { font-size: 17px; font-weight: 800; margin-top: 2px; }
+  .best-bet .stat.ev .value { color: var(--amber); }
+
+  /* --- 穴馬候補 --- */
+  .dark-horse-card { border-left: 3px solid var(--green); }
+  .dark-horse-item { padding: 9px 0; border-bottom: 1px solid var(--line); }
+  .dark-horse-item:last-child { border-bottom: none; }
+  .dh-name { font-weight: 700; font-size: 14px; }
+  .dh-badge {
+    display: inline-block; font-size: 10px; font-weight: 700;
+    background: rgba(76,175,110,0.14); color: var(--green);
+    border: 1px solid #2e5c3e; border-radius: 3px; padding: 1px 7px; margin-left: 7px;
+  }
+  .dh-stats { font-size: 11.5px; color: var(--text-dim); margin-top: 3px; }
+
+  /* --- 出走馬一覧 --- */
+  .horse-item { padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .horse-item:last-child { border-bottom: none; }
+  .horse-head { display: flex; justify-content: space-between; align-items: baseline; }
+  .horse-name { font-weight: 700; font-size: 14px; }
+  .horse-num { color: var(--amber-dim); margin-right: 4px; }
+  .horse-prob { font-size: 13px; font-weight: 700; color: var(--green); }
+  .horse-reason { font-size: 12px; color: var(--text-dim); margin-top: 5px; line-height: 1.65; }
+
+  /* --- EVテーブル --- */
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th {
+    background: var(--surface-2);
+    color: var(--text-dim);
+    font-weight: 700;
+    font-size: 10.5px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 8px 6px;
+    border-bottom: 1px solid var(--line);
+  }
+  td {
+    padding: 8px 6px;
+    text-align: center;
+    border-bottom: 1px solid var(--line);
+  }
+  td.horses-cell { text-align: left; }
+  tr:last-child td { border-bottom: none; }
+  td.ev-cell { color: var(--green); font-weight: 700; }
+
+  /* --- WIN5 --- */
+  .win5-row { font-size: 12.5px; padding: 7px 0; border-bottom: 1px dashed var(--line); }
+  .win5-row:last-child { border-bottom: none; }
+  .win5-rank { display: inline-block; width: 18px; color: var(--amber-dim); }
+
+  .disclaimer {
+    margin-top: 26px;
+    font-size: 11px;
+    color: var(--text-dim);
+    text-align: center;
+    line-height: 1.7;
+  }
+</style>
+</head>
+<body>
+<header>
+  <a class="back" href="../index.html">← 今週のレース一覧</a>
+  <h1>None R　中京2歳S</h1>
+  <div class="race-meta mono">芝1400m ／ 馬場:良 ／ 天候:晴</div>
+</header>
+
+<main>
+  <div class="card summary-text">逃げ馬が3頭おり、先行争いが激化しやすくハイペース濃厚。差し・追込馬にも展開の恩恵が期待できる。馬場状態は「良」。</div>
+
+  
+  <div class="section-title">Best Value</div>
+  <div class="card best-bet">
+    <div class="tag">最も期待値が高い買い目</div>
+    <div class="type">3連単</div>
+    <div class="horses">ジャスパートレノ → マルモリムソウ → サンタンジェロ</div>
+    <div class="stat-row mono">
+      <div class="stat"><div class="label">ODDS</div><div class="value">2931.6</div></div>
+      <div class="stat"><div class="label">WIN%</div><div class="value">0.1%</div></div>
+      <div class="stat ev"><div class="label">EV</div><div class="value">405%</div></div>
+    </div>
+  </div>
+  
+
+  
+  <div class="section-title">Dark Horses</div>
+  <div class="card dark-horse-card">
+    
+    <div class="dark-horse-item">
+      <span class="dh-name">ジャスパートレノ</span><span class="dh-badge">7番人気</span>
+      <div class="dh-stats mono">ODDS 34.4 ／ WIN% 7.6% ／ EV 260%</div>
+    </div>
+    
+    <div class="dark-horse-item">
+      <span class="dh-name">マルモリムソウ</span><span class="dh-badge">6番人気</span>
+      <div class="dh-stats mono">ODDS 19.0 ／ WIN% 8.8% ／ EV 167%</div>
+    </div>
+    
+    <div class="dark-horse-item">
+      <span class="dh-name">バクソウシャチョウ</span><span class="dh-badge">5番人気</span>
+      <div class="dh-stats mono">ODDS 17.4 ／ WIN% 8.8% ／ EV 154%</div>
+    </div>
+    
+    <div class="dark-horse-item">
+      <span class="dh-name">ピコキング</span><span class="dh-badge">8番人気</span>
+      <div class="dh-stats mono">ODDS 137.8 ／ WIN% 1.0% ／ EV 142%</div>
+    </div>
+    
+    <div class="dark-horse-item">
+      <span class="dh-name">ピコジャック</span><span class="dh-badge">9番人気</span>
+      <div class="dh-stats mono">ODDS 151.7 ／ WIN% 0.8% ／ EV 126%</div>
+    </div>
+    
+  </div>
+  
+
+  <div class="section-title">出走馬</div>
+  <div class="card">
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">9</span>ジーティーマイカ</span>
+        <span class="horse-prob mono">79%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約79%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は1.0着と好調を維持。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">7</span>ビスケットサンド</span>
+        <span class="horse-prob mono">53%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約53%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は1.0着と好調を維持。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">3</span>サンタンジェロ</span>
+        <span class="horse-prob mono">48%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約48%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">4</span>シスキンブルーム</span>
+        <span class="horse-prob mono">37%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約37%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は1.5着と好調を維持。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">2</span>バクソウシャチョウ</span>
+        <span class="horse-prob mono">26%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約26%。逃げ脚質だが、このレースは逃げ馬が3頭おり先行争いが激しくなりペースが速まる可能性があるため、スタミナ面がやや不安要素。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">5</span>マルモリムソウ</span>
+        <span class="horse-prob mono">26%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約26%。逃げ脚質だが、このレースは逃げ馬が3頭おり先行争いが激しくなりペースが速まる可能性があるため、スタミナ面がやや不安要素。直近3走の平均着順は1.0着と好調を維持。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">6</span>ジャスパートレノ</span>
+        <span class="horse-prob mono">22%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約22%。逃げ脚質だが、このレースは逃げ馬が3頭おり先行争いが激しくなりペースが速まる可能性があるため、スタミナ面がやや不安要素。直近3走の平均着順は1.0着と好調を維持。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">1</span>ピコキング</span>
+        <span class="horse-prob mono">3%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約3%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">8</span>ピコジャック</span>
+        <span class="horse-prob mono">2%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約2%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は8.0着とやや不振。</div>
+    </div>
+    
+  </div>
+
+  <div class="section-title">買い目一覧（EV100%超）</div>
+  
+  <div class="card" style="padding:0; overflow:hidden;">
+    <table>
+      <thead><tr><th colspan="4" style="text-align:left; padding-left:12px;">単勝</th></tr>
+      <tr><th>買い目</th><th>ODDS</th><th>WIN%</th><th>EV</th></tr></thead>
+      <tbody>
+        
+        <tr>
+          <td class="horses-cell">ジャスパートレノ</td>
+          <td class="mono">34.4</td>
+          <td class="mono">7.6%</td>
+          <td class="ev-cell mono">260%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">マルモリムソウ</td>
+          <td class="mono">19.0</td>
+          <td class="mono">8.8%</td>
+          <td class="ev-cell mono">167%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">バクソウシャチョウ</td>
+          <td class="mono">17.4</td>
+          <td class="mono">8.8%</td>
+          <td class="ev-cell mono">154%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ピコキング</td>
+          <td class="mono">137.8</td>
+          <td class="mono">1.0%</td>
+          <td class="ev-cell mono">142%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ピコジャック</td>
+          <td class="mono">151.7</td>
+          <td class="mono">0.8%</td>
+          <td class="ev-cell mono">126%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">シスキンブルーム</td>
+          <td class="mono">9.7</td>
+          <td class="mono">12.6%</td>
+          <td class="ev-cell mono">122%</td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+  
+  <div class="card" style="padding:0; overflow:hidden;">
+    <table>
+      <thead><tr><th colspan="4" style="text-align:left; padding-left:12px;">馬連</th></tr>
+      <tr><th>買い目</th><th>ODDS</th><th>WIN%</th><th>EV</th></tr></thead>
+      <tbody>
+        
+        <tr>
+          <td class="horses-cell">シスキンブルーム - ジャスパートレノ</td>
+          <td class="mono">112.4</td>
+          <td class="mono">2.1%</td>
+          <td class="ev-cell mono">238%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">マルモリムソウ - ジャスパートレノ</td>
+          <td class="mono">162.1</td>
+          <td class="mono">1.4%</td>
+          <td class="ev-cell mono">235%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ビスケットサンド - ジャスパートレノ</td>
+          <td class="mono">70.9</td>
+          <td class="mono">3.1%</td>
+          <td class="ev-cell mono">220%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">サンタンジェロ - ジャスパートレノ</td>
+          <td class="mono">79.1</td>
+          <td class="mono">2.8%</td>
+          <td class="ev-cell mono">218%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">バクソウシャチョウ - ジャスパートレノ</td>
+          <td class="mono">133.9</td>
+          <td class="mono">1.5%</td>
+          <td class="ev-cell mono">195%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ジーティーマイカ - ジャスパートレノ</td>
+          <td class="mono">33.7</td>
+          <td class="mono">4.9%</td>
+          <td class="ev-cell mono">164%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">マルモリムソウ - バクソウシャチョウ</td>
+          <td class="mono">84.0</td>
+          <td class="mono">1.7%</td>
+          <td class="ev-cell mono">143%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">マルモリムソウ - シスキンブルーム</td>
+          <td class="mono">54.4</td>
+          <td class="mono">2.5%</td>
+          <td class="ev-cell mono">135%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">マルモリムソウ - ピコキング</td>
+          <td class="mono">679.8</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">130%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ビスケットサンド - ピコキング</td>
+          <td class="mono">315.2</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">129%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">シスキンブルーム - ピコキング</td>
+          <td class="mono">450.2</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">126%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">マルモリムソウ - サンタンジェロ</td>
+          <td class="mono">38.6</td>
+          <td class="mono">3.2%</td>
+          <td class="ev-cell mono">125%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">マルモリムソウ - ビスケットサンド</td>
+          <td class="mono">33.6</td>
+          <td class="mono">3.6%</td>
+          <td class="ev-cell mono">122%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">バクソウシャチョウ - シスキンブルーム</td>
+          <td class="mono">48.4</td>
+          <td class="mono">2.5%</td>
+          <td class="ev-cell mono">121%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">サンタンジェロ - ピコキング</td>
+          <td class="mono">321.7</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">117%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ジャスパートレノ - ピコキング</td>
+          <td class="mono">691.5</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">113%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">マルモリムソウ - ジーティーマイカ</td>
+          <td class="mono">19.0</td>
+          <td class="mono">5.7%</td>
+          <td class="ev-cell mono">108%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">マルモリムソウ - ピコジャック</td>
+          <td class="mono">703.8</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">108%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ピコジャック - シスキンブルーム</td>
+          <td class="mono">470.0</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">106%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ビスケットサンド - バクソウシャチョウ</td>
+          <td class="mono">28.0</td>
+          <td class="mono">3.7%</td>
+          <td class="ev-cell mono">102%</td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+  
+  <div class="card" style="padding:0; overflow:hidden;">
+    <table>
+      <thead><tr><th colspan="4" style="text-align:left; padding-left:12px;">馬単</th></tr>
+      <tr><th>買い目</th><th>ODDS</th><th>WIN%</th><th>EV</th></tr></thead>
+      <tbody>
+        
+        <tr>
+          <td class="horses-cell">ジャスパートレノ → マルモリムソウ</td>
+          <td class="mono">468.4</td>
+          <td class="mono">0.7%</td>
+          <td class="ev-cell mono">337%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ジャスパートレノ → ビスケットサンド</td>
+          <td class="mono">224.8</td>
+          <td class="mono">1.5%</td>
+          <td class="ev-cell mono">329%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ジャスパートレノ → シスキンブルーム</td>
+          <td class="mono">313.0</td>
+          <td class="mono">1.0%</td>
+          <td class="ev-cell mono">322%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ジャスパートレノ → サンタンジェロ</td>
+          <td class="mono">243.4</td>
+          <td class="mono">1.3%</td>
+          <td class="ev-cell mono">320%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">マルモリムソウ → ジャスパートレノ</td>
+          <td class="mono">386.9</td>
+          <td class="mono">0.7%</td>
+          <td class="ev-cell mono">282%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ジャスパートレノ → バクソウシャチョウ</td>
+          <td class="mono">371.0</td>
+          <td class="mono">0.7%</td>
+          <td class="ev-cell mono">268%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">シスキンブルーム → ジャスパートレノ</td>
+          <td class="mono">240.2</td>
+          <td class="mono">1.1%</td>
+          <td class="ev-cell mono">262%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ジャスパートレノ → ジーティーマイカ</td>
+          <td class="mono">110.1</td>
+          <td class="mono">2.2%</td>
+          <td class="ev-cell mono">238%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">バクソウシャチョウ → ジャスパートレノ</td>
+          <td class="mono">307.1</td>
+          <td class="mono">0.7%</td>
+          <td class="ev-cell mono">225%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">サンタンジェロ → ジャスパートレノ</td>
+          <td class="mono">138.3</td>
+          <td class="mono">1.4%</td>
+          <td class="ev-cell mono">200%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ピコキング → ビスケットサンド</td>
+          <td class="mono">1052.1</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">196%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">バクソウシャチョウ → マルモリムソウ</td>
+          <td class="mono">225.4</td>
+          <td class="mono">0.9%</td>
+          <td class="ev-cell mono">192%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">マルモリムソウ → バクソウシャチョウ</td>
+          <td class="mono">223.5</td>
+          <td class="mono">0.9%</td>
+          <td class="ev-cell mono">190%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ビスケットサンド → ジャスパートレノ</td>
+          <td class="mono">112.1</td>
+          <td class="mono">1.6%</td>
+          <td class="ev-cell mono">184%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ピコキング → サンタンジェロ</td>
+          <td class="mono">1087.8</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">182%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">マルモリムソウ → サンタンジェロ</td>
+          <td class="mono">112.7</td>
+          <td class="mono">1.5%</td>
+          <td class="ev-cell mono">175%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ピコキング → マルモリムソウ</td>
+          <td class="mono">1908.2</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">175%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">マルモリムソウ → ビスケットサンド</td>
+          <td class="mono">100.4</td>
+          <td class="mono">1.7%</td>
+          <td class="ev-cell mono">173%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">マルモリムソウ → シスキンブルーム</td>
+          <td class="mono">142.3</td>
+          <td class="mono">1.2%</td>
+          <td class="ev-cell mono">173%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ピコジャック → ビスケットサンド</td>
+          <td class="mono">1117.0</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">167%</td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+  
+  <div class="card" style="padding:0; overflow:hidden;">
+    <table>
+      <thead><tr><th colspan="4" style="text-align:left; padding-left:12px;">3連複</th></tr>
+      <tr><th>買い目</th><th>ODDS</th><th>WIN%</th><th>EV</th></tr></thead>
+      <tbody>
+        
+        <tr>
+          <td class="horses-cell">ジャスパートレノ - サンタンジェロ - シスキンブルーム</td>
+          <td class="mono">133.3</td>
+          <td class="mono">1.4%</td>
+          <td class="ev-cell mono">184%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">マルモリムソウ - サンタンジェロ - ジャスパートレノ</td>
+          <td class="mono">197.5</td>
+          <td class="mono">0.9%</td>
+          <td class="ev-cell mono">182%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">マルモリムソウ - ビスケットサンド - ジャスパートレノ</td>
+          <td class="mono">166.7</td>
+          <td class="mono">1.1%</td>
+          <td class="ev-cell mono">175%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">マルモリムソウ - シスキンブルーム - ジャスパートレノ</td>
+          <td class="mono">249.5</td>
+          <td class="mono">0.7%</td>
+          <td class="ev-cell mono">172%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">マルモリムソウ - ジャスパートレノ - ジーティーマイカ</td>
+          <td class="mono">95.5</td>
+          <td class="mono">1.8%</td>
+          <td class="ev-cell mono">169%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ビスケットサンド - バクソウシャチョウ - ジャスパートレノ</td>
+          <td class="mono">153.5</td>
+          <td class="mono">1.1%</td>
+          <td class="ev-cell mono">162%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ビスケットサンド - シスキンブルーム - ジャスパートレノ</td>
+          <td class="mono">102.4</td>
+          <td class="mono">1.6%</td>
+          <td class="ev-cell mono">161%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">マルモリムソウ - バクソウシャチョウ - ジャスパートレノ</td>
+          <td class="mono">344.2</td>
+          <td class="mono">0.5%</td>
+          <td class="ev-cell mono">159%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ジャスパートレノ - バクソウシャチョウ - シスキンブルーム</td>
+          <td class="mono">223.6</td>
+          <td class="mono">0.7%</td>
+          <td class="ev-cell mono">155%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">サンタンジェロ - バクソウシャチョウ - ジャスパートレノ</td>
+          <td class="mono">162.0</td>
+          <td class="mono">0.9%</td>
+          <td class="ev-cell mono">150%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ビスケットサンド - サンタンジェロ - ジャスパートレノ</td>
+          <td class="mono">67.9</td>
+          <td class="mono">2.1%</td>
+          <td class="ev-cell mono">143%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ジーティーマイカ - バクソウシャチョウ - ジャスパートレノ</td>
+          <td class="mono">79.6</td>
+          <td class="mono">1.8%</td>
+          <td class="ev-cell mono">142%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ジーティーマイカ - サンタンジェロ - ジャスパートレノ</td>
+          <td class="mono">38.1</td>
+          <td class="mono">3.6%</td>
+          <td class="ev-cell mono">136%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ビスケットサンド - ジャスパートレノ - ジーティーマイカ</td>
+          <td class="mono">31.6</td>
+          <td class="mono">4.1%</td>
+          <td class="ev-cell mono">129%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ジーティーマイカ - シスキンブルーム - ジャスパートレノ</td>
+          <td class="mono">46.9</td>
+          <td class="mono">2.7%</td>
+          <td class="ev-cell mono">125%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">マルモリムソウ - バクソウシャチョウ - シスキンブルーム</td>
+          <td class="mono">137.0</td>
+          <td class="mono">0.8%</td>
+          <td class="ev-cell mono">112%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ビスケットサンド - ジャスパートレノ - ピコキング</td>
+          <td class="mono">949.2</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">107%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">マルモリムソウ - サンタンジェロ - バクソウシャチョウ</td>
+          <td class="mono">97.5</td>
+          <td class="mono">1.1%</td>
+          <td class="ev-cell mono">107%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">マルモリムソウ - バクソウシャチョウ - ビスケットサンド</td>
+          <td class="mono">85.0</td>
+          <td class="mono">1.2%</td>
+          <td class="ev-cell mono">106%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">マルモリムソウ - サンタンジェロ - シスキンブルーム</td>
+          <td class="mono">61.3</td>
+          <td class="mono">1.6%</td>
+          <td class="ev-cell mono">100%</td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+  
+  <div class="card" style="padding:0; overflow:hidden;">
+    <table>
+      <thead><tr><th colspan="4" style="text-align:left; padding-left:12px;">3連単</th></tr>
+      <tr><th>買い目</th><th>ODDS</th><th>WIN%</th><th>EV</th></tr></thead>
+      <tbody>
+        
+        <tr>
+          <td class="horses-cell">ジャスパートレノ → マルモリムソウ → サンタンジェロ</td>
+          <td class="mono">2931.6</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">405%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ジャスパートレノ → サンタンジェロ → マルモリムソウ</td>
+          <td class="mono">2481.6</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">376%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ジャスパートレノ → マルモリムソウ → ビスケットサンド</td>
+          <td class="mono">2387.2</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">367%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ジャスパートレノ → マルモリムソウ → ジーティーマイカ</td>
+          <td class="mono">1549.1</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">352%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ジャスパートレノ → シスキンブルーム → マルモリムソウ</td>
+          <td class="mono">3079.9</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">349%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ジャスパートレノ → マルモリムソウ → シスキンブルーム</td>
+          <td class="mono">3223.2</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">349%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ジャスパートレノ → サンタンジェロ → シスキンブルーム</td>
+          <td class="mono">1568.8</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">340%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">マルモリムソウ → ジャスパートレノ → サンタンジェロ</td>
+          <td class="mono">2367.5</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">332%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ジャスパートレノ → ビスケットサンド → マルモリムソウ</td>
+          <td class="mono">1920.5</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">331%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ジャスパートレノ → シスキンブルーム → サンタンジェロ</td>
+          <td class="mono">1587.4</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">329%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ジャスパートレノ → シスキンブルーム → ビスケットサンド</td>
+          <td class="mono">1419.4</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">327%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ジャスパートレノ → バクソウシャチョウ → ビスケットサンド</td>
+          <td class="mono">2109.6</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">326%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ピコキング → ビスケットサンド → ジャスパートレノ</td>
+          <td class="mono">18472.4</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">320%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">マルモリムソウ → ジャスパートレノ → ジーティーマイカ</td>
+          <td class="mono">1371.9</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">316%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ピコキング → ジャスパートレノ → ビスケットサンド</td>
+          <td class="mono">20240.6</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">311%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">バクソウシャチョウ → ジャスパートレノ → ビスケットサンド</td>
+          <td class="mono">1982.1</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">310%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ジャスパートレノ → ビスケットサンド → シスキンブルーム</td>
+          <td class="mono">1244.2</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">307%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ジャスパートレノ → マルモリムソウ → バクソウシャチョウ</td>
+          <td class="mono">3997.7</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">304%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ジャスパートレノ → ビスケットサンド → バクソウシャチョウ</td>
+          <td class="mono">1746.8</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">302%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ジャスパートレノ → サンタンジェロ → ビスケットサンド</td>
+          <td class="mono">979.5</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">301%</td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+  
+
+  
+
+  <div class="disclaimer">本ページの予想は参考情報です。的中・利益を保証しません。<br>馬券の購入は必ずご自身でIPAT等の公式ルートから行ってください。</div>
+</main>
+</body>
+</html>

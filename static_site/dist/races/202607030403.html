@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2歳新馬 予想 | keiba-predict</title>
+<style>
+  :root {
+    --bg: #0b0f0d;
+    --surface: #131a16;
+    --surface-2: #1a2420;
+    --line: #26332c;
+    --amber: #f0a202;
+    --amber-dim: #8a6417;
+    --amber-glow: rgba(240,162,2,0.35);
+    --green: #4caf6e;
+    --red: #d64550;
+    --text: #ece7da;
+    --text-dim: #8d9690;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Hiragino Sans", "Yu Gothic", -apple-system, sans-serif;
+    padding: 0 0 60px;
+  }
+  .mono { font-family: "SFMono-Regular", "Menlo", "Consolas", monospace; font-variant-numeric: tabular-nums; }
+  a { color: inherit; }
+
+  header {
+    padding: 16px 16px 18px;
+    border-bottom: 1px solid var(--line);
+  }
+  .back { font-size: 12px; color: var(--text-dim); text-decoration: none; }
+  .back:active { color: var(--amber); }
+  h1 { font-size: 18px; margin: 10px 0 4px; font-weight: 800; }
+  .race-meta { font-size: 11.5px; color: var(--text-dim); }
+  .race-meta .mono { color: var(--text-dim); }
+
+  main { max-width: 760px; margin: 0 auto; padding: 0 14px; }
+
+  .section-title {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--amber-dim);
+    margin: 28px 0 10px;
+    display: flex; align-items: baseline; gap: 8px;
+  }
+  .section-title::after { content:""; flex:1; height:1px; background:var(--line); }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+  }
+  .summary-text { font-size: 13px; line-height: 1.75; color: var(--text-dim); }
+
+  /* --- 最も期待値が高い買い目：signature element --- */
+  .best-bet {
+    position: relative;
+    background: linear-gradient(180deg, #1a1408 0%, var(--surface) 70%);
+    border: 1px solid var(--amber-dim);
+    box-shadow: 0 0 0 1px rgba(240,162,2,0.08), 0 8px 24px -12px var(--amber-glow);
+  }
+  .best-bet .tag {
+    font-size: 10.5px; font-weight: 800; letter-spacing: 0.1em;
+    color: var(--amber); text-transform: uppercase;
+  }
+  .best-bet .type { font-size: 11px; color: var(--text-dim); margin-top: 6px; }
+  .best-bet .horses {
+    font-size: 20px; font-weight: 800; margin: 6px 0 10px;
+    color: var(--text);
+  }
+  .best-bet .stat-row { display: flex; }
+  .best-bet .stat { margin-right: 22px; }
+  .best-bet .stat .label { font-size: 10px; color: var(--text-dim); letter-spacing: 0.05em; }
+  .best-bet .stat .value { font-size: 17px; font-weight: 800; margin-top: 2px; }
+  .best-bet .stat.ev .value { color: var(--amber); }
+
+  /* --- 穴馬候補 --- */
+  .dark-horse-card { border-left: 3px solid var(--green); }
+  .dark-horse-item { padding: 9px 0; border-bottom: 1px solid var(--line); }
+  .dark-horse-item:last-child { border-bottom: none; }
+  .dh-name { font-weight: 700; font-size: 14px; }
+  .dh-badge {
+    display: inline-block; font-size: 10px; font-weight: 700;
+    background: rgba(76,175,110,0.14); color: var(--green);
+    border: 1px solid #2e5c3e; border-radius: 3px; padding: 1px 7px; margin-left: 7px;
+  }
+  .dh-stats { font-size: 11.5px; color: var(--text-dim); margin-top: 3px; }
+
+  /* --- 出走馬一覧 --- */
+  .horse-item { padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .horse-item:last-child { border-bottom: none; }
+  .horse-head { display: flex; justify-content: space-between; align-items: baseline; }
+  .horse-name { font-weight: 700; font-size: 14px; }
+  .horse-num { color: var(--amber-dim); margin-right: 4px; }
+  .horse-prob { font-size: 13px; font-weight: 700; color: var(--green); }
+  .horse-reason { font-size: 12px; color: var(--text-dim); margin-top: 5px; line-height: 1.65; }
+
+  /* --- EVテーブル --- */
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th {
+    background: var(--surface-2);
+    color: var(--text-dim);
+    font-weight: 700;
+    font-size: 10.5px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 8px 6px;
+    border-bottom: 1px solid var(--line);
+  }
+  td {
+    padding: 8px 6px;
+    text-align: center;
+    border-bottom: 1px solid var(--line);
+  }
+  td.horses-cell { text-align: left; }
+  tr:last-child td { border-bottom: none; }
+  td.ev-cell { color: var(--green); font-weight: 700; }
+
+  /* --- WIN5 --- */
+  .win5-row { font-size: 12.5px; padding: 7px 0; border-bottom: 1px dashed var(--line); }
+  .win5-row:last-child { border-bottom: none; }
+  .win5-rank { display: inline-block; width: 18px; color: var(--amber-dim); }
+
+  .disclaimer {
+    margin-top: 26px;
+    font-size: 11px;
+    color: var(--text-dim);
+    text-align: center;
+    line-height: 1.7;
+  }
+</style>
+</head>
+<body>
+<header>
+  <a class="back" href="../index.html">← 今週のレース一覧</a>
+  <h1>None R　2歳新馬</h1>
+  <div class="race-meta mono">芝2000m ／ 馬場:良 ／ 天候:晴</div>
+</header>
+
+<main>
+  <div class="card summary-text">明確な逃げ馬が不在で、スローペースになりやすく先行馬が有利になりやすい。馬場状態は「良」。</div>
+
+  
+  <div class="section-title">Best Value</div>
+  <div class="card best-bet">
+    <div class="tag">最も期待値が高い買い目</div>
+    <div class="type">3連単</div>
+    <div class="horses">ワンダーラヴグッド → ポカポカヨウキ → ブレイズフォート</div>
+    <div class="stat-row mono">
+      <div class="stat"><div class="label">ODDS</div><div class="value">8467.2</div></div>
+      <div class="stat"><div class="label">WIN%</div><div class="value">0.0%</div></div>
+      <div class="stat ev"><div class="label">EV</div><div class="value">216%</div></div>
+    </div>
+  </div>
+  
+
+  
+  <div class="section-title">Dark Horses</div>
+  <div class="card dark-horse-card">
+    
+    <div class="dark-horse-item">
+      <span class="dh-name">アモロロプーロ</span><span class="dh-badge">9番人気</span>
+      <div class="dh-stats mono">ODDS 53.7 ／ WIN% 2.3% ／ EV 125%</div>
+    </div>
+    
+    <div class="dark-horse-item">
+      <span class="dh-name">サイモンジェセル</span><span class="dh-badge">10番人気</span>
+      <div class="dh-stats mono">ODDS 58.6 ／ WIN% 2.1% ／ EV 122%</div>
+    </div>
+    
+    <div class="dark-horse-item">
+      <span class="dh-name">ジェントル</span><span class="dh-badge">8番人気</span>
+      <div class="dh-stats mono">ODDS 17.6 ／ WIN% 5.9% ／ EV 104%</div>
+    </div>
+    
+  </div>
+  
+
+  <div class="section-title">出走馬</div>
+  <div class="card">
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">2</span>ブレイズフォート</span>
+        <span class="horse-prob mono">51%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約51%。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">4</span>ポカポカヨウキ</span>
+        <span class="horse-prob mono">49%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約49%。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">7</span>ゴーイントゥノヴァ</span>
+        <span class="horse-prob mono">37%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約37%。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">5</span>コルキス</span>
+        <span class="horse-prob mono">36%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約36%。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">9</span>ロードフローリス</span>
+        <span class="horse-prob mono">29%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約29%。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">8</span>エーテルワーム</span>
+        <span class="horse-prob mono">24%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約24%。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">10</span>ルクスアルカード</span>
+        <span class="horse-prob mono">22%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約22%。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">3</span>ジェントル</span>
+        <span class="horse-prob mono">16%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約16%。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">6</span>アモロロプーロ</span>
+        <span class="horse-prob mono">6%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約6%。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">1</span>サイモンジェセル</span>
+        <span class="horse-prob mono">6%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約6%。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">11</span>ワンダーラヴグッド</span>
+        <span class="horse-prob mono">2%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約2%。</div>
+    </div>
+    
+  </div>
+
+  <div class="section-title">買い目一覧（EV100%超）</div>
+  
+  <div class="card" style="padding:0; overflow:hidden;">
+    <table>
+      <thead><tr><th colspan="4" style="text-align:left; padding-left:12px;">単勝</th></tr>
+      <tr><th>買い目</th><th>ODDS</th><th>WIN%</th><th>EV</th></tr></thead>
+      <tbody>
+        
+        <tr>
+          <td class="horses-cell">アモロロプーロ</td>
+          <td class="mono">53.7</td>
+          <td class="mono">2.3%</td>
+          <td class="ev-cell mono">125%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">サイモンジェセル</td>
+          <td class="mono">58.6</td>
+          <td class="mono">2.1%</td>
+          <td class="ev-cell mono">122%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ジェントル</td>
+          <td class="mono">17.6</td>
+          <td class="mono">5.9%</td>
+          <td class="ev-cell mono">104%</td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+  
+  <div class="card" style="padding:0; overflow:hidden;">
+    <table>
+      <thead><tr><th colspan="4" style="text-align:left; padding-left:12px;">馬連</th></tr>
+      <tr><th>買い目</th><th>ODDS</th><th>WIN%</th><th>EV</th></tr></thead>
+      <tbody>
+        
+        <tr>
+          <td class="horses-cell">ジェントル - ポカポカヨウキ</td>
+          <td class="mono">65.3</td>
+          <td class="mono">2.4%</td>
+          <td class="ev-cell mono">156%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ポカポカヨウキ - サイモンジェセル</td>
+          <td class="mono">166.1</td>
+          <td class="mono">0.8%</td>
+          <td class="ev-cell mono">136%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ロードフローリス - サイモンジェセル</td>
+          <td class="mono">290.2</td>
+          <td class="mono">0.5%</td>
+          <td class="ev-cell mono">133%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">エーテルワーム - ジェントル</td>
+          <td class="mono">116.2</td>
+          <td class="mono">1.1%</td>
+          <td class="ev-cell mono">127%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">コルキス - ジェントル</td>
+          <td class="mono">70.3</td>
+          <td class="mono">1.7%</td>
+          <td class="ev-cell mono">118%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ジェントル - ロードフローリス</td>
+          <td class="mono">87.5</td>
+          <td class="mono">1.3%</td>
+          <td class="ev-cell mono">117%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ジェントル - ルクスアルカード</td>
+          <td class="mono">117.6</td>
+          <td class="mono">1.0%</td>
+          <td class="ev-cell mono">117%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">コルキス - アモロロプーロ</td>
+          <td class="mono">176.1</td>
+          <td class="mono">0.6%</td>
+          <td class="ev-cell mono">114%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ポカポカヨウキ - ワンダーラヴグッド</td>
+          <td class="mono">418.3</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">104%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ブレイズフォート - アモロロプーロ</td>
+          <td class="mono">106.9</td>
+          <td class="mono">1.0%</td>
+          <td class="ev-cell mono">103%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">コルキス - サイモンジェセル</td>
+          <td class="mono">177.9</td>
+          <td class="mono">0.6%</td>
+          <td class="ev-cell mono">103%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ジェントル - アモロロプーロ</td>
+          <td class="mono">356.1</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">102%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ゴーイントゥノヴァ - ジェントル</td>
+          <td class="mono">58.0</td>
+          <td class="mono">1.8%</td>
+          <td class="ev-cell mono">102%</td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+  
+  <div class="card" style="padding:0; overflow:hidden;">
+    <table>
+      <thead><tr><th colspan="4" style="text-align:left; padding-left:12px;">馬単</th></tr>
+      <tr><th>買い目</th><th>ODDS</th><th>WIN%</th><th>EV</th></tr></thead>
+      <tbody>
+        
+        <tr>
+          <td class="horses-cell">サイモンジェセル → ポカポカヨウキ</td>
+          <td class="mono">412.4</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">154%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ジェントル → ポカポカヨウキ</td>
+          <td class="mono">124.6</td>
+          <td class="mono">1.1%</td>
+          <td class="ev-cell mono">139%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">サイモンジェセル → ロードフローリス</td>
+          <td class="mono">619.3</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">136%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ワンダーラヴグッド → ブレイズフォート</td>
+          <td class="mono">1147.3</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">136%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">サイモンジェセル → コルキス</td>
+          <td class="mono">458.9</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">125%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ワンダーラヴグッド → ゴーイントゥノヴァ</td>
+          <td class="mono">1398.3</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">120%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ジェントル → ルクスアルカード</td>
+          <td class="mono">242.1</td>
+          <td class="mono">0.5%</td>
+          <td class="ev-cell mono">119%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ルクスアルカード → ジェントル</td>
+          <td class="mono">233.3</td>
+          <td class="mono">0.5%</td>
+          <td class="ev-cell mono">117%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ロードフローリス → サイモンジェセル</td>
+          <td class="mono">487.6</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">117%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ワンダーラヴグッド → ポカポカヨウキ</td>
+          <td class="mono">1011.2</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">114%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ジェントル → ブレイズフォート</td>
+          <td class="mono">97.2</td>
+          <td class="mono">1.2%</td>
+          <td class="ev-cell mono">113%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ポカポカヨウキ → ジェントル</td>
+          <td class="mono">88.2</td>
+          <td class="mono">1.3%</td>
+          <td class="ev-cell mono">112%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">コルキス → ブレイズフォート</td>
+          <td class="mono">41.1</td>
+          <td class="mono">2.7%</td>
+          <td class="ev-cell mono">112%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ワンダーラヴグッド → コルキス</td>
+          <td class="mono">1335.6</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">110%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ジェントル → ロードフローリス</td>
+          <td class="mono">163.9</td>
+          <td class="mono">0.7%</td>
+          <td class="ev-cell mono">107%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ルクスアルカード → ブレイズフォート</td>
+          <td class="mono">67.8</td>
+          <td class="mono">1.6%</td>
+          <td class="ev-cell mono">106%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ポカポカヨウキ → サイモンジェセル</td>
+          <td class="mono">237.0</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">106%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">サイモンジェセル → ブレイズフォート</td>
+          <td class="mono">267.5</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">105%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ジェントル → エーテルワーム</td>
+          <td class="mono">193.0</td>
+          <td class="mono">0.5%</td>
+          <td class="ev-cell mono">104%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ロードフローリス → ジェントル</td>
+          <td class="mono">148.4</td>
+          <td class="mono">0.7%</td>
+          <td class="ev-cell mono">102%</td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+  
+  <div class="card" style="padding:0; overflow:hidden;">
+    <table>
+      <thead><tr><th colspan="4" style="text-align:left; padding-left:12px;">3連複</th></tr>
+      <tr><th>買い目</th><th>ODDS</th><th>WIN%</th><th>EV</th></tr></thead>
+      <tbody>
+        
+        <tr>
+          <td class="horses-cell">エーテルワーム - ジェントル - ポカポカヨウキ</td>
+          <td class="mono">166.1</td>
+          <td class="mono">0.8%</td>
+          <td class="ev-cell mono">129%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ジェントル - ポカポカヨウキ - ルクスアルカード</td>
+          <td class="mono">180.4</td>
+          <td class="mono">0.7%</td>
+          <td class="ev-cell mono">126%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">コルキス - ジェントル - ポカポカヨウキ</td>
+          <td class="mono">92.0</td>
+          <td class="mono">1.2%</td>
+          <td class="ev-cell mono">113%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">コルキス - ブレイズフォート - アモロロプーロ</td>
+          <td class="mono">225.1</td>
+          <td class="mono">0.5%</td>
+          <td class="ev-cell mono">110%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">コルキス - ポカポカヨウキ - ゴーイントゥノヴァ</td>
+          <td class="mono">36.4</td>
+          <td class="mono">3.0%</td>
+          <td class="ev-cell mono">110%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">アモロロプーロ - ジェントル - ポカポカヨウキ</td>
+          <td class="mono">551.3</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">108%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">コルキス - ジェントル - ルクスアルカード</td>
+          <td class="mono">226.3</td>
+          <td class="mono">0.5%</td>
+          <td class="ev-cell mono">108%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ロードフローリス - ジェントル - ポカポカヨウキ</td>
+          <td class="mono">112.0</td>
+          <td class="mono">1.0%</td>
+          <td class="ev-cell mono">107%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">コルキス - ブレイズフォート - ポカポカヨウキ</td>
+          <td class="mono">23.9</td>
+          <td class="mono">4.5%</td>
+          <td class="ev-cell mono">107%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ブレイズフォート - ポカポカヨウキ - ワンダーラヴグッド</td>
+          <td class="mono">551.7</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">106%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ブレイズフォート - ポカポカヨウキ - サイモンジェセル</td>
+          <td class="mono">165.2</td>
+          <td class="mono">0.6%</td>
+          <td class="ev-cell mono">106%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">コルキス - ポカポカヨウキ - サイモンジェセル</td>
+          <td class="mono">255.6</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">105%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">コルキス - ブレイズフォート - ロードフローリス</td>
+          <td class="mono">44.2</td>
+          <td class="mono">2.4%</td>
+          <td class="ev-cell mono">105%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">コルキス - ジェントル - ロードフローリス</td>
+          <td class="mono">158.8</td>
+          <td class="mono">0.7%</td>
+          <td class="ev-cell mono">103%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ジェントル - ブレイズフォート - ポカポカヨウキ</td>
+          <td class="mono">54.3</td>
+          <td class="mono">1.9%</td>
+          <td class="ev-cell mono">103%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">コルキス - ブレイズフォート - ルクスアルカード</td>
+          <td class="mono">57.7</td>
+          <td class="mono">1.7%</td>
+          <td class="ev-cell mono">100%</td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+  
+  <div class="card" style="padding:0; overflow:hidden;">
+    <table>
+      <thead><tr><th colspan="4" style="text-align:left; padding-left:12px;">3連単</th></tr>
+      <tr><th>買い目</th><th>ODDS</th><th>WIN%</th><th>EV</th></tr></thead>
+      <tbody>
+        
+        <tr>
+          <td class="horses-cell">ワンダーラヴグッド → ポカポカヨウキ → ブレイズフォート</td>
+          <td class="mono">8467.2</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">216%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">サイモンジェセル → ロードフローリス → ブレイズフォート</td>
+          <td class="mono">4400.7</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">203%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">アモロロプーロ → コルキス → ブレイズフォート</td>
+          <td class="mono">2846.4</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">189%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ワンダーラヴグッド → ブレイズフォート → ポカポカヨウキ</td>
+          <td class="mono">7270.7</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">188%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">サイモンジェセル → コルキス → ロードフローリス</td>
+          <td class="mono">5621.0</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">186%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">サイモンジェセル → ロードフローリス → ポカポカヨウキ</td>
+          <td class="mono">4078.7</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">180%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">サイモンジェセル → ポカポカヨウキ → ロードフローリス</td>
+          <td class="mono">3716.1</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">179%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">サイモンジェセル → ロードフローリス → コルキス</td>
+          <td class="mono">5438.2</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">175%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ワンダーラヴグッド → コルキス → ブレイズフォート</td>
+          <td class="mono">9836.9</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">172%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">アモロロプーロ → ブレイズフォート → コルキス</td>
+          <td class="mono">2406.1</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">171%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">サイモンジェセル → ポカポカヨウキ → ブレイズフォート</td>
+          <td class="mono">1984.8</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">171%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ルクスアルカード → ジェントル → コルキス</td>
+          <td class="mono">2275.2</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">170%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">サイモンジェセル → コルキス → ポカポカヨウキ</td>
+          <td class="mono">2895.7</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">164%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ワンダーラヴグッド → ブレイズフォート → コルキス</td>
+          <td class="mono">8575.7</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">161%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">サイモンジェセル → ロードフローリス → ゴーイントゥノヴァ</td>
+          <td class="mono">4710.6</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">158%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ルクスアルカード → ジェントル → ブレイズフォート</td>
+          <td class="mono">1460.5</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">157%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">サイモンジェセル → ポカポカヨウキ → コルキス</td>
+          <td class="mono">2592.6</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">155%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">サイモンジェセル → ブレイズフォート → ロードフローリス</td>
+          <td class="mono">2999.5</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">153%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ジェントル → エーテルワーム → ポカポカヨウキ</td>
+          <td class="mono">1365.1</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">152%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">サイモンジェセル → ブレイズフォート → ポカポカヨウキ</td>
+          <td class="mono">1746.5</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">152%</td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+  
+
+  
+
+  <div class="disclaimer">本ページの予想は参考情報です。的中・利益を保証しません。<br>馬券の購入は必ずご自身でIPAT等の公式ルートから行ってください。</div>
+</main>
+</body>
+</html>

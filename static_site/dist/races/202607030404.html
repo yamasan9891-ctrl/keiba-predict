@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3歳未勝利 予想 | keiba-predict</title>
+<style>
+  :root {
+    --bg: #0b0f0d;
+    --surface: #131a16;
+    --surface-2: #1a2420;
+    --line: #26332c;
+    --amber: #f0a202;
+    --amber-dim: #8a6417;
+    --amber-glow: rgba(240,162,2,0.35);
+    --green: #4caf6e;
+    --red: #d64550;
+    --text: #ece7da;
+    --text-dim: #8d9690;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Hiragino Sans", "Yu Gothic", -apple-system, sans-serif;
+    padding: 0 0 60px;
+  }
+  .mono { font-family: "SFMono-Regular", "Menlo", "Consolas", monospace; font-variant-numeric: tabular-nums; }
+  a { color: inherit; }
+
+  header {
+    padding: 16px 16px 18px;
+    border-bottom: 1px solid var(--line);
+  }
+  .back { font-size: 12px; color: var(--text-dim); text-decoration: none; }
+  .back:active { color: var(--amber); }
+  h1 { font-size: 18px; margin: 10px 0 4px; font-weight: 800; }
+  .race-meta { font-size: 11.5px; color: var(--text-dim); }
+  .race-meta .mono { color: var(--text-dim); }
+
+  main { max-width: 760px; margin: 0 auto; padding: 0 14px; }
+
+  .section-title {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--amber-dim);
+    margin: 28px 0 10px;
+    display: flex; align-items: baseline; gap: 8px;
+  }
+  .section-title::after { content:""; flex:1; height:1px; background:var(--line); }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+  }
+  .summary-text { font-size: 13px; line-height: 1.75; color: var(--text-dim); }
+
+  /* --- 最も期待値が高い買い目：signature element --- */
+  .best-bet {
+    position: relative;
+    background: linear-gradient(180deg, #1a1408 0%, var(--surface) 70%);
+    border: 1px solid var(--amber-dim);
+    box-shadow: 0 0 0 1px rgba(240,162,2,0.08), 0 8px 24px -12px var(--amber-glow);
+  }
+  .best-bet .tag {
+    font-size: 10.5px; font-weight: 800; letter-spacing: 0.1em;
+    color: var(--amber); text-transform: uppercase;
+  }
+  .best-bet .type { font-size: 11px; color: var(--text-dim); margin-top: 6px; }
+  .best-bet .horses {
+    font-size: 20px; font-weight: 800; margin: 6px 0 10px;
+    color: var(--text);
+  }
+  .best-bet .stat-row { display: flex; }
+  .best-bet .stat { margin-right: 22px; }
+  .best-bet .stat .label { font-size: 10px; color: var(--text-dim); letter-spacing: 0.05em; }
+  .best-bet .stat .value { font-size: 17px; font-weight: 800; margin-top: 2px; }
+  .best-bet .stat.ev .value { color: var(--amber); }
+
+  /* --- 穴馬候補 --- */
+  .dark-horse-card { border-left: 3px solid var(--green); }
+  .dark-horse-item { padding: 9px 0; border-bottom: 1px solid var(--line); }
+  .dark-horse-item:last-child { border-bottom: none; }
+  .dh-name { font-weight: 700; font-size: 14px; }
+  .dh-badge {
+    display: inline-block; font-size: 10px; font-weight: 700;
+    background: rgba(76,175,110,0.14); color: var(--green);
+    border: 1px solid #2e5c3e; border-radius: 3px; padding: 1px 7px; margin-left: 7px;
+  }
+  .dh-stats { font-size: 11.5px; color: var(--text-dim); margin-top: 3px; }
+
+  /* --- 出走馬一覧 --- */
+  .horse-item { padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .horse-item:last-child { border-bottom: none; }
+  .horse-head { display: flex; justify-content: space-between; align-items: baseline; }
+  .horse-name { font-weight: 700; font-size: 14px; }
+  .horse-num { color: var(--amber-dim); margin-right: 4px; }
+  .horse-prob { font-size: 13px; font-weight: 700; color: var(--green); }
+  .horse-reason { font-size: 12px; color: var(--text-dim); margin-top: 5px; line-height: 1.65; }
+
+  /* --- EVテーブル --- */
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th {
+    background: var(--surface-2);
+    color: var(--text-dim);
+    font-weight: 700;
+    font-size: 10.5px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 8px 6px;
+    border-bottom: 1px solid var(--line);
+  }
+  td {
+    padding: 8px 6px;
+    text-align: center;
+    border-bottom: 1px solid var(--line);
+  }
+  td.horses-cell { text-align: left; }
+  tr:last-child td { border-bottom: none; }
+  td.ev-cell { color: var(--green); font-weight: 700; }
+
+  /* --- WIN5 --- */
+  .win5-row { font-size: 12.5px; padding: 7px 0; border-bottom: 1px dashed var(--line); }
+  .win5-row:last-child { border-bottom: none; }
+  .win5-rank { display: inline-block; width: 18px; color: var(--amber-dim); }
+
+  .disclaimer {
+    margin-top: 26px;
+    font-size: 11px;
+    color: var(--text-dim);
+    text-align: center;
+    line-height: 1.7;
+  }
+</style>
+</head>
+<body>
+<header>
+  <a class="back" href="../index.html">← 今週のレース一覧</a>
+  <h1>None R　3歳未勝利</h1>
+  <div class="race-meta mono">None1400m ／ 馬場:- ／ 天候:晴</div>
+</header>
+
+<main>
+  <div class="card summary-text">逃げ馬が3頭おり、先行争いが激化しやすくハイペース濃厚。差し・追込馬にも展開の恩恵が期待できる。</div>
+
+  
+  <div class="section-title">Best Value</div>
+  <div class="card best-bet">
+    <div class="tag">最も期待値が高い買い目</div>
+    <div class="type">3連単</div>
+    <div class="horses">サカトクフェイス → ウェンロック → キングズテイル</div>
+    <div class="stat-row mono">
+      <div class="stat"><div class="label">ODDS</div><div class="value">40080.6</div></div>
+      <div class="stat"><div class="label">WIN%</div><div class="value">0.0%</div></div>
+      <div class="stat ev"><div class="label">EV</div><div class="value">804%</div></div>
+    </div>
+  </div>
+  
+
+  
+  <div class="section-title">Dark Horses</div>
+  <div class="card dark-horse-card">
+    
+    <div class="dark-horse-item">
+      <span class="dh-name">ハツアカネ</span><span class="dh-badge">9番人気</span>
+      <div class="dh-stats mono">ODDS 75.8 ／ WIN% 2.6% ／ EV 195%</div>
+    </div>
+    
+    <div class="dark-horse-item">
+      <span class="dh-name">メイショウヒタカミ</span><span class="dh-badge">6番人気</span>
+      <div class="dh-stats mono">ODDS 20.9 ／ WIN% 8.0% ／ EV 168%</div>
+    </div>
+    
+    <div class="dark-horse-item">
+      <span class="dh-name">ウェンロック</span><span class="dh-badge">5番人気</span>
+      <div class="dh-stats mono">ODDS 15.7 ／ WIN% 8.5% ／ EV 133%</div>
+    </div>
+    
+    <div class="dark-horse-item">
+      <span class="dh-name">オーロラボレアリス</span><span class="dh-badge">7番人気</span>
+      <div class="dh-stats mono">ODDS 21.6 ／ WIN% 6.0% ／ EV 130%</div>
+    </div>
+    
+    <div class="dark-horse-item">
+      <span class="dh-name">サカトクフェイス</span><span class="dh-badge">11番人気</span>
+      <div class="dh-stats mono">ODDS 100.1 ／ WIN% 1.3% ／ EV 128%</div>
+    </div>
+    
+    <div class="dark-horse-item">
+      <span class="dh-name">メイショウケンゴウ</span><span class="dh-badge">13番人気</span>
+      <div class="dh-stats mono">ODDS 149.6 ／ WIN% 0.8% ／ EV 117%</div>
+    </div>
+    
+    <div class="dark-horse-item">
+      <span class="dh-name">サンロンブル</span><span class="dh-badge">10番人気</span>
+      <div class="dh-stats mono">ODDS 81.3 ／ WIN% 1.4% ／ EV 114%</div>
+    </div>
+    
+    <div class="dark-horse-item">
+      <span class="dh-name">デュードロップ</span><span class="dh-badge">8番人気</span>
+      <div class="dh-stats mono">ODDS 71.4 ／ WIN% 1.5% ／ EV 106%</div>
+    </div>
+    
+  </div>
+  
+
+  <div class="section-title">出走馬</div>
+  <div class="card">
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">7</span>セッシュウ</span>
+        <span class="horse-prob mono">86%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約86%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は2.3着と好調を維持。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">1</span>キングズテイル</span>
+        <span class="horse-prob mono">43%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約43%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は3.0着と好調を維持。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">10</span>ラッキーヴォーグ</span>
+        <span class="horse-prob mono">25%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約25%。逃げ脚質だが、このレースは逃げ馬が3頭おり先行争いが激しくなりペースが速まる可能性があるため、スタミナ面がやや不安要素。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">2</span>プペアンビスキュイ</span>
+        <span class="horse-prob mono">24%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約24%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">14</span>ウェンロック</span>
+        <span class="horse-prob mono">22%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約22%。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">8</span>メイショウヒタカミ</span>
+        <span class="horse-prob mono">21%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約21%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">3</span>オーロラボレアリス</span>
+        <span class="horse-prob mono">16%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約16%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">5</span>ハツアカネ</span>
+        <span class="horse-prob mono">7%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約7%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">9</span>デュードロップ</span>
+        <span class="horse-prob mono">4%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約4%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は12.3着とやや不振。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">15</span>サンロンブル</span>
+        <span class="horse-prob mono">4%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約4%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は11.0着とやや不振。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">13</span>サカトクフェイス</span>
+        <span class="horse-prob mono">3%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約3%。逃げ脚質だが、このレースは逃げ馬が3頭おり先行争いが激しくなりペースが速まる可能性があるため、スタミナ面がやや不安要素。直近3走の平均着順は10.3着とやや不振。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">16</span>メイショウケンゴウ</span>
+        <span class="horse-prob mono">2%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約2%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は8.7着とやや不振。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">12</span>サウンドヴィヴァン</span>
+        <span class="horse-prob mono">2%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約2%。逃げ脚質だが、このレースは逃げ馬が3頭おり先行争いが激しくなりペースが速まる可能性があるため、スタミナ面がやや不安要素。直近3走の平均着順は13.0着とやや不振。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">4</span>カツラコマチ</span>
+        <span class="horse-prob mono">1%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約1%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は10.0着とやや不振。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">11</span>メイショウドキョウ</span>
+        <span class="horse-prob mono">1%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約1%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は14.0着とやや不振。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">6</span>グランブリーゼ</span>
+        <span class="horse-prob mono">1%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約1%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は14.0着とやや不振。</div>
+    </div>
+    
+  </div>
+
+  <div class="section-title">買い目一覧（EV100%超）</div>
+  
+  <div class="card" style="padding:0; overflow:hidden;">
+    <table>
+      <thead><tr><th colspan="4" style="text-align:left; padding-left:12px;">単勝</th></tr>
+      <tr><th>買い目</th><th>ODDS</th><th>WIN%</th><th>EV</th></tr></thead>
+      <tbody>
+        
+        <tr>
+          <td class="horses-cell">ハツアカネ</td>
+          <td class="mono">75.8</td>
+          <td class="mono">2.6%</td>
+          <td class="ev-cell mono">195%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">メイショウヒタカミ</td>
+          <td class="mono">20.9</td>
+          <td class="mono">8.0%</td>
+          <td class="ev-cell mono">168%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ウェンロック</td>
+          <td class="mono">15.7</td>
+          <td class="mono">8.5%</td>
+          <td class="ev-cell mono">133%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">オーロラボレアリス</td>
+          <td class="mono">21.6</td>
+          <td class="mono">6.0%</td>
+          <td class="ev-cell mono">130%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ラッキーヴォーグ</td>
+          <td class="mono">13.5</td>
+          <td class="mono">9.6%</td>
+          <td class="ev-cell mono">130%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">サカトクフェイス</td>
+          <td class="mono">100.1</td>
+          <td class="mono">1.3%</td>
+          <td class="ev-cell mono">128%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">プペアンビスキュイ</td>
+          <td class="mono">12.9</td>
+          <td class="mono">9.3%</td>
+          <td class="ev-cell mono">120%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">メイショウケンゴウ</td>
+          <td class="mono">149.6</td>
+          <td class="mono">0.8%</td>
+          <td class="ev-cell mono">117%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">サンロンブル</td>
+          <td class="mono">81.3</td>
+          <td class="mono">1.4%</td>
+          <td class="ev-cell mono">114%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">デュードロップ</td>
+          <td class="mono">71.4</td>
+          <td class="mono">1.5%</td>
+          <td class="ev-cell mono">106%</td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+  
+  <div class="card" style="padding:0; overflow:hidden;">
+    <table>
+      <thead><tr><th colspan="4" style="text-align:left; padding-left:12px;">馬連</th></tr>
+      <tr><th>買い目</th><th>ODDS</th><th>WIN%</th><th>EV</th></tr></thead>
+      <tbody>
+        
+        <tr>
+          <td class="horses-cell">ラッキーヴォーグ - ウェンロック</td>
+          <td class="mono">193.5</td>
+          <td class="mono">1.8%</td>
+          <td class="ev-cell mono">346%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">メイショウヒタカミ - ウェンロック</td>
+          <td class="mono">221.9</td>
+          <td class="mono">1.5%</td>
+          <td class="ev-cell mono">330%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ハツアカネ - ウェンロック</td>
+          <td class="mono">644.1</td>
+          <td class="mono">0.5%</td>
+          <td class="ev-cell mono">298%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ウェンロック - キングズテイル</td>
+          <td class="mono">79.4</td>
+          <td class="mono">3.2%</td>
+          <td class="ev-cell mono">253%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">プペアンビスキュイ - ウェンロック</td>
+          <td class="mono">129.9</td>
+          <td class="mono">1.7%</td>
+          <td class="ev-cell mono">225%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">オーロラボレアリス - ウェンロック</td>
+          <td class="mono">203.8</td>
+          <td class="mono">1.1%</td>
+          <td class="ev-cell mono">224%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ハツアカネ - ラッキーヴォーグ</td>
+          <td class="mono">419.2</td>
+          <td class="mono">0.5%</td>
+          <td class="ev-cell mono">221%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">サカトクフェイス - ウェンロック</td>
+          <td class="mono">929.0</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">213%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">メイショウヒタカミ - プペアンビスキュイ</td>
+          <td class="mono">124.7</td>
+          <td class="mono">1.6%</td>
+          <td class="ev-cell mono">205%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ハツアカネ - メイショウヒタカミ</td>
+          <td class="mono">453.3</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">198%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">メイショウヒタカミ - ラッキーヴォーグ</td>
+          <td class="mono">110.1</td>
+          <td class="mono">1.7%</td>
+          <td class="ev-cell mono">187%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">メイショウヒタカミ - キングズテイル</td>
+          <td class="mono">57.8</td>
+          <td class="mono">3.0%</td>
+          <td class="ev-cell mono">174%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ハツアカネ - キングズテイル</td>
+          <td class="mono">183.3</td>
+          <td class="mono">0.9%</td>
+          <td class="ev-cell mono">172%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">プペアンビスキュイ - ラッキーヴォーグ</td>
+          <td class="mono">83.9</td>
+          <td class="mono">2.0%</td>
+          <td class="ev-cell mono">166%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">メイショウヒタカミ - サカトクフェイス</td>
+          <td class="mono">739.4</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">160%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">サカトクフェイス - プペアンビスキュイ</td>
+          <td class="mono">627.4</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">158%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">デュードロップ - ウェンロック</td>
+          <td class="mono">598.8</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">158%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">メイショウケンゴウ - ウェンロック</td>
+          <td class="mono">1132.2</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">158%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">サカトクフェイス - ラッキーヴォーグ</td>
+          <td class="mono">600.5</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">157%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">メイショウヒタカミ - オーロラボレアリス</td>
+          <td class="mono">148.9</td>
+          <td class="mono">1.0%</td>
+          <td class="ev-cell mono">155%</td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+  
+  <div class="card" style="padding:0; overflow:hidden;">
+    <table>
+      <thead><tr><th colspan="4" style="text-align:left; padding-left:12px;">馬単</th></tr>
+      <tr><th>買い目</th><th>ODDS</th><th>WIN%</th><th>EV</th></tr></thead>
+      <tbody>
+        
+        <tr>
+          <td class="horses-cell">サカトクフェイス → ウェンロック</td>
+          <td class="mono">4499.2</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">496%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ハツアカネ → ウェンロック</td>
+          <td class="mono">1766.3</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">396%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">メイショウヒタカミ → ウェンロック</td>
+          <td class="mono">520.6</td>
+          <td class="mono">0.7%</td>
+          <td class="ev-cell mono">386%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">オーロラボレアリス → ウェンロック</td>
+          <td class="mono">677.4</td>
+          <td class="mono">0.5%</td>
+          <td class="ev-cell mono">367%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ウェンロック → ラッキーヴォーグ</td>
+          <td class="mono">392.8</td>
+          <td class="mono">0.9%</td>
+          <td class="ev-cell mono">350%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ウェンロック → メイショウヒタカミ</td>
+          <td class="mono">455.9</td>
+          <td class="mono">0.7%</td>
+          <td class="ev-cell mono">340%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ラッキーヴォーグ → ウェンロック</td>
+          <td class="mono">373.1</td>
+          <td class="mono">0.9%</td>
+          <td class="ev-cell mono">336%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ウェンロック → ハツアカネ</td>
+          <td class="mono">1378.3</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">329%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">メイショウケンゴウ → ウェンロック</td>
+          <td class="mono">4866.5</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">326%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ウェンロック → オーロラボレアリス</td>
+          <td class="mono">571.8</td>
+          <td class="mono">0.6%</td>
+          <td class="ev-cell mono">318%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ウェンロック → サカトクフェイス</td>
+          <td class="mono">2536.8</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">302%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ハツアカネ → ラッキーヴォーグ</td>
+          <td class="mono">1180.5</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">299%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ハツアカネ → メイショウヒタカミ</td>
+          <td class="mono">1347.2</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">286%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">サカトクフェイス → ラッキーヴォーグ</td>
+          <td class="mono">2292.9</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">286%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">メイショウヒタカミ → プペアンビスキュイ</td>
+          <td class="mono">345.5</td>
+          <td class="mono">0.8%</td>
+          <td class="ev-cell mono">281%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ハツアカネ → プペアンビスキュイ</td>
+          <td class="mono">1098.9</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">270%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">サカトクフェイス → プペアンビスキュイ</td>
+          <td class="mono">2228.6</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">270%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">メイショウケンゴウ → ラッキーヴォーグ</td>
+          <td class="mono">3455.9</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">262%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">グランブリーゼ → ウェンロック</td>
+          <td class="mono">14903.8</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">258%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">サンロンブル → ウェンロック</td>
+          <td class="mono">2129.1</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">256%</td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+  
+  <div class="card" style="padding:0; overflow:hidden;">
+    <table>
+      <thead><tr><th colspan="4" style="text-align:left; padding-left:12px;">3連複</th></tr>
+      <tr><th>買い目</th><th>ODDS</th><th>WIN%</th><th>EV</th></tr></thead>
+      <tbody>
+        
+        <tr>
+          <td class="horses-cell">メイショウヒタカミ - サカトクフェイス - ウェンロック</td>
+          <td class="mono">5393.7</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">343%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ハツアカネ - ラッキーヴォーグ - ウェンロック</td>
+          <td class="mono">2059.6</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">323%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">サカトクフェイス - オーロラボレアリス - ウェンロック</td>
+          <td class="mono">6959.6</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">323%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">メイショウヒタカミ - ウェンロック - キングズテイル</td>
+          <td class="mono">327.3</td>
+          <td class="mono">1.0%</td>
+          <td class="ev-cell mono">319%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">メイショウヒタカミ - プペアンビスキュイ - ウェンロック</td>
+          <td class="mono">627.1</td>
+          <td class="mono">0.5%</td>
+          <td class="ev-cell mono">316%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ハツアカネ - メイショウヒタカミ - ウェンロック</td>
+          <td class="mono">2437.8</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">315%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">プペアンビスキュイ - ウェンロック - ラッキーヴォーグ</td>
+          <td class="mono">500.2</td>
+          <td class="mono">0.6%</td>
+          <td class="ev-cell mono">306%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">メイショウヒタカミ - ラッキーヴォーグ - ウェンロック</td>
+          <td class="mono">581.1</td>
+          <td class="mono">0.5%</td>
+          <td class="ev-cell mono">303%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ラッキーヴォーグ - ウェンロック - キングズテイル</td>
+          <td class="mono">255.5</td>
+          <td class="mono">1.2%</td>
+          <td class="ev-cell mono">302%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">オーロラボレアリス - ウェンロック - キングズテイル</td>
+          <td class="mono">417.3</td>
+          <td class="mono">0.7%</td>
+          <td class="ev-cell mono">296%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">メイショウヒタカミ - オーロラボレアリス - ウェンロック</td>
+          <td class="mono">936.0</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">293%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ハツアカネ - ウェンロック - キングズテイル</td>
+          <td class="mono">997.6</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">292%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">オーロラボレアリス - ウェンロック - ラッキーヴォーグ</td>
+          <td class="mono">761.6</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">290%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">プペアンビスキュイ - ウェンロック - キングズテイル</td>
+          <td class="mono">233.3</td>
+          <td class="mono">1.1%</td>
+          <td class="ev-cell mono">267%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">オーロラボレアリス - プペアンビスキュイ - ウェンロック</td>
+          <td class="mono">722.7</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">266%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ハツアカネ - オーロラボレアリス - ウェンロック</td>
+          <td class="mono">2748.3</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">259%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ハツアカネ - プペアンビスキュイ - ウェンロック</td>
+          <td class="mono">1569.0</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">238%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">メイショウヒタカミ - サカトクフェイス - プペアンビスキュイ</td>
+          <td class="mono">3293.8</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">232%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">メイショウケンゴウ - プペアンビスキュイ - ウェンロック</td>
+          <td class="mono">5046.7</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">229%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">サカトクフェイス - ウェンロック - キングズテイル</td>
+          <td class="mono">1538.3</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">222%</td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+  
+  <div class="card" style="padding:0; overflow:hidden;">
+    <table>
+      <thead><tr><th colspan="4" style="text-align:left; padding-left:12px;">3連単</th></tr>
+      <tr><th>買い目</th><th>ODDS</th><th>WIN%</th><th>EV</th></tr></thead>
+      <tbody>
+        
+        <tr>
+          <td class="horses-cell">サカトクフェイス → ウェンロック → キングズテイル</td>
+          <td class="mono">40080.6</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">804%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">メイショウヒタカミ → ハツアカネ → ウェンロック</td>
+          <td class="mono">37316.5</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">797%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">サカトクフェイス → キングズテイル → ウェンロック</td>
+          <td class="mono">36072.6</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">793%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">メイショウドキョウ → ウェンロック → プペアンビスキュイ</td>
+          <td class="mono">270544.6</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">768%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">メイショウヒタカミ → サカトクフェイス → ウェンロック</td>
+          <td class="mono">72145.2</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">757%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ウェンロック → サカトクフェイス → ラッキーヴォーグ</td>
+          <td class="mono">56956.7</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">720%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ハツアカネ → ウェンロック → メイショウヒタカミ</td>
+          <td class="mono">34908.9</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">707%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">メイショウドキョウ → ラッキーヴォーグ → プペアンビスキュイ</td>
+          <td class="mono">216435.7</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">703%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ウェンロック → サカトクフェイス → キングズテイル</td>
+          <td class="mono">30919.3</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">669%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">サカトクフェイス → ウェンロック → ラッキーヴォーグ</td>
+          <td class="mono">56956.7</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">668%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">メイショウドキョウ → ウェンロック → メイショウヒタカミ</td>
+          <td class="mono">270544.6</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">663%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">メイショウドキョウ → メイショウヒタカミ → ウェンロック</td>
+          <td class="mono">270544.6</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">660%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">メイショウヒタカミ → ウェンロック → プペアンビスキュイ</td>
+          <td class="mono">7841.8</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">649%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ハツアカネ → サカトクフェイス → ウェンロック</td>
+          <td class="mono">216435.7</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">647%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">サカトクフェイス → ラッキーヴォーグ → ウェンロック</td>
+          <td class="mono">54108.9</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">642%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">オーロラボレアリス → ウェンロック → キングズテイル</td>
+          <td class="mono">6148.7</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">640%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ハツアカネ → ウェンロック → キングズテイル</td>
+          <td class="mono">15459.6</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">639%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ラッキーヴォーグ → サカトクフェイス → ウェンロック</td>
+          <td class="mono">49189.9</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">638%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">メイショウヒタカミ → ウェンロック → キングズテイル</td>
+          <td class="mono">4277.3</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">625%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ハツアカネ → メイショウヒタカミ → ウェンロック</td>
+          <td class="mono">30919.3</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">624%</td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+  
+
+  
+
+  <div class="disclaimer">本ページの予想は参考情報です。的中・利益を保証しません。<br>馬券の購入は必ずご自身でIPAT等の公式ルートから行ってください。</div>
+</main>
+</body>
+</html>

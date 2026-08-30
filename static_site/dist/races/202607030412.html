@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3歳以上1勝クラス 予想 | keiba-predict</title>
+<style>
+  :root {
+    --bg: #0b0f0d;
+    --surface: #131a16;
+    --surface-2: #1a2420;
+    --line: #26332c;
+    --amber: #f0a202;
+    --amber-dim: #8a6417;
+    --amber-glow: rgba(240,162,2,0.35);
+    --green: #4caf6e;
+    --red: #d64550;
+    --text: #ece7da;
+    --text-dim: #8d9690;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Hiragino Sans", "Yu Gothic", -apple-system, sans-serif;
+    padding: 0 0 60px;
+  }
+  .mono { font-family: "SFMono-Regular", "Menlo", "Consolas", monospace; font-variant-numeric: tabular-nums; }
+  a { color: inherit; }
+
+  header {
+    padding: 16px 16px 18px;
+    border-bottom: 1px solid var(--line);
+  }
+  .back { font-size: 12px; color: var(--text-dim); text-decoration: none; }
+  .back:active { color: var(--amber); }
+  h1 { font-size: 18px; margin: 10px 0 4px; font-weight: 800; }
+  .race-meta { font-size: 11.5px; color: var(--text-dim); }
+  .race-meta .mono { color: var(--text-dim); }
+
+  main { max-width: 760px; margin: 0 auto; padding: 0 14px; }
+
+  .section-title {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--amber-dim);
+    margin: 28px 0 10px;
+    display: flex; align-items: baseline; gap: 8px;
+  }
+  .section-title::after { content:""; flex:1; height:1px; background:var(--line); }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+  }
+  .summary-text { font-size: 13px; line-height: 1.75; color: var(--text-dim); }
+
+  /* --- 最も期待値が高い買い目：signature element --- */
+  .best-bet {
+    position: relative;
+    background: linear-gradient(180deg, #1a1408 0%, var(--surface) 70%);
+    border: 1px solid var(--amber-dim);
+    box-shadow: 0 0 0 1px rgba(240,162,2,0.08), 0 8px 24px -12px var(--amber-glow);
+  }
+  .best-bet .tag {
+    font-size: 10.5px; font-weight: 800; letter-spacing: 0.1em;
+    color: var(--amber); text-transform: uppercase;
+  }
+  .best-bet .type { font-size: 11px; color: var(--text-dim); margin-top: 6px; }
+  .best-bet .horses {
+    font-size: 20px; font-weight: 800; margin: 6px 0 10px;
+    color: var(--text);
+  }
+  .best-bet .stat-row { display: flex; }
+  .best-bet .stat { margin-right: 22px; }
+  .best-bet .stat .label { font-size: 10px; color: var(--text-dim); letter-spacing: 0.05em; }
+  .best-bet .stat .value { font-size: 17px; font-weight: 800; margin-top: 2px; }
+  .best-bet .stat.ev .value { color: var(--amber); }
+
+  /* --- 穴馬候補 --- */
+  .dark-horse-card { border-left: 3px solid var(--green); }
+  .dark-horse-item { padding: 9px 0; border-bottom: 1px solid var(--line); }
+  .dark-horse-item:last-child { border-bottom: none; }
+  .dh-name { font-weight: 700; font-size: 14px; }
+  .dh-badge {
+    display: inline-block; font-size: 10px; font-weight: 700;
+    background: rgba(76,175,110,0.14); color: var(--green);
+    border: 1px solid #2e5c3e; border-radius: 3px; padding: 1px 7px; margin-left: 7px;
+  }
+  .dh-stats { font-size: 11.5px; color: var(--text-dim); margin-top: 3px; }
+
+  /* --- 出走馬一覧 --- */
+  .horse-item { padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .horse-item:last-child { border-bottom: none; }
+  .horse-head { display: flex; justify-content: space-between; align-items: baseline; }
+  .horse-name { font-weight: 700; font-size: 14px; }
+  .horse-num { color: var(--amber-dim); margin-right: 4px; }
+  .horse-prob { font-size: 13px; font-weight: 700; color: var(--green); }
+  .horse-reason { font-size: 12px; color: var(--text-dim); margin-top: 5px; line-height: 1.65; }
+
+  /* --- EVテーブル --- */
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th {
+    background: var(--surface-2);
+    color: var(--text-dim);
+    font-weight: 700;
+    font-size: 10.5px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 8px 6px;
+    border-bottom: 1px solid var(--line);
+  }
+  td {
+    padding: 8px 6px;
+    text-align: center;
+    border-bottom: 1px solid var(--line);
+  }
+  td.horses-cell { text-align: left; }
+  tr:last-child td { border-bottom: none; }
+  td.ev-cell { color: var(--green); font-weight: 700; }
+
+  /* --- WIN5 --- */
+  .win5-row { font-size: 12.5px; padding: 7px 0; border-bottom: 1px dashed var(--line); }
+  .win5-row:last-child { border-bottom: none; }
+  .win5-rank { display: inline-block; width: 18px; color: var(--amber-dim); }
+
+  .disclaimer {
+    margin-top: 26px;
+    font-size: 11px;
+    color: var(--text-dim);
+    text-align: center;
+    line-height: 1.7;
+  }
+</style>
+</head>
+<body>
+<header>
+  <a class="back" href="../index.html">← 今週のレース一覧</a>
+  <h1>None R　3歳以上1勝クラス</h1>
+  <div class="race-meta mono">None1200m ／ 馬場:- ／ 天候:晴</div>
+</header>
+
+<main>
+  <div class="card summary-text">逃げ馬は2頭で、比較的落ち着いたペースが予想される。</div>
+
+  
+  <div class="section-title">Best Value</div>
+  <div class="card best-bet">
+    <div class="tag">最も期待値が高い買い目</div>
+    <div class="type">3連単</div>
+    <div class="horses">ミスヘンリー → ダノンステート → ヒルノプーリア</div>
+    <div class="stat-row mono">
+      <div class="stat"><div class="label">ODDS</div><div class="value">10168.2</div></div>
+      <div class="stat"><div class="label">WIN%</div><div class="value">0.0%</div></div>
+      <div class="stat ev"><div class="label">EV</div><div class="value">458%</div></div>
+    </div>
+  </div>
+  
+
+  
+  <div class="section-title">Dark Horses</div>
+  <div class="card dark-horse-card">
+    
+    <div class="dark-horse-item">
+      <span class="dh-name">ミスヘンリー</span><span class="dh-badge">10番人気</span>
+      <div class="dh-stats mono">ODDS 90.0 ／ WIN% 2.3% ／ EV 208%</div>
+    </div>
+    
+    <div class="dark-horse-item">
+      <span class="dh-name">レジェンダリーデイ</span><span class="dh-badge">9番人気</span>
+      <div class="dh-stats mono">ODDS 81.3 ／ WIN% 2.2% ／ EV 178%</div>
+    </div>
+    
+    <div class="dark-horse-item">
+      <span class="dh-name">サヨノパララックス</span><span class="dh-badge">12番人気</span>
+      <div class="dh-stats mono">ODDS 152.2 ／ WIN% 1.1% ／ EV 167%</div>
+    </div>
+    
+    <div class="dark-horse-item">
+      <span class="dh-name">モノノケ</span><span class="dh-badge">11番人気</span>
+      <div class="dh-stats mono">ODDS 107.3 ／ WIN% 1.5% ／ EV 162%</div>
+    </div>
+    
+    <div class="dark-horse-item">
+      <span class="dh-name">グラスゴー</span><span class="dh-badge">8番人気</span>
+      <div class="dh-stats mono">ODDS 30.9 ／ WIN% 5.1% ／ EV 157%</div>
+    </div>
+    
+    <div class="dark-horse-item">
+      <span class="dh-name">ダノンステート</span><span class="dh-badge">6番人気</span>
+      <div class="dh-stats mono">ODDS 19.8 ／ WIN% 7.2% ／ EV 142%</div>
+    </div>
+    
+    <div class="dark-horse-item">
+      <span class="dh-name">メラヴィリオーザ</span><span class="dh-badge">13番人気</span>
+      <div class="dh-stats mono">ODDS 226.8 ／ WIN% 0.6% ／ EV 140%</div>
+    </div>
+    
+    <div class="dark-horse-item">
+      <span class="dh-name">ヴォンドゥ</span><span class="dh-badge">5番人気</span>
+      <div class="dh-stats mono">ODDS 14.6 ／ WIN% 9.3% ／ EV 136%</div>
+    </div>
+    
+    <div class="dark-horse-item">
+      <span class="dh-name">タイセイブロウ</span><span class="dh-badge">7番人気</span>
+      <div class="dh-stats mono">ODDS 21.0 ／ WIN% 6.0% ／ EV 126%</div>
+    </div>
+    
+  </div>
+  
+
+  <div class="section-title">出走馬</div>
+  <div class="card">
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">11</span>ヒルノプーリア</span>
+        <span class="horse-prob mono">78%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約78%。逃げ脚質で、主導権を握れれば粘り込みが期待できる。直近3走の平均着順は2.3着と好調を維持。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">12</span>ラヴネヴァーダイズ</span>
+        <span class="horse-prob mono">62%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約62%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は2.0着と好調を維持。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">3</span>アーガイルショア</span>
+        <span class="horse-prob mono">35%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約35%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">2</span>オンザノアール</span>
+        <span class="horse-prob mono">34%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約34%。逃げ脚質で、主導権を握れれば粘り込みが期待できる。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">1</span>ヴォンドゥ</span>
+        <span class="horse-prob mono">30%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約30%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">6</span>ダノンステート</span>
+        <span class="horse-prob mono">23%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約23%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">13</span>タイセイブロウ</span>
+        <span class="horse-prob mono">19%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約19%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">10</span>グラスゴー</span>
+        <span class="horse-prob mono">17%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約17%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">7</span>ミスヘンリー</span>
+        <span class="horse-prob mono">7%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約7%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">8</span>レジェンダリーデイ</span>
+        <span class="horse-prob mono">7%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約7%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は8.0着とやや不振。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">5</span>モノノケ</span>
+        <span class="horse-prob mono">5%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約5%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は9.3着とやや不振。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">4</span>サヨノパララックス</span>
+        <span class="horse-prob mono">4%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約4%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は8.7着とやや不振。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">9</span>メラヴィリオーザ</span>
+        <span class="horse-prob mono">2%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約2%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">14</span>パワポケビー</span>
+        <span class="horse-prob mono">1%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約1%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は12.3着とやや不振。</div>
+    </div>
+    
+  </div>
+
+  <div class="section-title">買い目一覧（EV100%超）</div>
+  
+  <div class="card" style="padding:0; overflow:hidden;">
+    <table>
+      <thead><tr><th colspan="4" style="text-align:left; padding-left:12px;">単勝</th></tr>
+      <tr><th>買い目</th><th>ODDS</th><th>WIN%</th><th>EV</th></tr></thead>
+      <tbody>
+        
+        <tr>
+          <td class="horses-cell">ミスヘンリー</td>
+          <td class="mono">90.0</td>
+          <td class="mono">2.3%</td>
+          <td class="ev-cell mono">208%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">レジェンダリーデイ</td>
+          <td class="mono">81.3</td>
+          <td class="mono">2.2%</td>
+          <td class="ev-cell mono">178%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">サヨノパララックス</td>
+          <td class="mono">152.2</td>
+          <td class="mono">1.1%</td>
+          <td class="ev-cell mono">167%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">モノノケ</td>
+          <td class="mono">107.3</td>
+          <td class="mono">1.5%</td>
+          <td class="ev-cell mono">162%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">グラスゴー</td>
+          <td class="mono">30.9</td>
+          <td class="mono">5.1%</td>
+          <td class="ev-cell mono">157%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ダノンステート</td>
+          <td class="mono">19.8</td>
+          <td class="mono">7.2%</td>
+          <td class="ev-cell mono">142%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">オンザノアール</td>
+          <td class="mono">13.5</td>
+          <td class="mono">10.5%</td>
+          <td class="ev-cell mono">142%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">メラヴィリオーザ</td>
+          <td class="mono">226.8</td>
+          <td class="mono">0.6%</td>
+          <td class="ev-cell mono">140%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ヴォンドゥ</td>
+          <td class="mono">14.6</td>
+          <td class="mono">9.3%</td>
+          <td class="ev-cell mono">136%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">アーガイルショア</td>
+          <td class="mono">12.2</td>
+          <td class="mono">10.7%</td>
+          <td class="ev-cell mono">130%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">タイセイブロウ</td>
+          <td class="mono">21.0</td>
+          <td class="mono">6.0%</td>
+          <td class="ev-cell mono">126%</td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+  
+  <div class="card" style="padding:0; overflow:hidden;">
+    <table>
+      <thead><tr><th colspan="4" style="text-align:left; padding-left:12px;">馬連</th></tr>
+      <tr><th>買い目</th><th>ODDS</th><th>WIN%</th><th>EV</th></tr></thead>
+      <tbody>
+        
+        <tr>
+          <td class="horses-cell">ミスヘンリー - ダノンステート</td>
+          <td class="mono">737.8</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">257%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">タイセイブロウ - ダノンステート</td>
+          <td class="mono">257.1</td>
+          <td class="mono">0.9%</td>
+          <td class="ev-cell mono">237%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ミスヘンリー - オンザノアール</td>
+          <td class="mono">451.9</td>
+          <td class="mono">0.5%</td>
+          <td class="ev-cell mono">235%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">タイセイブロウ - オンザノアール</td>
+          <td class="mono">156.1</td>
+          <td class="mono">1.4%</td>
+          <td class="ev-cell mono">215%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">グラスゴー - ダノンステート</td>
+          <td class="mono">258.9</td>
+          <td class="mono">0.8%</td>
+          <td class="ev-cell mono">202%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">オンザノアール - グラスゴー</td>
+          <td class="mono">168.7</td>
+          <td class="mono">1.2%</td>
+          <td class="ev-cell mono">196%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ミスヘンリー - タイセイブロウ</td>
+          <td class="mono">653.3</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">189%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ダノンステート - ヴォンドゥ</td>
+          <td class="mono">129.9</td>
+          <td class="mono">1.5%</td>
+          <td class="ev-cell mono">189%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">モノノケ - ヴォンドゥ</td>
+          <td class="mono">607.2</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">180%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">オンザノアール - ダノンステート</td>
+          <td class="mono">107.8</td>
+          <td class="mono">1.7%</td>
+          <td class="ev-cell mono">179%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">タイセイブロウ - アーガイルショア</td>
+          <td class="mono">127.3</td>
+          <td class="mono">1.4%</td>
+          <td class="ev-cell mono">178%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">レジェンダリーデイ - アーガイルショア</td>
+          <td class="mono">354.7</td>
+          <td class="mono">0.5%</td>
+          <td class="ev-cell mono">177%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">モノノケ - アーガイルショア</td>
+          <td class="mono">512.4</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">176%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">レジェンダリーデイ - ヴォンドゥ</td>
+          <td class="mono">401.6</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">173%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">レジェンダリーデイ - オンザノアール</td>
+          <td class="mono">352.4</td>
+          <td class="mono">0.5%</td>
+          <td class="ev-cell mono">173%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">アーガイルショア - ダノンステート</td>
+          <td class="mono">101.8</td>
+          <td class="mono">1.7%</td>
+          <td class="ev-cell mono">171%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">モノノケ - オンザノアール</td>
+          <td class="mono">506.4</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">171%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">モノノケ - タイセイブロウ</td>
+          <td class="mono">894.2</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">168%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">タイセイブロウ - ヴォンドゥ</td>
+          <td class="mono">135.6</td>
+          <td class="mono">1.2%</td>
+          <td class="ev-cell mono">164%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">レジェンダリーデイ - タイセイブロウ</td>
+          <td class="mono">598.8</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">164%</td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+  
+  <div class="card" style="padding:0; overflow:hidden;">
+    <table>
+      <thead><tr><th colspan="4" style="text-align:left; padding-left:12px;">馬単</th></tr>
+      <tr><th>買い目</th><th>ODDS</th><th>WIN%</th><th>EV</th></tr></thead>
+      <tbody>
+        
+        <tr>
+          <td class="horses-cell">ミスヘンリー → ダノンステート</td>
+          <td class="mono">2448.9</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">416%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ミスヘンリー → オンザノアール</td>
+          <td class="mono">1506.0</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">375%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">タイセイブロウ → ダノンステート</td>
+          <td class="mono">689.9</td>
+          <td class="mono">0.5%</td>
+          <td class="ev-cell mono">317%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">タイセイブロウ → オンザノアール</td>
+          <td class="mono">462.3</td>
+          <td class="mono">0.7%</td>
+          <td class="ev-cell mono">311%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">モノノケ → オンザノアール</td>
+          <td class="mono">1698.9</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">273%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ミスヘンリー → タイセイブロウ</td>
+          <td class="mono">1921.0</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">273%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">レジェンダリーデイ → オンザノアール</td>
+          <td class="mono">1151.8</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">271%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ダノンステート → オンザノアール</td>
+          <td class="mono">319.9</td>
+          <td class="mono">0.8%</td>
+          <td class="ev-cell mono">260%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ダノンステート → タイセイブロウ</td>
+          <td class="mono">554.2</td>
+          <td class="mono">0.5%</td>
+          <td class="ev-cell mono">257%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ダノンステート → ミスヘンリー</td>
+          <td class="mono">1430.7</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">256%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">タイセイブロウ → アーガイルショア</td>
+          <td class="mono">373.6</td>
+          <td class="mono">0.7%</td>
+          <td class="ev-cell mono">255%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">グラスゴー → オンザノアール</td>
+          <td class="mono">432.5</td>
+          <td class="mono">0.6%</td>
+          <td class="ev-cell mono">244%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">グラスゴー → ダノンステート</td>
+          <td class="mono">629.9</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">243%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">モノノケ → ヒルノプーリア</td>
+          <td class="mono">650.3</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">239%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">レジェンダリーデイ → ヴォンドゥ</td>
+          <td class="mono">1142.1</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">237%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">モノノケ → ヴォンドゥ</td>
+          <td class="mono">1622.8</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">231%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">タイセイブロウ → ヴォンドゥ</td>
+          <td class="mono">378.8</td>
+          <td class="mono">0.6%</td>
+          <td class="ev-cell mono">225%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ダノンステート → アーガイルショア</td>
+          <td class="mono">271.6</td>
+          <td class="mono">0.8%</td>
+          <td class="ev-cell mono">224%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">オンザノアール → タイセイブロウ</td>
+          <td class="mono">317.0</td>
+          <td class="mono">0.7%</td>
+          <td class="ev-cell mono">224%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ダノンステート → グラスゴー</td>
+          <td class="mono">567.5</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">224%</td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+  
+  <div class="card" style="padding:0; overflow:hidden;">
+    <table>
+      <thead><tr><th colspan="4" style="text-align:left; padding-left:12px;">3連複</th></tr>
+      <tr><th>買い目</th><th>ODDS</th><th>WIN%</th><th>EV</th></tr></thead>
+      <tbody>
+        
+        <tr>
+          <td class="horses-cell">タイセイブロウ - オンザノアール - ダノンステート</td>
+          <td class="mono">754.5</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">265%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ミスヘンリー - オンザノアール - ダノンステート</td>
+          <td class="mono">1756.2</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">228%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ミスヘンリー - グラスゴー - ダノンステート</td>
+          <td class="mono">3618.6</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">214%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ミスヘンリー - アーガイルショア - ダノンステート</td>
+          <td class="mono">1587.2</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">209%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ミスヘンリー - タイセイブロウ - ダノンステート</td>
+          <td class="mono">2953.0</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">208%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">オンザノアール - ダノンステート - グラスゴー</td>
+          <td class="mono">703.9</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">208%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">アーガイルショア - ダノンステート - グラスゴー</td>
+          <td class="mono">667.7</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">200%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">タイセイブロウ - アーガイルショア - ダノンステート</td>
+          <td class="mono">559.3</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">200%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">グラスゴー - ダノンステート - ヴォンドゥ</td>
+          <td class="mono">769.3</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">198%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">タイセイブロウ - ダノンステート - ヴォンドゥ</td>
+          <td class="mono">636.6</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">195%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ミスヘンリー - タイセイブロウ - オンザノアール</td>
+          <td class="mono">1791.7</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">192%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ミスヘンリー - ダノンステート - ヴォンドゥ</td>
+          <td class="mono">1677.3</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">190%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">オンザノアール - ダノンステート - ヴォンドゥ</td>
+          <td class="mono">320.0</td>
+          <td class="mono">0.6%</td>
+          <td class="ev-cell mono">181%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">タイセイブロウ - グラスゴー - ダノンステート</td>
+          <td class="mono">1124.5</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">180%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">タイセイブロウ - オンザノアール - ヴォンドゥ</td>
+          <td class="mono">384.4</td>
+          <td class="mono">0.5%</td>
+          <td class="ev-cell mono">179%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">タイセイブロウ - オンザノアール - グラスゴー</td>
+          <td class="mono">730.5</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">178%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">オンザノアール - ダノンステート - ヒルノプーリア</td>
+          <td class="mono">99.3</td>
+          <td class="mono">1.8%</td>
+          <td class="ev-cell mono">178%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">アーガイルショア - タイセイブロウ - オンザノアール</td>
+          <td class="mono">325.3</td>
+          <td class="mono">0.5%</td>
+          <td class="ev-cell mono">177%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">レジェンダリーデイ - タイセイブロウ - ダノンステート</td>
+          <td class="mono">2631.4</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">175%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">アーガイルショア - オンザノアール - ダノンステート</td>
+          <td class="mono">265.4</td>
+          <td class="mono">0.7%</td>
+          <td class="ev-cell mono">175%</td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+  
+  <div class="card" style="padding:0; overflow:hidden;">
+    <table>
+      <thead><tr><th colspan="4" style="text-align:left; padding-left:12px;">3連単</th></tr>
+      <tr><th>買い目</th><th>ODDS</th><th>WIN%</th><th>EV</th></tr></thead>
+      <tbody>
+        
+        <tr>
+          <td class="horses-cell">ミスヘンリー → ダノンステート → ヒルノプーリア</td>
+          <td class="mono">10168.2</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">458%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ミスヘンリー → ヒルノプーリア → ダノンステート</td>
+          <td class="mono">7171.8</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">397%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ミスヘンリー → オンザノアール → ヒルノプーリア</td>
+          <td class="mono">5698.8</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">391%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">モノノケ → オンザノアール → ヒルノプーリア</td>
+          <td class="mono">8758.4</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">385%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ミスヘンリー → ダノンステート → アーガイルショア</td>
+          <td class="mono">18791.9</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">376%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">モノノケ → ヒルノプーリア → オンザノアール</td>
+          <td class="mono">7224.1</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">375%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ダノンステート → ミスヘンリー → ヒルノプーリア</td>
+          <td class="mono">7854.8</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">373%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ミスヘンリー → タイセイブロウ → オンザノアール</td>
+          <td class="mono">22493.3</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">367%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">タイセイブロウ → ダノンステート → オンザノアール</td>
+          <td class="mono">6496.9</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">361%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">タイセイブロウ → オンザノアール → ダノンステート</td>
+          <td class="mono">6134.5</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">355%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ミスヘンリー → アーガイルショア → ダノンステート</td>
+          <td class="mono">16966.4</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">353%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">モノノケ → グラスゴー → ヒルノプーリア</td>
+          <td class="mono">17363.3</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">348%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ミスヘンリー → ダノンステート → オンザノアール</td>
+          <td class="mono">17465.4</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">345%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ミスヘンリー → オンザノアール → タイセイブロウ</td>
+          <td class="mono">19794.1</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">339%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">レジェンダリーデイ → アーガイルショア → オンザノアール</td>
+          <td class="mono">11643.6</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">335%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ミスヘンリー → オンザノアール → ダノンステート</td>
+          <td class="mono">16313.8</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">334%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ミスヘンリー → グラスゴー → ダノンステート</td>
+          <td class="mono">35772.6</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">334%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ミスヘンリー → タイセイブロウ → ダノンステート</td>
+          <td class="mono">29991.1</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">334%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ダノンステート → タイセイブロウ → オンザノアール</td>
+          <td class="mono">5891.1</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">332%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">ミスヘンリー → ダノンステート → タイセイブロウ</td>
+          <td class="mono">29397.2</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">331%</td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+  
+
+  
+
+  <div class="disclaimer">本ページの予想は参考情報です。的中・利益を保証しません。<br>馬券の購入は必ずご自身でIPAT等の公式ルートから行ってください。</div>
+</main>
+</body>
+</html>
