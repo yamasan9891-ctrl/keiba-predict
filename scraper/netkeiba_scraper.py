@@ -64,9 +64,21 @@ def _extract_meta_from_soup(race_id: str, soup: BeautifulSoup) -> dict:
         page_text = soup.get_text(" ", strip=True)
         full_text_for_date = full_text + " " + page_text[:500]
 
-    surface_match = re.search(r"(芝|ダート|障害)", data01_text)
+    surface_match = re.search(r"(芝|ダート|ダ|障害)", data01_text)
+    if surface_match and surface_match.group(1) == "ダ":
+        surface_match_value = "ダート"  # 出馬表ページでは「ダ」と略記されるため正式名称に統一
+    elif surface_match:
+        surface_match_value = surface_match.group(1)
+    else:
+        surface_match_value = None
     distance_match = re.search(r"(\d{3,4})m", data01_text)
-    condition_match = re.search(r"馬場[:：]?\s*(良|稍重|重|不良)", full_text)
+    # 出馬表ページでは「稍重」→「稍」、「不良」→「不」のように1文字に省略されることがあるため両対応
+    condition_match = re.search(r"馬場[:：]?\s*(稍重|不良|良|重|稍|不)", full_text)
+    _condition_normalize = {"稍": "稍重", "不": "不良"}
+    condition_value = None
+    if condition_match:
+        raw = condition_match.group(1)
+        condition_value = _condition_normalize.get(raw, raw)
     weather_match = re.search(r"天候[:：]?\s*(晴|曇|雨|小雨|雪)", full_text)
     grade_match = re.search(r"(G1|G2|G3|GI|GII|GIII|Ｇ1|Ｇ2|Ｇ3|OP|オープン|L)", (race_name or "") + full_text)
     is_handicap = 1 if ("ハンデ" in full_text or "ハンデ" in (race_name or "")) else 0
@@ -86,8 +98,8 @@ def _extract_meta_from_soup(race_id: str, soup: BeautifulSoup) -> dict:
         "race_date": race_date,
         "course": course,
         "distance": int(distance_match.group(1)) if distance_match else None,
-        "surface": surface_match.group(1) if surface_match else None,
-        "track_condition": condition_match.group(1) if condition_match else None,
+        "surface": surface_match_value,
+        "track_condition": condition_value,
         "weather": weather_match.group(1) if weather_match else None,
         "is_handicap": is_handicap,
         "race_name": race_name,
