@@ -63,30 +63,66 @@
   }
   .summary-text { font-size: 13px; line-height: 1.75; color: var(--text-dim); }
 
-  /* --- 結論：一番のおすすめ --- */
-  .best-bet {
+  /* --- 結論：馬券風デザイン --- */
+  .ticket {
     position: relative;
     background: linear-gradient(180deg, #1a1408 0%, var(--surface) 70%);
     border: 1px solid var(--amber-dim);
+    border-radius: 10px;
     box-shadow: 0 0 0 1px rgba(240,162,2,0.08), 0 8px 24px -12px var(--amber-glow);
+    padding: 0;
+    overflow: hidden;
   }
-  .best-bet .tag {
-    font-size: 12px; font-weight: 800; color: var(--amber);
+  .ticket-head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 16px; background: rgba(240,162,2,0.08);
+    border-bottom: 1px dashed var(--amber-dim);
   }
-  .best-bet .type {
-    display: inline-block; font-size: 11px; color: var(--bg); background: var(--amber);
-    font-weight: 700; padding: 2px 8px; border-radius: 3px; margin-top: 8px;
+  .ticket-head .label { font-size: 11px; font-weight: 800; color: var(--amber); letter-spacing: 0.05em; }
+  .ticket-head .type-badge {
+    font-size: 11px; color: var(--bg); background: var(--amber);
+    font-weight: 800; padding: 3px 10px; border-radius: 3px;
   }
-  .best-bet .horses {
-    font-size: 21px; font-weight: 800; margin: 8px 0 12px;
-    color: var(--text); line-height: 1.4;
+  .ticket-body { padding: 16px; }
+  .ticket .horses {
+    font-size: 20px; font-weight: 800; margin: 0 0 14px;
+    color: var(--text); line-height: 1.45;
   }
-  .best-bet .stat-row { display: flex; }
-  .best-bet .stat { margin-right: 24px; }
-  .best-bet .stat .label { font-size: 10.5px; color: var(--text-dim); }
-  .best-bet .stat .value { font-size: 18px; font-weight: 800; margin-top: 2px; }
-  .best-bet .stat.ev .value { color: var(--amber); }
-  .best-bet .footnote { font-size: 11px; color: var(--text-dim); margin-top: 12px; line-height: 1.6; border-top: 1px solid var(--line); padding-top: 10px; }
+  .ticket-stats {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+    padding: 12px 0; border-top: 1px dashed var(--line); border-bottom: 1px dashed var(--line);
+  }
+  .ticket-stats .stat { text-align: center; }
+  .ticket-stats .stat .label { font-size: 10px; color: var(--text-dim); }
+  .ticket-stats .stat .value { font-size: 16px; font-weight: 800; margin-top: 3px; }
+  .ticket-stats .stat.ev .value { color: var(--amber); }
+
+  .ticket-amount {
+    margin-top: 14px; padding: 12px; background: var(--surface-2);
+    border-radius: 6px; display: flex; justify-content: space-between; align-items: center;
+  }
+  .ticket-amount .label { font-size: 11px; color: var(--text-dim); }
+  .ticket-amount .value { font-size: 22px; font-weight: 800; color: var(--green); }
+  .ticket-amount .value::before { content: "¥"; font-size: 14px; margin-right: 2px; }
+
+  .footnote { font-size: 11px; color: var(--text-dim); margin-top: 12px; line-height: 1.6; padding: 0 16px 14px; }
+
+  /* --- 予算入力 --- */
+  .budget-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
+    padding: 10px 14px; margin-bottom: 14px;
+  }
+  .budget-box label { font-size: 12px; color: var(--text-dim); white-space: nowrap; }
+  .budget-box input {
+    flex: 1; background: var(--surface-2); border: 1px solid var(--line); border-radius: 4px;
+    color: var(--text); font-size: 15px; padding: 7px 10px; font-family: inherit;
+    -moz-appearance: textfield;
+  }
+  .budget-box input::-webkit-outer-spin-button, .budget-box input::-webkit-inner-spin-button { margin: 0; }
+  .budget-box .unit { font-size: 12px; color: var(--text-dim); }
+  .stake-cell { color: var(--green); font-weight: 700; }
+
 
   /* --- 穴馬候補 --- */
   .dark-horse-card { border-left: 3px solid var(--green); }
@@ -178,18 +214,66 @@
   <div class="card summary-text">逃げ馬は2頭で、比較的落ち着いたペースが予想される。馬場状態は「稍重」。</div>
 
   
-  <div class="section-title"><span class="en">Conclusion</span>結論：一番のおすすめ</div>
-  <div class="card best-bet">
-    <div class="tag">🏆 このレースで最も期待値が高い買い目</div>
-    <div class="type">3連単</div>
-    <div class="horses">フレンチブラッサム → サートゥルチェア → ビロングトゥミー</div>
-    <div class="stat-row mono">
-      <div class="stat"><div class="label">オッズ</div><div class="value">6367.8倍</div></div>
-      <div class="stat"><div class="label">的中確率</div><div class="value">0.1%</div></div>
-      <div class="stat ev"><div class="label">期待値</div><div class="value">345%</div></div>
-    </div>
-    <div class="footnote">期待値とは「100円賭けた時に理論上いくら戻ってくるか」の目安です。100%を超えるほど、賭け金に対して見込まれる払戻が大きいことを意味します（的中を保証するものではありません）。</div>
+  <div class="section-title"><span class="en">Betting Plan</span>AI推奨 購入プラン</div>
+  <div class="section-hint">実際の投票は複数点に分けるのが基本のため、期待値が高い順に複数の買い目を組み合わせています。予算を入れると自動で配分します。</div>
+  <div class="budget-box">
+    <label for="budgetInput">今回の予算</label>
+    <input type="number" id="budgetInput" inputmode="numeric" placeholder="例: 3000" min="0" step="100">
+    <span class="unit">円</span>
   </div>
+  <div class="card" style="padding:0; overflow:hidden;">
+    <table id="planTable">
+      <thead><tr><th>券種</th><th>買い目</th><th>オッズ</th><th>期待値</th><th>配分額</th></tr></thead>
+      <tbody>
+        
+        <tr data-ev="2.5971811665628266">
+          <td class="mono">馬連</td>
+          <td class="horses-cell">2 フレンチブラッサム - 8 サートゥルチェア</td>
+          <td class="mono">213.7</td>
+          <td class="ev-cell mono">260%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="2.556042030836763">
+          <td class="mono">馬連</td>
+          <td class="horses-cell">2 フレンチブラッサム - 14 ビロングトゥミー</td>
+          <td class="mono">251.5</td>
+          <td class="ev-cell mono">256%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="2.373248878097516">
+          <td class="mono">馬単</td>
+          <td class="horses-cell">2 フレンチブラッサム → 11 ペカリーナ</td>
+          <td class="mono">236.3</td>
+          <td class="ev-cell mono">237%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="2.3022553504248067">
+          <td class="mono">馬連</td>
+          <td class="horses-cell">2 フレンチブラッサム - 7 ランウェイミューズ</td>
+          <td class="mono">154.6</td>
+          <td class="ev-cell mono">230%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="2.1977642428813033">
+          <td class="mono">馬連</td>
+          <td class="horses-cell">2 フレンチブラッサム - 12 サウンドファミリエ</td>
+          <td class="mono">107.7</td>
+          <td class="ev-cell mono">220%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr id="planTotalRow" style="display:none;">
+          <td colspan="4" style="text-align:right; font-weight:800;">合計</td>
+          <td class="mono" id="planTotal" style="font-weight:800; color:var(--green);">-</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="footnote">配分額は、各買い目の期待値の大きさに比例して予算を振り分けた目安です（期待値が高いものほど多く配分）。1点に集中させず、複数点に分けて購入することでブレを抑える考え方に基づいています。あくまで参考情報であり、的中や利益を保証するものではありません。</div>
   
 
   
@@ -199,22 +283,17 @@
     
     <div class="dark-horse-item">
       <span class="dh-name">フレンチブラッサム</span><span class="dh-badge">10番人気</span>
-      <div class="dh-stats mono">オッズ 38.8倍 ／ 勝率目安 5.0% ／ 期待値 193%</div>
-    </div>
-    
-    <div class="dark-horse-item">
-      <span class="dh-name">シンデレラカラー</span><span class="dh-badge">14番人気</span>
-      <div class="dh-stats mono">オッズ 267.7倍 ／ 勝率目安 0.6% ／ 期待値 152%</div>
+      <div class="dh-stats mono">オッズ 38.8倍 ／ 勝率目安 5.5% ／ 期待値 215%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">ジャーナーリア</span><span class="dh-badge">11番人気</span>
-      <div class="dh-stats mono">オッズ 46.1倍 ／ 勝率目安 3.0% ／ 期待値 137%</div>
+      <div class="dh-stats mono">オッズ 46.1倍 ／ 勝率目安 2.9% ／ 期待値 133%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">サートゥルチェア</span><span class="dh-badge">7番人気</span>
-      <div class="dh-stats mono">オッズ 10.8倍 ／ 勝率目安 9.6% ／ 期待値 104%</div>
+      <div class="dh-stats mono">オッズ 10.8倍 ／ 勝率目安 10.1% ／ 期待値 109%</div>
     </div>
     
   </div>
@@ -226,17 +305,17 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">11</span>ペカリーナ</span>
-        <span class="horse-prob mono">複勝圏内 60%</span>
+        <span class="horse-prob mono">複勝圏内 58%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約60%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は8.0着とやや不振。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約58%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は8.0着とやや不振。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">12</span>サウンドファミリエ</span>
-        <span class="horse-prob mono">複勝圏内 51%</span>
+        <span class="horse-prob mono">複勝圏内 55%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約51%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約55%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
     </div>
     
     <div class="horse-item">
@@ -250,33 +329,41 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">8</span>サートゥルチェア</span>
-        <span class="horse-prob mono">複勝圏内 32%</span>
+        <span class="horse-prob mono">複勝圏内 34%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約32%。逃げ脚質で、主導権を握れれば粘り込みが期待できる。</div>
-    </div>
-    
-    <div class="horse-item">
-      <div class="horse-head">
-        <span class="horse-name"><span class="horse-num mono">14</span>ビロングトゥミー</span>
-        <span class="horse-prob mono">複勝圏内 31%</span>
-      </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約31%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約34%。逃げ脚質で、主導権を握れれば粘り込みが期待できる。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">6</span>エイシンキーンラン</span>
-        <span class="horse-prob mono">複勝圏内 30%</span>
+        <span class="horse-prob mono">複勝圏内 29%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約30%。逃げ脚質で、主導権を握れれば粘り込みが期待できる。直近3走の平均着順は9.3着とやや不振。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約29%。逃げ脚質で、主導権を握れれば粘り込みが期待できる。直近3走の平均着順は9.3着とやや不振。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">3</span>イトシサ</span>
-        <span class="horse-prob mono">複勝圏内 30%</span>
+        <span class="horse-prob mono">複勝圏内 29%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約30%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約29%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">14</span>ビロングトゥミー</span>
+        <span class="horse-prob mono">複勝圏内 29%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約29%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">2</span>フレンチブラッサム</span>
+        <span class="horse-prob mono">複勝圏内 19%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約19%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
     </div>
     
     <div class="horse-item">
@@ -289,18 +376,10 @@
     
     <div class="horse-item">
       <div class="horse-head">
-        <span class="horse-name"><span class="horse-num mono">2</span>フレンチブラッサム</span>
-        <span class="horse-prob mono">複勝圏内 17%</span>
-      </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約17%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
-    </div>
-    
-    <div class="horse-item">
-      <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">4</span>ヒメヒオウギ</span>
-        <span class="horse-prob mono">複勝圏内 12%</span>
+        <span class="horse-prob mono">複勝圏内 11%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約12%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は8.7着とやや不振。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約11%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は8.7着とやや不振。</div>
     </div>
     
     <div class="horse-item">
@@ -337,41 +416,48 @@
     
   </div>
 
-  <div class="section-title"><span class="en">All Bets</span>券種ごとの買い目候補</div>
-  <div class="section-hint">期待値100%を超えるものだけを表示しています。券種名をタップすると開きます。</div>
+  <div class="section-title"><span class="en">All Bets</span>券種ごとの買い目一覧（参考）</div>
+  <div class="section-hint">期待値100%を超えるものを全て表示しています。上の「購入プラン」はこの中から自動選定したものです。</div>
   
   <details class="bet-group" open>
-    <summary>単勝 <span class="count">4点</span></summary>
+    <summary>単勝 <span class="count">5点</span></summary>
     <table>
       <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
       <tbody>
         
         <tr>
-          <td class="horses-cell">フレンチブラッサム</td>
+          <td class="horses-cell">2 フレンチブラッサム</td>
           <td class="mono">38.8</td>
-          <td class="mono">5.0%</td>
-          <td class="ev-cell mono">193%</td>
+          <td class="mono">5.5%</td>
+          <td class="ev-cell mono">215%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">シンデレラカラー</td>
+          <td class="horses-cell">13 シンデレラカラー</td>
           <td class="mono">267.7</td>
           <td class="mono">0.6%</td>
-          <td class="ev-cell mono">152%</td>
+          <td class="ev-cell mono">171%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ジャーナーリア</td>
+          <td class="horses-cell">10 ジャーナーリア</td>
           <td class="mono">46.1</td>
-          <td class="mono">3.0%</td>
-          <td class="ev-cell mono">137%</td>
+          <td class="mono">2.9%</td>
+          <td class="ev-cell mono">133%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">サートゥルチェア</td>
+          <td class="horses-cell">9 ハイバーニアン</td>
+          <td class="mono">108.4</td>
+          <td class="mono">1.0%</td>
+          <td class="ev-cell mono">110%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 サートゥルチェア</td>
           <td class="mono">10.8</td>
-          <td class="mono">9.6%</td>
-          <td class="ev-cell mono">104%</td>
+          <td class="mono">10.1%</td>
+          <td class="ev-cell mono">109%</td>
         </tr>
         
       </tbody>
@@ -385,143 +471,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">フレンチブラッサム - ビロングトゥミー</td>
-          <td class="mono">251.5</td>
-          <td class="mono">1.0%</td>
-          <td class="ev-cell mono">248%</td>
+          <td class="horses-cell">2 フレンチブラッサム - 8 サートゥルチェア</td>
+          <td class="mono">213.7</td>
+          <td class="mono">1.2%</td>
+          <td class="ev-cell mono">260%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">フレンチブラッサム - サートゥルチェア</td>
-          <td class="mono">213.7</td>
+          <td class="horses-cell">2 フレンチブラッサム - 14 ビロングトゥミー</td>
+          <td class="mono">251.5</td>
           <td class="mono">1.0%</td>
+          <td class="ev-cell mono">256%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 フレンチブラッサム - 7 ランウェイミューズ</td>
+          <td class="mono">154.6</td>
+          <td class="mono">1.5%</td>
+          <td class="ev-cell mono">230%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 フレンチブラッサム - 1 ヒルノボローニャ</td>
+          <td class="mono">374.9</td>
+          <td class="mono">0.6%</td>
+          <td class="ev-cell mono">226%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 フレンチブラッサム - 12 サウンドファミリエ</td>
+          <td class="mono">107.7</td>
+          <td class="mono">2.0%</td>
           <td class="ev-cell mono">220%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">フレンチブラッサム - ランウェイミューズ</td>
-          <td class="mono">154.6</td>
-          <td class="mono">1.3%</td>
-          <td class="ev-cell mono">203%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">フレンチブラッサム - エイシンキーンラン</td>
+          <td class="horses-cell">2 フレンチブラッサム - 6 エイシンキーンラン</td>
           <td class="mono">206.3</td>
           <td class="mono">1.0%</td>
-          <td class="ev-cell mono">198%</td>
+          <td class="ev-cell mono">210%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">フレンチブラッサム - ヒルノボローニャ</td>
-          <td class="mono">374.9</td>
-          <td class="mono">0.5%</td>
-          <td class="ev-cell mono">196%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">フレンチブラッサム - ペカリーナ</td>
+          <td class="horses-cell">2 フレンチブラッサム - 11 ペカリーナ</td>
           <td class="mono">90.0</td>
-          <td class="mono">2.0%</td>
-          <td class="ev-cell mono">183%</td>
+          <td class="mono">2.1%</td>
+          <td class="ev-cell mono">193%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">フレンチブラッサム - サウンドファミリエ</td>
-          <td class="mono">107.7</td>
-          <td class="mono">1.7%</td>
-          <td class="ev-cell mono">180%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">フレンチブラッサム - ジャーナーリア</td>
+          <td class="horses-cell">2 フレンチブラッサム - 10 ジャーナーリア</td>
           <td class="mono">520.0</td>
           <td class="mono">0.3%</td>
+          <td class="ev-cell mono">174%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 サートゥルチェア - 1 ヒルノボローニャ</td>
+          <td class="mono">144.8</td>
+          <td class="mono">1.1%</td>
+          <td class="ev-cell mono">163%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 フレンチブラッサム - 3 イトシサ</td>
+          <td class="mono">160.4</td>
+          <td class="mono">1.0%</td>
+          <td class="ev-cell mono">163%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 ランウェイミューズ - 13 シンデレラカラー</td>
+          <td class="mono">951.4</td>
+          <td class="mono">0.2%</td>
           <td class="ev-cell mono">160%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">フレンチブラッサム - イトシサ</td>
-          <td class="mono">160.4</td>
-          <td class="mono">0.9%</td>
-          <td class="ev-cell mono">152%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ヒルノボローニャ - サートゥルチェア</td>
-          <td class="mono">144.8</td>
-          <td class="mono">1.0%</td>
-          <td class="ev-cell mono">150%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ランウェイミューズ - シンデレラカラー</td>
-          <td class="mono">951.4</td>
+          <td class="horses-cell">2 フレンチブラッサム - 13 シンデレラカラー</td>
+          <td class="mono">2126.2</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">139%</td>
+          <td class="ev-cell mono">155%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ジャーナーリア - サートゥルチェア</td>
+          <td class="horses-cell">8 サートゥルチェア - 10 ジャーナーリア</td>
           <td class="mono">227.3</td>
           <td class="mono">0.6%</td>
-          <td class="ev-cell mono">138%</td>
+          <td class="ev-cell mono">142%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ジャーナーリア - ランウェイミューズ</td>
+          <td class="horses-cell">12 サウンドファミリエ - 10 ジャーナーリア</td>
+          <td class="mono">129.2</td>
+          <td class="mono">1.1%</td>
+          <td class="ev-cell mono">136%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 ランウェイミューズ - 10 ジャーナーリア</td>
           <td class="mono">177.1</td>
           <td class="mono">0.8%</td>
-          <td class="ev-cell mono">137%</td>
+          <td class="ev-cell mono">136%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ジャーナーリア - エイシンキーンラン</td>
-          <td class="mono">227.6</td>
-          <td class="mono">0.6%</td>
+          <td class="horses-cell">2 フレンチブラッサム - 9 ハイバーニアン</td>
+          <td class="mono">1164.0</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">135%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 ランウェイミューズ - 9 ハイバーニアン</td>
+          <td class="mono">494.1</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">131%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 サートゥルチェア - 13 シンデレラカラー</td>
+          <td class="mono">957.2</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">131%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 ヒルノボローニャ - 13 シンデレラカラー</td>
+          <td class="mono">1900.0</td>
+          <td class="mono">0.1%</td>
           <td class="ev-cell mono">129%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">サウンドファミリエ - ジャーナーリア</td>
-          <td class="mono">129.2</td>
-          <td class="mono">1.0%</td>
-          <td class="ev-cell mono">127%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">イトシサ - ヒルノボローニャ</td>
+          <td class="horses-cell">1 ヒルノボローニャ - 3 イトシサ</td>
           <td class="mono">131.6</td>
-          <td class="mono">1.0%</td>
-          <td class="ev-cell mono">125%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">フレンチブラッサム - シンデレラカラー</td>
-          <td class="mono">2126.2</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">123%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ペカリーナ - ヒルノボローニャ</td>
-          <td class="mono">60.4</td>
-          <td class="mono">2.0%</td>
-          <td class="ev-cell mono">123%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ペカリーナ - ジャーナーリア</td>
-          <td class="mono">100.1</td>
-          <td class="mono">1.2%</td>
-          <td class="ev-cell mono">120%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ペカリーナ - シンデレラカラー</td>
-          <td class="mono">511.5</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">116%</td>
+          <td class="mono">0.9%</td>
+          <td class="ev-cell mono">124%</td>
         </tr>
         
       </tbody>
@@ -535,143 +621,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">フレンチブラッサム → ビロングトゥミー</td>
+          <td class="horses-cell">2 フレンチブラッサム → 8 サートゥルチェア</td>
+          <td class="mono">551.4</td>
+          <td class="mono">0.6%</td>
+          <td class="ev-cell mono">327%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 フレンチブラッサム → 14 ビロングトゥミー</td>
           <td class="mono">641.2</td>
           <td class="mono">0.5%</td>
-          <td class="ev-cell mono">309%</td>
+          <td class="ev-cell mono">321%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">フレンチブラッサム → サートゥルチェア</td>
-          <td class="mono">551.4</td>
-          <td class="mono">0.5%</td>
-          <td class="ev-cell mono">277%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">フレンチブラッサム → ヒルノボローニャ</td>
+          <td class="horses-cell">2 フレンチブラッサム → 1 ヒルノボローニャ</td>
           <td class="mono">971.4</td>
           <td class="mono">0.3%</td>
-          <td class="ev-cell mono">254%</td>
+          <td class="ev-cell mono">293%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">フレンチブラッサム → エイシンキーンラン</td>
+          <td class="horses-cell">2 フレンチブラッサム → 12 サウンドファミリエ</td>
+          <td class="mono">278.4</td>
+          <td class="mono">1.0%</td>
+          <td class="ev-cell mono">267%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 フレンチブラッサム → 6 エイシンキーンラン</td>
           <td class="mono">517.6</td>
           <td class="mono">0.5%</td>
-          <td class="ev-cell mono">243%</td>
+          <td class="ev-cell mono">259%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ビロングトゥミー → フレンチブラッサム</td>
-          <td class="mono">451.1</td>
-          <td class="mono">0.5%</td>
-          <td class="ev-cell mono">228%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">フレンチブラッサム → ペカリーナ</td>
-          <td class="mono">236.3</td>
-          <td class="mono">0.9%</td>
-          <td class="ev-cell mono">222%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">フレンチブラッサム → サウンドファミリエ</td>
-          <td class="mono">278.4</td>
-          <td class="mono">0.8%</td>
-          <td class="ev-cell mono">219%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ヒルノボローニャ → フレンチブラッサム</td>
+          <td class="horses-cell">1 ヒルノボローニャ → 2 フレンチブラッサム</td>
           <td class="mono">830.1</td>
           <td class="mono">0.3%</td>
-          <td class="ev-cell mono">217%</td>
+          <td class="ev-cell mono">249%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">フレンチブラッサム → ランウェイミューズ</td>
+          <td class="horses-cell">2 フレンチブラッサム → 7 ランウェイミューズ</td>
           <td class="mono">331.3</td>
-          <td class="mono">0.6%</td>
-          <td class="ev-cell mono">209%</td>
+          <td class="mono">0.7%</td>
+          <td class="ev-cell mono">238%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">シンデレラカラー → ヒルノボローニャ</td>
+          <td class="horses-cell">2 フレンチブラッサム → 11 ペカリーナ</td>
+          <td class="mono">236.3</td>
+          <td class="mono">1.0%</td>
+          <td class="ev-cell mono">237%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">14 ビロングトゥミー → 2 フレンチブラッサム</td>
+          <td class="mono">451.1</td>
+          <td class="mono">0.5%</td>
+          <td class="ev-cell mono">233%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">13 シンデレラカラー → 1 ヒルノボローニャ</td>
           <td class="mono">6918.0</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">197%</td>
+          <td class="ev-cell mono">229%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">フレンチブラッサム → イトシサ</td>
-          <td class="mono">420.4</td>
-          <td class="mono">0.5%</td>
-          <td class="ev-cell mono">195%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">フレンチブラッサム → ジャーナーリア</td>
-          <td class="mono">1254.3</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">195%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">サートゥルチェア → フレンチブラッサム</td>
+          <td class="horses-cell">8 サートゥルチェア → 2 フレンチブラッサム</td>
           <td class="mono">362.3</td>
-          <td class="mono">0.5%</td>
-          <td class="ev-cell mono">191%</td>
+          <td class="mono">0.6%</td>
+          <td class="ev-cell mono">226%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">エイシンキーンラン → フレンチブラッサム</td>
-          <td class="mono">388.2</td>
-          <td class="mono">0.5%</td>
-          <td class="ev-cell mono">190%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ジャーナーリア → フレンチブラッサム</td>
-          <td class="mono">1240.7</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">189%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">シンデレラカラー → サートゥルチェア</td>
+          <td class="horses-cell">13 シンデレラカラー → 8 サートゥルチェア</td>
           <td class="mono">3407.4</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">186%</td>
+          <td class="ev-cell mono">221%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">シンデレラカラー → ビロングトゥミー</td>
-          <td class="mono">3308.6</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">173%</td>
+          <td class="horses-cell">2 フレンチブラッサム → 10 ジャーナーリア</td>
+          <td class="mono">1254.3</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">212%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">シンデレラカラー → エイシンキーンラン</td>
-          <td class="mono">3357.2</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">172%</td>
+          <td class="horses-cell">2 フレンチブラッサム → 3 イトシサ</td>
+          <td class="mono">420.4</td>
+          <td class="mono">0.5%</td>
+          <td class="ev-cell mono">210%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">シンデレラカラー → ランウェイミューズ</td>
-          <td class="mono">2378.0</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">164%</td>
+          <td class="horses-cell">10 ジャーナーリア → 2 フレンチブラッサム</td>
+          <td class="mono">1240.7</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">204%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">シンデレラカラー → フレンチブラッサム</td>
+          <td class="horses-cell">13 シンデレラカラー → 2 フレンチブラッサム</td>
           <td class="mono">5707.4</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">162%</td>
+          <td class="ev-cell mono">203%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">6 エイシンキーンラン → 2 フレンチブラッサム</td>
+          <td class="mono">388.2</td>
+          <td class="mono">0.5%</td>
+          <td class="ev-cell mono">200%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">13 シンデレラカラー → 7 ランウェイミューズ</td>
+          <td class="mono">2378.0</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">187%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">13 シンデレラカラー → 6 エイシンキーンラン</td>
+          <td class="mono">3357.2</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">184%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">13 シンデレラカラー → 14 ビロングトゥミー</td>
+          <td class="mono">3308.6</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">181%</td>
         </tr>
         
       </tbody>
@@ -685,143 +771,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">フレンチブラッサム - ビロングトゥミー - サートゥルチェア</td>
+          <td class="horses-cell">2 フレンチブラッサム - 14 ビロングトゥミー - 8 サートゥルチェア</td>
           <td class="mono">739.5</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">252%</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">275%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">フレンチブラッサム - ビロングトゥミー - シンデレラカラー</td>
+          <td class="horses-cell">2 フレンチブラッサム - 14 ビロングトゥミー - 13 シンデレラカラー</td>
           <td class="mono">12923.7</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">235%</td>
+          <td class="ev-cell mono">274%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">フレンチブラッサム - ヒルノボローニャ - サートゥルチェア</td>
+          <td class="horses-cell">2 フレンチブラッサム - 1 ヒルノボローニャ - 8 サートゥルチェア</td>
           <td class="mono">1267.6</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">224%</td>
+          <td class="ev-cell mono">274%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">フレンチブラッサム - エイシンキーンラン - ビロングトゥミー</td>
-          <td class="mono">683.7</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">216%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">フレンチブラッサム - ランウェイミューズ - シンデレラカラー</td>
+          <td class="horses-cell">2 フレンチブラッサム - 7 ランウェイミューズ - 13 シンデレラカラー</td>
           <td class="mono">8028.3</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">199%</td>
+          <td class="ev-cell mono">255%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">フレンチブラッサム - イトシサ - ビロングトゥミー</td>
-          <td class="mono">607.6</td>
+          <td class="horses-cell">2 フレンチブラッサム - 13 シンデレラカラー - 8 サートゥルチェア</td>
+          <td class="mono">9722.4</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">249%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 フレンチブラッサム - 1 ヒルノボローニャ - 12 サウンドファミリエ</td>
+          <td class="mono">589.4</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">223%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 フレンチブラッサム - 7 ランウェイミューズ - 8 サートゥルチェア</td>
+          <td class="mono">392.0</td>
+          <td class="mono">0.6%</td>
+          <td class="ev-cell mono">219%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 フレンチブラッサム - 6 エイシンキーンラン - 14 ビロングトゥミー</td>
+          <td class="mono">683.7</td>
           <td class="mono">0.3%</td>
-          <td class="ev-cell mono">189%</td>
+          <td class="ev-cell mono">210%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">フレンチブラッサム - ヒルノボローニャ - ペカリーナ</td>
+          <td class="horses-cell">2 フレンチブラッサム - 1 ヒルノボローニャ - 11 ペカリーナ</td>
           <td class="mono">507.5</td>
           <td class="mono">0.4%</td>
+          <td class="ev-cell mono">203%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 フレンチブラッサム - 12 サウンドファミリエ - 8 サートゥルチェア</td>
+          <td class="mono">257.6</td>
+          <td class="mono">0.8%</td>
+          <td class="ev-cell mono">203%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 フレンチブラッサム - 11 ペカリーナ - 8 サートゥルチェア</td>
+          <td class="mono">241.5</td>
+          <td class="mono">0.8%</td>
+          <td class="ev-cell mono">201%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 サートゥルチェア - 1 ヒルノボローニャ - 13 シンデレラカラー</td>
+          <td class="mono">8215.0</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">194%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 サートゥルチェア - 1 ヒルノボローニャ - 11 ペカリーナ</td>
+          <td class="mono">248.0</td>
+          <td class="mono">0.8%</td>
+          <td class="ev-cell mono">191%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 フレンチブラッサム - 14 ビロングトゥミー - 9 ハイバーニアン</td>
+          <td class="mono">5577.6</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">188%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 フレンチブラッサム - 3 イトシサ - 14 ビロングトゥミー</td>
+          <td class="mono">607.6</td>
+          <td class="mono">0.3%</td>
           <td class="ev-cell mono">187%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ペカリーナ - ヒルノボローニャ - サートゥルチェア</td>
-          <td class="mono">248.0</td>
-          <td class="mono">0.7%</td>
-          <td class="ev-cell mono">186%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">シンデレラカラー - フレンチブラッサム - サートゥルチェア</td>
-          <td class="mono">9722.4</td>
+          <td class="horses-cell">2 フレンチブラッサム - 12 サウンドファミリエ - 13 シンデレラカラー</td>
+          <td class="mono">4123.5</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">186%</td>
+          <td class="ev-cell mono">185%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">フレンチブラッサム - ランウェイミューズ - サートゥルチェア</td>
-          <td class="mono">392.0</td>
-          <td class="mono">0.5%</td>
-          <td class="ev-cell mono">181%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">フレンチブラッサム - ペカリーナ - サートゥルチェア</td>
-          <td class="mono">241.5</td>
+          <td class="horses-cell">2 フレンチブラッサム - 12 サウンドファミリエ - 14 ビロングトゥミー</td>
+          <td class="mono">280.2</td>
           <td class="mono">0.7%</td>
+          <td class="ev-cell mono">182%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 フレンチブラッサム - 7 ランウェイミューズ - 14 ビロングトゥミー</td>
+          <td class="mono">390.3</td>
+          <td class="mono">0.5%</td>
           <td class="ev-cell mono">180%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">フレンチブラッサム - ビロングトゥミー - ペカリーナ</td>
-          <td class="mono">247.7</td>
-          <td class="mono">0.7%</td>
-          <td class="ev-cell mono">176%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">サウンドファミリエ - フレンチブラッサム - ヒルノボローニャ</td>
-          <td class="mono">589.4</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">175%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">フレンチブラッサム - ランウェイミューズ - ビロングトゥミー</td>
-          <td class="mono">390.3</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">172%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">フレンチブラッサム - ヒルノボローニャ - ビロングトゥミー</td>
-          <td class="mono">964.2</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">163%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ハイバーニアン - フレンチブラッサム - ビロングトゥミー</td>
-          <td class="mono">5577.6</td>
+          <td class="horses-cell">2 フレンチブラッサム - 6 エイシンキーンラン - 13 シンデレラカラー</td>
+          <td class="mono">8344.4</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">161%</td>
+          <td class="ev-cell mono">177%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">フレンチブラッサム - サウンドファミリエ - ビロングトゥミー</td>
-          <td class="mono">280.2</td>
-          <td class="mono">0.6%</td>
-          <td class="ev-cell mono">160%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">シンデレラカラー - ヒルノボローニャ - サートゥルチェア</td>
-          <td class="mono">8215.0</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">158%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ランウェイミューズ - フレンチブラッサム - エイシンキーンラン</td>
-          <td class="mono">360.7</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">155%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">フレンチブラッサム - サウンドファミリエ - サートゥルチェア</td>
-          <td class="mono">257.6</td>
-          <td class="mono">0.6%</td>
-          <td class="ev-cell mono">155%</td>
+          <td class="horses-cell">2 フレンチブラッサム - 10 ジャーナーリア - 8 サートゥルチェア</td>
+          <td class="mono">1471.8</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">174%</td>
         </tr>
         
       </tbody>
@@ -835,143 +921,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">フレンチブラッサム → サートゥルチェア → ビロングトゥミー</td>
+          <td class="horses-cell">2 フレンチブラッサム → 8 サートゥルチェア → 14 ビロングトゥミー</td>
           <td class="mono">6367.8</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">345%</td>
+          <td class="ev-cell mono">381%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">フレンチブラッサム → サートゥルチェア → ペカリーナ</td>
+          <td class="horses-cell">2 フレンチブラッサム → 8 サートゥルチェア → 11 ペカリーナ</td>
           <td class="mono">3160.0</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">334%</td>
+          <td class="ev-cell mono">380%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">フレンチブラッサム → ビロングトゥミー → ペカリーナ</td>
+          <td class="horses-cell">2 フレンチブラッサム → 8 サートゥルチェア → 12 サウンドファミリエ</td>
+          <td class="mono">3257.9</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">374%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 フレンチブラッサム → 12 サウンドファミリエ → 1 ヒルノボローニャ</td>
+          <td class="mono">5878.0</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">371%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 フレンチブラッサム → 12 サウンドファミリエ → 8 サートゥルチェア</td>
+          <td class="mono">2898.4</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">359%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 サートゥルチェア → 2 フレンチブラッサム → 14 ビロングトゥミー</td>
+          <td class="mono">5530.0</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">348%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 フレンチブラッサム → 14 ビロングトゥミー → 8 サートゥルチェア</td>
+          <td class="mono">5796.9</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">341%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 フレンチブラッサム → 1 ヒルノボローニャ → 12 サウンドファミリエ</td>
+          <td class="mono">6135.4</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">339%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 フレンチブラッサム → 14 ビロングトゥミー → 11 ペカリーナ</td>
           <td class="mono">3296.3</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">332%</td>
+          <td class="ev-cell mono">328%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">フレンチブラッサム → エイシンキーンラン → ビロングトゥミー</td>
-          <td class="mono">6416.4</td>
-          <td class="mono">0.1%</td>
+          <td class="horses-cell">13 シンデレラカラー → 7 ランウェイミューズ → 2 フレンチブラッサム</td>
+          <td class="mono">64658.5</td>
+          <td class="mono">0.0%</td>
           <td class="ev-cell mono">323%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">サートゥルチェア → フレンチブラッサム → ビロングトゥミー</td>
-          <td class="mono">5530.0</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">315%</td>
+          <td class="horses-cell">2 フレンチブラッサム → 8 サートゥルチェア → 1 ヒルノボローニャ</td>
+          <td class="mono">8942.1</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">323%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">フレンチブラッサム → ビロングトゥミー → サートゥルチェア</td>
-          <td class="mono">5796.9</td>
+          <td class="horses-cell">9 ハイバーニアン → 14 ビロングトゥミー → 2 フレンチブラッサム</td>
+          <td class="mono">60040.0</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">320%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 フレンチブラッサム → 1 ヒルノボローニャ → 11 ペカリーナ</td>
+          <td class="mono">5530.0</td>
           <td class="mono">0.1%</td>
+          <td class="ev-cell mono">320%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 フレンチブラッサム → 6 エイシンキーンラン → 14 ビロングトゥミー</td>
+          <td class="mono">6416.4</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">318%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 フレンチブラッサム → 13 シンデレラカラー → 7 ランウェイミューズ</td>
+          <td class="mono">64658.5</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">316%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 フレンチブラッサム → 8 サートゥルチェア → 7 ランウェイミューズ</td>
+          <td class="mono">3654.6</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">314%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">13 シンデレラカラー → 3 イトシサ → 2 フレンチブラッサム</td>
+          <td class="mono">93395.6</td>
+          <td class="mono">0.0%</td>
           <td class="ev-cell mono">312%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">フレンチブラッサム → ビロングトゥミー → イトシサ</td>
-          <td class="mono">6135.4</td>
+          <td class="horses-cell">9 ハイバーニアン → 8 サートゥルチェア → 13 シンデレラカラー</td>
+          <td class="mono">420280.3</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">305%</td>
+          <td class="ev-cell mono">312%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">フレンチブラッサム → ビロングトゥミー → エイシンキーンラン</td>
-          <td class="mono">5878.0</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">296%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">フレンチブラッサム → サウンドファミリエ → ヒルノボローニャ</td>
-          <td class="mono">5878.0</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">290%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">フレンチブラッサム → ヒルノボローニャ → ペカリーナ</td>
-          <td class="mono">5530.0</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">289%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">フレンチブラッサム → サートゥルチェア → サウンドファミリエ</td>
-          <td class="mono">3257.9</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">288%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">フレンチブラッサム → ペカリーナ → ビロングトゥミー</td>
-          <td class="mono">2524.2</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">283%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ハイバーニアン → ビロングトゥミー → フレンチブラッサム</td>
+          <td class="horses-cell">9 ハイバーニアン → 2 フレンチブラッサム → 14 ビロングトゥミー</td>
           <td class="mono">60040.0</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">275%</td>
+          <td class="ev-cell mono">310%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">フレンチブラッサム → サウンドファミリエ → サートゥルチェア</td>
-          <td class="mono">2898.4</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">274%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">シンデレラカラー → サートゥルチェア → ペカリーナ</td>
+          <td class="horses-cell">13 シンデレラカラー → 8 サートゥルチェア → 11 ペカリーナ</td>
           <td class="mono">24722.3</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">270%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">フレンチブラッサム → ヒルノボローニャ → サウンドファミリエ</td>
-          <td class="mono">6135.4</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">269%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">サートゥルチェア → フレンチブラッサム → ペカリーナ</td>
-          <td class="mono">2408.4</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">267%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">フレンチブラッサム → ペカリーナ → ランウェイミューズ</td>
-          <td class="mono">1807.6</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">266%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ビロングトゥミー → フレンチブラッサム → ペカリーナ</td>
-          <td class="mono">2516.6</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">266%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">フレンチブラッサム → ランウェイミューズ → ペカリーナ</td>
-          <td class="mono">1936.7</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">265%</td>
+          <td class="ev-cell mono">308%</td>
         </tr>
         
       </tbody>
@@ -983,5 +1069,49 @@
 
   <div class="disclaimer">本ページの予想は参考情報です。的中・利益を保証しません。<br>馬券の購入は必ずご自身でIPAT等の公式ルートから行ってください。</div>
 </main>
+
+<script>
+(function () {
+  const UNIT = 100;  // JRAの購入単位（100円）に丸める
+
+  function recalc() {
+    const budget = parseFloat(document.getElementById('budgetInput').value) || 0;
+    const rows = Array.from(document.querySelectorAll('#planTable tbody tr[data-ev]'));
+    const totalRow = document.getElementById('planTotalRow');
+    const totalCell = document.getElementById('planTotal');
+
+    if (!rows.length) return;
+
+    if (budget <= 0) {
+      rows.forEach(function (tr) { tr.querySelector('.stake-cell').textContent = '-'; });
+      if (totalRow) totalRow.style.display = 'none';
+      return;
+    }
+
+    // 期待値(EV)が高いものほど多く配分する（EVの合計に対する比率で按分）
+    const evs = rows.map(function (tr) { return Math.max(0, parseFloat(tr.dataset.ev) - 1); }); // 100%超過分だけを重みにする
+    const totalWeight = evs.reduce(function (a, b) { return a + b; }, 0);
+
+    let allocated = 0;
+    rows.forEach(function (tr, i) {
+      const weight = totalWeight > 0 ? evs[i] / totalWeight : 1 / rows.length;
+      const raw = budget * weight;
+      const amount = Math.floor(raw / UNIT) * UNIT;
+      allocated += amount;
+      tr.querySelector('.stake-cell').textContent = amount > 0 ? amount.toLocaleString('ja-JP') + '円' : '見送り';
+    });
+
+    if (totalRow && totalCell) {
+      totalRow.style.display = '';
+      totalCell.textContent = allocated.toLocaleString('ja-JP') + '円 / ' + budget.toLocaleString('ja-JP') + '円中';
+    }
+  }
+
+  const input = document.getElementById('budgetInput');
+  if (input) {
+    input.addEventListener('input', recalc);
+  }
+})();
+</script>
 </body>
 </html>

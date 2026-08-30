@@ -63,30 +63,66 @@
   }
   .summary-text { font-size: 13px; line-height: 1.75; color: var(--text-dim); }
 
-  /* --- 結論：一番のおすすめ --- */
-  .best-bet {
+  /* --- 結論：馬券風デザイン --- */
+  .ticket {
     position: relative;
     background: linear-gradient(180deg, #1a1408 0%, var(--surface) 70%);
     border: 1px solid var(--amber-dim);
+    border-radius: 10px;
     box-shadow: 0 0 0 1px rgba(240,162,2,0.08), 0 8px 24px -12px var(--amber-glow);
+    padding: 0;
+    overflow: hidden;
   }
-  .best-bet .tag {
-    font-size: 12px; font-weight: 800; color: var(--amber);
+  .ticket-head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 16px; background: rgba(240,162,2,0.08);
+    border-bottom: 1px dashed var(--amber-dim);
   }
-  .best-bet .type {
-    display: inline-block; font-size: 11px; color: var(--bg); background: var(--amber);
-    font-weight: 700; padding: 2px 8px; border-radius: 3px; margin-top: 8px;
+  .ticket-head .label { font-size: 11px; font-weight: 800; color: var(--amber); letter-spacing: 0.05em; }
+  .ticket-head .type-badge {
+    font-size: 11px; color: var(--bg); background: var(--amber);
+    font-weight: 800; padding: 3px 10px; border-radius: 3px;
   }
-  .best-bet .horses {
-    font-size: 21px; font-weight: 800; margin: 8px 0 12px;
-    color: var(--text); line-height: 1.4;
+  .ticket-body { padding: 16px; }
+  .ticket .horses {
+    font-size: 20px; font-weight: 800; margin: 0 0 14px;
+    color: var(--text); line-height: 1.45;
   }
-  .best-bet .stat-row { display: flex; }
-  .best-bet .stat { margin-right: 24px; }
-  .best-bet .stat .label { font-size: 10.5px; color: var(--text-dim); }
-  .best-bet .stat .value { font-size: 18px; font-weight: 800; margin-top: 2px; }
-  .best-bet .stat.ev .value { color: var(--amber); }
-  .best-bet .footnote { font-size: 11px; color: var(--text-dim); margin-top: 12px; line-height: 1.6; border-top: 1px solid var(--line); padding-top: 10px; }
+  .ticket-stats {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+    padding: 12px 0; border-top: 1px dashed var(--line); border-bottom: 1px dashed var(--line);
+  }
+  .ticket-stats .stat { text-align: center; }
+  .ticket-stats .stat .label { font-size: 10px; color: var(--text-dim); }
+  .ticket-stats .stat .value { font-size: 16px; font-weight: 800; margin-top: 3px; }
+  .ticket-stats .stat.ev .value { color: var(--amber); }
+
+  .ticket-amount {
+    margin-top: 14px; padding: 12px; background: var(--surface-2);
+    border-radius: 6px; display: flex; justify-content: space-between; align-items: center;
+  }
+  .ticket-amount .label { font-size: 11px; color: var(--text-dim); }
+  .ticket-amount .value { font-size: 22px; font-weight: 800; color: var(--green); }
+  .ticket-amount .value::before { content: "¥"; font-size: 14px; margin-right: 2px; }
+
+  .footnote { font-size: 11px; color: var(--text-dim); margin-top: 12px; line-height: 1.6; padding: 0 16px 14px; }
+
+  /* --- 予算入力 --- */
+  .budget-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
+    padding: 10px 14px; margin-bottom: 14px;
+  }
+  .budget-box label { font-size: 12px; color: var(--text-dim); white-space: nowrap; }
+  .budget-box input {
+    flex: 1; background: var(--surface-2); border: 1px solid var(--line); border-radius: 4px;
+    color: var(--text); font-size: 15px; padding: 7px 10px; font-family: inherit;
+    -moz-appearance: textfield;
+  }
+  .budget-box input::-webkit-outer-spin-button, .budget-box input::-webkit-inner-spin-button { margin: 0; }
+  .budget-box .unit { font-size: 12px; color: var(--text-dim); }
+  .stake-cell { color: var(--green); font-weight: 700; }
+
 
   /* --- 穴馬候補 --- */
   .dark-horse-card { border-left: 3px solid var(--green); }
@@ -178,18 +214,66 @@
   <div class="card summary-text">明確な逃げ馬が不在で、スローペースになりやすく先行馬が有利になりやすい。馬場状態は「良」。</div>
 
   
-  <div class="section-title"><span class="en">Conclusion</span>結論：一番のおすすめ</div>
-  <div class="card best-bet">
-    <div class="tag">🏆 このレースで最も期待値が高い買い目</div>
-    <div class="type">3連単</div>
-    <div class="horses">キャッチアップ → テキサス → ペントザリス</div>
-    <div class="stat-row mono">
-      <div class="stat"><div class="label">オッズ</div><div class="value">4699.0倍</div></div>
-      <div class="stat"><div class="label">的中確率</div><div class="value">0.1%</div></div>
-      <div class="stat ev"><div class="label">期待値</div><div class="value">510%</div></div>
-    </div>
-    <div class="footnote">期待値とは「100円賭けた時に理論上いくら戻ってくるか」の目安です。100%を超えるほど、賭け金に対して見込まれる払戻が大きいことを意味します（的中を保証するものではありません）。</div>
+  <div class="section-title"><span class="en">Betting Plan</span>AI推奨 購入プラン</div>
+  <div class="section-hint">実際の投票は複数点に分けるのが基本のため、期待値が高い順に複数の買い目を組み合わせています。予算を入れると自動で配分します。</div>
+  <div class="budget-box">
+    <label for="budgetInput">今回の予算</label>
+    <input type="number" id="budgetInput" inputmode="numeric" placeholder="例: 3000" min="0" step="100">
+    <span class="unit">円</span>
   </div>
+  <div class="card" style="padding:0; overflow:hidden;">
+    <table id="planTable">
+      <thead><tr><th>券種</th><th>買い目</th><th>オッズ</th><th>期待値</th><th>配分額</th></tr></thead>
+      <tbody>
+        
+        <tr data-ev="2.2986381131532148">
+          <td class="mono">馬連</td>
+          <td class="horses-cell">4 キャッチアップ - 6 ペントザリス</td>
+          <td class="mono">187.9</td>
+          <td class="ev-cell mono">230%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="2.1358221884102924">
+          <td class="mono">馬連</td>
+          <td class="horses-cell">4 キャッチアップ - 9 テキサス</td>
+          <td class="mono">205.7</td>
+          <td class="ev-cell mono">214%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="2.0371855602599176">
+          <td class="mono">単勝</td>
+          <td class="horses-cell">3 ガヤーズサムライ</td>
+          <td class="mono">39.9</td>
+          <td class="ev-cell mono">204%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="2.009932910272419">
+          <td class="mono">馬連</td>
+          <td class="horses-cell">3 ガヤーズサムライ - 6 ペントザリス</td>
+          <td class="mono">95.0</td>
+          <td class="ev-cell mono">201%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="1.9504909261438887">
+          <td class="mono">単勝</td>
+          <td class="horses-cell">4 キャッチアップ</td>
+          <td class="mono">65.4</td>
+          <td class="ev-cell mono">195%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr id="planTotalRow" style="display:none;">
+          <td colspan="4" style="text-align:right; font-weight:800;">合計</td>
+          <td class="mono" id="planTotal" style="font-weight:800; color:var(--green);">-</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="footnote">配分額は、各買い目の期待値の大きさに比例して予算を振り分けた目安です（期待値が高いものほど多く配分）。1点に集中させず、複数点に分けて購入することでブレを抑える考え方に基づいています。あくまで参考情報であり、的中や利益を保証するものではありません。</div>
   
 
   
@@ -199,32 +283,12 @@
     
     <div class="dark-horse-item">
       <span class="dh-name">ガヤーズサムライ</span><span class="dh-badge">6番人気</span>
-      <div class="dh-stats mono">オッズ 39.9倍 ／ 勝率目安 4.9% ／ 期待値 194%</div>
+      <div class="dh-stats mono">オッズ 39.9倍 ／ 勝率目安 5.1% ／ 期待値 204%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">キャッチアップ</span><span class="dh-badge">7番人気</span>
-      <div class="dh-stats mono">オッズ 65.4倍 ／ 勝率目安 3.0% ／ 期待値 193%</div>
-    </div>
-    
-    <div class="dark-horse-item">
-      <span class="dh-name">ライヴテキーラ</span><span class="dh-badge">9番人気</span>
-      <div class="dh-stats mono">オッズ 95.1倍 ／ 勝率目安 1.6% ／ 期待値 153%</div>
-    </div>
-    
-    <div class="dark-horse-item">
-      <span class="dh-name">マイネルウルカヌス</span><span class="dh-badge">8番人気</span>
-      <div class="dh-stats mono">オッズ 78.5倍 ／ 勝率目安 1.8% ／ 期待値 143%</div>
-    </div>
-    
-    <div class="dark-horse-item">
-      <span class="dh-name">ヒズストーリー</span><span class="dh-badge">10番人気</span>
-      <div class="dh-stats mono">オッズ 130.5倍 ／ 勝率目安 0.9% ／ 期待値 113%</div>
-    </div>
-    
-    <div class="dark-horse-item">
-      <span class="dh-name">オオルリ</span><span class="dh-badge">11番人気</span>
-      <div class="dh-stats mono">オッズ 132.8倍 ／ 勝率目安 0.8% ／ 期待値 106%</div>
+      <div class="dh-stats mono">オッズ 65.4倍 ／ 勝率目安 3.0% ／ 期待値 195%</div>
     </div>
     
   </div>
@@ -236,9 +300,9 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">2</span>チェスティーノ</span>
-        <span class="horse-prob mono">複勝圏内 78%</span>
+        <span class="horse-prob mono">複勝圏内 79%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約78%。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約79%。</div>
     </div>
     
     <div class="horse-item">
@@ -252,17 +316,17 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">9</span>テキサス</span>
-        <span class="horse-prob mono">複勝圏内 40%</span>
+        <span class="horse-prob mono">複勝圏内 39%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約40%。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約39%。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">8</span>ダディーズレガリア</span>
-        <span class="horse-prob mono">複勝圏内 32%</span>
+        <span class="horse-prob mono">複勝圏内 30%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約32%。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約30%。</div>
     </div>
     
     <div class="horse-item">
@@ -276,9 +340,9 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">3</span>ガヤーズサムライ</span>
-        <span class="horse-prob mono">複勝圏内 12%</span>
+        <span class="horse-prob mono">複勝圏内 13%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約12%。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約13%。</div>
     </div>
     
     <div class="horse-item">
@@ -292,9 +356,9 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">7</span>マイネルウルカヌス</span>
-        <span class="horse-prob mono">複勝圏内 5%</span>
+        <span class="horse-prob mono">複勝圏内 4%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約5%。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約4%。</div>
     </div>
     
     <div class="horse-item">
@@ -323,69 +387,62 @@
     
   </div>
 
-  <div class="section-title"><span class="en">All Bets</span>券種ごとの買い目候補</div>
-  <div class="section-hint">期待値100%を超えるものだけを表示しています。券種名をタップすると開きます。</div>
+  <div class="section-title"><span class="en">All Bets</span>券種ごとの買い目一覧（参考）</div>
+  <div class="section-hint">期待値100%を超えるものを全て表示しています。上の「購入プラン」はこの中から自動選定したものです。</div>
   
   <details class="bet-group" open>
-    <summary>単勝 <span class="count">8点</span></summary>
+    <summary>単勝 <span class="count">7点</span></summary>
     <table>
       <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
       <tbody>
         
         <tr>
-          <td class="horses-cell">ガヤーズサムライ</td>
+          <td class="horses-cell">3 ガヤーズサムライ</td>
           <td class="mono">39.9</td>
-          <td class="mono">4.9%</td>
-          <td class="ev-cell mono">194%</td>
+          <td class="mono">5.1%</td>
+          <td class="ev-cell mono">204%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">キャッチアップ</td>
+          <td class="horses-cell">4 キャッチアップ</td>
           <td class="mono">65.4</td>
           <td class="mono">3.0%</td>
-          <td class="ev-cell mono">193%</td>
+          <td class="ev-cell mono">195%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ライヴテキーラ</td>
+          <td class="horses-cell">11 ライヴテキーラ</td>
           <td class="mono">95.1</td>
-          <td class="mono">1.6%</td>
-          <td class="ev-cell mono">153%</td>
+          <td class="mono">1.5%</td>
+          <td class="ev-cell mono">138%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">マイネルウルカヌス</td>
+          <td class="horses-cell">7 マイネルウルカヌス</td>
           <td class="mono">78.5</td>
-          <td class="mono">1.8%</td>
-          <td class="ev-cell mono">143%</td>
+          <td class="mono">1.7%</td>
+          <td class="ev-cell mono">135%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ヒズストーリー</td>
+          <td class="horses-cell">5 オオルリ</td>
+          <td class="mono">132.8</td>
+          <td class="mono">0.9%</td>
+          <td class="ev-cell mono">114%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 ヒズストーリー</td>
           <td class="mono">130.5</td>
           <td class="mono">0.9%</td>
-          <td class="ev-cell mono">113%</td>
+          <td class="ev-cell mono">112%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">テキサス</td>
+          <td class="horses-cell">9 テキサス</td>
           <td class="mono">6.9</td>
           <td class="mono">15.7%</td>
           <td class="ev-cell mono">108%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">オオルリ</td>
-          <td class="mono">132.8</td>
-          <td class="mono">0.8%</td>
-          <td class="ev-cell mono">106%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ダディーズレガリア</td>
-          <td class="mono">8.0</td>
-          <td class="mono">12.6%</td>
-          <td class="ev-cell mono">101%</td>
         </tr>
         
       </tbody>
@@ -393,121 +450,100 @@
   </details>
   
   <details class="bet-group">
-    <summary>馬連 <span class="count">16点</span></summary>
+    <summary>馬連 <span class="count">13点</span></summary>
     <table>
       <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
       <tbody>
         
         <tr>
-          <td class="horses-cell">キャッチアップ - ペントザリス</td>
+          <td class="horses-cell">4 キャッチアップ - 6 ペントザリス</td>
           <td class="mono">187.9</td>
           <td class="mono">1.2%</td>
-          <td class="ev-cell mono">231%</td>
+          <td class="ev-cell mono">230%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">テキサス - キャッチアップ</td>
+          <td class="horses-cell">4 キャッチアップ - 9 テキサス</td>
           <td class="mono">205.7</td>
           <td class="mono">1.0%</td>
-          <td class="ev-cell mono">212%</td>
+          <td class="ev-cell mono">214%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ガヤーズサムライ - ペントザリス</td>
+          <td class="horses-cell">3 ガヤーズサムライ - 6 ペントザリス</td>
           <td class="mono">95.0</td>
-          <td class="mono">2.0%</td>
-          <td class="ev-cell mono">194%</td>
+          <td class="mono">2.1%</td>
+          <td class="ev-cell mono">201%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ガヤーズサムライ - キャッチアップ</td>
+          <td class="horses-cell">4 キャッチアップ - 3 ガヤーズサムライ</td>
           <td class="mono">542.2</td>
           <td class="mono">0.3%</td>
-          <td class="ev-cell mono">162%</td>
+          <td class="ev-cell mono">172%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">キャッチアップ - ダディーズレガリア</td>
-          <td class="mono">189.6</td>
-          <td class="mono">0.8%</td>
+          <td class="horses-cell">3 ガヤーズサムライ - 9 テキサス</td>
+          <td class="mono">85.3</td>
+          <td class="mono">1.8%</td>
           <td class="ev-cell mono">153%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">テキサス - ガヤーズサムライ</td>
-          <td class="mono">85.3</td>
-          <td class="mono">1.7%</td>
-          <td class="ev-cell mono">146%</td>
+          <td class="horses-cell">8 ダディーズレガリア - 4 キャッチアップ</td>
+          <td class="mono">189.6</td>
+          <td class="mono">0.8%</td>
+          <td class="ev-cell mono">149%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ライヴテキーラ - ペントザリス</td>
-          <td class="mono">208.5</td>
-          <td class="mono">0.7%</td>
-          <td class="ev-cell mono">139%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ガヤーズサムライ - ダディーズレガリア</td>
-          <td class="mono">95.6</td>
-          <td class="mono">1.3%</td>
-          <td class="ev-cell mono">128%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ガヤーズサムライ - リアスハート</td>
+          <td class="horses-cell">3 ガヤーズサムライ - 10 リアスハート</td>
           <td class="mono">132.4</td>
           <td class="mono">1.0%</td>
-          <td class="ev-cell mono">128%</td>
+          <td class="ev-cell mono">136%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">テキサス - ライヴテキーラ</td>
-          <td class="mono">221.6</td>
+          <td class="horses-cell">8 ダディーズレガリア - 3 ガヤーズサムライ</td>
+          <td class="mono">95.6</td>
+          <td class="mono">1.4%</td>
+          <td class="ev-cell mono">130%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">6 ペントザリス - 11 ライヴテキーラ</td>
+          <td class="mono">208.5</td>
           <td class="mono">0.6%</td>
           <td class="ev-cell mono">123%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ガヤーズサムライ - ライヴテキーラ</td>
+          <td class="horses-cell">3 ガヤーズサムライ - 11 ライヴテキーラ</td>
           <td class="mono">745.0</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">120%</td>
+          <td class="ev-cell mono">114%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">テキサス - ペントザリス</td>
+          <td class="horses-cell">6 ペントザリス - 9 テキサス</td>
           <td class="mono">16.2</td>
-          <td class="mono">7.0%</td>
-          <td class="ev-cell mono">113%</td>
+          <td class="mono">6.9%</td>
+          <td class="ev-cell mono">112%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">キャッチアップ - ライヴテキーラ</td>
-          <td class="mono">1122.1</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">109%</td>
+          <td class="horses-cell">9 テキサス - 11 ライヴテキーラ</td>
+          <td class="mono">221.6</td>
+          <td class="mono">0.5%</td>
+          <td class="ev-cell mono">111%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ライヴテキーラ - ダディーズレガリア</td>
-          <td class="mono">240.8</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">105%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">オオルリ - ペントザリス</td>
+          <td class="horses-cell">6 ペントザリス - 5 オオルリ</td>
           <td class="mono">315.9</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">104%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">マイネルウルカヌス - ペントザリス</td>
-          <td class="mono">134.1</td>
-          <td class="mono">0.8%</td>
-          <td class="ev-cell mono">101%</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">111%</td>
         </tr>
         
       </tbody>
@@ -521,143 +557,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">キャッチアップ → テキサス</td>
+          <td class="horses-cell">4 キャッチアップ → 9 テキサス</td>
           <td class="mono">655.6</td>
           <td class="mono">0.5%</td>
-          <td class="ev-cell mono">313%</td>
+          <td class="ev-cell mono">316%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">キャッチアップ → ペントザリス</td>
+          <td class="horses-cell">4 キャッチアップ → 6 ペントザリス</td>
           <td class="mono">544.7</td>
           <td class="mono">0.6%</td>
-          <td class="ev-cell mono">306%</td>
+          <td class="ev-cell mono">305%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ガヤーズサムライ → ペントザリス</td>
+          <td class="horses-cell">3 ガヤーズサムライ → 6 ペントザリス</td>
           <td class="mono">280.5</td>
-          <td class="mono">0.9%</td>
-          <td class="ev-cell mono">264%</td>
+          <td class="mono">1.0%</td>
+          <td class="ev-cell mono">275%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ライヴテキーラ → ペントザリス</td>
-          <td class="mono">837.0</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">252%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">キャッチアップ → ダディーズレガリア</td>
-          <td class="mono">593.6</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">227%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">キャッチアップ → リアスハート</td>
-          <td class="mono">777.4</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">218%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ガヤーズサムライ → テキサス</td>
+          <td class="horses-cell">3 ガヤーズサムライ → 9 テキサス</td>
           <td class="mono">271.4</td>
           <td class="mono">0.8%</td>
-          <td class="ev-cell mono">218%</td>
+          <td class="ev-cell mono">229%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ガヤーズサムライ → リアスハート</td>
+          <td class="horses-cell">11 ライヴテキーラ → 6 ペントザリス</td>
+          <td class="mono">837.0</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">224%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 ガヤーズサムライ → 10 リアスハート</td>
           <td class="mono">444.4</td>
           <td class="mono">0.5%</td>
-          <td class="ev-cell mono">209%</td>
+          <td class="ev-cell mono">224%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ペントザリス → キャッチアップ</td>
+          <td class="horses-cell">4 キャッチアップ → 10 リアスハート</td>
+          <td class="mono">777.4</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">223%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">4 キャッチアップ → 8 ダディーズレガリア</td>
+          <td class="mono">593.6</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">222%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">6 ペントザリス → 4 キャッチアップ</td>
           <td class="mono">297.5</td>
           <td class="mono">0.7%</td>
-          <td class="ev-cell mono">199%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ライヴテキーラ → ダディーズレガリア</td>
-          <td class="mono">958.4</td>
-          <td class="mono">0.2%</td>
           <td class="ev-cell mono">197%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ライヴテキーラ → テキサス</td>
-          <td class="mono">756.3</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">194%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">マイネルウルカヌス → ペントザリス</td>
-          <td class="mono">561.7</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">193%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ライヴテキーラ → ガヤーズサムライ</td>
-          <td class="mono">2369.0</td>
+          <td class="horses-cell">5 オオルリ → 9 テキサス</td>
+          <td class="mono">1395.0</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">188%</td>
+          <td class="ev-cell mono">190%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">テキサス → キャッチアップ</td>
+          <td class="horses-cell">9 テキサス → 4 キャッチアップ</td>
           <td class="mono">340.7</td>
           <td class="mono">0.6%</td>
-          <td class="ev-cell mono">188%</td>
+          <td class="ev-cell mono">189%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ガヤーズサムライ → ダディーズレガリア</td>
+          <td class="horses-cell">3 ガヤーズサムライ → 8 ダディーズレガリア</td>
           <td class="mono">279.6</td>
-          <td class="mono">0.6%</td>
+          <td class="mono">0.7%</td>
+          <td class="ev-cell mono">183%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 マイネルウルカヌス → 6 ペントザリス</td>
+          <td class="mono">561.7</td>
+          <td class="mono">0.3%</td>
           <td class="ev-cell mono">179%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">オオルリ → テキサス</td>
-          <td class="mono">1395.0</td>
+          <td class="horses-cell">11 ライヴテキーラ → 3 ガヤーズサムライ</td>
+          <td class="mono">2369.0</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">176%</td>
+          <td class="ev-cell mono">178%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">マイネルウルカヌス → テキサス</td>
-          <td class="mono">603.6</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">176%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ペントザリス → ガヤーズサムライ</td>
+          <td class="horses-cell">6 ペントザリス → 3 ガヤーズサムライ</td>
           <td class="mono">155.4</td>
           <td class="mono">1.1%</td>
-          <td class="ev-cell mono">171%</td>
+          <td class="ev-cell mono">177%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">オオルリ → ダディーズレガリア</td>
+          <td class="horses-cell">11 ライヴテキーラ → 9 テキサス</td>
+          <td class="mono">756.3</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">175%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">11 ライヴテキーラ → 8 ダディーズレガリア</td>
+          <td class="mono">958.4</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">172%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">5 オオルリ → 8 ダディーズレガリア</td>
           <td class="mono">1589.3</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">161%</td>
+          <td class="ev-cell mono">168%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">マイネルウルカヌス → ダディーズレガリア</td>
-          <td class="mono">680.5</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">159%</td>
+          <td class="horses-cell">7 マイネルウルカヌス → 9 テキサス</td>
+          <td class="mono">603.6</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">166%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">9 テキサス → 3 ガヤーズサムライ</td>
+          <td class="mono">172.5</td>
+          <td class="mono">1.0%</td>
+          <td class="ev-cell mono">164%</td>
         </tr>
         
       </tbody>
@@ -671,143 +707,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">テキサス - キャッチアップ - ペントザリス</td>
+          <td class="horses-cell">4 キャッチアップ - 6 ペントザリス - 9 テキサス</td>
           <td class="mono">257.6</td>
           <td class="mono">0.8%</td>
-          <td class="ev-cell mono">204%</td>
+          <td class="ev-cell mono">203%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ガヤーズサムライ - キャッチアップ - ペントザリス</td>
+          <td class="horses-cell">4 キャッチアップ - 3 ガヤーズサムライ - 6 ペントザリス</td>
           <td class="mono">728.0</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">156%</td>
+          <td class="ev-cell mono">163%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">テキサス - ガヤーズサムライ - ペントザリス</td>
+          <td class="horses-cell">3 ガヤーズサムライ - 6 ペントザリス - 9 テキサス</td>
           <td class="mono">116.8</td>
-          <td class="mono">1.3%</td>
-          <td class="ev-cell mono">155%</td>
+          <td class="mono">1.4%</td>
+          <td class="ev-cell mono">161%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">テキサス - キャッチアップ - ダディーズレガリア</td>
-          <td class="mono">284.0</td>
-          <td class="mono">0.5%</td>
-          <td class="ev-cell mono">142%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">キャッチアップ - ペントザリス - ダディーズレガリア</td>
-          <td class="mono">231.3</td>
-          <td class="mono">0.6%</td>
-          <td class="ev-cell mono">141%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">テキサス - ガヤーズサムライ - キャッチアップ</td>
+          <td class="horses-cell">4 キャッチアップ - 3 ガヤーズサムライ - 9 テキサス</td>
           <td class="mono">786.1</td>
           <td class="mono">0.2%</td>
+          <td class="ev-cell mono">147%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 ガヤーズサムライ - 6 ペントザリス - 10 リアスハート</td>
+          <td class="mono">191.2</td>
+          <td class="mono">0.8%</td>
+          <td class="ev-cell mono">145%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 ダディーズレガリア - 4 キャッチアップ - 9 テキサス</td>
+          <td class="mono">284.0</td>
+          <td class="mono">0.5%</td>
           <td class="ev-cell mono">138%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">リアスハート - ガヤーズサムライ - ペントザリス</td>
-          <td class="mono">191.2</td>
-          <td class="mono">0.7%</td>
-          <td class="ev-cell mono">137%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ガヤーズサムライ - ペントザリス - ダディーズレガリア</td>
-          <td class="mono">130.9</td>
-          <td class="mono">1.0%</td>
+          <td class="horses-cell">8 ダディーズレガリア - 4 キャッチアップ - 6 ペントザリス</td>
+          <td class="mono">231.3</td>
+          <td class="mono">0.6%</td>
           <td class="ev-cell mono">134%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">テキサス - ライヴテキーラ - ペントザリス</td>
-          <td class="mono">307.7</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">131%</td>
+          <td class="horses-cell">8 ダディーズレガリア - 3 ガヤーズサムライ - 6 ペントザリス</td>
+          <td class="mono">130.9</td>
+          <td class="mono">1.0%</td>
+          <td class="ev-cell mono">133%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ガヤーズサムライ - ペントザリス - ライヴテキーラ</td>
-          <td class="mono">1121.2</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">129%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">チェスティーノ - キャッチアップ - ペントザリス</td>
+          <td class="horses-cell">2 チェスティーノ - 4 キャッチアップ - 6 ペントザリス</td>
           <td class="mono">60.5</td>
-          <td class="mono">2.0%</td>
-          <td class="ev-cell mono">123%</td>
+          <td class="mono">2.1%</td>
+          <td class="ev-cell mono">125%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">テキサス - ペントザリス - ダディーズレガリア</td>
-          <td class="mono">32.5</td>
-          <td class="mono">3.8%</td>
-          <td class="ev-cell mono">123%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">リアスハート - キャッチアップ - ペントザリス</td>
-          <td class="mono">281.4</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">120%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">テキサス - キャッチアップ - リアスハート</td>
+          <td class="horses-cell">4 キャッチアップ - 10 リアスハート - 9 テキサス</td>
           <td class="mono">341.3</td>
           <td class="mono">0.4%</td>
-          <td class="ev-cell mono">120%</td>
+          <td class="ev-cell mono">123%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">テキサス - チェスティーノ - キャッチアップ</td>
+          <td class="horses-cell">2 チェスティーノ - 4 キャッチアップ - 9 テキサス</td>
           <td class="mono">71.6</td>
           <td class="mono">1.7%</td>
-          <td class="ev-cell mono">119%</td>
+          <td class="ev-cell mono">123%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">テキサス - ガヤーズサムライ - ダディーズレガリア</td>
+          <td class="horses-cell">4 キャッチアップ - 6 ペントザリス - 10 リアスハート</td>
+          <td class="mono">281.4</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">121%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 ガヤーズサムライ - 6 ペントザリス - 11 ライヴテキーラ</td>
+          <td class="mono">1121.2</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">121%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 ダディーズレガリア - 3 ガヤーズサムライ - 9 テキサス</td>
           <td class="mono">138.8</td>
           <td class="mono">0.8%</td>
+          <td class="ev-cell mono">118%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 ガヤーズサムライ - 10 リアスハート - 9 テキサス</td>
+          <td class="mono">186.7</td>
+          <td class="mono">0.6%</td>
+          <td class="ev-cell mono">118%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">6 ペントザリス - 9 テキサス - 11 ライヴテキーラ</td>
+          <td class="mono">307.7</td>
+          <td class="mono">0.4%</td>
           <td class="ev-cell mono">116%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ガヤーズサムライ - キャッチアップ - ダディーズレガリア</td>
-          <td class="mono">821.9</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">111%</td>
+          <td class="horses-cell">8 ダディーズレガリア - 6 ペントザリス - 9 テキサス</td>
+          <td class="mono">32.5</td>
+          <td class="mono">3.6%</td>
+          <td class="ev-cell mono">116%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">テキサス - ガヤーズサムライ - リアスハート</td>
-          <td class="mono">186.7</td>
-          <td class="mono">0.6%</td>
+          <td class="horses-cell">8 ダディーズレガリア - 4 キャッチアップ - 3 ガヤーズサムライ</td>
+          <td class="mono">821.9</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">114%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">4 キャッチアップ - 3 ガヤーズサムライ - 10 リアスハート</td>
+          <td class="mono">1073.5</td>
+          <td class="mono">0.1%</td>
           <td class="ev-cell mono">110%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">リアスハート - テキサス - ペントザリス</td>
-          <td class="mono">41.1</td>
-          <td class="mono">2.7%</td>
-          <td class="ev-cell mono">109%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">テキサス - チェスティーノ - ペントザリス</td>
-          <td class="mono">8.2</td>
-          <td class="mono">12.6%</td>
-          <td class="ev-cell mono">103%</td>
+          <td class="horses-cell">2 チェスティーノ - 3 ガヤーズサムライ - 9 テキサス</td>
+          <td class="mono">36.6</td>
+          <td class="mono">3.0%</td>
+          <td class="ev-cell mono">110%</td>
         </tr>
         
       </tbody>
@@ -821,143 +857,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">キャッチアップ → テキサス → ペントザリス</td>
+          <td class="horses-cell">4 キャッチアップ → 9 テキサス → 6 ペントザリス</td>
           <td class="mono">4699.0</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">510%</td>
+          <td class="ev-cell mono">508%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">キャッチアップ → ペントザリス → テキサス</td>
+          <td class="horses-cell">4 キャッチアップ → 6 ペントザリス → 9 テキサス</td>
           <td class="mono">4189.9</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">470%</td>
+          <td class="ev-cell mono">467%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">テキサス → キャッチアップ → ペントザリス</td>
+          <td class="horses-cell">9 テキサス → 4 キャッチアップ → 6 ペントザリス</td>
           <td class="mono">2801.0</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">350%</td>
+          <td class="ev-cell mono">348%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">キャッチアップ → ペントザリス → ダディーズレガリア</td>
+          <td class="horses-cell">4 キャッチアップ → 6 ペントザリス → 8 ダディーズレガリア</td>
           <td class="mono">3897.6</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">350%</td>
+          <td class="ev-cell mono">336%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">キャッチアップ → ダディーズレガリア → ペントザリス</td>
+          <td class="horses-cell">4 キャッチアップ → 8 ダディーズレガリア → 6 ペントザリス</td>
           <td class="mono">4038.5</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">337%</td>
+          <td class="ev-cell mono">324%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">キャッチアップ → テキサス → ダディーズレガリア</td>
+          <td class="horses-cell">4 キャッチアップ → 9 テキサス → 8 ダディーズレガリア</td>
           <td class="mono">4429.9</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">327%</td>
+          <td class="ev-cell mono">320%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ガヤーズサムライ → ライヴテキーラ → ペントザリス</td>
-          <td class="mono">19717.4</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">319%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">キャッチアップ → ライヴテキーラ → ペントザリス</td>
-          <td class="mono">33519.7</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">317%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">キャッチアップ → テキサス → チェスティーノ</td>
+          <td class="horses-cell">4 キャッチアップ → 9 テキサス → 2 チェスティーノ</td>
           <td class="mono">1684.4</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">308%</td>
+          <td class="ev-cell mono">316%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ペントザリス → キャッチアップ → テキサス</td>
-          <td class="mono">2285.4</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">305%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ライヴテキーラ → テキサス → ペントザリス</td>
-          <td class="mono">5320.5</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">305%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">キャッチアップ → ダディーズレガリア → テキサス</td>
-          <td class="mono">4279.1</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">304%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ライヴテキーラ → ガヤーズサムライ → ペントザリス</td>
-          <td class="mono">19338.3</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">302%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">キャッチアップ → チェスティーノ → テキサス</td>
+          <td class="horses-cell">4 キャッチアップ → 2 チェスティーノ → 9 テキサス</td>
           <td class="mono">1339.0</td>
           <td class="mono">0.2%</td>
+          <td class="ev-cell mono">312%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 ガヤーズサムライ → 9 テキサス → 6 ペントザリス</td>
+          <td class="mono">1578.6</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">307%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">6 ペントザリス → 4 キャッチアップ → 9 テキサス</td>
+          <td class="mono">2285.4</td>
+          <td class="mono">0.1%</td>
           <td class="ev-cell mono">302%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ガヤーズサムライ → テキサス → ペントザリス</td>
-          <td class="mono">1578.6</td>
+          <td class="horses-cell">3 ガヤーズサムライ → 11 ライヴテキーラ → 6 ペントザリス</td>
+          <td class="mono">19717.4</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">300%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 ガヤーズサムライ → 6 ペントザリス → 9 テキサス</td>
+          <td class="mono">1485.3</td>
           <td class="mono">0.2%</td>
+          <td class="ev-cell mono">298%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">4 キャッチアップ → 8 ダディーズレガリア → 9 テキサス</td>
+          <td class="mono">4279.1</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">296%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 ガヤーズサムライ → 6 ペントザリス → 2 チェスティーノ</td>
+          <td class="mono">728.6</td>
+          <td class="mono">0.4%</td>
           <td class="ev-cell mono">294%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">キャッチアップ → ペントザリス → チェスティーノ</td>
+          <td class="horses-cell">4 キャッチアップ → 6 ペントザリス → 2 チェスティーノ</td>
           <td class="mono">1304.2</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">290%</td>
+          <td class="ev-cell mono">293%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ガヤーズサムライ → ペントザリス → テキサス</td>
-          <td class="mono">1485.3</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">287%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ライヴテキーラ → ペントザリス → テキサス</td>
-          <td class="mono">4765.8</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">282%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ガヤーズサムライ → ペントザリス → チェスティーノ</td>
-          <td class="mono">728.6</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">279%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ライヴテキーラ → キャッチアップ → ペントザリス</td>
-          <td class="mono">28731.1</td>
+          <td class="horses-cell">4 キャッチアップ → 11 ライヴテキーラ → 6 ペントザリス</td>
+          <td class="mono">33519.7</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">268%</td>
+          <td class="ev-cell mono">285%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">11 ライヴテキーラ → 3 ガヤーズサムライ → 6 ペントザリス</td>
+          <td class="mono">19338.3</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">283%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">4 キャッチアップ → 9 テキサス → 10 リアスハート</td>
+          <td class="mono">4905.3</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">272%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">4 キャッチアップ → 2 チェスティーノ → 6 ペントザリス</td>
+          <td class="mono">1003.5</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">271%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 ガヤーズサムライ → 10 リアスハート → 6 ペントザリス</td>
+          <td class="mono">2532.9</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">271%</td>
         </tr>
         
       </tbody>
@@ -969,5 +1005,49 @@
 
   <div class="disclaimer">本ページの予想は参考情報です。的中・利益を保証しません。<br>馬券の購入は必ずご自身でIPAT等の公式ルートから行ってください。</div>
 </main>
+
+<script>
+(function () {
+  const UNIT = 100;  // JRAの購入単位（100円）に丸める
+
+  function recalc() {
+    const budget = parseFloat(document.getElementById('budgetInput').value) || 0;
+    const rows = Array.from(document.querySelectorAll('#planTable tbody tr[data-ev]'));
+    const totalRow = document.getElementById('planTotalRow');
+    const totalCell = document.getElementById('planTotal');
+
+    if (!rows.length) return;
+
+    if (budget <= 0) {
+      rows.forEach(function (tr) { tr.querySelector('.stake-cell').textContent = '-'; });
+      if (totalRow) totalRow.style.display = 'none';
+      return;
+    }
+
+    // 期待値(EV)が高いものほど多く配分する（EVの合計に対する比率で按分）
+    const evs = rows.map(function (tr) { return Math.max(0, parseFloat(tr.dataset.ev) - 1); }); // 100%超過分だけを重みにする
+    const totalWeight = evs.reduce(function (a, b) { return a + b; }, 0);
+
+    let allocated = 0;
+    rows.forEach(function (tr, i) {
+      const weight = totalWeight > 0 ? evs[i] / totalWeight : 1 / rows.length;
+      const raw = budget * weight;
+      const amount = Math.floor(raw / UNIT) * UNIT;
+      allocated += amount;
+      tr.querySelector('.stake-cell').textContent = amount > 0 ? amount.toLocaleString('ja-JP') + '円' : '見送り';
+    });
+
+    if (totalRow && totalCell) {
+      totalRow.style.display = '';
+      totalCell.textContent = allocated.toLocaleString('ja-JP') + '円 / ' + budget.toLocaleString('ja-JP') + '円中';
+    }
+  }
+
+  const input = document.getElementById('budgetInput');
+  if (input) {
+    input.addEventListener('input', recalc);
+  }
+})();
+</script>
 </body>
 </html>

@@ -63,30 +63,66 @@
   }
   .summary-text { font-size: 13px; line-height: 1.75; color: var(--text-dim); }
 
-  /* --- 結論：一番のおすすめ --- */
-  .best-bet {
+  /* --- 結論：馬券風デザイン --- */
+  .ticket {
     position: relative;
     background: linear-gradient(180deg, #1a1408 0%, var(--surface) 70%);
     border: 1px solid var(--amber-dim);
+    border-radius: 10px;
     box-shadow: 0 0 0 1px rgba(240,162,2,0.08), 0 8px 24px -12px var(--amber-glow);
+    padding: 0;
+    overflow: hidden;
   }
-  .best-bet .tag {
-    font-size: 12px; font-weight: 800; color: var(--amber);
+  .ticket-head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 16px; background: rgba(240,162,2,0.08);
+    border-bottom: 1px dashed var(--amber-dim);
   }
-  .best-bet .type {
-    display: inline-block; font-size: 11px; color: var(--bg); background: var(--amber);
-    font-weight: 700; padding: 2px 8px; border-radius: 3px; margin-top: 8px;
+  .ticket-head .label { font-size: 11px; font-weight: 800; color: var(--amber); letter-spacing: 0.05em; }
+  .ticket-head .type-badge {
+    font-size: 11px; color: var(--bg); background: var(--amber);
+    font-weight: 800; padding: 3px 10px; border-radius: 3px;
   }
-  .best-bet .horses {
-    font-size: 21px; font-weight: 800; margin: 8px 0 12px;
-    color: var(--text); line-height: 1.4;
+  .ticket-body { padding: 16px; }
+  .ticket .horses {
+    font-size: 20px; font-weight: 800; margin: 0 0 14px;
+    color: var(--text); line-height: 1.45;
   }
-  .best-bet .stat-row { display: flex; }
-  .best-bet .stat { margin-right: 24px; }
-  .best-bet .stat .label { font-size: 10.5px; color: var(--text-dim); }
-  .best-bet .stat .value { font-size: 18px; font-weight: 800; margin-top: 2px; }
-  .best-bet .stat.ev .value { color: var(--amber); }
-  .best-bet .footnote { font-size: 11px; color: var(--text-dim); margin-top: 12px; line-height: 1.6; border-top: 1px solid var(--line); padding-top: 10px; }
+  .ticket-stats {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+    padding: 12px 0; border-top: 1px dashed var(--line); border-bottom: 1px dashed var(--line);
+  }
+  .ticket-stats .stat { text-align: center; }
+  .ticket-stats .stat .label { font-size: 10px; color: var(--text-dim); }
+  .ticket-stats .stat .value { font-size: 16px; font-weight: 800; margin-top: 3px; }
+  .ticket-stats .stat.ev .value { color: var(--amber); }
+
+  .ticket-amount {
+    margin-top: 14px; padding: 12px; background: var(--surface-2);
+    border-radius: 6px; display: flex; justify-content: space-between; align-items: center;
+  }
+  .ticket-amount .label { font-size: 11px; color: var(--text-dim); }
+  .ticket-amount .value { font-size: 22px; font-weight: 800; color: var(--green); }
+  .ticket-amount .value::before { content: "¥"; font-size: 14px; margin-right: 2px; }
+
+  .footnote { font-size: 11px; color: var(--text-dim); margin-top: 12px; line-height: 1.6; padding: 0 16px 14px; }
+
+  /* --- 予算入力 --- */
+  .budget-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
+    padding: 10px 14px; margin-bottom: 14px;
+  }
+  .budget-box label { font-size: 12px; color: var(--text-dim); white-space: nowrap; }
+  .budget-box input {
+    flex: 1; background: var(--surface-2); border: 1px solid var(--line); border-radius: 4px;
+    color: var(--text); font-size: 15px; padding: 7px 10px; font-family: inherit;
+    -moz-appearance: textfield;
+  }
+  .budget-box input::-webkit-outer-spin-button, .budget-box input::-webkit-inner-spin-button { margin: 0; }
+  .budget-box .unit { font-size: 12px; color: var(--text-dim); }
+  .stake-cell { color: var(--green); font-weight: 700; }
+
 
   /* --- 穴馬候補 --- */
   .dark-horse-card { border-left: 3px solid var(--green); }
@@ -178,18 +214,66 @@
   <div class="card summary-text">逃げ馬が3頭おり、先行争いが激化しやすくハイペース濃厚。差し・追込馬にも展開の恩恵が期待できる。馬場状態は「良」。</div>
 
   
-  <div class="section-title"><span class="en">Conclusion</span>結論：一番のおすすめ</div>
-  <div class="card best-bet">
-    <div class="tag">🏆 このレースで最も期待値が高い買い目</div>
-    <div class="type">3連単</div>
-    <div class="horses">ニューアライブ → ディーリライズ → ドンテスタマスター</div>
-    <div class="stat-row mono">
-      <div class="stat"><div class="label">オッズ</div><div class="value">62834.6倍</div></div>
-      <div class="stat"><div class="label">的中確率</div><div class="value">0.0%</div></div>
-      <div class="stat ev"><div class="label">期待値</div><div class="value">557%</div></div>
-    </div>
-    <div class="footnote">期待値とは「100円賭けた時に理論上いくら戻ってくるか」の目安です。100%を超えるほど、賭け金に対して見込まれる払戻が大きいことを意味します（的中を保証するものではありません）。</div>
+  <div class="section-title"><span class="en">Betting Plan</span>AI推奨 購入プラン</div>
+  <div class="section-hint">実際の投票は複数点に分けるのが基本のため、期待値が高い順に複数の買い目を組み合わせています。予算を入れると自動で配分します。</div>
+  <div class="budget-box">
+    <label for="budgetInput">今回の予算</label>
+    <input type="number" id="budgetInput" inputmode="numeric" placeholder="例: 3000" min="0" step="100">
+    <span class="unit">円</span>
   </div>
+  <div class="card" style="padding:0; overflow:hidden;">
+    <table id="planTable">
+      <thead><tr><th>券種</th><th>買い目</th><th>オッズ</th><th>期待値</th><th>配分額</th></tr></thead>
+      <tbody>
+        
+        <tr data-ev="2.418150361150727">
+          <td class="mono">3連複</td>
+          <td class="horses-cell">1 ノリマル - 5 ディーリライズ - 14 ドンテスタマスター</td>
+          <td class="mono">141.0</td>
+          <td class="ev-cell mono">242%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="2.1533560046658726">
+          <td class="mono">3連複</td>
+          <td class="horses-cell">14 ドンテスタマスター - 13 タケルフォーカス - 5 ディーリライズ</td>
+          <td class="mono">206.3</td>
+          <td class="ev-cell mono">215%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="2.1305290148088383">
+          <td class="mono">馬連</td>
+          <td class="horses-cell">14 ドンテスタマスター - 5 ディーリライズ</td>
+          <td class="mono">75.8</td>
+          <td class="ev-cell mono">213%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="2.122393069474765">
+          <td class="mono">馬単</td>
+          <td class="horses-cell">13 タケルフォーカス → 5 ディーリライズ</td>
+          <td class="mono">182.9</td>
+          <td class="ev-cell mono">212%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="2.102420515796329">
+          <td class="mono">馬単</td>
+          <td class="horses-cell">5 ディーリライズ → 14 ドンテスタマスター</td>
+          <td class="mono">150.4</td>
+          <td class="ev-cell mono">210%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr id="planTotalRow" style="display:none;">
+          <td colspan="4" style="text-align:right; font-weight:800;">合計</td>
+          <td class="mono" id="planTotal" style="font-weight:800; color:var(--green);">-</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="footnote">配分額は、各買い目の期待値の大きさに比例して予算を振り分けた目安です（期待値が高いものほど多く配分）。1点に集中させず、複数点に分けて購入することでブレを抑える考え方に基づいています。あくまで参考情報であり、的中や利益を保証するものではありません。</div>
   
 
   
@@ -199,47 +283,27 @@
     
     <div class="dark-horse-item">
       <span class="dh-name">タビニュ</span><span class="dh-badge">10番人気</span>
-      <div class="dh-stats mono">オッズ 62.6倍 ／ 勝率目安 3.0% ／ 期待値 190%</div>
-    </div>
-    
-    <div class="dark-horse-item">
-      <span class="dh-name">ニューアライブ</span><span class="dh-badge">14番人気</span>
-      <div class="dh-stats mono">オッズ 297.5倍 ／ 勝率目安 0.6% ／ 期待値 175%</div>
-    </div>
-    
-    <div class="dark-horse-item">
-      <span class="dh-name">ミッドタウンナイト</span><span class="dh-badge">12番人気</span>
-      <div class="dh-stats mono">オッズ 168.3倍 ／ 勝率目安 0.9% ／ 期待値 153%</div>
-    </div>
-    
-    <div class="dark-horse-item">
-      <span class="dh-name">モルビド</span><span class="dh-badge">8番人気</span>
-      <div class="dh-stats mono">オッズ 36.4倍 ／ 勝率目安 4.1% ／ 期待値 149%</div>
+      <div class="dh-stats mono">オッズ 62.6倍 ／ 勝率目安 2.9% ／ 期待値 184%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">テイクザクラウン</span><span class="dh-badge">9番人気</span>
-      <div class="dh-stats mono">オッズ 57.1倍 ／ 勝率目安 2.4% ／ 期待値 139%</div>
+      <div class="dh-stats mono">オッズ 57.1倍 ／ 勝率目安 2.9% ／ 期待値 165%</div>
     </div>
     
     <div class="dark-horse-item">
-      <span class="dh-name">ハバタクジユウニ</span><span class="dh-badge">13番人気</span>
-      <div class="dh-stats mono">オッズ 283.2倍 ／ 勝率目安 0.5% ／ 期待値 128%</div>
+      <span class="dh-name">モルビド</span><span class="dh-badge">8番人気</span>
+      <div class="dh-stats mono">オッズ 36.4倍 ／ 勝率目安 4.0% ／ 期待値 145%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">タケルフォーカス</span><span class="dh-badge">6番人気</span>
-      <div class="dh-stats mono">オッズ 11.1倍 ／ 勝率目安 10.1% ／ 期待値 112%</div>
+      <div class="dh-stats mono">オッズ 11.1倍 ／ 勝率目安 9.8% ／ 期待値 109%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">ディーリライズ</span><span class="dh-badge">5番人気</span>
       <div class="dh-stats mono">オッズ 9.9倍 ／ 勝率目安 10.7% ／ 期待値 106%</div>
-    </div>
-    
-    <div class="dark-horse-item">
-      <span class="dh-name">ディベルティスマン</span><span class="dh-badge">7番人気</span>
-      <div class="dh-stats mono">オッズ 16.5倍 ／ 勝率目安 6.2% ／ 期待値 103%</div>
     </div>
     
   </div>
@@ -251,25 +315,17 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">4</span>クオンタムスター</span>
-        <span class="horse-prob mono">複勝圏内 73%</span>
+        <span class="horse-prob mono">複勝圏内 76%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約73%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は2.3着と好調を維持。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約76%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は2.3着と好調を維持。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">1</span>ノリマル</span>
-        <span class="horse-prob mono">複勝圏内 49%</span>
+        <span class="horse-prob mono">複勝圏内 51%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約49%。逃げ脚質だが、このレースは逃げ馬が3頭おり先行争いが激しくなりペースが速まる可能性があるため、スタミナ面がやや不安要素。</div>
-    </div>
-    
-    <div class="horse-item">
-      <div class="horse-head">
-        <span class="horse-name"><span class="horse-num mono">14</span>ドンテスタマスター</span>
-        <span class="horse-prob mono">複勝圏内 42%</span>
-      </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約42%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約51%。逃げ脚質だが、このレースは逃げ馬が3頭おり先行争いが激しくなりペースが速まる可能性があるため、スタミナ面がやや不安要素。</div>
     </div>
     
     <div class="horse-item">
@@ -278,6 +334,14 @@
         <span class="horse-prob mono">複勝圏内 41%</span>
       </div>
       <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約41%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">14</span>ドンテスタマスター</span>
+        <span class="horse-prob mono">複勝圏内 39%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約39%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
     </div>
     
     <div class="horse-item">
@@ -291,25 +355,25 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">13</span>タケルフォーカス</span>
-        <span class="horse-prob mono">複勝圏内 34%</span>
+        <span class="horse-prob mono">複勝圏内 33%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約34%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約33%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">11</span>ディベルティスマン</span>
-        <span class="horse-prob mono">複勝圏内 21%</span>
+        <span class="horse-prob mono">複勝圏内 20%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約21%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約20%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">3</span>モルビド</span>
-        <span class="horse-prob mono">複勝圏内 14%</span>
+        <span class="horse-prob mono">複勝圏内 13%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約14%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は8.3着とやや不振。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約13%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は8.3着とやや不振。</div>
     </div>
     
     <div class="horse-item">
@@ -323,9 +387,9 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">12</span>テイクザクラウン</span>
-        <span class="horse-prob mono">複勝圏内 8%</span>
+        <span class="horse-prob mono">複勝圏内 10%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約8%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約10%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
     </div>
     
     <div class="horse-item">
@@ -347,98 +411,84 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">9</span>シーンオブドリーム</span>
-        <span class="horse-prob mono">複勝圏内 2%</span>
+        <span class="horse-prob mono">複勝圏内 1%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約2%。逃げ脚質だが、このレースは逃げ馬が3頭おり先行争いが激しくなりペースが速まる可能性があるため、スタミナ面がやや不安要素。直近3走の平均着順は12.5着とやや不振。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約1%。逃げ脚質だが、このレースは逃げ馬が3頭おり先行争いが激しくなりペースが速まる可能性があるため、スタミナ面がやや不安要素。直近3走の平均着順は12.5着とやや不振。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">2</span>ハバタクジユウニ</span>
-        <span class="horse-prob mono">複勝圏内 2%</span>
+        <span class="horse-prob mono">複勝圏内 1%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約2%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は10.3着とやや不振。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約1%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は10.3着とやや不振。</div>
     </div>
     
   </div>
 
-  <div class="section-title"><span class="en">All Bets</span>券種ごとの買い目候補</div>
-  <div class="section-hint">期待値100%を超えるものだけを表示しています。券種名をタップすると開きます。</div>
+  <div class="section-title"><span class="en">All Bets</span>券種ごとの買い目一覧（参考）</div>
+  <div class="section-hint">期待値100%を超えるものを全て表示しています。上の「購入プラン」はこの中から自動選定したものです。</div>
   
   <details class="bet-group" open>
-    <summary>単勝 <span class="count">10点</span></summary>
+    <summary>単勝 <span class="count">8点</span></summary>
     <table>
       <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
       <tbody>
         
         <tr>
-          <td class="horses-cell">タビニュ</td>
-          <td class="mono">62.6</td>
-          <td class="mono">3.0%</td>
+          <td class="horses-cell">7 ニューアライブ</td>
+          <td class="mono">297.5</td>
+          <td class="mono">0.6%</td>
           <td class="ev-cell mono">190%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ニューアライブ</td>
-          <td class="mono">297.5</td>
-          <td class="mono">0.6%</td>
-          <td class="ev-cell mono">175%</td>
+          <td class="horses-cell">8 タビニュ</td>
+          <td class="mono">62.6</td>
+          <td class="mono">2.9%</td>
+          <td class="ev-cell mono">184%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ミッドタウンナイト</td>
+          <td class="horses-cell">6 ミッドタウンナイト</td>
           <td class="mono">168.3</td>
-          <td class="mono">0.9%</td>
-          <td class="ev-cell mono">153%</td>
+          <td class="mono">1.0%</td>
+          <td class="ev-cell mono">170%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">モルビド</td>
-          <td class="mono">36.4</td>
-          <td class="mono">4.1%</td>
-          <td class="ev-cell mono">149%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">テイクザクラウン</td>
+          <td class="horses-cell">12 テイクザクラウン</td>
           <td class="mono">57.1</td>
-          <td class="mono">2.4%</td>
-          <td class="ev-cell mono">139%</td>
+          <td class="mono">2.9%</td>
+          <td class="ev-cell mono">165%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ハバタクジユウニ</td>
-          <td class="mono">283.2</td>
-          <td class="mono">0.5%</td>
-          <td class="ev-cell mono">128%</td>
+          <td class="horses-cell">3 モルビド</td>
+          <td class="mono">36.4</td>
+          <td class="mono">4.0%</td>
+          <td class="ev-cell mono">145%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">タケルフォーカス</td>
+          <td class="horses-cell">13 タケルフォーカス</td>
           <td class="mono">11.1</td>
-          <td class="mono">10.1%</td>
-          <td class="ev-cell mono">112%</td>
+          <td class="mono">9.8%</td>
+          <td class="ev-cell mono">109%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ドンテスタマスター</td>
-          <td class="mono">8.9</td>
-          <td class="mono">12.4%</td>
-          <td class="ev-cell mono">111%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ディーリライズ</td>
+          <td class="horses-cell">5 ディーリライズ</td>
           <td class="mono">9.9</td>
           <td class="mono">10.7%</td>
           <td class="ev-cell mono">106%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ディベルティスマン</td>
-          <td class="mono">16.5</td>
-          <td class="mono">6.2%</td>
-          <td class="ev-cell mono">103%</td>
+          <td class="horses-cell">14 ドンテスタマスター</td>
+          <td class="mono">8.9</td>
+          <td class="mono">11.7%</td>
+          <td class="ev-cell mono">104%</td>
         </tr>
         
       </tbody>
@@ -452,143 +502,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">ドンテスタマスター - タビニュ</td>
+          <td class="horses-cell">8 タビニュ - 14 ドンテスタマスター</td>
           <td class="mono">329.8</td>
-          <td class="mono">0.8%</td>
-          <td class="ev-cell mono">271%</td>
+          <td class="mono">0.7%</td>
+          <td class="ev-cell mono">245%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ディーリライズ - ドンテスタマスター</td>
-          <td class="mono">75.8</td>
-          <td class="mono">3.0%</td>
-          <td class="ev-cell mono">228%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ディーリライズ - ニューアライブ</td>
+          <td class="horses-cell">7 ニューアライブ - 5 ディーリライズ</td>
           <td class="mono">1586.6</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">212%</td>
+          <td class="ev-cell mono">231%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ディベルティスマン - タビニュ</td>
-          <td class="mono">500.6</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">199%</td>
+          <td class="horses-cell">14 ドンテスタマスター - 5 ディーリライズ</td>
+          <td class="mono">75.8</td>
+          <td class="mono">2.8%</td>
+          <td class="ev-cell mono">213%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">モルビド - ドンテスタマスター</td>
-          <td class="mono">178.2</td>
-          <td class="mono">1.1%</td>
-          <td class="ev-cell mono">198%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ディーリライズ - タビニュ</td>
-          <td class="mono">282.8</td>
-          <td class="mono">0.7%</td>
-          <td class="ev-cell mono">197%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ノリマル - タビニュ</td>
+          <td class="horses-cell">8 タビニュ - 1 ノリマル</td>
           <td class="mono">197.6</td>
           <td class="mono">1.0%</td>
+          <td class="ev-cell mono">193%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 タビニュ - 5 ディーリライズ</td>
+          <td class="mono">282.8</td>
+          <td class="mono">0.7%</td>
           <td class="ev-cell mono">192%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">タケルフォーカス - タビニュ</td>
-          <td class="mono">288.2</td>
-          <td class="mono">0.7%</td>
-          <td class="ev-cell mono">189%</td>
+          <td class="horses-cell">8 タビニュ - 11 ディベルティスマン</td>
+          <td class="mono">500.6</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">185%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ワンダフルデイズ - タビニュ</td>
+          <td class="horses-cell">8 タビニュ - 10 ワンダフルデイズ</td>
           <td class="mono">230.6</td>
           <td class="mono">0.8%</td>
-          <td class="ev-cell mono">186%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ディーリライズ - タケルフォーカス</td>
-          <td class="mono">74.6</td>
-          <td class="mono">2.4%</td>
           <td class="ev-cell mono">180%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ニューアライブ - ドンテスタマスター</td>
+          <td class="horses-cell">3 モルビド - 14 ドンテスタマスター</td>
+          <td class="mono">178.2</td>
+          <td class="mono">1.0%</td>
+          <td class="ev-cell mono">180%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 ニューアライブ - 14 ドンテスタマスター</td>
           <td class="mono">1124.1</td>
           <td class="mono">0.2%</td>
+          <td class="ev-cell mono">179%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 タビニュ - 13 タケルフォーカス</td>
+          <td class="mono">288.2</td>
+          <td class="mono">0.6%</td>
           <td class="ev-cell mono">177%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ミッドタウンナイト - ドンテスタマスター</td>
-          <td class="mono">657.9</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">160%</td>
+          <td class="horses-cell">13 タケルフォーカス - 5 ディーリライズ</td>
+          <td class="mono">74.6</td>
+          <td class="mono">2.3%</td>
+          <td class="ev-cell mono">174%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">テイクザクラウン - ドンテスタマスター</td>
+          <td class="horses-cell">12 テイクザクラウン - 14 ドンテスタマスター</td>
           <td class="mono">236.4</td>
           <td class="mono">0.7%</td>
+          <td class="ev-cell mono">172%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">12 テイクザクラウン - 5 ディーリライズ</td>
+          <td class="mono">251.6</td>
+          <td class="mono">0.7%</td>
+          <td class="ev-cell mono">167%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">6 ミッドタウンナイト - 14 ドンテスタマスター</td>
+          <td class="mono">657.9</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">166%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 タビニュ - 12 テイクザクラウン</td>
+          <td class="mono">904.9</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">159%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 ノリマル - 5 ディーリライズ</td>
+          <td class="mono">42.4</td>
+          <td class="mono">3.7%</td>
+          <td class="ev-cell mono">157%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 ニューアライブ - 13 タケルフォーカス</td>
+          <td class="mono">1175.0</td>
+          <td class="mono">0.1%</td>
           <td class="ev-cell mono">155%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ディーリライズ - ノリマル</td>
-          <td class="mono">42.4</td>
-          <td class="mono">3.6%</td>
-          <td class="ev-cell mono">151%</td>
+          <td class="horses-cell">1 ノリマル - 12 テイクザクラウン</td>
+          <td class="mono">158.4</td>
+          <td class="mono">1.0%</td>
+          <td class="ev-cell mono">152%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ディーリライズ - シーンオブドリーム</td>
-          <td class="mono">1175.0</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">150%</td>
+          <td class="horses-cell">6 ミッドタウンナイト - 13 タケルフォーカス</td>
+          <td class="mono">697.6</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">146%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ニューアライブ - タケルフォーカス</td>
-          <td class="mono">1175.0</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">148%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">モルビド - タビニュ</td>
-          <td class="mono">563.3</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">145%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ディーリライズ - ディベルティスマン</td>
+          <td class="horses-cell">5 ディーリライズ - 11 ディベルティスマン</td>
           <td class="mono">98.3</td>
-          <td class="mono">1.5%</td>
-          <td class="ev-cell mono">143%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ディベルティスマン - ドンテスタマスター</td>
-          <td class="mono">83.4</td>
-          <td class="mono">1.7%</td>
-          <td class="ev-cell mono">143%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ディーリライズ - テイクザクラウン</td>
-          <td class="mono">251.6</td>
-          <td class="mono">0.6%</td>
-          <td class="ev-cell mono">140%</td>
+          <td class="mono">1.4%</td>
+          <td class="ev-cell mono">138%</td>
         </tr>
         
       </tbody>
@@ -602,143 +652,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">タビニュ → ドンテスタマスター</td>
-          <td class="mono">848.7</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">331%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ハバタクジユウニ → ディーリライズ</td>
-          <td class="mono">6038.9</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">293%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ニューアライブ → ディーリライズ</td>
+          <td class="horses-cell">7 ニューアライブ → 5 ディーリライズ</td>
           <td class="mono">4618.0</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">292%</td>
+          <td class="ev-cell mono">318%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">タビニュ → ディベルティスマン</td>
+          <td class="horses-cell">8 タビニュ → 14 ドンテスタマスター</td>
+          <td class="mono">848.7</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">300%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 タビニュ → 11 ディベルティスマン</td>
           <td class="mono">1440.4</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">281%</td>
+          <td class="ev-cell mono">262%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">タビニュ → タケルフォーカス</td>
+          <td class="horses-cell">8 タビニュ → 13 タケルフォーカス</td>
           <td class="mono">839.6</td>
           <td class="mono">0.3%</td>
-          <td class="ev-cell mono">266%</td>
+          <td class="ev-cell mono">249%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">タビニュ → ノリマル</td>
+          <td class="horses-cell">8 タビニュ → 1 ノリマル</td>
           <td class="mono">542.3</td>
           <td class="mono">0.5%</td>
           <td class="ev-cell mono">247%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">タビニュ → ワンダフルデイズ</td>
-          <td class="mono">616.9</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">237%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ディーリライズ → ドンテスタマスター</td>
-          <td class="mono">150.4</td>
-          <td class="mono">1.5%</td>
-          <td class="ev-cell mono">224%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ディーリライズ → ニューアライブ</td>
-          <td class="mono">3171.9</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">223%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ドンテスタマスター → ディーリライズ</td>
-          <td class="mono">145.6</td>
-          <td class="mono">1.5%</td>
-          <td class="ev-cell mono">221%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">タケルフォーカス → ディーリライズ</td>
-          <td class="mono">182.9</td>
-          <td class="mono">1.2%</td>
-          <td class="ev-cell mono">219%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">モルビド → ドンテスタマスター</td>
-          <td class="mono">401.0</td>
-          <td class="mono">0.5%</td>
-          <td class="ev-cell mono">213%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">テイクザクラウン → ドンテスタマスター</td>
-          <td class="mono">659.7</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">205%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">テイクザクラウン → ディーリライズ</td>
+          <td class="horses-cell">12 テイクザクラウン → 5 ディーリライズ</td>
           <td class="mono">764.0</td>
           <td class="mono">0.3%</td>
-          <td class="ev-cell mono">204%</td>
+          <td class="ev-cell mono">244%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ディーリライズ → ノリマル</td>
+          <td class="horses-cell">5 ディーリライズ → 7 ニューアライブ</td>
+          <td class="mono">3171.9</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">243%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 タビニュ → 10 ワンダフルデイズ</td>
+          <td class="mono">616.9</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">229%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">12 テイクザクラウン → 14 ドンテスタマスター</td>
+          <td class="mono">659.7</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">229%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">13 タケルフォーカス → 5 ディーリライズ</td>
+          <td class="mono">182.9</td>
+          <td class="mono">1.2%</td>
+          <td class="ev-cell mono">212%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">5 ディーリライズ → 14 ドンテスタマスター</td>
+          <td class="mono">150.4</td>
+          <td class="mono">1.4%</td>
+          <td class="ev-cell mono">210%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">5 ディーリライズ → 1 ノリマル</td>
           <td class="mono">116.2</td>
-          <td class="mono">1.7%</td>
-          <td class="ev-cell mono">202%</td>
+          <td class="mono">1.8%</td>
+          <td class="ev-cell mono">209%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ディーリライズ → タケルフォーカス</td>
+          <td class="horses-cell">14 ドンテスタマスター → 5 ディーリライズ</td>
+          <td class="mono">145.6</td>
+          <td class="mono">1.4%</td>
+          <td class="ev-cell mono">206%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">5 ディーリライズ → 13 タケルフォーカス</td>
           <td class="mono">167.0</td>
           <td class="mono">1.2%</td>
-          <td class="ev-cell mono">202%</td>
+          <td class="ev-cell mono">196%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">タビニュ → ディーリライズ</td>
+          <td class="horses-cell">8 タビニュ → 5 ディーリライズ</td>
           <td class="mono">602.7</td>
           <td class="mono">0.3%</td>
-          <td class="ev-cell mono">202%</td>
+          <td class="ev-cell mono">196%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">シーンオブドリーム → ディーリライズ</td>
-          <td class="mono">3237.3</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">195%</td>
+          <td class="horses-cell">3 モルビド → 14 ドンテスタマスター</td>
+          <td class="mono">401.0</td>
+          <td class="mono">0.5%</td>
+          <td class="ev-cell mono">194%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ニューアライブ → ドンテスタマスター</td>
-          <td class="mono">2472.6</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">182%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ミッドタウンナイト → タケルフォーカス</td>
+          <td class="horses-cell">6 ミッドタウンナイト → 13 タケルフォーカス</td>
           <td class="mono">1926.5</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">178%</td>
+          <td class="ev-cell mono">193%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">12 テイクザクラウン → 1 ノリマル</td>
+          <td class="mono">430.1</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">192%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 ニューアライブ → 14 ドンテスタマスター</td>
+          <td class="mono">2472.6</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">186%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">6 ミッドタウンナイト → 1 ノリマル</td>
+          <td class="mono">1198.5</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">184%</td>
         </tr>
         
       </tbody>
@@ -752,143 +802,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">ディーリライズ - ニューアライブ - ドンテスタマスター</td>
+          <td class="horses-cell">7 ニューアライブ - 5 ディーリライズ - 14 ドンテスタマスター</td>
           <td class="mono">6677.1</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">408%</td>
+          <td class="ev-cell mono">412%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ディーリライズ - ドンテスタマスター - タビニュ</td>
+          <td class="horses-cell">8 タビニュ - 14 ドンテスタマスター - 5 ディーリライズ</td>
           <td class="mono">925.2</td>
           <td class="mono">0.3%</td>
-          <td class="ev-cell mono">299%</td>
+          <td class="ev-cell mono">269%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ディーリライズ - ディベルティスマン - ドンテスタマスター</td>
-          <td class="mono">379.9</td>
-          <td class="mono">0.7%</td>
-          <td class="ev-cell mono">260%</td>
+          <td class="horses-cell">14 ドンテスタマスター - 12 テイクザクラウン - 5 ディーリライズ</td>
+          <td class="mono">901.2</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">258%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ディーリライズ - ノリマル - ドンテスタマスター</td>
-          <td class="mono">141.0</td>
-          <td class="mono">1.8%</td>
-          <td class="ev-cell mono">250%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ディーリライズ - ニューアライブ - タケルフォーカス</td>
+          <td class="horses-cell">7 ニューアライブ - 13 タケルフォーカス - 5 ディーリライズ</td>
           <td class="mono">4995.8</td>
-          <td class="mono">0.0%</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">253%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 ノリマル - 5 ディーリライズ - 7 ニューアライブ</td>
+          <td class="mono">2911.6</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">242%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 ノリマル - 5 ディーリライズ - 14 ドンテスタマスター</td>
+          <td class="mono">141.0</td>
+          <td class="mono">1.7%</td>
+          <td class="ev-cell mono">242%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 タビニュ - 1 ノリマル - 5 ディーリライズ</td>
+          <td class="mono">614.5</td>
+          <td class="mono">0.4%</td>
           <td class="ev-cell mono">241%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ディーリライズ - ドンテスタマスター - タケルフォーカス</td>
-          <td class="mono">206.3</td>
-          <td class="mono">1.2%</td>
-          <td class="ev-cell mono">240%</td>
+          <td class="horses-cell">14 ドンテスタマスター - 5 ディーリライズ - 11 ディベルティスマン</td>
+          <td class="mono">379.9</td>
+          <td class="mono">0.6%</td>
+          <td class="ev-cell mono">233%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ディーリライズ - ノリマル - タビニュ</td>
-          <td class="mono">614.5</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">238%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ディーリライズ - タケルフォーカス - タビニュ</td>
+          <td class="horses-cell">8 タビニュ - 13 タケルフォーカス - 5 ディーリライズ</td>
           <td class="mono">922.8</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">235%</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">220%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ディーリライズ - テイクザクラウン - ドンテスタマスター</td>
-          <td class="mono">901.2</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">232%</td>
+          <td class="horses-cell">14 ドンテスタマスター - 13 タケルフォーカス - 5 ディーリライズ</td>
+          <td class="mono">206.3</td>
+          <td class="mono">1.0%</td>
+          <td class="ev-cell mono">215%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ディーリライズ - モルビド - ドンテスタマスター</td>
+          <td class="horses-cell">8 タビニュ - 5 ディーリライズ - 11 ディベルティスマン</td>
+          <td class="mono">1499.8</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">211%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">14 ドンテスタマスター - 3 モルビド - 5 ディーリライズ</td>
           <td class="mono">519.5</td>
           <td class="mono">0.4%</td>
-          <td class="ev-cell mono">229%</td>
+          <td class="ev-cell mono">207%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ディーリライズ - ディベルティスマン - タビニュ</td>
-          <td class="mono">1499.8</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">225%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ディーリライズ - ノリマル - ニューアライブ</td>
-          <td class="mono">2911.6</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">214%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ディーリライズ - ディベルティスマン - ニューアライブ</td>
+          <td class="horses-cell">7 ニューアライブ - 5 ディーリライズ - 11 ディベルティスマン</td>
           <td class="mono">6909.6</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">196%</td>
+          <td class="ev-cell mono">206%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ディーリライズ - ワンダフルデイズ - タビニュ</td>
-          <td class="mono">611.5</td>
-          <td class="mono">0.3%</td>
+          <td class="horses-cell">7 ニューアライブ - 5 ディーリライズ - 10 ワンダフルデイズ</td>
+          <td class="mono">3079.4</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">201%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 ノリマル - 12 テイクザクラウン - 5 ディーリライズ</td>
+          <td class="mono">504.6</td>
+          <td class="mono">0.4%</td>
           <td class="ev-cell mono">194%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ディーリライズ - ワンダフルデイズ - ドンテスタマスター</td>
-          <td class="mono">133.0</td>
-          <td class="mono">1.4%</td>
-          <td class="ev-cell mono">193%</td>
+          <td class="horses-cell">8 タビニュ - 5 ディーリライズ - 10 ワンダフルデイズ</td>
+          <td class="mono">611.5</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">188%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">モルビド - ニューアライブ - ドンテスタマスター</td>
+          <td class="horses-cell">7 ニューアライブ - 3 モルビド - 14 ドンテスタマスター</td>
           <td class="mono">8626.3</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">187%</td>
+          <td class="ev-cell mono">184%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">モルビド - ドンテスタマスター - タビニュ</td>
-          <td class="mono">1613.0</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">185%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ディーリライズ - ワンダフルデイズ - ニューアライブ</td>
-          <td class="mono">3079.4</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">185%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ディーリライズ - シーンオブドリーム - ドンテスタマスター</td>
-          <td class="mono">3079.4</td>
-          <td class="mono">0.1%</td>
+          <td class="horses-cell">1 ノリマル - 5 ディーリライズ - 11 ディベルティスマン</td>
+          <td class="mono">216.7</td>
+          <td class="mono">0.8%</td>
           <td class="ev-cell mono">179%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ディーリライズ - ディベルティスマン - ノリマル</td>
-          <td class="mono">216.7</td>
-          <td class="mono">0.8%</td>
-          <td class="ev-cell mono">178%</td>
+          <td class="horses-cell">14 ドンテスタマスター - 5 ディーリライズ - 10 ワンダフルデイズ</td>
+          <td class="mono">133.0</td>
+          <td class="mono">1.3%</td>
+          <td class="ev-cell mono">179%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 タビニュ - 7 ニューアライブ - 5 ディーリライズ</td>
+          <td class="mono">12290.6</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">173%</td>
         </tr>
         
       </tbody>
@@ -902,143 +952,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">ニューアライブ → ディーリライズ → ドンテスタマスター</td>
+          <td class="horses-cell">7 ニューアライブ → 5 ディーリライズ → 14 ドンテスタマスター</td>
           <td class="mono">62834.6</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">557%</td>
+          <td class="ev-cell mono">570%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ハバタクジユウニ → ディーリライズ → ドンテスタマスター</td>
-          <td class="mono">72755.8</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">494%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ニューアライブ → ドンテスタマスター → ディーリライズ</td>
+          <td class="horses-cell">7 ニューアライブ → 14 ドンテスタマスター → 5 ディーリライズ</td>
           <td class="mono">53167.7</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">481%</td>
+          <td class="ev-cell mono">487%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">タビニュ → ディーリライズ → ドンテスタマスター</td>
-          <td class="mono">9734.9</td>
+          <td class="horses-cell">12 テイクザクラウン → 5 ディーリライズ → 14 ドンテスタマスター</td>
+          <td class="mono">10239.7</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">470%</td>
+          <td class="ev-cell mono">440%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">タビニュ → ドンテスタマスター → ディーリライズ</td>
-          <td class="mono">9533.5</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">469%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">タビニュ → ディーリライズ → タケルフォーカス</td>
-          <td class="mono">11519.6</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">451%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">タビニュ → タケルフォーカス → ディーリライズ</td>
-          <td class="mono">11519.6</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">448%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ニューアライブ → ドンテスタマスター → モルビド</td>
-          <td class="mono">125669.2</td>
+          <td class="horses-cell">5 ディーリライズ → 7 ニューアライブ → 14 ドンテスタマスター</td>
+          <td class="mono">43198.8</td>
           <td class="mono">0.0%</td>
           <td class="ev-cell mono">436%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ディーリライズ → ニューアライブ → ドンテスタマスター</td>
-          <td class="mono">43198.8</td>
+          <td class="horses-cell">7 ニューアライブ → 14 ドンテスタマスター → 3 モルビド</td>
+          <td class="mono">125669.2</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">426%</td>
+          <td class="ev-cell mono">429%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ニューアライブ → ディーリライズ → タケルフォーカス</td>
-          <td class="mono">55294.4</td>
+          <td class="horses-cell">8 タビニュ → 5 ディーリライズ → 14 ドンテスタマスター</td>
+          <td class="mono">9734.9</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">398%</td>
+          <td class="ev-cell mono">427%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">テイクザクラウン → ディーリライズ → ドンテスタマスター</td>
-          <td class="mono">10239.7</td>
+          <td class="horses-cell">8 タビニュ → 5 ディーリライズ → 13 タケルフォーカス</td>
+          <td class="mono">11519.6</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">391%</td>
+          <td class="ev-cell mono">423%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">タビニュ → タケルフォーカス → ディベルティスマン</td>
-          <td class="mono">16654.9</td>
+          <td class="horses-cell">8 タビニュ → 14 ドンテスタマスター → 5 ディーリライズ</td>
+          <td class="mono">9533.5</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">377%</td>
+          <td class="ev-cell mono">422%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">テイクザクラウン → ドンテスタマスター → ディーリライズ</td>
+          <td class="horses-cell">12 テイクザクラウン → 14 ドンテスタマスター → 5 ディーリライズ</td>
           <td class="mono">9666.8</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">376%</td>
+          <td class="ev-cell mono">420%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ディーリライズ → タビニュ → ドンテスタマスター</td>
-          <td class="mono">7162.4</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">375%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">タビニュ → モルビド → ドンテスタマスター</td>
-          <td class="mono">21267.1</td>
+          <td class="horses-cell">7 ニューアライブ → 5 ディーリライズ → 13 タケルフォーカス</td>
+          <td class="mono">55294.4</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">365%</td>
+          <td class="ev-cell mono">420%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">タビニュ → ディベルティスマン → ディーリライズ</td>
-          <td class="mono">15889.2</td>
+          <td class="horses-cell">8 タビニュ → 13 タケルフォーカス → 5 ディーリライズ</td>
+          <td class="mono">11519.6</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">365%</td>
+          <td class="ev-cell mono">419%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ニューアライブ → モルビド → ドンテスタマスター</td>
+          <td class="horses-cell">7 ニューアライブ → 3 モルビド → 14 ドンテスタマスター</td>
           <td class="mono">115196.8</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">364%</td>
+          <td class="ev-cell mono">361%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">タビニュ → ドンテスタマスター → ノリマル</td>
-          <td class="mono">5378.8</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">360%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">モルビド → ドンテスタマスター → ディーリライズ</td>
-          <td class="mono">5216.4</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">355%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ハバタクジユウニ → ドンテスタマスター → ディーリライズ</td>
-          <td class="mono">51198.5</td>
+          <td class="horses-cell">7 ニューアライブ → 5 ディーリライズ → 10 ワンダフルデイズ</td>
+          <td class="mono">37361.1</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">355%</td>
+          <td class="ev-cell mono">356%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 タビニュ → 1 ノリマル → 5 ディーリライズ</td>
+          <td class="mono">5857.4</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">348%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">14 ドンテスタマスター → 7 ニューアライブ → 5 ディーリライズ</td>
+          <td class="mono">33716.1</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">347%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 ニューアライブ → 13 タケルフォーカス → 5 ディーリライズ</td>
+          <td class="mono">46078.7</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">347%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">5 ディーリライズ → 8 タビニュ → 14 ドンテスタマスター</td>
+          <td class="mono">7162.4</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">341%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 タビニュ → 11 ディベルティスマン → 5 ディーリライズ</td>
+          <td class="mono">15889.2</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">341%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 タビニュ → 13 タケルフォーカス → 11 ディベルティスマン</td>
+          <td class="mono">16654.9</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">340%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">12 テイクザクラウン → 1 ノリマル → 5 ディーリライズ</td>
+          <td class="mono">5759.8</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">336%</td>
         </tr>
         
       </tbody>
@@ -1050,5 +1100,49 @@
 
   <div class="disclaimer">本ページの予想は参考情報です。的中・利益を保証しません。<br>馬券の購入は必ずご自身でIPAT等の公式ルートから行ってください。</div>
 </main>
+
+<script>
+(function () {
+  const UNIT = 100;  // JRAの購入単位（100円）に丸める
+
+  function recalc() {
+    const budget = parseFloat(document.getElementById('budgetInput').value) || 0;
+    const rows = Array.from(document.querySelectorAll('#planTable tbody tr[data-ev]'));
+    const totalRow = document.getElementById('planTotalRow');
+    const totalCell = document.getElementById('planTotal');
+
+    if (!rows.length) return;
+
+    if (budget <= 0) {
+      rows.forEach(function (tr) { tr.querySelector('.stake-cell').textContent = '-'; });
+      if (totalRow) totalRow.style.display = 'none';
+      return;
+    }
+
+    // 期待値(EV)が高いものほど多く配分する（EVの合計に対する比率で按分）
+    const evs = rows.map(function (tr) { return Math.max(0, parseFloat(tr.dataset.ev) - 1); }); // 100%超過分だけを重みにする
+    const totalWeight = evs.reduce(function (a, b) { return a + b; }, 0);
+
+    let allocated = 0;
+    rows.forEach(function (tr, i) {
+      const weight = totalWeight > 0 ? evs[i] / totalWeight : 1 / rows.length;
+      const raw = budget * weight;
+      const amount = Math.floor(raw / UNIT) * UNIT;
+      allocated += amount;
+      tr.querySelector('.stake-cell').textContent = amount > 0 ? amount.toLocaleString('ja-JP') + '円' : '見送り';
+    });
+
+    if (totalRow && totalCell) {
+      totalRow.style.display = '';
+      totalCell.textContent = allocated.toLocaleString('ja-JP') + '円 / ' + budget.toLocaleString('ja-JP') + '円中';
+    }
+  }
+
+  const input = document.getElementById('budgetInput');
+  if (input) {
+    input.addEventListener('input', recalc);
+  }
+})();
+</script>
 </body>
 </html>

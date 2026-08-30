@@ -63,30 +63,66 @@
   }
   .summary-text { font-size: 13px; line-height: 1.75; color: var(--text-dim); }
 
-  /* --- 結論：一番のおすすめ --- */
-  .best-bet {
+  /* --- 結論：馬券風デザイン --- */
+  .ticket {
     position: relative;
     background: linear-gradient(180deg, #1a1408 0%, var(--surface) 70%);
     border: 1px solid var(--amber-dim);
+    border-radius: 10px;
     box-shadow: 0 0 0 1px rgba(240,162,2,0.08), 0 8px 24px -12px var(--amber-glow);
+    padding: 0;
+    overflow: hidden;
   }
-  .best-bet .tag {
-    font-size: 12px; font-weight: 800; color: var(--amber);
+  .ticket-head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 16px; background: rgba(240,162,2,0.08);
+    border-bottom: 1px dashed var(--amber-dim);
   }
-  .best-bet .type {
-    display: inline-block; font-size: 11px; color: var(--bg); background: var(--amber);
-    font-weight: 700; padding: 2px 8px; border-radius: 3px; margin-top: 8px;
+  .ticket-head .label { font-size: 11px; font-weight: 800; color: var(--amber); letter-spacing: 0.05em; }
+  .ticket-head .type-badge {
+    font-size: 11px; color: var(--bg); background: var(--amber);
+    font-weight: 800; padding: 3px 10px; border-radius: 3px;
   }
-  .best-bet .horses {
-    font-size: 21px; font-weight: 800; margin: 8px 0 12px;
-    color: var(--text); line-height: 1.4;
+  .ticket-body { padding: 16px; }
+  .ticket .horses {
+    font-size: 20px; font-weight: 800; margin: 0 0 14px;
+    color: var(--text); line-height: 1.45;
   }
-  .best-bet .stat-row { display: flex; }
-  .best-bet .stat { margin-right: 24px; }
-  .best-bet .stat .label { font-size: 10.5px; color: var(--text-dim); }
-  .best-bet .stat .value { font-size: 18px; font-weight: 800; margin-top: 2px; }
-  .best-bet .stat.ev .value { color: var(--amber); }
-  .best-bet .footnote { font-size: 11px; color: var(--text-dim); margin-top: 12px; line-height: 1.6; border-top: 1px solid var(--line); padding-top: 10px; }
+  .ticket-stats {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+    padding: 12px 0; border-top: 1px dashed var(--line); border-bottom: 1px dashed var(--line);
+  }
+  .ticket-stats .stat { text-align: center; }
+  .ticket-stats .stat .label { font-size: 10px; color: var(--text-dim); }
+  .ticket-stats .stat .value { font-size: 16px; font-weight: 800; margin-top: 3px; }
+  .ticket-stats .stat.ev .value { color: var(--amber); }
+
+  .ticket-amount {
+    margin-top: 14px; padding: 12px; background: var(--surface-2);
+    border-radius: 6px; display: flex; justify-content: space-between; align-items: center;
+  }
+  .ticket-amount .label { font-size: 11px; color: var(--text-dim); }
+  .ticket-amount .value { font-size: 22px; font-weight: 800; color: var(--green); }
+  .ticket-amount .value::before { content: "¥"; font-size: 14px; margin-right: 2px; }
+
+  .footnote { font-size: 11px; color: var(--text-dim); margin-top: 12px; line-height: 1.6; padding: 0 16px 14px; }
+
+  /* --- 予算入力 --- */
+  .budget-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
+    padding: 10px 14px; margin-bottom: 14px;
+  }
+  .budget-box label { font-size: 12px; color: var(--text-dim); white-space: nowrap; }
+  .budget-box input {
+    flex: 1; background: var(--surface-2); border: 1px solid var(--line); border-radius: 4px;
+    color: var(--text); font-size: 15px; padding: 7px 10px; font-family: inherit;
+    -moz-appearance: textfield;
+  }
+  .budget-box input::-webkit-outer-spin-button, .budget-box input::-webkit-inner-spin-button { margin: 0; }
+  .budget-box .unit { font-size: 12px; color: var(--text-dim); }
+  .stake-cell { color: var(--green); font-weight: 700; }
+
 
   /* --- 穴馬候補 --- */
   .dark-horse-card { border-left: 3px solid var(--green); }
@@ -178,18 +214,66 @@
   <div class="card summary-text">逃げ馬が3頭おり、先行争いが激化しやすくハイペース濃厚。差し・追込馬にも展開の恩恵が期待できる。馬場状態は「良」。</div>
 
   
-  <div class="section-title"><span class="en">Conclusion</span>結論：一番のおすすめ</div>
-  <div class="card best-bet">
-    <div class="tag">🏆 このレースで最も期待値が高い買い目</div>
-    <div class="type">3連単</div>
-    <div class="horses">エフティヴェント → オンナキュヌヴィ → ペルウィクトール</div>
-    <div class="stat-row mono">
-      <div class="stat"><div class="label">オッズ</div><div class="value">11961.5倍</div></div>
-      <div class="stat"><div class="label">的中確率</div><div class="value">0.0%</div></div>
-      <div class="stat ev"><div class="label">期待値</div><div class="value">277%</div></div>
-    </div>
-    <div class="footnote">期待値とは「100円賭けた時に理論上いくら戻ってくるか」の目安です。100%を超えるほど、賭け金に対して見込まれる払戻が大きいことを意味します（的中を保証するものではありません）。</div>
+  <div class="section-title"><span class="en">Betting Plan</span>AI推奨 購入プラン</div>
+  <div class="section-hint">実際の投票は複数点に分けるのが基本のため、期待値が高い順に複数の買い目を組み合わせています。予算を入れると自動で配分します。</div>
+  <div class="budget-box">
+    <label for="budgetInput">今回の予算</label>
+    <input type="number" id="budgetInput" inputmode="numeric" placeholder="例: 3000" min="0" step="100">
+    <span class="unit">円</span>
   </div>
+  <div class="card" style="padding:0; overflow:hidden;">
+    <table id="planTable">
+      <thead><tr><th>券種</th><th>買い目</th><th>オッズ</th><th>期待値</th><th>配分額</th></tr></thead>
+      <tbody>
+        
+        <tr data-ev="1.9182800989604567">
+          <td class="mono">単勝</td>
+          <td class="horses-cell">15 ルディドゥゲンジ</td>
+          <td class="mono">167.3</td>
+          <td class="ev-cell mono">192%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="1.4478706130281274">
+          <td class="mono">馬単</td>
+          <td class="horses-cell">9 アリアス → 16 ペルウィクトール</td>
+          <td class="mono">73.6</td>
+          <td class="ev-cell mono">145%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="1.4463752893204167">
+          <td class="mono">単勝</td>
+          <td class="horses-cell">6 ラウンドヒル</td>
+          <td class="mono">32.0</td>
+          <td class="ev-cell mono">145%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="1.3689332087923167">
+          <td class="mono">馬連</td>
+          <td class="horses-cell">17 エイシンイクサボシ - 11 オンナキュヌヴィ</td>
+          <td class="mono">113.1</td>
+          <td class="ev-cell mono">137%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="1.3005711433201455">
+          <td class="mono">単勝</td>
+          <td class="horses-cell">8 カラーオブサクセス</td>
+          <td class="mono">83.1</td>
+          <td class="ev-cell mono">130%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr id="planTotalRow" style="display:none;">
+          <td colspan="4" style="text-align:right; font-weight:800;">合計</td>
+          <td class="mono" id="planTotal" style="font-weight:800; color:var(--green);">-</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="footnote">配分額は、各買い目の期待値の大きさに比例して予算を振り分けた目安です（期待値が高いものほど多く配分）。1点に集中させず、複数点に分けて購入することでブレを抑える考え方に基づいています。あくまで参考情報であり、的中や利益を保証するものではありません。</div>
   
 
   
@@ -198,53 +282,23 @@
   <div class="card dark-horse-card">
     
     <div class="dark-horse-item">
-      <span class="dh-name">ルディドゥゲンジ</span><span class="dh-badge">15番人気</span>
-      <div class="dh-stats mono">オッズ 167.3倍 ／ 勝率目安 0.9% ／ 期待値 158%</div>
-    </div>
-    
-    <div class="dark-horse-item">
-      <span class="dh-name">エフティヴェント</span><span class="dh-badge">18番人気</span>
-      <div class="dh-stats mono">オッズ 273.1倍 ／ 勝率目安 0.6% ／ 期待値 157%</div>
-    </div>
-    
-    <div class="dark-horse-item">
-      <span class="dh-name">カラーオブサクセス</span><span class="dh-badge">12番人気</span>
-      <div class="dh-stats mono">オッズ 83.1倍 ／ 勝率目安 1.9% ／ 期待値 157%</div>
-    </div>
-    
-    <div class="dark-horse-item">
       <span class="dh-name">ラウンドヒル</span><span class="dh-badge">9番人気</span>
-      <div class="dh-stats mono">オッズ 32.0倍 ／ 勝率目安 4.8% ／ 期待値 154%</div>
+      <div class="dh-stats mono">オッズ 32.0倍 ／ 勝率目安 4.5% ／ 期待値 145%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">エイシンイクサボシ</span><span class="dh-badge">10番人気</span>
-      <div class="dh-stats mono">オッズ 38.8倍 ／ 勝率目安 3.4% ／ 期待値 131%</div>
+      <div class="dh-stats mono">オッズ 38.8倍 ／ 勝率目安 3.3% ／ 期待値 127%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">アリアス</span><span class="dh-badge">5番人気</span>
-      <div class="dh-stats mono">オッズ 13.7倍 ／ 勝率目安 8.6% ／ 期待値 117%</div>
-    </div>
-    
-    <div class="dark-horse-item">
-      <span class="dh-name">エナノムスメ</span><span class="dh-badge">16番人気</span>
-      <div class="dh-stats mono">オッズ 175.3倍 ／ 勝率目安 0.6% ／ 期待値 110%</div>
-    </div>
-    
-    <div class="dark-horse-item">
-      <span class="dh-name">ミクロスギガース</span><span class="dh-badge">8番人気</span>
-      <div class="dh-stats mono">オッズ 27.5倍 ／ 勝率目安 3.8% ／ 期待値 103%</div>
+      <div class="dh-stats mono">オッズ 13.7倍 ／ 勝率目安 8.5% ／ 期待値 117%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">ソルティアーラ</span><span class="dh-badge">11番人気</span>
-      <div class="dh-stats mono">オッズ 50.0倍 ／ 勝率目安 2.1% ／ 期待値 103%</div>
-    </div>
-    
-    <div class="dark-horse-item">
-      <span class="dh-name">ステキサプライズ</span><span class="dh-badge">7番人気</span>
-      <div class="dh-stats mono">オッズ 27.4倍 ／ 勝率目安 3.7% ／ 期待値 101%</div>
+      <div class="dh-stats mono">オッズ 50.0倍 ／ 勝率目安 2.1% ／ 期待値 106%</div>
     </div>
     
   </div>
@@ -256,9 +310,9 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">16</span>ペルウィクトール</span>
-        <span class="horse-prob mono">複勝圏内 61%</span>
+        <span class="horse-prob mono">複勝圏内 63%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約61%。逃げ脚質だが、このレースは逃げ馬が3頭おり先行争いが激しくなりペースが速まる可能性があるため、スタミナ面がやや不安要素。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約63%。逃げ脚質だが、このレースは逃げ馬が3頭おり先行争いが激しくなりペースが速まる可能性があるため、スタミナ面がやや不安要素。</div>
     </div>
     
     <div class="horse-item">
@@ -280,49 +334,49 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">1</span>セリエンクーニゲン</span>
-        <span class="horse-prob mono">複勝圏内 37%</span>
+        <span class="horse-prob mono">複勝圏内 36%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約37%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約36%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">9</span>アリアス</span>
-        <span class="horse-prob mono">複勝圏内 26%</span>
+        <span class="horse-prob mono">複勝圏内 25%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約26%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約25%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">3</span>ゴッドレイ</span>
-        <span class="horse-prob mono">複勝圏内 15%</span>
+        <span class="horse-prob mono">複勝圏内 17%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約15%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は11.7着とやや不振。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約17%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は11.7着とやや不振。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">6</span>ラウンドヒル</span>
-        <span class="horse-prob mono">複勝圏内 14%</span>
+        <span class="horse-prob mono">複勝圏内 13%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約14%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約13%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">18</span>ミクロスギガース</span>
-        <span class="horse-prob mono">複勝圏内 11%</span>
+        <span class="horse-prob mono">複勝圏内 10%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約11%。逃げ脚質だが、このレースは逃げ馬が3頭おり先行争いが激しくなりペースが速まる可能性があるため、スタミナ面がやや不安要素。直近3走の平均着順は9.3着とやや不振。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約10%。逃げ脚質だが、このレースは逃げ馬が3頭おり先行争いが激しくなりペースが速まる可能性があるため、スタミナ面がやや不安要素。直近3走の平均着順は9.3着とやや不振。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">4</span>ステキサプライズ</span>
-        <span class="horse-prob mono">複勝圏内 11%</span>
+        <span class="horse-prob mono">複勝圏内 10%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約11%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は9.0着とやや不振。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約10%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は9.0着とやや不振。</div>
     </div>
     
     <div class="horse-item">
@@ -344,17 +398,9 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">8</span>カラーオブサクセス</span>
-        <span class="horse-prob mono">複勝圏内 6%</span>
+        <span class="horse-prob mono">複勝圏内 5%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約6%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は10.3着とやや不振。</div>
-    </div>
-    
-    <div class="horse-item">
-      <div class="horse-head">
-        <span class="horse-name"><span class="horse-num mono">12</span>ネオアンボウ</span>
-        <span class="horse-prob mono">複勝圏内 3%</span>
-      </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約3%。逃げ脚質だが、このレースは逃げ馬が3頭おり先行争いが激しくなりペースが速まる可能性があるため、スタミナ面がやや不安要素。直近3走の平均着順は11.7着とやや不振。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約5%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は10.3着とやや不振。</div>
     </div>
     
     <div class="horse-item">
@@ -367,18 +413,26 @@
     
     <div class="horse-item">
       <div class="horse-head">
-        <span class="horse-name"><span class="horse-num mono">5</span>エナノムスメ</span>
-        <span class="horse-prob mono">複勝圏内 2%</span>
+        <span class="horse-name"><span class="horse-num mono">12</span>ネオアンボウ</span>
+        <span class="horse-prob mono">複勝圏内 3%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約2%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は10.0着とやや不振。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約3%。逃げ脚質だが、このレースは逃げ馬が3頭おり先行争いが激しくなりペースが速まる可能性があるため、スタミナ面がやや不安要素。直近3走の平均着順は11.7着とやや不振。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">7</span>エフティヴェント</span>
-        <span class="horse-prob mono">複勝圏内 2%</span>
+        <span class="horse-prob mono">複勝圏内 1%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約2%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は11.7着とやや不振。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約1%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は11.7着とやや不振。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">5</span>エナノムスメ</span>
+        <span class="horse-prob mono">複勝圏内 1%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約1%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は10.0着とやや不振。</div>
     </div>
     
     <div class="horse-item">
@@ -399,83 +453,62 @@
     
   </div>
 
-  <div class="section-title"><span class="en">All Bets</span>券種ごとの買い目候補</div>
-  <div class="section-hint">期待値100%を超えるものだけを表示しています。券種名をタップすると開きます。</div>
+  <div class="section-title"><span class="en">All Bets</span>券種ごとの買い目一覧（参考）</div>
+  <div class="section-hint">期待値100%を超えるものを全て表示しています。上の「購入プラン」はこの中から自動選定したものです。</div>
   
   <details class="bet-group" open>
-    <summary>単勝 <span class="count">10点</span></summary>
+    <summary>単勝 <span class="count">7点</span></summary>
     <table>
       <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
       <tbody>
         
         <tr>
-          <td class="horses-cell">ルディドゥゲンジ</td>
+          <td class="horses-cell">15 ルディドゥゲンジ</td>
           <td class="mono">167.3</td>
-          <td class="mono">0.9%</td>
-          <td class="ev-cell mono">158%</td>
+          <td class="mono">1.1%</td>
+          <td class="ev-cell mono">192%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">エフティヴェント</td>
-          <td class="mono">273.1</td>
-          <td class="mono">0.6%</td>
-          <td class="ev-cell mono">157%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">カラーオブサクセス</td>
-          <td class="mono">83.1</td>
-          <td class="mono">1.9%</td>
-          <td class="ev-cell mono">157%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ラウンドヒル</td>
+          <td class="horses-cell">6 ラウンドヒル</td>
           <td class="mono">32.0</td>
-          <td class="mono">4.8%</td>
-          <td class="ev-cell mono">154%</td>
+          <td class="mono">4.5%</td>
+          <td class="ev-cell mono">145%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">エイシンイクサボシ</td>
+          <td class="horses-cell">8 カラーオブサクセス</td>
+          <td class="mono">83.1</td>
+          <td class="mono">1.6%</td>
+          <td class="ev-cell mono">130%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">17 エイシンイクサボシ</td>
           <td class="mono">38.8</td>
-          <td class="mono">3.4%</td>
-          <td class="ev-cell mono">131%</td>
+          <td class="mono">3.3%</td>
+          <td class="ev-cell mono">127%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">アリアス</td>
+          <td class="horses-cell">7 エフティヴェント</td>
+          <td class="mono">273.1</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">123%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">9 アリアス</td>
           <td class="mono">13.7</td>
-          <td class="mono">8.6%</td>
+          <td class="mono">8.5%</td>
           <td class="ev-cell mono">117%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">エナノムスメ</td>
-          <td class="mono">175.3</td>
-          <td class="mono">0.6%</td>
-          <td class="ev-cell mono">110%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ミクロスギガース</td>
-          <td class="mono">27.5</td>
-          <td class="mono">3.8%</td>
-          <td class="ev-cell mono">103%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ソルティアーラ</td>
+          <td class="horses-cell">10 ソルティアーラ</td>
           <td class="mono">50.0</td>
           <td class="mono">2.1%</td>
-          <td class="ev-cell mono">103%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ステキサプライズ</td>
-          <td class="mono">27.4</td>
-          <td class="mono">3.7%</td>
-          <td class="ev-cell mono">101%</td>
+          <td class="ev-cell mono">106%</td>
         </tr>
         
       </tbody>
@@ -489,142 +522,142 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">アリアス - エイシンイクサボシ</td>
-          <td class="mono">248.2</td>
-          <td class="mono">0.6%</td>
-          <td class="ev-cell mono">153%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">エイシンイクサボシ - ソルティアーラ</td>
+          <td class="horses-cell">17 エイシンイクサボシ - 10 ソルティアーラ</td>
           <td class="mono">1033.6</td>
           <td class="mono">0.1%</td>
           <td class="ev-cell mono">147%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ステキサプライズ - エイシンイクサボシ</td>
-          <td class="mono">560.0</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">145%</td>
+          <td class="horses-cell">17 エイシンイクサボシ - 9 アリアス</td>
+          <td class="mono">248.2</td>
+          <td class="mono">0.6%</td>
+          <td class="ev-cell mono">147%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">アリアス - ステキサプライズ</td>
-          <td class="mono">206.9</td>
-          <td class="mono">0.7%</td>
-          <td class="ev-cell mono">140%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ミクロスギガース - ソルティアーラ</td>
-          <td class="mono">876.3</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">139%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ネオアンボウ - セリエンクーニゲン</td>
+          <td class="horses-cell">1 セリエンクーニゲン - 12 ネオアンボウ</td>
           <td class="mono">482.1</td>
           <td class="mono">0.3%</td>
-          <td class="ev-cell mono">139%</td>
+          <td class="ev-cell mono">144%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">オンナキュヌヴィ - エイシンイクサボシ</td>
-          <td class="mono">113.1</td>
-          <td class="mono">1.2%</td>
-          <td class="ev-cell mono">139%</td>
+          <td class="horses-cell">15 ルディドゥゲンジ - 11 オンナキュヌヴィ</td>
+          <td class="mono">342.9</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">144%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ソルティアーラ - ラウンドヒル</td>
-          <td class="mono">675.8</td>
+          <td class="horses-cell">9 アリアス - 15 ルディドゥゲンジ</td>
+          <td class="mono">697.7</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">138%</td>
+          <td class="ev-cell mono">143%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">アリアス - ネオアンボウ</td>
+          <td class="horses-cell">12 ネオアンボウ - 9 アリアス</td>
           <td class="mono">696.9</td>
           <td class="mono">0.2%</td>
+          <td class="ev-cell mono">143%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">17 エイシンイクサボシ - 11 オンナキュヌヴィ</td>
+          <td class="mono">113.1</td>
+          <td class="mono">1.2%</td>
           <td class="ev-cell mono">137%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">アリアス - ラウンドヒル</td>
-          <td class="mono">148.9</td>
-          <td class="mono">0.9%</td>
-          <td class="ev-cell mono">131%</td>
+          <td class="horses-cell">6 ラウンドヒル - 10 ソルティアーラ</td>
+          <td class="mono">675.8</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">134%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">アリアス - ソルティアーラ</td>
+          <td class="horses-cell">10 ソルティアーラ - 9 アリアス</td>
           <td class="mono">338.7</td>
           <td class="mono">0.4%</td>
-          <td class="ev-cell mono">126%</td>
+          <td class="ev-cell mono">129%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ステキサプライズ - ラウンドヒル</td>
-          <td class="mono">333.8</td>
-          <td class="mono">0.4%</td>
+          <td class="horses-cell">16 ペルウィクトール - 15 ルディドゥゲンジ</td>
+          <td class="mono">230.4</td>
+          <td class="mono">0.6%</td>
+          <td class="ev-cell mono">127%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">10 ソルティアーラ - 18 ミクロスギガース</td>
+          <td class="mono">876.3</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">127%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">4 ステキサプライズ - 17 エイシンイクサボシ</td>
+          <td class="mono">560.0</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">127%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">10 ソルティアーラ - 11 オンナキュヌヴィ</td>
+          <td class="mono">160.9</td>
+          <td class="mono">0.8%</td>
+          <td class="ev-cell mono">125%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">4 ステキサプライズ - 9 アリアス</td>
+          <td class="mono">206.9</td>
+          <td class="mono">0.6%</td>
+          <td class="ev-cell mono">125%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 ゴッドレイ - 10 ソルティアーラ</td>
+          <td class="mono">480.1</td>
+          <td class="mono">0.3%</td>
           <td class="ev-cell mono">124%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">エイシンイクサボシ - ラウンドヒル</td>
-          <td class="mono">365.7</td>
-          <td class="mono">0.3%</td>
+          <td class="horses-cell">6 ラウンドヒル - 9 アリアス</td>
+          <td class="mono">148.9</td>
+          <td class="mono">0.8%</td>
           <td class="ev-cell mono">123%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ステキサプライズ - オンナキュヌヴィ</td>
-          <td class="mono">89.2</td>
-          <td class="mono">1.3%</td>
-          <td class="ev-cell mono">120%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">オンナキュヌヴィ - ソルティアーラ</td>
-          <td class="mono">160.9</td>
-          <td class="mono">0.7%</td>
-          <td class="ev-cell mono">119%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">アリアス - ルディドゥゲンジ</td>
-          <td class="mono">697.7</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">119%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">アリアス - カラーオブサクセス</td>
-          <td class="mono">344.3</td>
-          <td class="mono">0.3%</td>
+          <td class="horses-cell">12 ネオアンボウ - 11 オンナキュヌヴィ</td>
+          <td class="mono">281.2</td>
+          <td class="mono">0.4%</td>
           <td class="ev-cell mono">118%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">オンナキュヌヴィ - ルディドゥゲンジ</td>
-          <td class="mono">342.9</td>
+          <td class="horses-cell">16 ペルウィクトール - 10 ソルティアーラ</td>
+          <td class="mono">112.0</td>
+          <td class="mono">1.0%</td>
+          <td class="ev-cell mono">115%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 セリエンクーニゲン - 15 ルディドゥゲンジ</td>
+          <td class="mono">383.0</td>
           <td class="mono">0.3%</td>
-          <td class="ev-cell mono">116%</td>
+          <td class="ev-cell mono">115%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">エイシンイクサボシ - セリエンクーニゲン</td>
-          <td class="mono">126.7</td>
-          <td class="mono">0.9%</td>
-          <td class="ev-cell mono">114%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">アリアス - エフティヴェント</td>
-          <td class="mono">1093.8</td>
-          <td class="mono">0.1%</td>
+          <td class="horses-cell">16 ペルウィクトール - 9 アリアス</td>
+          <td class="mono">26.7</td>
+          <td class="mono">4.2%</td>
           <td class="ev-cell mono">113%</td>
         </tr>
         
@@ -639,143 +672,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">アリアス → ネオアンボウ</td>
-          <td class="mono">1993.3</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">203%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ルディドゥゲンジ → アリアス</td>
+          <td class="horses-cell">15 ルディドゥゲンジ → 9 アリアス</td>
           <td class="mono">2188.8</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">179%</td>
+          <td class="ev-cell mono">216%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ミクロスギガース → ソルティアーラ</td>
-          <td class="mono">2106.2</td>
+          <td class="horses-cell">9 アリアス → 12 ネオアンボウ</td>
+          <td class="mono">1993.3</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">169%</td>
+          <td class="ev-cell mono">213%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">カラーオブサクセス → ペルウィクトール</td>
-          <td class="mono">421.2</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">166%</td>
+          <td class="horses-cell">15 ルディドゥゲンジ → 16 ペルウィクトール</td>
+          <td class="mono">777.9</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">191%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">エイシンイクサボシ → オンナキュヌヴィ</td>
+          <td class="horses-cell">15 ルディドゥゲンジ → 11 オンナキュヌヴィ</td>
+          <td class="mono">946.0</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">182%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">17 エイシンイクサボシ → 11 オンナキュヌヴィ</td>
           <td class="mono">290.7</td>
           <td class="mono">0.6%</td>
-          <td class="ev-cell mono">165%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ラウンドヒル → ソルティアーラ</td>
-          <td class="mono">1572.2</td>
-          <td class="mono">0.1%</td>
           <td class="ev-cell mono">163%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">エイシンイクサボシ → アリアス</td>
-          <td class="mono">531.5</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">159%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">エフティヴェント → オンナキュヌヴィ</td>
-          <td class="mono">1666.1</td>
+          <td class="horses-cell">6 ラウンドヒル → 10 ソルティアーラ</td>
+          <td class="mono">1572.2</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">157%</td>
+          <td class="ev-cell mono">158%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">カラーオブサクセス → ステキサプライズ</td>
-          <td class="mono">2188.8</td>
+          <td class="horses-cell">9 アリアス → 15 ルディドゥゲンジ</td>
+          <td class="mono">1459.2</td>
           <td class="mono">0.1%</td>
           <td class="ev-cell mono">156%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">カラーオブサクセス → セリエンクーニゲン</td>
-          <td class="mono">652.8</td>
-          <td class="mono">0.2%</td>
+          <td class="horses-cell">18 ミクロスギガース → 10 ソルティアーラ</td>
+          <td class="mono">2106.2</td>
+          <td class="mono">0.1%</td>
           <td class="ev-cell mono">154%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ルディドゥゲンジ → ペルウィクトール</td>
-          <td class="mono">777.9</td>
-          <td class="mono">0.2%</td>
+          <td class="horses-cell">17 エイシンイクサボシ → 9 アリアス</td>
+          <td class="mono">531.5</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">153%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">15 ルディドゥゲンジ → 10 ソルティアーラ</td>
+          <td class="mono">6201.6</td>
+          <td class="mono">0.0%</td>
           <td class="ev-cell mono">152%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ソルティアーラ → ラウンドヒル</td>
+          <td class="horses-cell">15 ルディドゥゲンジ → 12 ネオアンボウ</td>
+          <td class="mono">11163.0</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">148%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">10 ソルティアーラ → 6 ラウンドヒル</td>
           <td class="mono">1488.4</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">150%</td>
+          <td class="ev-cell mono">146%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">エフティヴェント → ペルウィクトール</td>
-          <td class="mono">1261.3</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">149%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ルディドゥゲンジ → オンナキュヌヴィ</td>
-          <td class="mono">946.0</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">147%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ラウンドヒル → アリアス</td>
-          <td class="mono">334.7</td>
-          <td class="mono">0.4%</td>
+          <td class="horses-cell">9 アリアス → 16 ペルウィクトール</td>
+          <td class="mono">73.6</td>
+          <td class="mono">2.0%</td>
           <td class="ev-cell mono">145%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ステキサプライズ → オンナキュヌヴィ</td>
-          <td class="mono">228.7</td>
-          <td class="mono">0.6%</td>
+          <td class="horses-cell">12 ネオアンボウ → 16 ペルウィクトール</td>
+          <td class="mono">589.0</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">144%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">15 ルディドゥゲンジ → 1 セリエンクーニゲン</td>
+          <td class="mono">1014.8</td>
+          <td class="mono">0.1%</td>
           <td class="ev-cell mono">143%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">エイシンイクサボシ → セリエンクーニゲン</td>
-          <td class="mono">333.7</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">143%</td>
+          <td class="horses-cell">8 カラーオブサクセス → 16 ペルウィクトール</td>
+          <td class="mono">421.2</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">142%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ラウンドヒル → ネオアンボウ</td>
+          <td class="horses-cell">15 ルディドゥゲンジ → 4 ステキサプライズ</td>
+          <td class="mono">3660.0</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">142%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">6 ラウンドヒル → 12 ネオアンボウ</td>
           <td class="mono">2596.0</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">143%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">アリアス → ペルウィクトール</td>
-          <td class="mono">73.6</td>
-          <td class="mono">1.9%</td>
           <td class="ev-cell mono">141%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">カラーオブサクセス → エイシンイクサボシ</td>
-          <td class="mono">2167.5</td>
+          <td class="horses-cell">15 ルディドゥゲンジ → 6 ラウンドヒル</td>
+          <td class="mono">2657.8</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">141%</td>
+          <td class="ev-cell mono">139%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">15 ルディドゥゲンジ → 13 ウインテラジーナ</td>
+          <td class="mono">858.6</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">138%</td>
         </tr>
         
       </tbody>
@@ -789,142 +822,142 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">アリアス - ネオアンボウ - セリエンクーニゲン</td>
+          <td class="horses-cell">1 セリエンクーニゲン - 12 ネオアンボウ - 9 アリアス</td>
           <td class="mono">2223.9</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">194%</td>
+          <td class="ev-cell mono">201%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">アリアス - エイシンイクサボシ - ソルティアーラ</td>
+          <td class="horses-cell">10 ソルティアーラ - 17 エイシンイクサボシ - 9 アリアス</td>
           <td class="mono">4352.3</td>
           <td class="mono">0.0%</td>
           <td class="ev-cell mono">179%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">オンナキュヌヴィ - エイシンイクサボシ - ソルティアーラ</td>
+          <td class="horses-cell">17 エイシンイクサボシ - 10 ソルティアーラ - 11 オンナキュヌヴィ</td>
           <td class="mono">1878.9</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">162%</td>
+          <td class="ev-cell mono">166%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">アリアス - ステキサプライズ - エイシンイクサボシ</td>
-          <td class="mono">2106.2</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">159%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ステキサプライズ - エイシンイクサボシ - オンナキュヌヴィ</td>
-          <td class="mono">989.5</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">157%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">アリアス - エイシンイクサボシ - ネオアンボウ</td>
+          <td class="horses-cell">17 エイシンイクサボシ - 12 ネオアンボウ - 9 アリアス</td>
           <td class="mono">7096.7</td>
           <td class="mono">0.0%</td>
+          <td class="ev-cell mono">156%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">12 ネオアンボウ - 9 アリアス - 11 オンナキュヌヴィ</td>
+          <td class="mono">1184.0</td>
+          <td class="mono">0.1%</td>
           <td class="ev-cell mono">154%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ステキサプライズ - オンナキュヌヴィ - カラーオブサクセス</td>
-          <td class="mono">1751.8</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">153%</td>
+          <td class="horses-cell">10 ソルティアーラ - 9 アリアス - 15 ルディドゥゲンジ</td>
+          <td class="mono">10611.3</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">149%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">アリアス - ステキサプライズ - オンナキュヌヴィ</td>
-          <td class="mono">344.5</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">147%</td>
+          <td class="horses-cell">15 ルディドゥゲンジ - 10 ソルティアーラ - 11 オンナキュヌヴィ</td>
+          <td class="mono">4908.3</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">148%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">アリアス - オンナキュヌヴィ - ネオアンボウ</td>
-          <td class="mono">1184.0</td>
-          <td class="mono">0.1%</td>
+          <td class="horses-cell">1 セリエンクーニゲン - 12 ネオアンボウ - 17 エイシンイクサボシ</td>
+          <td class="mono">4421.3</td>
+          <td class="mono">0.0%</td>
           <td class="ev-cell mono">145%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ネオアンボウ - エイシンイクサボシ - セリエンクーニゲン</td>
-          <td class="mono">4421.3</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">144%</td>
+          <td class="horses-cell">15 ルディドゥゲンジ - 9 アリアス - 11 オンナキュヌヴィ</td>
+          <td class="mono">1097.7</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">143%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">オンナキュヌヴィ - ソルティアーラ - カラーオブサクセス</td>
-          <td class="mono">2979.1</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">142%</td>
+          <td class="horses-cell">16 ペルウィクトール - 9 アリアス - 15 ルディドゥゲンジ</td>
+          <td class="mono">785.1</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">140%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">アリアス - ネオアンボウ - ラウンドヒル</td>
+          <td class="horses-cell">4 ステキサプライズ - 17 エイシンイクサボシ - 11 オンナキュヌヴィ</td>
+          <td class="mono">989.5</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">139%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 セリエンクーニゲン - 9 アリアス - 15 ルディドゥゲンジ</td>
+          <td class="mono">1538.9</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">139%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">12 ネオアンボウ - 6 ラウンドヒル - 9 アリアス</td>
           <td class="mono">4492.7</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">141%</td>
+          <td class="ev-cell mono">138%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ソルティアーラ - エイシンイクサボシ - ラウンドヒル</td>
-          <td class="mono">6294.8</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">139%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ステキサプライズ - エイシンイクサボシ - カラーオブサクセス</td>
-          <td class="mono">8985.4</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">139%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ソルティアーラ - アリアス - ラウンドヒル</td>
-          <td class="mono">2316.4</td>
+          <td class="horses-cell">4 ステキサプライズ - 17 エイシンイクサボシ - 9 アリアス</td>
+          <td class="mono">2106.2</td>
           <td class="mono">0.1%</td>
           <td class="ev-cell mono">138%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">アリアス - ステキサプライズ - カラーオブサクセス</td>
-          <td class="mono">3267.4</td>
+          <td class="horses-cell">1 セリエンクーニゲン - 12 ネオアンボウ - 15 ルディドゥゲンジ</td>
+          <td class="mono">12110.7</td>
           <td class="mono">0.0%</td>
           <td class="ev-cell mono">136%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">アリアス - ステキサプライズ - ペルウィクトール</td>
-          <td class="mono">235.9</td>
-          <td class="mono">0.6%</td>
+          <td class="horses-cell">12 ネオアンボウ - 9 アリアス - 15 ルディドゥゲンジ</td>
+          <td class="mono">17970.8</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">135%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">10 ソルティアーラ - 9 アリアス - 11 オンナキュヌヴィ</td>
+          <td class="mono">552.6</td>
+          <td class="mono">0.2%</td>
           <td class="ev-cell mono">134%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">アリアス - エイシンイクサボシ - ラウンドヒル</td>
-          <td class="mono">1348.9</td>
-          <td class="mono">0.1%</td>
+          <td class="horses-cell">4 ステキサプライズ - 9 アリアス - 11 オンナキュヌヴィ</td>
+          <td class="mono">344.5</td>
+          <td class="mono">0.4%</td>
           <td class="ev-cell mono">134%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ソルティアーラ - オンナキュヌヴィ - ラウンドヒル</td>
-          <td class="mono">1057.1</td>
+          <td class="horses-cell">10 ソルティアーラ - 6 ラウンドヒル - 9 アリアス</td>
+          <td class="mono">2316.4</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">132%</td>
+          <td class="ev-cell mono">133%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">アリアス - ペルウィクトール - カラーオブサクセス</td>
-          <td class="mono">462.3</td>
-          <td class="mono">0.3%</td>
+          <td class="horses-cell">17 エイシンイクサボシ - 6 ラウンドヒル - 10 ソルティアーラ</td>
+          <td class="mono">6294.8</td>
+          <td class="mono">0.0%</td>
           <td class="ev-cell mono">131%</td>
         </tr>
         
@@ -939,143 +972,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">エフティヴェント → オンナキュヌヴィ → ペルウィクトール</td>
-          <td class="mono">11961.5</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">277%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">カラーオブサクセス → オンナキュヌヴィ → ペルウィクトール</td>
-          <td class="mono">3466.4</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">271%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">エイシンイクサボシ → ソルティアーラ → オンナキュヌヴィ</td>
-          <td class="mono">20220.7</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">249%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ルディドゥゲンジ → オンナキュヌヴィ → ペルウィクトール</td>
+          <td class="horses-cell">15 ルディドゥゲンジ → 11 オンナキュヌヴィ → 16 ペルウィクトール</td>
           <td class="mono">6482.9</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">249%</td>
+          <td class="ev-cell mono">320%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ルディドゥゲンジ → アリアス → ペルウィクトール</td>
+          <td class="horses-cell">15 ルディドゥゲンジ → 9 アリアス → 16 ペルウィクトール</td>
           <td class="mono">13480.4</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">249%</td>
+          <td class="ev-cell mono">311%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">エフティヴェント → ペルウィクトール → オンナキュヌヴィ</td>
-          <td class="mono">10110.3</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">247%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">カラーオブサクセス → ペルウィクトール → オンナキュヌヴィ</td>
-          <td class="mono">2908.4</td>
+          <td class="horses-cell">15 ルディドゥゲンジ → 16 ペルウィクトール → 11 オンナキュヌヴィ</td>
+          <td class="mono">5777.3</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">240%</td>
+          <td class="ev-cell mono">302%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">エイシンイクサボシ → オンナキュヌヴィ → ペルウィクトール</td>
+          <td class="horses-cell">15 ルディドゥゲンジ → 16 ペルウィクトール → 9 アリアス</td>
+          <td class="mono">10484.8</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">282%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">17 エイシンイクサボシ → 10 ソルティアーラ → 11 オンナキュヌヴィ</td>
+          <td class="mono">20220.7</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">254%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">15 ルディドゥゲンジ → 11 オンナキュヌヴィ → 12 ネオアンボウ</td>
+          <td class="mono">94363.3</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">252%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">15 ルディドゥゲンジ → 16 ペルウィクトール → 4 ステキサプライズ</td>
+          <td class="mono">23590.8</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">248%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">15 ルディドゥゲンジ → 4 ステキサプライズ → 16 ペルウィクトール</td>
+          <td class="mono">28309.0</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">242%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">15 ルディドゥゲンジ → 16 ペルウィクトール → 3 ゴッドレイ</td>
+          <td class="mono">13065.6</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">241%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">17 エイシンイクサボシ → 11 オンナキュヌヴィ → 16 ペルウィクトール</td>
           <td class="mono">1626.9</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">235%</td>
+          <td class="ev-cell mono">241%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ステキサプライズ → オンナキュヌヴィ → ペルウィクトール</td>
-          <td class="mono">1469.3</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">235%</td>
+          <td class="horses-cell">15 ルディドゥゲンジ → 10 ソルティアーラ → 11 オンナキュヌヴィ</td>
+          <td class="mono">56618.0</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">238%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ルディドゥゲンジ → ペルウィクトール → オンナキュヌヴィ</td>
-          <td class="mono">5777.3</td>
+          <td class="horses-cell">15 ルディドゥゲンジ → 16 ペルウィクトール → 12 ネオアンボウ</td>
+          <td class="mono">65328.4</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">236%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">10 ソルティアーラ → 11 オンナキュヌヴィ → 17 エイシンイクサボシ</td>
+          <td class="mono">16332.1</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">236%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 カラーオブサクセス → 11 オンナキュヌヴィ → 16 ペルウィクトール</td>
+          <td class="mono">3466.4</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">236%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">10 ソルティアーラ → 17 エイシンイクサボシ → 11 オンナキュヌヴィ</td>
+          <td class="mono">18872.6</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">234%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">15 ルディドゥゲンジ → 9 アリアス → 11 オンナキュヌヴィ</td>
+          <td class="mono">12867.7</td>
           <td class="mono">0.0%</td>
           <td class="ev-cell mono">233%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ソルティアーラ → オンナキュヌヴィ → エイシンイクサボシ</td>
-          <td class="mono">16332.1</td>
+          <td class="horses-cell">15 ルディドゥゲンジ → 3 ゴッドレイ → 16 ペルウィクトール</td>
+          <td class="mono">14899.4</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">230%</td>
+          <td class="ev-cell mono">229%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ソルティアーラ → エイシンイクサボシ → オンナキュヌヴィ</td>
-          <td class="mono">18872.6</td>
+          <td class="horses-cell">7 エフティヴェント → 11 オンナキュヌヴィ → 16 ペルウィクトール</td>
+          <td class="mono">11961.5</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">230%</td>
+          <td class="ev-cell mono">228%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ルディドゥゲンジ → ペルウィクトール → アリアス</td>
-          <td class="mono">10484.8</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">222%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">エイシンイクサボシ → ステキサプライズ → ペルウィクトール</td>
-          <td class="mono">7791.4</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">221%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">エイシンイクサボシ → オンナキュヌヴィ → ソルティアーラ</td>
+          <td class="horses-cell">17 エイシンイクサボシ → 11 オンナキュヌヴィ → 10 ソルティアーラ</td>
           <td class="mono">15165.5</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">220%</td>
+          <td class="ev-cell mono">225%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">カラーオブサクセス → アリアス → ペルウィクトール</td>
-          <td class="mono">5816.9</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">219%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">エイシンイクサボシ → ネオアンボウ → セリエンクーニゲン</td>
-          <td class="mono">44698.4</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">218%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ルディドゥゲンジ → ペルウィクトール → ステキサプライズ</td>
-          <td class="mono">23590.8</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">216%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">カラーオブサクセス → ミクロスギガース → ペルウィクトール</td>
-          <td class="mono">13697.9</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">215%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ルディドゥゲンジ → ステキサプライズ → ペルウィクトール</td>
-          <td class="mono">28309.0</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">214%</td>
+          <td class="horses-cell">11 オンナキュヌヴィ → 15 ルディドゥゲンジ → 16 ペルウィクトール</td>
+          <td class="mono">3791.3</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">222%</td>
         </tr>
         
       </tbody>
@@ -1087,5 +1120,49 @@
 
   <div class="disclaimer">本ページの予想は参考情報です。的中・利益を保証しません。<br>馬券の購入は必ずご自身でIPAT等の公式ルートから行ってください。</div>
 </main>
+
+<script>
+(function () {
+  const UNIT = 100;  // JRAの購入単位（100円）に丸める
+
+  function recalc() {
+    const budget = parseFloat(document.getElementById('budgetInput').value) || 0;
+    const rows = Array.from(document.querySelectorAll('#planTable tbody tr[data-ev]'));
+    const totalRow = document.getElementById('planTotalRow');
+    const totalCell = document.getElementById('planTotal');
+
+    if (!rows.length) return;
+
+    if (budget <= 0) {
+      rows.forEach(function (tr) { tr.querySelector('.stake-cell').textContent = '-'; });
+      if (totalRow) totalRow.style.display = 'none';
+      return;
+    }
+
+    // 期待値(EV)が高いものほど多く配分する（EVの合計に対する比率で按分）
+    const evs = rows.map(function (tr) { return Math.max(0, parseFloat(tr.dataset.ev) - 1); }); // 100%超過分だけを重みにする
+    const totalWeight = evs.reduce(function (a, b) { return a + b; }, 0);
+
+    let allocated = 0;
+    rows.forEach(function (tr, i) {
+      const weight = totalWeight > 0 ? evs[i] / totalWeight : 1 / rows.length;
+      const raw = budget * weight;
+      const amount = Math.floor(raw / UNIT) * UNIT;
+      allocated += amount;
+      tr.querySelector('.stake-cell').textContent = amount > 0 ? amount.toLocaleString('ja-JP') + '円' : '見送り';
+    });
+
+    if (totalRow && totalCell) {
+      totalRow.style.display = '';
+      totalCell.textContent = allocated.toLocaleString('ja-JP') + '円 / ' + budget.toLocaleString('ja-JP') + '円中';
+    }
+  }
+
+  const input = document.getElementById('budgetInput');
+  if (input) {
+    input.addEventListener('input', recalc);
+  }
+})();
+</script>
 </body>
 </html>

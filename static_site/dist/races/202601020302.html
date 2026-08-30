@@ -63,30 +63,66 @@
   }
   .summary-text { font-size: 13px; line-height: 1.75; color: var(--text-dim); }
 
-  /* --- 結論：一番のおすすめ --- */
-  .best-bet {
+  /* --- 結論：馬券風デザイン --- */
+  .ticket {
     position: relative;
     background: linear-gradient(180deg, #1a1408 0%, var(--surface) 70%);
     border: 1px solid var(--amber-dim);
+    border-radius: 10px;
     box-shadow: 0 0 0 1px rgba(240,162,2,0.08), 0 8px 24px -12px var(--amber-glow);
+    padding: 0;
+    overflow: hidden;
   }
-  .best-bet .tag {
-    font-size: 12px; font-weight: 800; color: var(--amber);
+  .ticket-head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 16px; background: rgba(240,162,2,0.08);
+    border-bottom: 1px dashed var(--amber-dim);
   }
-  .best-bet .type {
-    display: inline-block; font-size: 11px; color: var(--bg); background: var(--amber);
-    font-weight: 700; padding: 2px 8px; border-radius: 3px; margin-top: 8px;
+  .ticket-head .label { font-size: 11px; font-weight: 800; color: var(--amber); letter-spacing: 0.05em; }
+  .ticket-head .type-badge {
+    font-size: 11px; color: var(--bg); background: var(--amber);
+    font-weight: 800; padding: 3px 10px; border-radius: 3px;
   }
-  .best-bet .horses {
-    font-size: 21px; font-weight: 800; margin: 8px 0 12px;
-    color: var(--text); line-height: 1.4;
+  .ticket-body { padding: 16px; }
+  .ticket .horses {
+    font-size: 20px; font-weight: 800; margin: 0 0 14px;
+    color: var(--text); line-height: 1.45;
   }
-  .best-bet .stat-row { display: flex; }
-  .best-bet .stat { margin-right: 24px; }
-  .best-bet .stat .label { font-size: 10.5px; color: var(--text-dim); }
-  .best-bet .stat .value { font-size: 18px; font-weight: 800; margin-top: 2px; }
-  .best-bet .stat.ev .value { color: var(--amber); }
-  .best-bet .footnote { font-size: 11px; color: var(--text-dim); margin-top: 12px; line-height: 1.6; border-top: 1px solid var(--line); padding-top: 10px; }
+  .ticket-stats {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+    padding: 12px 0; border-top: 1px dashed var(--line); border-bottom: 1px dashed var(--line);
+  }
+  .ticket-stats .stat { text-align: center; }
+  .ticket-stats .stat .label { font-size: 10px; color: var(--text-dim); }
+  .ticket-stats .stat .value { font-size: 16px; font-weight: 800; margin-top: 3px; }
+  .ticket-stats .stat.ev .value { color: var(--amber); }
+
+  .ticket-amount {
+    margin-top: 14px; padding: 12px; background: var(--surface-2);
+    border-radius: 6px; display: flex; justify-content: space-between; align-items: center;
+  }
+  .ticket-amount .label { font-size: 11px; color: var(--text-dim); }
+  .ticket-amount .value { font-size: 22px; font-weight: 800; color: var(--green); }
+  .ticket-amount .value::before { content: "¥"; font-size: 14px; margin-right: 2px; }
+
+  .footnote { font-size: 11px; color: var(--text-dim); margin-top: 12px; line-height: 1.6; padding: 0 16px 14px; }
+
+  /* --- 予算入力 --- */
+  .budget-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
+    padding: 10px 14px; margin-bottom: 14px;
+  }
+  .budget-box label { font-size: 12px; color: var(--text-dim); white-space: nowrap; }
+  .budget-box input {
+    flex: 1; background: var(--surface-2); border: 1px solid var(--line); border-radius: 4px;
+    color: var(--text); font-size: 15px; padding: 7px 10px; font-family: inherit;
+    -moz-appearance: textfield;
+  }
+  .budget-box input::-webkit-outer-spin-button, .budget-box input::-webkit-inner-spin-button { margin: 0; }
+  .budget-box .unit { font-size: 12px; color: var(--text-dim); }
+  .stake-cell { color: var(--green); font-weight: 700; }
+
 
   /* --- 穴馬候補 --- */
   .dark-horse-card { border-left: 3px solid var(--green); }
@@ -178,18 +214,66 @@
   <div class="card summary-text">明確な逃げ馬が不在で、スローペースになりやすく先行馬が有利になりやすい。馬場状態は「稍重」。</div>
 
   
-  <div class="section-title"><span class="en">Conclusion</span>結論：一番のおすすめ</div>
-  <div class="card best-bet">
-    <div class="tag">🏆 このレースで最も期待値が高い買い目</div>
-    <div class="type">3連単</div>
-    <div class="horses">ロゼハイスクール → サトノパラディ → セイレイカ</div>
-    <div class="stat-row mono">
-      <div class="stat"><div class="label">オッズ</div><div class="value">126785.1倍</div></div>
-      <div class="stat"><div class="label">的中確率</div><div class="value">0.0%</div></div>
-      <div class="stat ev"><div class="label">期待値</div><div class="value">615%</div></div>
-    </div>
-    <div class="footnote">期待値とは「100円賭けた時に理論上いくら戻ってくるか」の目安です。100%を超えるほど、賭け金に対して見込まれる払戻が大きいことを意味します（的中を保証するものではありません）。</div>
+  <div class="section-title"><span class="en">Betting Plan</span>AI推奨 購入プラン</div>
+  <div class="section-hint">実際の投票は複数点に分けるのが基本のため、期待値が高い順に複数の買い目を組み合わせています。予算を入れると自動で配分します。</div>
+  <div class="budget-box">
+    <label for="budgetInput">今回の予算</label>
+    <input type="number" id="budgetInput" inputmode="numeric" placeholder="例: 3000" min="0" step="100">
+    <span class="unit">円</span>
   </div>
+  <div class="card" style="padding:0; overflow:hidden;">
+    <table id="planTable">
+      <thead><tr><th>券種</th><th>買い目</th><th>オッズ</th><th>期待値</th><th>配分額</th></tr></thead>
+      <tbody>
+        
+        <tr data-ev="2.1386990475246423">
+          <td class="mono">単勝</td>
+          <td class="horses-cell">2 ロゼハイスクール</td>
+          <td class="mono">193.9</td>
+          <td class="ev-cell mono">214%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="1.6869472257422038">
+          <td class="mono">単勝</td>
+          <td class="horses-cell">8 リラカリス</td>
+          <td class="mono">82.8</td>
+          <td class="ev-cell mono">169%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="1.594096980873373">
+          <td class="mono">3連複</td>
+          <td class="horses-cell">4 セイレイカ - 6 ルギッドドランジュ - 9 ソーハッピー</td>
+          <td class="mono">130.4</td>
+          <td class="ev-cell mono">159%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="1.5490564515715262">
+          <td class="mono">単勝</td>
+          <td class="horses-cell">13 サトノパラディ</td>
+          <td class="mono">37.5</td>
+          <td class="ev-cell mono">155%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="1.4390950375054714">
+          <td class="mono">馬連</td>
+          <td class="horses-cell">12 バタフライ - 9 ソーハッピー</td>
+          <td class="mono">102.5</td>
+          <td class="ev-cell mono">144%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr id="planTotalRow" style="display:none;">
+          <td colspan="4" style="text-align:right; font-weight:800;">合計</td>
+          <td class="mono" id="planTotal" style="font-weight:800; color:var(--green);">-</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="footnote">配分額は、各買い目の期待値の大きさに比例して予算を振り分けた目安です（期待値が高いものほど多く配分）。1点に集中させず、複数点に分けて購入することでブレを抑える考え方に基づいています。あくまで参考情報であり、的中や利益を保証するものではありません。</div>
   
 
   
@@ -198,43 +282,33 @@
   <div class="card dark-horse-card">
     
     <div class="dark-horse-item">
-      <span class="dh-name">ロゼハイスクール</span><span class="dh-badge">11番人気</span>
-      <div class="dh-stats mono">オッズ 193.9倍 ／ 勝率目安 1.0% ／ 期待値 201%</div>
-    </div>
-    
-    <div class="dark-horse-item">
       <span class="dh-name">リラカリス</span><span class="dh-badge">10番人気</span>
-      <div class="dh-stats mono">オッズ 82.8倍 ／ 勝率目安 1.9% ／ 期待値 154%</div>
-    </div>
-    
-    <div class="dark-horse-item">
-      <span class="dh-name">コイゾラ</span><span class="dh-badge">9番人気</span>
-      <div class="dh-stats mono">オッズ 57.2倍 ／ 勝率目安 2.7% ／ 期待値 152%</div>
+      <div class="dh-stats mono">オッズ 82.8倍 ／ 勝率目安 2.0% ／ 期待値 169%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">サトノパラディ</span><span class="dh-badge">8番人気</span>
-      <div class="dh-stats mono">オッズ 37.5倍 ／ 勝率目安 4.0% ／ 期待値 151%</div>
+      <div class="dh-stats mono">オッズ 37.5倍 ／ 勝率目安 4.1% ／ 期待値 155%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">セイレイカ</span><span class="dh-badge">6番人気</span>
-      <div class="dh-stats mono">オッズ 11.9倍 ／ 勝率目安 10.9% ／ 期待値 130%</div>
+      <div class="dh-stats mono">オッズ 11.9倍 ／ 勝率目安 10.7% ／ 期待値 127%</div>
+    </div>
+    
+    <div class="dark-horse-item">
+      <span class="dh-name">コイゾラ</span><span class="dh-badge">9番人気</span>
+      <div class="dh-stats mono">オッズ 57.2倍 ／ 勝率目安 2.1% ／ 期待値 122%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">バタフライ</span><span class="dh-badge">7番人気</span>
-      <div class="dh-stats mono">オッズ 18.1倍 ／ 勝率目安 6.8% ／ 期待値 122%</div>
+      <div class="dh-stats mono">オッズ 18.1倍 ／ 勝率目安 6.6% ／ 期待値 119%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">ソーハッピー</span><span class="dh-badge">5番人気</span>
       <div class="dh-stats mono">オッズ 11.5倍 ／ 勝率目安 9.8% ／ 期待値 113%</div>
-    </div>
-    
-    <div class="dark-horse-item">
-      <span class="dh-name">セールデュクール</span><span class="dh-badge">12番人気</span>
-      <div class="dh-stats mono">オッズ 296.7倍 ／ 勝率目安 0.4% ／ 期待値 111%</div>
     </div>
     
   </div>
@@ -246,57 +320,57 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">3</span>フォルトゥナロッサ</span>
-        <span class="horse-prob mono">複勝圏内 66%</span>
+        <span class="horse-prob mono">複勝圏内 72%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約66%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は2.0着と好調を維持。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約72%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は2.0着と好調を維持。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">10</span>アヴレディール</span>
-        <span class="horse-prob mono">複勝圏内 51%</span>
+        <span class="horse-prob mono">複勝圏内 49%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約51%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は3.0着と好調を維持。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約49%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は3.0着と好調を維持。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">6</span>ルギッドドランジュ</span>
-        <span class="horse-prob mono">複勝圏内 43%</span>
+        <span class="horse-prob mono">複勝圏内 41%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約43%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
-    </div>
-    
-    <div class="horse-item">
-      <div class="horse-head">
-        <span class="horse-name"><span class="horse-num mono">4</span>セイレイカ</span>
-        <span class="horse-prob mono">複勝圏内 34%</span>
-      </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約34%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約41%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">5</span>タプティ</span>
-        <span class="horse-prob mono">複勝圏内 34%</span>
+        <span class="horse-prob mono">複勝圏内 33%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約34%。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約33%。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">4</span>セイレイカ</span>
+        <span class="horse-prob mono">複勝圏内 33%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約33%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">9</span>ソーハッピー</span>
-        <span class="horse-prob mono">複勝圏内 31%</span>
+        <span class="horse-prob mono">複勝圏内 30%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約31%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約30%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">12</span>バタフライ</span>
-        <span class="horse-prob mono">複勝圏内 21%</span>
+        <span class="horse-prob mono">複勝圏内 20%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約21%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約20%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
     </div>
     
     <div class="horse-item">
@@ -310,9 +384,9 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">7</span>コイゾラ</span>
-        <span class="horse-prob mono">複勝圏内 8%</span>
+        <span class="horse-prob mono">複勝圏内 7%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約8%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は10.0着とやや不振。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約7%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は10.0着とやや不振。</div>
     </div>
     
     <div class="horse-item">
@@ -349,76 +423,69 @@
     
   </div>
 
-  <div class="section-title"><span class="en">All Bets</span>券種ごとの買い目候補</div>
-  <div class="section-hint">期待値100%を超えるものだけを表示しています。券種名をタップすると開きます。</div>
+  <div class="section-title"><span class="en">All Bets</span>券種ごとの買い目一覧（参考）</div>
+  <div class="section-hint">期待値100%を超えるものを全て表示しています。上の「購入プラン」はこの中から自動選定したものです。</div>
   
   <details class="bet-group" open>
-    <summary>単勝 <span class="count">9点</span></summary>
+    <summary>単勝 <span class="count">8点</span></summary>
     <table>
       <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
       <tbody>
         
         <tr>
-          <td class="horses-cell">ロゼハイスクール</td>
+          <td class="horses-cell">2 ロゼハイスクール</td>
           <td class="mono">193.9</td>
-          <td class="mono">1.0%</td>
-          <td class="ev-cell mono">201%</td>
+          <td class="mono">1.1%</td>
+          <td class="ev-cell mono">214%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">リラカリス</td>
+          <td class="horses-cell">8 リラカリス</td>
           <td class="mono">82.8</td>
-          <td class="mono">1.9%</td>
-          <td class="ev-cell mono">154%</td>
+          <td class="mono">2.0%</td>
+          <td class="ev-cell mono">169%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">コイゾラ</td>
-          <td class="mono">57.2</td>
-          <td class="mono">2.7%</td>
-          <td class="ev-cell mono">152%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">サトノパラディ</td>
+          <td class="horses-cell">13 サトノパラディ</td>
           <td class="mono">37.5</td>
-          <td class="mono">4.0%</td>
-          <td class="ev-cell mono">151%</td>
+          <td class="mono">4.1%</td>
+          <td class="ev-cell mono">155%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">セイレイカ</td>
+          <td class="horses-cell">4 セイレイカ</td>
           <td class="mono">11.9</td>
-          <td class="mono">10.9%</td>
-          <td class="ev-cell mono">130%</td>
+          <td class="mono">10.7%</td>
+          <td class="ev-cell mono">127%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バタフライ</td>
-          <td class="mono">18.1</td>
-          <td class="mono">6.8%</td>
+          <td class="horses-cell">7 コイゾラ</td>
+          <td class="mono">57.2</td>
+          <td class="mono">2.1%</td>
           <td class="ev-cell mono">122%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ソーハッピー</td>
+          <td class="horses-cell">12 バタフライ</td>
+          <td class="mono">18.1</td>
+          <td class="mono">6.6%</td>
+          <td class="ev-cell mono">119%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">9 ソーハッピー</td>
           <td class="mono">11.5</td>
           <td class="mono">9.8%</td>
           <td class="ev-cell mono">113%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">セールデュクール</td>
-          <td class="mono">296.7</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">111%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">タプティ</td>
+          <td class="horses-cell">5 タプティ</td>
           <td class="mono">9.7</td>
-          <td class="mono">10.8%</td>
-          <td class="ev-cell mono">105%</td>
+          <td class="mono">10.7%</td>
+          <td class="ev-cell mono">103%</td>
         </tr>
         
       </tbody>
@@ -432,143 +499,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">ロゼハイスクール - アヴレディール</td>
+          <td class="horses-cell">2 ロゼハイスクール - 10 アヴレディール</td>
           <td class="mono">554.9</td>
           <td class="mono">0.4%</td>
-          <td class="ev-cell mono">207%</td>
+          <td class="ev-cell mono">214%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ロゼハイスクール - ルギッドドランジュ</td>
+          <td class="horses-cell">2 ロゼハイスクール - 6 ルギッドドランジュ</td>
           <td class="mono">625.0</td>
           <td class="mono">0.3%</td>
-          <td class="ev-cell mono">197%</td>
+          <td class="ev-cell mono">199%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">タプティ - ロゼハイスクール</td>
+          <td class="horses-cell">2 ロゼハイスクール - 5 タプティ</td>
           <td class="mono">794.0</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">190%</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">199%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バタフライ - コイゾラ</td>
-          <td class="mono">462.1</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">174%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ソーハッピー - サトノパラディ</td>
+          <td class="horses-cell">13 サトノパラディ - 9 ソーハッピー</td>
           <td class="mono">197.2</td>
-          <td class="mono">0.8%</td>
-          <td class="ev-cell mono">168%</td>
+          <td class="mono">0.9%</td>
+          <td class="ev-cell mono">172%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">コイゾラ - サトノパラディ</td>
-          <td class="mono">685.8</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">152%</td>
+          <td class="horses-cell">8 リラカリス - 12 バタフライ</td>
+          <td class="mono">570.6</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">159%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">セイレイカ - サトノパラディ</td>
+          <td class="horses-cell">4 セイレイカ - 13 サトノパラディ</td>
           <td class="mono">158.8</td>
           <td class="mono">1.0%</td>
           <td class="ev-cell mono">151%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">セイレイカ - バタフライ</td>
-          <td class="mono">93.2</td>
-          <td class="mono">1.6%</td>
-          <td class="ev-cell mono">151%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バタフライ - リラカリス</td>
-          <td class="mono">570.6</td>
+          <td class="horses-cell">2 ロゼハイスクール - 4 セイレイカ</td>
+          <td class="mono">599.7</td>
           <td class="mono">0.3%</td>
           <td class="ev-cell mono">150%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ソーハッピー - バタフライ</td>
-          <td class="mono">102.5</td>
-          <td class="mono">1.4%</td>
-          <td class="ev-cell mono">148%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">コイゾラ - ルギッドドランジュ</td>
-          <td class="mono">181.9</td>
-          <td class="mono">0.8%</td>
-          <td class="ev-cell mono">148%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ソーハッピー - セイレイカ</td>
-          <td class="mono">61.5</td>
-          <td class="mono">2.4%</td>
-          <td class="ev-cell mono">147%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">セイレイカ - ルギッドドランジュ</td>
-          <td class="mono">41.8</td>
-          <td class="mono">3.5%</td>
-          <td class="ev-cell mono">145%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">アヴレディール - コイゾラ</td>
-          <td class="mono">150.8</td>
-          <td class="mono">1.0%</td>
-          <td class="ev-cell mono">145%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">セイレイカ - コイゾラ</td>
-          <td class="mono">232.7</td>
-          <td class="mono">0.6%</td>
-          <td class="ev-cell mono">145%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ロゼハイスクール - セイレイカ</td>
-          <td class="mono">599.7</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">145%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ロゼハイスクール - バタフライ</td>
-          <td class="mono">958.8</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">140%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">アヴレディール - リラカリス</td>
+          <td class="horses-cell">8 リラカリス - 10 アヴレディール</td>
           <td class="mono">206.0</td>
           <td class="mono">0.7%</td>
-          <td class="ev-cell mono">138%</td>
+          <td class="ev-cell mono">148%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">タプティ - ソーハッピー</td>
-          <td class="mono">57.9</td>
-          <td class="mono">2.4%</td>
-          <td class="ev-cell mono">137%</td>
+          <td class="horses-cell">2 ロゼハイスクール - 12 バタフライ</td>
+          <td class="mono">958.8</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">144%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">セイレイカ - リラカリス</td>
+          <td class="horses-cell">12 バタフライ - 9 ソーハッピー</td>
+          <td class="mono">102.5</td>
+          <td class="mono">1.4%</td>
+          <td class="ev-cell mono">144%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">4 セイレイカ - 9 ソーハッピー</td>
+          <td class="mono">61.5</td>
+          <td class="mono">2.3%</td>
+          <td class="ev-cell mono">144%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 リラカリス - 13 サトノパラディ</td>
+          <td class="mono">821.8</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">143%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">4 セイレイカ - 12 バタフライ</td>
+          <td class="mono">93.2</td>
+          <td class="mono">1.5%</td>
+          <td class="ev-cell mono">142%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 リラカリス - 4 セイレイカ</td>
           <td class="mono">303.1</td>
+          <td class="mono">0.5%</td>
+          <td class="ev-cell mono">141%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">5 タプティ - 9 ソーハッピー</td>
+          <td class="mono">57.9</td>
+          <td class="mono">2.3%</td>
+          <td class="ev-cell mono">135%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">4 セイレイカ - 6 ルギッドドランジュ</td>
+          <td class="mono">41.8</td>
+          <td class="mono">3.2%</td>
+          <td class="ev-cell mono">135%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 コイゾラ - 12 バタフライ</td>
+          <td class="mono">462.1</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">135%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 ロゼハイスクール - 13 サトノパラディ</td>
+          <td class="mono">1430.9</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">134%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 リラカリス - 9 ソーハッピー</td>
+          <td class="mono">296.4</td>
           <td class="mono">0.4%</td>
-          <td class="ev-cell mono">132%</td>
+          <td class="ev-cell mono">126%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 コイゾラ - 13 サトノパラディ</td>
+          <td class="mono">685.8</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">125%</td>
         </tr>
         
       </tbody>
@@ -582,143 +649,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">ロゼハイスクール → バタフライ</td>
+          <td class="horses-cell">2 ロゼハイスクール → 12 バタフライ</td>
           <td class="mono">5137.1</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">364%</td>
+          <td class="ev-cell mono">375%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ロゼハイスクール → セイレイカ</td>
+          <td class="horses-cell">2 ロゼハイスクール → 4 セイレイカ</td>
           <td class="mono">2473.4</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">283%</td>
+          <td class="ev-cell mono">294%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ロゼハイスクール → ルギッドドランジュ</td>
+          <td class="horses-cell">2 ロゼハイスクール → 10 アヴレディール</td>
+          <td class="mono">1571.3</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">279%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 ロゼハイスクール → 6 ルギッドドランジュ</td>
           <td class="mono">1855.0</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">276%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">12 バタフライ → 2 ロゼハイスクール</td>
+          <td class="mono">3514.8</td>
           <td class="mono">0.1%</td>
           <td class="ev-cell mono">272%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ロゼハイスクール → アヴレディール</td>
-          <td class="mono">1571.3</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">269%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バタフライ → ロゼハイスクール</td>
-          <td class="mono">3514.8</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">264%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">コイゾラ → セイレイカ</td>
-          <td class="mono">840.0</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">250%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">リラカリス → バタフライ</td>
+          <td class="horses-cell">8 リラカリス → 12 バタフライ</td>
           <td class="mono">1804.9</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">231%</td>
+          <td class="ev-cell mono">246%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ロゼハイスクール → タプティ</td>
+          <td class="horses-cell">2 ロゼハイスクール → 5 タプティ</td>
           <td class="mono">2023.7</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">229%</td>
+          <td class="ev-cell mono">241%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">コイゾラ → バタフライ</td>
-          <td class="mono">1225.3</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">226%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">コイゾラ → ルギッドドランジュ</td>
-          <td class="mono">565.9</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">215%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">サトノパラディ → セイレイカ</td>
-          <td class="mono">470.3</td>
-          <td class="mono">0.5%</td>
-          <td class="ev-cell mono">215%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ルギッドドランジュ → ロゼハイスクール</td>
-          <td class="mono">1248.2</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">210%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">リラカリス → セイレイカ</td>
+          <td class="horses-cell">8 リラカリス → 4 セイレイカ</td>
           <td class="mono">982.0</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">203%</td>
+          <td class="ev-cell mono">218%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">サトノパラディ → ソーハッピー</td>
+          <td class="horses-cell">13 サトノパラディ → 4 セイレイカ</td>
+          <td class="mono">470.3</td>
+          <td class="mono">0.5%</td>
+          <td class="ev-cell mono">216%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">6 ルギッドドランジュ → 2 ロゼハイスクール</td>
+          <td class="mono">1248.2</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">212%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">13 サトノパラディ → 9 ソーハッピー</td>
           <td class="mono">485.6</td>
           <td class="mono">0.4%</td>
-          <td class="ev-cell mono">200%</td>
+          <td class="ev-cell mono">206%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">サトノパラディ → コイゾラ</td>
-          <td class="mono">1757.4</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">196%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">コイゾラ → サトノパラディ</td>
-          <td class="mono">1757.4</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">193%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">セールデュクール → アヴレディール</td>
-          <td class="mono">3106.1</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">190%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バタフライ → リラカリス</td>
+          <td class="horses-cell">12 バタフライ → 8 リラカリス</td>
           <td class="mono">1405.9</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">190%</td>
+          <td class="ev-cell mono">201%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">コイゾラ → アヴレディール</td>
-          <td class="mono">421.3</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">187%</td>
+          <td class="horses-cell">7 コイゾラ → 4 セイレイカ</td>
+          <td class="mono">840.0</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">195%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">アヴレディール → ロゼハイスクール</td>
+          <td class="horses-cell">8 リラカリス → 10 アヴレディール</td>
+          <td class="mono">570.7</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">189%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">10 アヴレディール → 2 ロゼハイスクール</td>
           <td class="mono">902.4</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">182%</td>
+          <td class="ev-cell mono">188%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">5 タプティ → 2 ロゼハイスクール</td>
+          <td class="mono">1362.9</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">179%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 コイゾラ → 12 バタフライ</td>
+          <td class="mono">1225.3</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">175%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 リラカリス → 5 タプティ</td>
+          <td class="mono">750.3</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">166%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 コイゾラ → 6 ルギッドドランジュ</td>
+          <td class="mono">565.9</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">164%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 ロゼハイスクール → 13 サトノパラディ</td>
+          <td class="mono">3514.8</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">162%</td>
         </tr>
         
       </tbody>
@@ -732,143 +799,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">タプティ - ロゼハイスクール - アヴレディール</td>
+          <td class="horses-cell">2 ロゼハイスクール - 5 タプティ - 10 アヴレディール</td>
           <td class="mono">1621.4</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">245%</td>
+          <td class="ev-cell mono">249%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ソーハッピー - セイレイカ - バタフライ</td>
-          <td class="mono">387.7</td>
-          <td class="mono">0.6%</td>
-          <td class="ev-cell mono">227%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">アヴレディール - ロゼハイスクール - セイレイカ</td>
+          <td class="horses-cell">2 ロゼハイスクール - 4 セイレイカ - 10 アヴレディール</td>
           <td class="mono">1434.7</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">219%</td>
+          <td class="ev-cell mono">220%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ロゼハイスクール - セイレイカ - ルギッドドランジュ</td>
+          <td class="horses-cell">4 セイレイカ - 12 バタフライ - 9 ソーハッピー</td>
+          <td class="mono">387.7</td>
+          <td class="mono">0.6%</td>
+          <td class="ev-cell mono">214%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 ロゼハイスクール - 4 セイレイカ - 6 ルギッドドランジュ</td>
           <td class="mono">1721.6</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">218%</td>
+          <td class="ev-cell mono">214%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バタフライ - ロゼハイスクール - ルギッドドランジュ</td>
-          <td class="mono">2886.9</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">216%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バタフライ - ロゼハイスクール - アヴレディール</td>
-          <td class="mono">2367.2</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">213%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バタフライ - ロゼハイスクール - セイレイカ</td>
+          <td class="horses-cell">2 ロゼハイスクール - 4 セイレイカ - 12 バタフライ</td>
           <td class="mono">3787.6</td>
           <td class="mono">0.1%</td>
           <td class="ev-cell mono">213%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">タプティ - ロゼハイスクール - ルギッドドランジュ</td>
+          <td class="horses-cell">2 ロゼハイスクール - 12 バタフライ - 10 アヴレディール</td>
+          <td class="mono">2367.2</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">213%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 ロゼハイスクール - 12 バタフライ - 6 ルギッドドランジュ</td>
+          <td class="mono">2886.9</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">211%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 ロゼハイスクール - 6 ルギッドドランジュ - 5 タプティ</td>
           <td class="mono">1672.9</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">209%</td>
+          <td class="ev-cell mono">208%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バタフライ - セイレイカ - コイゾラ</td>
-          <td class="mono">1337.4</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">196%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">セイレイカ - コイゾラ - サトノパラディ</td>
-          <td class="mono">2254.5</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">191%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ソーハッピー - バタフライ - ルギッドドランジュ</td>
-          <td class="mono">237.0</td>
-          <td class="mono">0.8%</td>
-          <td class="ev-cell mono">184%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">アヴレディール - ロゼハイスクール - ルギッドドランジュ</td>
-          <td class="mono">903.5</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">184%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ロゼハイスクール - アヴレディール - サトノパラディ</td>
+          <td class="horses-cell">2 ロゼハイスクール - 13 サトノパラディ - 10 アヴレディール</td>
           <td class="mono">3406.1</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">177%</td>
+          <td class="ev-cell mono">188%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ソーハッピー - アヴレディール - サトノパラディ</td>
+          <td class="horses-cell">2 ロゼハイスクール - 4 セイレイカ - 13 サトノパラディ</td>
+          <td class="mono">5319.7</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">184%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 ロゼハイスクール - 6 ルギッドドランジュ - 10 アヴレディール</td>
+          <td class="mono">903.5</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">180%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">10 アヴレディール - 13 サトノパラディ - 9 ソーハッピー</td>
           <td class="mono">325.8</td>
           <td class="mono">0.5%</td>
           <td class="ev-cell mono">177%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ロゼハイスクール - セイレイカ - サトノパラディ</td>
-          <td class="mono">5319.7</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">173%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ソーハッピー - セイレイカ - ルギッドドランジュ</td>
-          <td class="mono">130.4</td>
-          <td class="mono">1.3%</td>
-          <td class="ev-cell mono">172%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">コイゾラ - セイレイカ - ルギッドドランジュ</td>
-          <td class="mono">521.4</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">172%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ソーハッピー - セイレイカ - サトノパラディ</td>
+          <td class="horses-cell">4 セイレイカ - 13 サトノパラディ - 9 ソーハッピー</td>
           <td class="mono">504.2</td>
           <td class="mono">0.3%</td>
           <td class="ev-cell mono">171%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ソーハッピー - ルギッドドランジュ - サトノパラディ</td>
-          <td class="mono">369.8</td>
-          <td class="mono">0.5%</td>
+          <td class="horses-cell">12 バタフライ - 6 ルギッドドランジュ - 9 ソーハッピー</td>
+          <td class="mono">237.0</td>
+          <td class="mono">0.7%</td>
+          <td class="ev-cell mono">170%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 ロゼハイスクール - 12 バタフライ - 5 タプティ</td>
+          <td class="mono">2940.7</td>
+          <td class="mono">0.1%</td>
           <td class="ev-cell mono">166%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">コイゾラ - バタフライ - ルギッドドランジュ</td>
-          <td class="mono">843.9</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">164%</td>
+          <td class="horses-cell">6 ルギッドドランジュ - 13 サトノパラディ - 9 ソーハッピー</td>
+          <td class="mono">369.8</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">163%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 ロゼハイスクール - 4 セイレイカ - 5 タプティ</td>
+          <td class="mono">1690.9</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">163%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">4 セイレイカ - 6 ルギッドドランジュ - 9 ソーハッピー</td>
+          <td class="mono">130.4</td>
+          <td class="mono">1.2%</td>
+          <td class="ev-cell mono">159%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 ロゼハイスクール - 5 タプティ - 9 ソーハッピー</td>
+          <td class="mono">1814.0</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">159%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 ロゼハイスクール - 12 バタフライ - 9 ソーハッピー</td>
+          <td class="mono">3094.4</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">159%</td>
         </tr>
         
       </tbody>
@@ -882,143 +949,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">ロゼハイスクール → サトノパラディ → セイレイカ</td>
+          <td class="horses-cell">2 ロゼハイスクール → 13 サトノパラディ → 4 セイレイカ</td>
           <td class="mono">126785.1</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">615%</td>
+          <td class="ev-cell mono">657%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ロゼハイスクール → セイレイカ → サトノパラディ</td>
+          <td class="horses-cell">2 ロゼハイスクール → 4 セイレイカ → 13 サトノパラディ</td>
           <td class="mono">101428.0</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">531%</td>
+          <td class="ev-cell mono">564%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ロゼハイスクール → アヴレディール → タプティ</td>
+          <td class="horses-cell">2 ロゼハイスクール → 10 アヴレディール → 5 タプティ</td>
           <td class="mono">22049.5</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">492%</td>
+          <td class="ev-cell mono">503%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ロゼハイスクール → アヴレディール → セイレイカ</td>
+          <td class="horses-cell">2 ロゼハイスクール → 10 アヴレディール → 4 セイレイカ</td>
           <td class="mono">21130.8</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">477%</td>
+          <td class="ev-cell mono">482%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ロゼハイスクール → タプティ → アヴレディール</td>
+          <td class="horses-cell">2 ロゼハイスクール → 5 タプティ → 10 アヴレディール</td>
           <td class="mono">21130.8</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">442%</td>
+          <td class="ev-cell mono">453%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ロゼハイスクール → セイレイカ → タプティ</td>
+          <td class="horses-cell">2 ロゼハイスクール → 4 セイレイカ → 5 タプティ</td>
           <td class="mono">29831.7</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">418%</td>
+          <td class="ev-cell mono">428%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ロゼハイスクール → タプティ → セイレイカ</td>
+          <td class="horses-cell">2 ロゼハイスクール → 5 タプティ → 4 セイレイカ</td>
           <td class="mono">29831.7</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">418%</td>
+          <td class="ev-cell mono">428%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ロゼハイスクール → セイレイカ → アヴレディール</td>
+          <td class="horses-cell">2 ロゼハイスクール → 4 セイレイカ → 10 アヴレディール</td>
           <td class="mono">19505.4</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">413%</td>
+          <td class="ev-cell mono">418%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">タプティ → ロゼハイスクール → アヴレディール</td>
+          <td class="horses-cell">5 タプティ → 2 ロゼハイスクール → 10 アヴレディール</td>
           <td class="mono">16904.6</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">392%</td>
+          <td class="ev-cell mono">401%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ロゼハイスクール → バタフライ → セイレイカ</td>
+          <td class="horses-cell">2 ロゼハイスクール → 12 バタフライ → 4 セイレイカ</td>
           <td class="mono">46103.6</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">387%</td>
+          <td class="ev-cell mono">389%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ロゼハイスクール → セイレイカ → バタフライ</td>
+          <td class="horses-cell">2 ロゼハイスクール → 4 セイレイカ → 12 バタフライ</td>
           <td class="mono">42261.7</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">371%</td>
+          <td class="ev-cell mono">373%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ロゼハイスクール → タプティ → バタフライ</td>
+          <td class="horses-cell">2 ロゼハイスクール → 5 タプティ → 12 バタフライ</td>
           <td class="mono">42261.7</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">367%</td>
+          <td class="ev-cell mono">373%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ロゼハイスクール → ルギッドドランジュ → セイレイカ</td>
+          <td class="horses-cell">2 ロゼハイスクール → 6 ルギッドドランジュ → 4 セイレイカ</td>
           <td class="mono">19505.4</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">367%</td>
+          <td class="ev-cell mono">362%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">コイゾラ → セイレイカ → ルギッドドランジュ</td>
-          <td class="mono">7142.8</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">343%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ロゼハイスクール → アヴレディール → ルギッドドランジュ</td>
+          <td class="horses-cell">2 ロゼハイスクール → 10 アヴレディール → 6 ルギッドドランジュ</td>
           <td class="mono">11793.9</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">340%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">セールデュクール → ソーハッピー → アヴレディール</td>
-          <td class="mono">50714.0</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">339%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">コイゾラ → ルギッドドランジュ → セイレイカ</td>
-          <td class="mono">6761.8</td>
           <td class="mono">0.0%</td>
           <td class="ev-cell mono">337%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">コイゾラ → サトノパラディ → セイレイカ</td>
-          <td class="mono">25357.0</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">326%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ルギッドドランジュ → ロゼハイスクール → アヴレディール</td>
+          <td class="horses-cell">6 ルギッドドランジュ → 2 ロゼハイスクール → 10 アヴレディール</td>
           <td class="mono">9943.9</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">321%</td>
+          <td class="ev-cell mono">314%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">コイゾラ → セイレイカ → アヴレディール</td>
-          <td class="mono">5572.9</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">313%</td>
+          <td class="horses-cell">2 ロゼハイスクール → 5 タプティ → 13 サトノパラディ</td>
+          <td class="mono">56348.9</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">314%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 ロゼハイスクール → 10 アヴレディール → 13 サトノパラディ</td>
+          <td class="mono">33809.3</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">299%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 リラカリス → 5 タプティ → 10 アヴレディール</td>
+          <td class="mono">7349.8</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">297%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">10 アヴレディール → 2 ロゼハイスクール → 5 タプティ</td>
+          <td class="mono">11024.7</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">296%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 ロゼハイスクール → 4 セイレイカ → 9 ソーハッピー</td>
+          <td class="mono">22049.5</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">292%</td>
         </tr>
         
       </tbody>
@@ -1030,5 +1097,49 @@
 
   <div class="disclaimer">本ページの予想は参考情報です。的中・利益を保証しません。<br>馬券の購入は必ずご自身でIPAT等の公式ルートから行ってください。</div>
 </main>
+
+<script>
+(function () {
+  const UNIT = 100;  // JRAの購入単位（100円）に丸める
+
+  function recalc() {
+    const budget = parseFloat(document.getElementById('budgetInput').value) || 0;
+    const rows = Array.from(document.querySelectorAll('#planTable tbody tr[data-ev]'));
+    const totalRow = document.getElementById('planTotalRow');
+    const totalCell = document.getElementById('planTotal');
+
+    if (!rows.length) return;
+
+    if (budget <= 0) {
+      rows.forEach(function (tr) { tr.querySelector('.stake-cell').textContent = '-'; });
+      if (totalRow) totalRow.style.display = 'none';
+      return;
+    }
+
+    // 期待値(EV)が高いものほど多く配分する（EVの合計に対する比率で按分）
+    const evs = rows.map(function (tr) { return Math.max(0, parseFloat(tr.dataset.ev) - 1); }); // 100%超過分だけを重みにする
+    const totalWeight = evs.reduce(function (a, b) { return a + b; }, 0);
+
+    let allocated = 0;
+    rows.forEach(function (tr, i) {
+      const weight = totalWeight > 0 ? evs[i] / totalWeight : 1 / rows.length;
+      const raw = budget * weight;
+      const amount = Math.floor(raw / UNIT) * UNIT;
+      allocated += amount;
+      tr.querySelector('.stake-cell').textContent = amount > 0 ? amount.toLocaleString('ja-JP') + '円' : '見送り';
+    });
+
+    if (totalRow && totalCell) {
+      totalRow.style.display = '';
+      totalCell.textContent = allocated.toLocaleString('ja-JP') + '円 / ' + budget.toLocaleString('ja-JP') + '円中';
+    }
+  }
+
+  const input = document.getElementById('budgetInput');
+  if (input) {
+    input.addEventListener('input', recalc);
+  }
+})();
+</script>
 </body>
 </html>

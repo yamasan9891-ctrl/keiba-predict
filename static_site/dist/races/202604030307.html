@@ -63,30 +63,66 @@
   }
   .summary-text { font-size: 13px; line-height: 1.75; color: var(--text-dim); }
 
-  /* --- 結論：一番のおすすめ --- */
-  .best-bet {
+  /* --- 結論：馬券風デザイン --- */
+  .ticket {
     position: relative;
     background: linear-gradient(180deg, #1a1408 0%, var(--surface) 70%);
     border: 1px solid var(--amber-dim);
+    border-radius: 10px;
     box-shadow: 0 0 0 1px rgba(240,162,2,0.08), 0 8px 24px -12px var(--amber-glow);
+    padding: 0;
+    overflow: hidden;
   }
-  .best-bet .tag {
-    font-size: 12px; font-weight: 800; color: var(--amber);
+  .ticket-head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 16px; background: rgba(240,162,2,0.08);
+    border-bottom: 1px dashed var(--amber-dim);
   }
-  .best-bet .type {
-    display: inline-block; font-size: 11px; color: var(--bg); background: var(--amber);
-    font-weight: 700; padding: 2px 8px; border-radius: 3px; margin-top: 8px;
+  .ticket-head .label { font-size: 11px; font-weight: 800; color: var(--amber); letter-spacing: 0.05em; }
+  .ticket-head .type-badge {
+    font-size: 11px; color: var(--bg); background: var(--amber);
+    font-weight: 800; padding: 3px 10px; border-radius: 3px;
   }
-  .best-bet .horses {
-    font-size: 21px; font-weight: 800; margin: 8px 0 12px;
-    color: var(--text); line-height: 1.4;
+  .ticket-body { padding: 16px; }
+  .ticket .horses {
+    font-size: 20px; font-weight: 800; margin: 0 0 14px;
+    color: var(--text); line-height: 1.45;
   }
-  .best-bet .stat-row { display: flex; }
-  .best-bet .stat { margin-right: 24px; }
-  .best-bet .stat .label { font-size: 10.5px; color: var(--text-dim); }
-  .best-bet .stat .value { font-size: 18px; font-weight: 800; margin-top: 2px; }
-  .best-bet .stat.ev .value { color: var(--amber); }
-  .best-bet .footnote { font-size: 11px; color: var(--text-dim); margin-top: 12px; line-height: 1.6; border-top: 1px solid var(--line); padding-top: 10px; }
+  .ticket-stats {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+    padding: 12px 0; border-top: 1px dashed var(--line); border-bottom: 1px dashed var(--line);
+  }
+  .ticket-stats .stat { text-align: center; }
+  .ticket-stats .stat .label { font-size: 10px; color: var(--text-dim); }
+  .ticket-stats .stat .value { font-size: 16px; font-weight: 800; margin-top: 3px; }
+  .ticket-stats .stat.ev .value { color: var(--amber); }
+
+  .ticket-amount {
+    margin-top: 14px; padding: 12px; background: var(--surface-2);
+    border-radius: 6px; display: flex; justify-content: space-between; align-items: center;
+  }
+  .ticket-amount .label { font-size: 11px; color: var(--text-dim); }
+  .ticket-amount .value { font-size: 22px; font-weight: 800; color: var(--green); }
+  .ticket-amount .value::before { content: "¥"; font-size: 14px; margin-right: 2px; }
+
+  .footnote { font-size: 11px; color: var(--text-dim); margin-top: 12px; line-height: 1.6; padding: 0 16px 14px; }
+
+  /* --- 予算入力 --- */
+  .budget-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
+    padding: 10px 14px; margin-bottom: 14px;
+  }
+  .budget-box label { font-size: 12px; color: var(--text-dim); white-space: nowrap; }
+  .budget-box input {
+    flex: 1; background: var(--surface-2); border: 1px solid var(--line); border-radius: 4px;
+    color: var(--text); font-size: 15px; padding: 7px 10px; font-family: inherit;
+    -moz-appearance: textfield;
+  }
+  .budget-box input::-webkit-outer-spin-button, .budget-box input::-webkit-inner-spin-button { margin: 0; }
+  .budget-box .unit { font-size: 12px; color: var(--text-dim); }
+  .stake-cell { color: var(--green); font-weight: 700; }
+
 
   /* --- 穴馬候補 --- */
   .dark-horse-card { border-left: 3px solid var(--green); }
@@ -178,18 +214,66 @@
   <div class="card summary-text">明確な逃げ馬が不在で、スローペースになりやすく先行馬が有利になりやすい。馬場状態は「稍重」。ハンデ戦のため、斤量差による有利不利を考慮した評価が重要。</div>
 
   
-  <div class="section-title"><span class="en">Conclusion</span>結論：一番のおすすめ</div>
-  <div class="card best-bet">
-    <div class="tag">🏆 このレースで最も期待値が高い買い目</div>
-    <div class="type">3連単</div>
-    <div class="horses">バガン → ピエナフェーヴル → ロールザダイス</div>
-    <div class="stat-row mono">
-      <div class="stat"><div class="label">オッズ</div><div class="value">68958.0倍</div></div>
-      <div class="stat"><div class="label">的中確率</div><div class="value">0.0%</div></div>
-      <div class="stat ev"><div class="label">期待値</div><div class="value">1128%</div></div>
-    </div>
-    <div class="footnote">期待値とは「100円賭けた時に理論上いくら戻ってくるか」の目安です。100%を超えるほど、賭け金に対して見込まれる払戻が大きいことを意味します（的中を保証するものではありません）。</div>
+  <div class="section-title"><span class="en">Betting Plan</span>AI推奨 購入プラン</div>
+  <div class="section-hint">実際の投票は複数点に分けるのが基本のため、期待値が高い順に複数の買い目を組み合わせています。予算を入れると自動で配分します。</div>
+  <div class="budget-box">
+    <label for="budgetInput">今回の予算</label>
+    <input type="number" id="budgetInput" inputmode="numeric" placeholder="例: 3000" min="0" step="100">
+    <span class="unit">円</span>
   </div>
+  <div class="card" style="padding:0; overflow:hidden;">
+    <table id="planTable">
+      <thead><tr><th>券種</th><th>買い目</th><th>オッズ</th><th>期待値</th><th>配分額</th></tr></thead>
+      <tbody>
+        
+        <tr data-ev="3.275518866446906">
+          <td class="mono">単勝</td>
+          <td class="horses-cell">9 バガン</td>
+          <td class="mono">171.4</td>
+          <td class="ev-cell mono">328%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="2.401477798508492">
+          <td class="mono">馬連</td>
+          <td class="horses-cell">4 ツルマウカタチ - 13 エリーナストーム</td>
+          <td class="mono">224.0</td>
+          <td class="ev-cell mono">240%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="2.06376016708044">
+          <td class="mono">馬連</td>
+          <td class="horses-cell">4 ツルマウカタチ - 17 マイネルアレス</td>
+          <td class="mono">155.2</td>
+          <td class="ev-cell mono">206%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="1.8287855155853174">
+          <td class="mono">馬連</td>
+          <td class="horses-cell">4 ツルマウカタチ - 16 ピエナフェーヴル</td>
+          <td class="mono">84.5</td>
+          <td class="ev-cell mono">183%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="1.611512587312463">
+          <td class="mono">単勝</td>
+          <td class="horses-cell">11 ティムール</td>
+          <td class="mono">80.5</td>
+          <td class="ev-cell mono">161%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr id="planTotalRow" style="display:none;">
+          <td colspan="4" style="text-align:right; font-weight:800;">合計</td>
+          <td class="mono" id="planTotal" style="font-weight:800; color:var(--green);">-</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="footnote">配分額は、各買い目の期待値の大きさに比例して予算を振り分けた目安です（期待値が高いものほど多く配分）。1点に集中させず、複数点に分けて購入することでブレを抑える考え方に基づいています。あくまで参考情報であり、的中や利益を保証するものではありません。</div>
   
 
   
@@ -198,63 +282,38 @@
   <div class="card dark-horse-card">
     
     <div class="dark-horse-item">
-      <span class="dh-name">バガン</span><span class="dh-badge">15番人気</span>
-      <div class="dh-stats mono">オッズ 171.4倍 ／ 勝率目安 1.9% ／ 期待値 317%</div>
-    </div>
-    
-    <div class="dark-horse-item">
       <span class="dh-name">ティムール</span><span class="dh-badge">12番人気</span>
-      <div class="dh-stats mono">オッズ 80.5倍 ／ 勝率目安 2.1% ／ 期待値 170%</div>
-    </div>
-    
-    <div class="dark-horse-item">
-      <span class="dh-name">ハギノコラソン</span><span class="dh-badge">13番人気</span>
-      <div class="dh-stats mono">オッズ 84.1倍 ／ 勝率目安 2.0% ／ 期待値 164%</div>
-    </div>
-    
-    <div class="dark-horse-item">
-      <span class="dh-name">ペッレグリーニ</span><span class="dh-badge">10番人気</span>
-      <div class="dh-stats mono">オッズ 42.5倍 ／ 勝率目安 3.7% ／ 期待値 156%</div>
-    </div>
-    
-    <div class="dark-horse-item">
-      <span class="dh-name">ロールザダイス</span><span class="dh-badge">8番人気</span>
-      <div class="dh-stats mono">オッズ 23.1倍 ／ 勝率目安 6.0% ／ 期待値 139%</div>
-    </div>
-    
-    <div class="dark-horse-item">
-      <span class="dh-name">ジャンビ</span><span class="dh-badge">14番人気</span>
-      <div class="dh-stats mono">オッズ 133.1倍 ／ 勝率目安 1.0% ／ 期待値 133%</div>
+      <div class="dh-stats mono">オッズ 80.5倍 ／ 勝率目安 2.0% ／ 期待値 161%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">スピンザブラッド</span><span class="dh-badge">11番人気</span>
-      <div class="dh-stats mono">オッズ 50.4倍 ／ 勝率目安 2.6% ／ 期待値 129%</div>
+      <div class="dh-stats mono">オッズ 50.4倍 ／ 勝率目安 2.8% ／ 期待値 142%</div>
     </div>
     
     <div class="dark-horse-item">
-      <span class="dh-name">カフェアローロ</span><span class="dh-badge">16番人気</span>
-      <div class="dh-stats mono">オッズ 241.0倍 ／ 勝率目安 0.5% ／ 期待値 127%</div>
+      <span class="dh-name">ペッレグリーニ</span><span class="dh-badge">10番人気</span>
+      <div class="dh-stats mono">オッズ 42.5倍 ／ 勝率目安 3.1% ／ 期待値 132%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">エリーナストーム</span><span class="dh-badge">7番人気</span>
-      <div class="dh-stats mono">オッズ 19.5倍 ／ 勝率目安 6.3% ／ 期待値 123%</div>
+      <div class="dh-stats mono">オッズ 19.5倍 ／ 勝率目安 6.8% ／ 期待値 132%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">ツルマウカタチ</span><span class="dh-badge">6番人気</span>
-      <div class="dh-stats mono">オッズ 18.0倍 ／ 勝率目安 6.8% ／ 期待値 122%</div>
+      <div class="dh-stats mono">オッズ 18.0倍 ／ 勝率目安 7.3% ／ 期待値 132%</div>
+    </div>
+    
+    <div class="dark-horse-item">
+      <span class="dh-name">ロールザダイス</span><span class="dh-badge">8番人気</span>
+      <div class="dh-stats mono">オッズ 23.1倍 ／ 勝率目安 5.4% ／ 期待値 125%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">オリバナム</span><span class="dh-badge">9番人気</span>
-      <div class="dh-stats mono">オッズ 23.6倍 ／ 勝率目安 5.1% ／ 期待値 120%</div>
-    </div>
-    
-    <div class="dark-horse-item">
-      <span class="dh-name">バンフィエルド</span><span class="dh-badge">17番人気</span>
-      <div class="dh-stats mono">オッズ 403.3倍 ／ 勝率目安 0.3% ／ 期待値 118%</div>
+      <div class="dh-stats mono">オッズ 23.6倍 ／ 勝率目安 4.4% ／ 期待値 105%</div>
     </div>
     
   </div>
@@ -266,89 +325,89 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">2</span>ボウウィンドウ</span>
-        <span class="horse-prob mono">複勝圏内 71%</span>
+        <span class="horse-prob mono">複勝圏内 72%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約71%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約72%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">16</span>ピエナフェーヴル</span>
-        <span class="horse-prob mono">複勝圏内 40%</span>
+        <span class="horse-prob mono">複勝圏内 46%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約40%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は1.7着と好調を維持。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約46%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は1.7着と好調を維持。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">8</span>ホウオウタイタン</span>
-        <span class="horse-prob mono">複勝圏内 33%</span>
+        <span class="horse-prob mono">複勝圏内 36%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約33%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約36%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">12</span>マイネルアズーロ</span>
-        <span class="horse-prob mono">複勝圏内 31%</span>
+        <span class="horse-prob mono">複勝圏内 34%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約31%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は2.3着と好調を維持。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約34%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は2.3着と好調を維持。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">17</span>マイネルアレス</span>
-        <span class="horse-prob mono">複勝圏内 27%</span>
+        <span class="horse-prob mono">複勝圏内 29%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約27%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約29%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">4</span>ツルマウカタチ</span>
-        <span class="horse-prob mono">複勝圏内 22%</span>
+        <span class="horse-prob mono">複勝圏内 25%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約22%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約25%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">13</span>エリーナストーム</span>
-        <span class="horse-prob mono">複勝圏内 21%</span>
+        <span class="horse-prob mono">複勝圏内 23%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約21%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約23%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">5</span>ロールザダイス</span>
-        <span class="horse-prob mono">複勝圏内 20%</span>
+        <span class="horse-prob mono">複勝圏内 19%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約20%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約19%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">6</span>オリバナム</span>
-        <span class="horse-prob mono">複勝圏内 17%</span>
+        <span class="horse-prob mono">複勝圏内 15%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約17%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約15%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">10</span>ペッレグリーニ</span>
-        <span class="horse-prob mono">複勝圏内 12%</span>
+        <span class="horse-prob mono">複勝圏内 11%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約12%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は8.7着とやや不振。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約11%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は8.7着とやや不振。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">15</span>スピンザブラッド</span>
-        <span class="horse-prob mono">複勝圏内 8%</span>
+        <span class="horse-prob mono">複勝圏内 10%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約8%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は8.0着とやや不振。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約10%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は8.0着とやや不振。</div>
     </div>
     
     <div class="horse-item">
@@ -362,17 +421,17 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">1</span>ハギノコラソン</span>
-        <span class="horse-prob mono">複勝圏内 6%</span>
+        <span class="horse-prob mono">複勝圏内 7%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約6%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は2.7着と好調を維持。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約7%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は2.7着と好調を維持。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">9</span>バガン</span>
-        <span class="horse-prob mono">複勝圏内 6%</span>
+        <span class="horse-prob mono">複勝圏内 7%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約6%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約7%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
     </div>
     
     <div class="horse-item">
@@ -386,9 +445,9 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">14</span>カフェアローロ</span>
-        <span class="horse-prob mono">複勝圏内 2%</span>
+        <span class="horse-prob mono">複勝圏内 1%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約2%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は9.0着とやや不振。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約1%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は9.0着とやや不振。</div>
     </div>
     
     <div class="horse-item">
@@ -401,97 +460,83 @@
     
   </div>
 
-  <div class="section-title"><span class="en">All Bets</span>券種ごとの買い目候補</div>
-  <div class="section-hint">期待値100%を超えるものだけを表示しています。券種名をタップすると開きます。</div>
+  <div class="section-title"><span class="en">All Bets</span>券種ごとの買い目一覧（参考）</div>
+  <div class="section-hint">期待値100%を超えるものを全て表示しています。上の「購入プラン」はこの中から自動選定したものです。</div>
   
   <details class="bet-group" open>
-    <summary>単勝 <span class="count">12点</span></summary>
+    <summary>単勝 <span class="count">10点</span></summary>
     <table>
       <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
       <tbody>
         
         <tr>
-          <td class="horses-cell">バガン</td>
+          <td class="horses-cell">9 バガン</td>
           <td class="mono">171.4</td>
           <td class="mono">1.9%</td>
-          <td class="ev-cell mono">317%</td>
+          <td class="ev-cell mono">328%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ティムール</td>
+          <td class="horses-cell">11 ティムール</td>
           <td class="mono">80.5</td>
-          <td class="mono">2.1%</td>
-          <td class="ev-cell mono">170%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ハギノコラソン</td>
-          <td class="mono">84.1</td>
           <td class="mono">2.0%</td>
-          <td class="ev-cell mono">164%</td>
+          <td class="ev-cell mono">161%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ペッレグリーニ</td>
+          <td class="horses-cell">1 ハギノコラソン</td>
+          <td class="mono">84.1</td>
+          <td class="mono">1.9%</td>
+          <td class="ev-cell mono">161%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">15 スピンザブラッド</td>
+          <td class="mono">50.4</td>
+          <td class="mono">2.8%</td>
+          <td class="ev-cell mono">142%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">10 ペッレグリーニ</td>
           <td class="mono">42.5</td>
-          <td class="mono">3.7%</td>
-          <td class="ev-cell mono">156%</td>
+          <td class="mono">3.1%</td>
+          <td class="ev-cell mono">132%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ロールザダイス</td>
-          <td class="mono">23.1</td>
-          <td class="mono">6.0%</td>
-          <td class="ev-cell mono">139%</td>
+          <td class="horses-cell">13 エリーナストーム</td>
+          <td class="mono">19.5</td>
+          <td class="mono">6.8%</td>
+          <td class="ev-cell mono">132%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ジャンビ</td>
+          <td class="horses-cell">4 ツルマウカタチ</td>
+          <td class="mono">18.0</td>
+          <td class="mono">7.3%</td>
+          <td class="ev-cell mono">132%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 ジャンビ</td>
           <td class="mono">133.1</td>
           <td class="mono">1.0%</td>
-          <td class="ev-cell mono">133%</td>
+          <td class="ev-cell mono">132%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">スピンザブラッド</td>
-          <td class="mono">50.4</td>
-          <td class="mono">2.6%</td>
-          <td class="ev-cell mono">129%</td>
+          <td class="horses-cell">5 ロールザダイス</td>
+          <td class="mono">23.1</td>
+          <td class="mono">5.4%</td>
+          <td class="ev-cell mono">125%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">カフェアローロ</td>
-          <td class="mono">241.0</td>
-          <td class="mono">0.5%</td>
-          <td class="ev-cell mono">127%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">エリーナストーム</td>
-          <td class="mono">19.5</td>
-          <td class="mono">6.3%</td>
-          <td class="ev-cell mono">123%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ツルマウカタチ</td>
-          <td class="mono">18.0</td>
-          <td class="mono">6.8%</td>
-          <td class="ev-cell mono">122%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">オリバナム</td>
+          <td class="horses-cell">6 オリバナム</td>
           <td class="mono">23.6</td>
-          <td class="mono">5.1%</td>
-          <td class="ev-cell mono">120%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バンフィエルド</td>
-          <td class="mono">403.3</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">118%</td>
+          <td class="mono">4.4%</td>
+          <td class="ev-cell mono">105%</td>
         </tr>
         
       </tbody>
@@ -505,143 +550,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">ロールザダイス - バガン</td>
-          <td class="mono">1347.7</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">313%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バガン - ピエナフェーヴル</td>
+          <td class="horses-cell">16 ピエナフェーヴル - 9 バガン</td>
           <td class="mono">622.7</td>
           <td class="mono">0.5%</td>
-          <td class="ev-cell mono">308%</td>
+          <td class="ev-cell mono">341%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バガン - ペッレグリーニ</td>
-          <td class="mono">1890.2</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">265%</td>
+          <td class="horses-cell">5 ロールザダイス - 9 バガン</td>
+          <td class="mono">1347.7</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">290%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ペッレグリーニ - ハギノコラソン</td>
-          <td class="mono">1662.5</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">245%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バガン - エリーナストーム</td>
+          <td class="horses-cell">13 エリーナストーム - 9 バガン</td>
           <td class="mono">982.8</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">238%</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">267%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ロールザダイス - ハギノコラソン</td>
-          <td class="mono">966.1</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">237%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バガン - オリバナム</td>
-          <td class="mono">1208.3</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">235%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バガン - マイネルアズーロ</td>
+          <td class="horses-cell">12 マイネルアズーロ - 9 バガン</td>
           <td class="mono">627.0</td>
           <td class="mono">0.4%</td>
-          <td class="ev-cell mono">234%</td>
+          <td class="ev-cell mono">252%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ロールザダイス - ティムール</td>
-          <td class="mono">842.8</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">224%</td>
+          <td class="horses-cell">4 ツルマウカタチ - 13 エリーナストーム</td>
+          <td class="mono">224.0</td>
+          <td class="mono">1.1%</td>
+          <td class="ev-cell mono">240%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バガン - マイネルアレス</td>
+          <td class="horses-cell">10 ペッレグリーニ - 9 バガン</td>
+          <td class="mono">1890.2</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">231%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">17 マイネルアレス - 9 バガン</td>
           <td class="mono">671.3</td>
           <td class="mono">0.3%</td>
-          <td class="ev-cell mono">218%</td>
+          <td class="ev-cell mono">226%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ツルマウカタチ - ハギノコラソン</td>
+          <td class="horses-cell">1 ハギノコラソン - 4 ツルマウカタチ</td>
           <td class="mono">743.7</td>
           <td class="mono">0.3%</td>
-          <td class="ev-cell mono">205%</td>
+          <td class="ev-cell mono">219%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ツルマウカタチ - エリーナストーム</td>
-          <td class="mono">224.0</td>
-          <td class="mono">0.9%</td>
+          <td class="horses-cell">6 オリバナム - 9 バガン</td>
+          <td class="mono">1208.3</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">212%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 ハギノコラソン - 5 ロールザダイス</td>
+          <td class="mono">966.1</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">208%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">4 ツルマウカタチ - 17 マイネルアレス</td>
+          <td class="mono">155.2</td>
+          <td class="mono">1.3%</td>
+          <td class="ev-cell mono">206%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 ホウオウタイタン - 9 バガン</td>
+          <td class="mono">482.3</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">206%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 ハギノコラソン - 10 ペッレグリーニ</td>
+          <td class="mono">1662.5</td>
+          <td class="mono">0.1%</td>
           <td class="ev-cell mono">203%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バガン - ホウオウタイタン</td>
-          <td class="mono">482.3</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">193%</td>
+          <td class="horses-cell">4 ツルマウカタチ - 9 バガン</td>
+          <td class="mono">672.3</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">198%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ツルマウカタチ - マイネルアレス</td>
-          <td class="mono">155.2</td>
-          <td class="mono">1.2%</td>
-          <td class="ev-cell mono">189%</td>
+          <td class="horses-cell">5 ロールザダイス - 11 ティムール</td>
+          <td class="mono">842.8</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">190%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ロールザダイス - マイネルアレス</td>
-          <td class="mono">173.4</td>
-          <td class="mono">1.1%</td>
-          <td class="ev-cell mono">187%</td>
+          <td class="horses-cell">4 ツルマウカタチ - 16 ピエナフェーヴル</td>
+          <td class="mono">84.5</td>
+          <td class="mono">2.2%</td>
+          <td class="ev-cell mono">183%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ロールザダイス - スピンザブラッド</td>
+          <td class="horses-cell">5 ロールザダイス - 15 スピンザブラッド</td>
           <td class="mono">570.4</td>
           <td class="mono">0.3%</td>
-          <td class="ev-cell mono">184%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ロールザダイス - エリーナストーム</td>
-          <td class="mono">225.4</td>
-          <td class="mono">0.8%</td>
           <td class="ev-cell mono">182%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バガン - ハギノコラソン</td>
+          <td class="horses-cell">1 ハギノコラソン - 9 バガン</td>
           <td class="mono">2403.9</td>
           <td class="mono">0.1%</td>
+          <td class="ev-cell mono">179%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">13 エリーナストーム - 5 ロールザダイス</td>
+          <td class="mono">225.4</td>
+          <td class="mono">0.8%</td>
           <td class="ev-cell mono">177%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ティムール - ペッレグリーニ</td>
-          <td class="mono">1101.6</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">176%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バガン - ツルマウカタチ</td>
-          <td class="mono">672.3</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">176%</td>
+          <td class="horses-cell">1 ハギノコラソン - 16 ピエナフェーヴル</td>
+          <td class="mono">313.1</td>
+          <td class="mono">0.5%</td>
+          <td class="ev-cell mono">172%</td>
         </tr>
         
       </tbody>
@@ -655,143 +700,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">バガン → ピエナフェーヴル</td>
+          <td class="horses-cell">9 バガン → 16 ピエナフェーヴル</td>
           <td class="mono">2405.1</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">560%</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">619%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バガン → ロールザダイス</td>
+          <td class="horses-cell">9 バガン → 12 マイネルアズーロ</td>
+          <td class="mono">2200.7</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">424%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">9 バガン → 5 ロールザダイス</td>
           <td class="mono">4008.5</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">455%</td>
+          <td class="ev-cell mono">423%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バガン → マイネルアズーロ</td>
-          <td class="mono">2200.7</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">394%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バガン → マイネルアレス</td>
+          <td class="horses-cell">9 バガン → 17 マイネルアレス</td>
           <td class="mono">2388.0</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">375%</td>
+          <td class="ev-cell mono">388%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ロールザダイス → バガン</td>
+          <td class="horses-cell">5 ロールザダイス → 9 バガン</td>
           <td class="mono">3033.4</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">360%</td>
+          <td class="ev-cell mono">332%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バガン → ペッレグリーニ</td>
-          <td class="mono">4879.9</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">338%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バガン → ホウオウタイタン</td>
-          <td class="mono">1516.7</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">290%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ハギノコラソン → ペッレグリーニ</td>
-          <td class="mono">3915.2</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">286%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ティムール → ロールザダイス</td>
-          <td class="mono">2200.7</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">286%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バガン → エリーナストーム</td>
+          <td class="horses-cell">9 バガン → 13 エリーナストーム</td>
           <td class="mono">2405.1</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">285%</td>
+          <td class="ev-cell mono">318%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ペッレグリーニ → ハギノコラソン</td>
-          <td class="mono">3826.2</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">285%</td>
+          <td class="horses-cell">9 バガン → 8 ホウオウタイタン</td>
+          <td class="mono">1516.7</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">309%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バガン → オリバナム</td>
-          <td class="mono">2902.7</td>
+          <td class="horses-cell">4 ツルマウカタチ → 13 エリーナストーム</td>
+          <td class="mono">571.6</td>
+          <td class="mono">0.5%</td>
+          <td class="ev-cell mono">307%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">9 バガン → 10 ペッレグリーニ</td>
+          <td class="mono">4879.9</td>
           <td class="mono">0.1%</td>
+          <td class="ev-cell mono">296%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">4 ツルマウカタチ → 17 マイネルアレス</td>
+          <td class="mono">419.3</td>
+          <td class="mono">0.7%</td>
           <td class="ev-cell mono">277%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ロールザダイス → ティムール</td>
-          <td class="mono">1992.3</td>
+          <td class="horses-cell">1 ハギノコラソン → 4 ツルマウカタチ</td>
+          <td class="mono">1881.0</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">270%</td>
+          <td class="ev-cell mono">269%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ツルマウカタチ → エリーナストーム</td>
-          <td class="mono">571.6</td>
+          <td class="horses-cell">9 バガン → 4 ツルマウカタチ</td>
+          <td class="mono">1860.2</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">266%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">9 バガン → 15 スピンザブラッド</td>
+          <td class="mono">4810.2</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">265%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">13 エリーナストーム → 4 ツルマウカタチ</td>
+          <td class="mono">493.7</td>
           <td class="mono">0.5%</td>
+          <td class="ev-cell mono">264%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">17 マイネルアレス → 9 バガン</td>
+          <td class="mono">1496.5</td>
+          <td class="mono">0.2%</td>
           <td class="ev-cell mono">260%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ペッレグリーニ → バガン</td>
-          <td class="mono">3659.9</td>
-          <td class="mono">0.1%</td>
+          <td class="horses-cell">4 ツルマウカタチ → 1 ハギノコラソン</td>
+          <td class="mono">1700.5</td>
+          <td class="mono">0.2%</td>
           <td class="ev-cell mono">258%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ハギノコラソン → ツルマウカタチ</td>
-          <td class="mono">1881.0</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">253%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ツルマウカタチ → マイネルアレス</td>
-          <td class="mono">419.3</td>
-          <td class="mono">0.6%</td>
-          <td class="ev-cell mono">253%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">マイネルアレス → バガン</td>
-          <td class="mono">1496.5</td>
-          <td class="mono">0.2%</td>
+          <td class="horses-cell">16 ピエナフェーヴル → 9 バガン</td>
+          <td class="mono">863.3</td>
+          <td class="mono">0.3%</td>
           <td class="ev-cell mono">251%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ツルマウカタチ → ハギノコラソン</td>
-          <td class="mono">1700.5</td>
+          <td class="horses-cell">9 バガン → 6 オリバナム</td>
+          <td class="mono">2902.7</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">240%</td>
+          <td class="ev-cell mono">251%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バガン → ツルマウカタチ</td>
-          <td class="mono">1860.2</td>
+          <td class="horses-cell">11 ティムール → 5 ロールザダイス</td>
+          <td class="mono">2200.7</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">237%</td>
+          <td class="ev-cell mono">244%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">11 ティムール → 4 ツルマウカタチ</td>
+          <td class="mono">1595.8</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">239%</td>
         </tr>
         
       </tbody>
@@ -805,143 +850,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">ロールザダイス - バガン - ピエナフェーヴル</td>
-          <td class="mono">4412.4</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">455%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バガン - ツルマウカタチ - エリーナストーム</td>
+          <td class="horses-cell">4 ツルマウカタチ - 13 エリーナストーム - 9 バガン</td>
           <td class="mono">7059.8</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">389%</td>
+          <td class="ev-cell mono">478%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バガン - ツルマウカタチ - ピエナフェーヴル</td>
+          <td class="horses-cell">16 ピエナフェーヴル - 5 ロールザダイス - 9 バガン</td>
+          <td class="mono">4412.4</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">454%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">4 ツルマウカタチ - 16 ピエナフェーヴル - 9 バガン</td>
           <td class="mono">2689.4</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">313%</td>
+          <td class="ev-cell mono">383%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バガン - ピエナフェーヴル - エリーナストーム</td>
+          <td class="horses-cell">16 ピエナフェーヴル - 13 エリーナストーム - 9 バガン</td>
           <td class="mono">2862.1</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">309%</td>
+          <td class="ev-cell mono">374%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バガン - ペッレグリーニ - エリーナストーム</td>
-          <td class="mono">10268.9</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">298%</td>
+          <td class="horses-cell">4 ツルマウカタチ - 16 ピエナフェーヴル - 13 エリーナストーム</td>
+          <td class="mono">585.0</td>
+          <td class="mono">0.5%</td>
+          <td class="ev-cell mono">312%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ロールザダイス - ツルマウカタチ - カフェアローロ</td>
-          <td class="mono">19701.9</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">292%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ロールザダイス - ピエナフェーヴル - ハギノコラソン</td>
-          <td class="mono">2664.1</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">290%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バガン - ピエナフェーヴル - ハギノコラソン</td>
+          <td class="horses-cell">1 ハギノコラソン - 16 ピエナフェーヴル - 9 バガン</td>
           <td class="mono">8917.7</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">285%</td>
+          <td class="ev-cell mono">311%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ロールザダイス - バガン - エリーナストーム</td>
-          <td class="mono">5704.9</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">278%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ロールザダイス - バガン - ペッレグリーニ</td>
-          <td class="mono">9627.1</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">267%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バガン - ピエナフェーヴル - ペッレグリーニ</td>
-          <td class="mono">4344.5</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">266%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ロールザダイス - ティムール - ピエナフェーヴル</td>
-          <td class="mono">2229.4</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">263%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ツルマウカタチ - ピエナフェーヴル - ハギノコラソン</td>
+          <td class="horses-cell">1 ハギノコラソン - 4 ツルマウカタチ - 16 ピエナフェーヴル</td>
           <td class="mono">2104.8</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">259%</td>
+          <td class="ev-cell mono">300%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ロールザダイス - ツルマウカタチ - ハギノコラソン</td>
-          <td class="mono">4518.3</td>
+          <td class="horses-cell">10 ペッレグリーニ - 13 エリーナストーム - 9 バガン</td>
+          <td class="mono">10268.9</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">282%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">13 エリーナストーム - 5 ロールザダイス - 9 バガン</td>
+          <td class="mono">5704.9</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">279%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 ハギノコラソン - 16 ピエナフェーヴル - 5 ロールザダイス</td>
+          <td class="mono">2664.1</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">274%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">4 ツルマウカタチ - 17 マイネルアレス - 9 バガン</td>
+          <td class="mono">3014.8</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">256%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">4 ツルマウカタチ - 13 エリーナストーム - 5 ロールザダイス</td>
+          <td class="mono">1273.0</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">254%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">4 ツルマウカタチ - 5 ロールザダイス - 15 スピンザブラッド</td>
+          <td class="mono">3167.0</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">252%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">10 ペッレグリーニ - 16 ピエナフェーヴル - 9 バガン</td>
+          <td class="mono">4344.5</td>
           <td class="mono">0.1%</td>
           <td class="ev-cell mono">251%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ロールザダイス - バガン - マイネルアレス</td>
-          <td class="mono">3773.6</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">249%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ツルマウカタチ - ピエナフェーヴル - エリーナストーム</td>
-          <td class="mono">585.0</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">243%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ロールザダイス - ツルマウカタチ - エリーナストーム</td>
-          <td class="mono">1273.0</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">239%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バガン - ツルマウカタチ - オリバナム</td>
-          <td class="mono">5413.3</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">237%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ペッレグリーニ - ピエナフェーヴル - ハギノコラソン</td>
-          <td class="mono">3667.4</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">237%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ロールザダイス - ピエナフェーヴル - エリーナストーム</td>
+          <td class="horses-cell">16 ピエナフェーヴル - 13 エリーナストーム - 5 ロールザダイス</td>
           <td class="mono">643.2</td>
           <td class="mono">0.4%</td>
-          <td class="ev-cell mono">236%</td>
+          <td class="ev-cell mono">248%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 ハギノコラソン - 4 ツルマウカタチ - 5 ロールザダイス</td>
+          <td class="mono">4518.3</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">241%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">16 ピエナフェーヴル - 5 ロールザダイス - 11 ティムール</td>
+          <td class="mono">2229.4</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">240%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 ハギノコラソン - 4 ツルマウカタチ - 13 エリーナストーム</td>
+          <td class="mono">3544.7</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">240%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">17 マイネルアレス - 13 エリーナストーム - 9 バガン</td>
+          <td class="mono">3004.2</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">234%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">4 ツルマウカタチ - 6 オリバナム - 9 バガン</td>
+          <td class="mono">5413.3</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">233%</td>
         </tr>
         
       </tbody>
@@ -955,143 +1000,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">バガン → ピエナフェーヴル → ロールザダイス</td>
+          <td class="horses-cell">9 バガン → 16 ピエナフェーヴル → 5 ロールザダイス</td>
           <td class="mono">68958.0</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">1128%</td>
+          <td class="ev-cell mono">1133%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バガン → マイネルアレス → ロールザダイス</td>
+          <td class="horses-cell">9 バガン → 5 ロールザダイス → 16 ピエナフェーヴル</td>
+          <td class="mono">68958.0</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">1038%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">9 バガン → 17 マイネルアレス → 5 ロールザダイス</td>
           <td class="mono">103437.1</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">1088%</td>
+          <td class="ev-cell mono">1016%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バガン → ロールザダイス → ピエナフェーヴル</td>
-          <td class="mono">68958.0</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">1050%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バガン → ロールザダイス → マイネルアレス</td>
-          <td class="mono">96541.3</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">990%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バガン → ピエナフェーヴル → エリーナストーム</td>
+          <td class="horses-cell">9 バガン → 16 ピエナフェーヴル → 13 エリーナストーム</td>
           <td class="mono">48270.6</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">824%</td>
+          <td class="ev-cell mono">993%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バガン → ペッレグリーニ → ピエナフェーヴル</td>
+          <td class="horses-cell">9 バガン → 4 ツルマウカタチ → 13 エリーナストーム</td>
           <td class="mono">90507.5</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">821%</td>
+          <td class="ev-cell mono">968%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バガン → ピエナフェーヴル → ペッレグリーニ</td>
+          <td class="horses-cell">9 バガン → 5 ロールザダイス → 17 マイネルアレス</td>
+          <td class="mono">96541.3</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">918%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">9 バガン → 13 エリーナストーム → 4 ツルマウカタチ</td>
           <td class="mono">80451.1</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">803%</td>
+          <td class="ev-cell mono">855%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バガン → ツルマウカタチ → エリーナストーム</td>
+          <td class="horses-cell">9 バガン → 10 ペッレグリーニ → 16 ピエナフェーヴル</td>
           <td class="mono">90507.5</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">792%</td>
+          <td class="ev-cell mono">764%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バガン → マイネルアズーロ → ロールザダイス</td>
-          <td class="mono">60338.3</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">733%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バガン → ピエナフェーヴル → オリバナム</td>
-          <td class="mono">51718.5</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">712%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バガン → エリーナストーム → ツルマウカタチ</td>
-          <td class="mono">80451.1</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">701%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バガン → ピエナフェーヴル → ハギノコラソン</td>
+          <td class="horses-cell">9 バガン → 16 ピエナフェーヴル → 1 ハギノコラソン</td>
           <td class="mono">131647.2</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">698%</td>
+          <td class="ev-cell mono">763%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バガン → ロールザダイス → マイネルアズーロ</td>
-          <td class="mono">57924.8</td>
+          <td class="horses-cell">9 バガン → 16 ピエナフェーヴル → 10 ペッレグリーニ</td>
+          <td class="mono">80451.1</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">678%</td>
+          <td class="ev-cell mono">760%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バガン → ホウオウタイタン → ロールザダイス</td>
-          <td class="mono">51718.5</td>
+          <td class="horses-cell">9 バガン → 12 マイネルアズーロ → 5 ロールザダイス</td>
+          <td class="mono">60338.3</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">676%</td>
+          <td class="ev-cell mono">715%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ピエナフェーヴル → バガン → ロールザダイス</td>
-          <td class="mono">36203.0</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">663%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バガン → ロールザダイス → ホウオウタイタン</td>
-          <td class="mono">48270.6</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">603%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バガン → エリーナストーム → ロールザダイス</td>
-          <td class="mono">76216.8</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">592%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バガン → エリーナストーム → ピエナフェーヴル</td>
+          <td class="horses-cell">9 バガン → 13 エリーナストーム → 16 ピエナフェーヴル</td>
           <td class="mono">37131.2</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">592%</td>
+          <td class="ev-cell mono">710%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バガン → ロールザダイス → エリーナストーム</td>
-          <td class="mono">76216.8</td>
+          <td class="horses-cell">9 バガン → 16 ピエナフェーヴル → 6 オリバナム</td>
+          <td class="mono">51718.5</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">590%</td>
+          <td class="ev-cell mono">696%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バガン → ペッレグリーニ → マイネルアレス</td>
-          <td class="mono">96541.3</td>
+          <td class="horses-cell">16 ピエナフェーヴル → 9 バガン → 5 ロールザダイス</td>
+          <td class="mono">36203.0</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">589%</td>
+          <td class="ev-cell mono">672%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">9 バガン → 5 ロールザダイス → 12 マイネルアズーロ</td>
+          <td class="mono">57924.8</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">653%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">9 バガン → 8 ホウオウタイタン → 5 ロールザダイス</td>
+          <td class="mono">51718.5</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">653%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">9 バガン → 16 ピエナフェーヴル → 12 マイネルアズーロ</td>
+          <td class="mono">21295.8</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">639%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">4 ツルマウカタチ → 9 バガン → 13 エリーナストーム</td>
+          <td class="mono">55696.9</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">631%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">9 バガン → 1 ハギノコラソン → 16 ピエナフェーヴル</td>
+          <td class="mono">120676.6</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">617%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">9 バガン → 16 ピエナフェーヴル → 8 ホウオウタイタン</td>
+          <td class="mono">19054.2</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">605%</td>
         </tr>
         
       </tbody>
@@ -1100,8 +1145,78 @@
   
 
   
+  <div class="section-title"><span class="en">WIN5</span>WIN5 買い目候補</div>
+  <div class="card">
+    <div class="race-meta mono" style="margin-bottom:8px;">札幌 11R / 新潟 7R / 新潟 8R / 中京 6R / 中京 7R</div>
+    
+    <div class="win5-row mono"><span class="win5-rank">1</span>6 - 2 - 3 - 5 - 10　的中確率 0.035%</div>
+    
+    <div class="win5-row mono"><span class="win5-rank">2</span>6 - 2 - 3 - 4 - 10　的中確率 0.035%</div>
+    
+    <div class="win5-row mono"><span class="win5-rank">3</span>6 - 2 - 3 - 1 - 10　的中確率 0.031%</div>
+    
+    <div class="win5-row mono"><span class="win5-rank">4</span>12 - 2 - 3 - 5 - 10　的中確率 0.024%</div>
+    
+    <div class="win5-row mono"><span class="win5-rank">5</span>6 - 2 - 3 - 5 - 5　的中確率 0.024%</div>
+    
+    <div class="win5-row mono"><span class="win5-rank">6</span>6 - 2 - 6 - 5 - 10　的中確率 0.024%</div>
+    
+    <div class="win5-row mono"><span class="win5-rank">7</span>12 - 2 - 3 - 4 - 10　的中確率 0.023%</div>
+    
+    <div class="win5-row mono"><span class="win5-rank">8</span>6 - 2 - 3 - 4 - 5　的中確率 0.023%</div>
+    
+    <div class="win5-row mono"><span class="win5-rank">9</span>6 - 2 - 6 - 4 - 10　的中確率 0.023%</div>
+    
+    <div class="win5-row mono"><span class="win5-rank">10</span>6 - 16 - 3 - 5 - 10　的中確率 0.022%</div>
+    
+  </div>
+  
 
   <div class="disclaimer">本ページの予想は参考情報です。的中・利益を保証しません。<br>馬券の購入は必ずご自身でIPAT等の公式ルートから行ってください。</div>
 </main>
+
+<script>
+(function () {
+  const UNIT = 100;  // JRAの購入単位（100円）に丸める
+
+  function recalc() {
+    const budget = parseFloat(document.getElementById('budgetInput').value) || 0;
+    const rows = Array.from(document.querySelectorAll('#planTable tbody tr[data-ev]'));
+    const totalRow = document.getElementById('planTotalRow');
+    const totalCell = document.getElementById('planTotal');
+
+    if (!rows.length) return;
+
+    if (budget <= 0) {
+      rows.forEach(function (tr) { tr.querySelector('.stake-cell').textContent = '-'; });
+      if (totalRow) totalRow.style.display = 'none';
+      return;
+    }
+
+    // 期待値(EV)が高いものほど多く配分する（EVの合計に対する比率で按分）
+    const evs = rows.map(function (tr) { return Math.max(0, parseFloat(tr.dataset.ev) - 1); }); // 100%超過分だけを重みにする
+    const totalWeight = evs.reduce(function (a, b) { return a + b; }, 0);
+
+    let allocated = 0;
+    rows.forEach(function (tr, i) {
+      const weight = totalWeight > 0 ? evs[i] / totalWeight : 1 / rows.length;
+      const raw = budget * weight;
+      const amount = Math.floor(raw / UNIT) * UNIT;
+      allocated += amount;
+      tr.querySelector('.stake-cell').textContent = amount > 0 ? amount.toLocaleString('ja-JP') + '円' : '見送り';
+    });
+
+    if (totalRow && totalCell) {
+      totalRow.style.display = '';
+      totalCell.textContent = allocated.toLocaleString('ja-JP') + '円 / ' + budget.toLocaleString('ja-JP') + '円中';
+    }
+  }
+
+  const input = document.getElementById('budgetInput');
+  if (input) {
+    input.addEventListener('input', recalc);
+  }
+})();
+</script>
 </body>
 </html>

@@ -63,30 +63,66 @@
   }
   .summary-text { font-size: 13px; line-height: 1.75; color: var(--text-dim); }
 
-  /* --- 結論：一番のおすすめ --- */
-  .best-bet {
+  /* --- 結論：馬券風デザイン --- */
+  .ticket {
     position: relative;
     background: linear-gradient(180deg, #1a1408 0%, var(--surface) 70%);
     border: 1px solid var(--amber-dim);
+    border-radius: 10px;
     box-shadow: 0 0 0 1px rgba(240,162,2,0.08), 0 8px 24px -12px var(--amber-glow);
+    padding: 0;
+    overflow: hidden;
   }
-  .best-bet .tag {
-    font-size: 12px; font-weight: 800; color: var(--amber);
+  .ticket-head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 16px; background: rgba(240,162,2,0.08);
+    border-bottom: 1px dashed var(--amber-dim);
   }
-  .best-bet .type {
-    display: inline-block; font-size: 11px; color: var(--bg); background: var(--amber);
-    font-weight: 700; padding: 2px 8px; border-radius: 3px; margin-top: 8px;
+  .ticket-head .label { font-size: 11px; font-weight: 800; color: var(--amber); letter-spacing: 0.05em; }
+  .ticket-head .type-badge {
+    font-size: 11px; color: var(--bg); background: var(--amber);
+    font-weight: 800; padding: 3px 10px; border-radius: 3px;
   }
-  .best-bet .horses {
-    font-size: 21px; font-weight: 800; margin: 8px 0 12px;
-    color: var(--text); line-height: 1.4;
+  .ticket-body { padding: 16px; }
+  .ticket .horses {
+    font-size: 20px; font-weight: 800; margin: 0 0 14px;
+    color: var(--text); line-height: 1.45;
   }
-  .best-bet .stat-row { display: flex; }
-  .best-bet .stat { margin-right: 24px; }
-  .best-bet .stat .label { font-size: 10.5px; color: var(--text-dim); }
-  .best-bet .stat .value { font-size: 18px; font-weight: 800; margin-top: 2px; }
-  .best-bet .stat.ev .value { color: var(--amber); }
-  .best-bet .footnote { font-size: 11px; color: var(--text-dim); margin-top: 12px; line-height: 1.6; border-top: 1px solid var(--line); padding-top: 10px; }
+  .ticket-stats {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+    padding: 12px 0; border-top: 1px dashed var(--line); border-bottom: 1px dashed var(--line);
+  }
+  .ticket-stats .stat { text-align: center; }
+  .ticket-stats .stat .label { font-size: 10px; color: var(--text-dim); }
+  .ticket-stats .stat .value { font-size: 16px; font-weight: 800; margin-top: 3px; }
+  .ticket-stats .stat.ev .value { color: var(--amber); }
+
+  .ticket-amount {
+    margin-top: 14px; padding: 12px; background: var(--surface-2);
+    border-radius: 6px; display: flex; justify-content: space-between; align-items: center;
+  }
+  .ticket-amount .label { font-size: 11px; color: var(--text-dim); }
+  .ticket-amount .value { font-size: 22px; font-weight: 800; color: var(--green); }
+  .ticket-amount .value::before { content: "¥"; font-size: 14px; margin-right: 2px; }
+
+  .footnote { font-size: 11px; color: var(--text-dim); margin-top: 12px; line-height: 1.6; padding: 0 16px 14px; }
+
+  /* --- 予算入力 --- */
+  .budget-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
+    padding: 10px 14px; margin-bottom: 14px;
+  }
+  .budget-box label { font-size: 12px; color: var(--text-dim); white-space: nowrap; }
+  .budget-box input {
+    flex: 1; background: var(--surface-2); border: 1px solid var(--line); border-radius: 4px;
+    color: var(--text); font-size: 15px; padding: 7px 10px; font-family: inherit;
+    -moz-appearance: textfield;
+  }
+  .budget-box input::-webkit-outer-spin-button, .budget-box input::-webkit-inner-spin-button { margin: 0; }
+  .budget-box .unit { font-size: 12px; color: var(--text-dim); }
+  .stake-cell { color: var(--green); font-weight: 700; }
+
 
   /* --- 穴馬候補 --- */
   .dark-horse-card { border-left: 3px solid var(--green); }
@@ -178,18 +214,66 @@
   <div class="card summary-text">逃げ馬が4頭おり、先行争いが激化しやすくハイペース濃厚。差し・追込馬にも展開の恩恵が期待できる。馬場状態は「良」。</div>
 
   
-  <div class="section-title"><span class="en">Conclusion</span>結論：一番のおすすめ</div>
-  <div class="card best-bet">
-    <div class="tag">🏆 このレースで最も期待値が高い買い目</div>
-    <div class="type">3連単</div>
-    <div class="horses">メメボス → テンユウ → ネッタイヤライ</div>
-    <div class="stat-row mono">
-      <div class="stat"><div class="label">オッズ</div><div class="value">3294.0倍</div></div>
-      <div class="stat"><div class="label">的中確率</div><div class="value">0.1%</div></div>
-      <div class="stat ev"><div class="label">期待値</div><div class="value">417%</div></div>
-    </div>
-    <div class="footnote">期待値とは「100円賭けた時に理論上いくら戻ってくるか」の目安です。100%を超えるほど、賭け金に対して見込まれる払戻が大きいことを意味します（的中を保証するものではありません）。</div>
+  <div class="section-title"><span class="en">Betting Plan</span>AI推奨 購入プラン</div>
+  <div class="section-hint">実際の投票は複数点に分けるのが基本のため、期待値が高い順に複数の買い目を組み合わせています。予算を入れると自動で配分します。</div>
+  <div class="budget-box">
+    <label for="budgetInput">今回の予算</label>
+    <input type="number" id="budgetInput" inputmode="numeric" placeholder="例: 3000" min="0" step="100">
+    <span class="unit">円</span>
   </div>
+  <div class="card" style="padding:0; overflow:hidden;">
+    <table id="planTable">
+      <thead><tr><th>券種</th><th>買い目</th><th>オッズ</th><th>期待値</th><th>配分額</th></tr></thead>
+      <tbody>
+        
+        <tr data-ev="2.0391906852780215">
+          <td class="mono">馬連</td>
+          <td class="horses-cell">2 メメボス - 14 ルクスアドラー</td>
+          <td class="mono">170.6</td>
+          <td class="ev-cell mono">204%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="1.829114888441631">
+          <td class="mono">馬単</td>
+          <td class="horses-cell">11 ドラリズム → 6 ファンクション</td>
+          <td class="mono">181.1</td>
+          <td class="ev-cell mono">183%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="1.804793374041655">
+          <td class="mono">単勝</td>
+          <td class="horses-cell">11 ドラリズム</td>
+          <td class="mono">35.8</td>
+          <td class="ev-cell mono">180%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="1.7513613284166423">
+          <td class="mono">単勝</td>
+          <td class="horses-cell">2 メメボス</td>
+          <td class="mono">41.6</td>
+          <td class="ev-cell mono">175%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="1.7192913970122972">
+          <td class="mono">馬連</td>
+          <td class="horses-cell">2 メメボス - 12 ネッタイヤライ</td>
+          <td class="mono">83.9</td>
+          <td class="ev-cell mono">172%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr id="planTotalRow" style="display:none;">
+          <td colspan="4" style="text-align:right; font-weight:800;">合計</td>
+          <td class="mono" id="planTotal" style="font-weight:800; color:var(--green);">-</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="footnote">配分額は、各買い目の期待値の大きさに比例して予算を振り分けた目安です（期待値が高いものほど多く配分）。1点に集中させず、複数点に分けて購入することでブレを抑える考え方に基づいています。あくまで参考情報であり、的中や利益を保証するものではありません。</div>
   
 
   
@@ -198,48 +282,33 @@
   <div class="card dark-horse-card">
     
     <div class="dark-horse-item">
-      <span class="dh-name">メメボス</span><span class="dh-badge">8番人気</span>
-      <div class="dh-stats mono">オッズ 41.6倍 ／ 勝率目安 4.4% ／ 期待値 182%</div>
-    </div>
-    
-    <div class="dark-horse-item">
       <span class="dh-name">ドラリズム</span><span class="dh-badge">7番人気</span>
-      <div class="dh-stats mono">オッズ 35.8倍 ／ 勝率目安 4.9% ／ 期待値 177%</div>
+      <div class="dh-stats mono">オッズ 35.8倍 ／ 勝率目安 5.0% ／ 期待値 180%</div>
     </div>
     
     <div class="dark-horse-item">
-      <span class="dh-name">トクシージェネラル</span><span class="dh-badge">12番人気</span>
-      <div class="dh-stats mono">オッズ 118.8倍 ／ 勝率目安 1.4% ／ 期待値 161%</div>
-    </div>
-    
-    <div class="dark-horse-item">
-      <span class="dh-name">テンユウ</span><span class="dh-badge">5番人気</span>
-      <div class="dh-stats mono">オッズ 12.0倍 ／ 勝率目安 11.2% ／ 期待値 135%</div>
+      <span class="dh-name">メメボス</span><span class="dh-badge">8番人気</span>
+      <div class="dh-stats mono">オッズ 41.6倍 ／ 勝率目安 4.2% ／ 期待値 175%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">メイショウホダワラ</span><span class="dh-badge">6番人気</span>
-      <div class="dh-stats mono">オッズ 34.4倍 ／ 勝率目安 3.9% ／ 期待値 133%</div>
+      <div class="dh-stats mono">オッズ 34.4倍 ／ 勝率目安 4.2% ／ 期待値 145%</div>
     </div>
     
     <div class="dark-horse-item">
-      <span class="dh-name">ハネマン</span><span class="dh-badge">13番人気</span>
-      <div class="dh-stats mono">オッズ 235.9倍 ／ 勝率目安 0.5% ／ 期待値 129%</div>
-    </div>
-    
-    <div class="dark-horse-item">
-      <span class="dh-name">シェーンルスカ</span><span class="dh-badge">14番人気</span>
-      <div class="dh-stats mono">オッズ 278.6倍 ／ 勝率目安 0.4% ／ 期待値 122%</div>
+      <span class="dh-name">テンユウ</span><span class="dh-badge">5番人気</span>
+      <div class="dh-stats mono">オッズ 12.0倍 ／ 勝率目安 10.9% ／ 期待値 130%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">スタードメイソン</span><span class="dh-badge">10番人気</span>
-      <div class="dh-stats mono">オッズ 52.1倍 ／ 勝率目安 2.3% ／ 期待値 121%</div>
+      <div class="dh-stats mono">オッズ 52.1倍 ／ 勝率目安 2.2% ／ 期待値 113%</div>
     </div>
     
     <div class="dark-horse-item">
-      <span class="dh-name">クラウンアールシー</span><span class="dh-badge">11番人気</span>
-      <div class="dh-stats mono">オッズ 68.7倍 ／ 勝率目安 1.6% ／ 期待値 108%</div>
+      <span class="dh-name">トリスティ</span><span class="dh-badge">9番人気</span>
+      <div class="dh-stats mono">オッズ 47.9倍 ／ 勝率目安 2.2% ／ 期待値 104%</div>
     </div>
     
   </div>
@@ -251,9 +320,9 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">12</span>ネッタイヤライ</span>
-        <span class="horse-prob mono">複勝圏内 63%</span>
+        <span class="horse-prob mono">複勝圏内 64%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約63%。逃げ脚質だが、このレースは逃げ馬が4頭おり先行争いが激しくなりペースが速まる可能性があるため、スタミナ面がやや不安要素。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約64%。逃げ脚質だが、このレースは逃げ馬が4頭おり先行争いが激しくなりペースが速まる可能性があるため、スタミナ面がやや不安要素。</div>
     </div>
     
     <div class="horse-item">
@@ -267,25 +336,25 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">5</span>ユーティジャーニー</span>
-        <span class="horse-prob mono">複勝圏内 43%</span>
+        <span class="horse-prob mono">複勝圏内 44%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約43%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約44%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">14</span>ルクスアドラー</span>
-        <span class="horse-prob mono">複勝圏内 38%</span>
+        <span class="horse-prob mono">複勝圏内 39%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約38%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は12.3着とやや不振。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約39%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は12.3着とやや不振。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">7</span>テンユウ</span>
-        <span class="horse-prob mono">複勝圏内 34%</span>
+        <span class="horse-prob mono">複勝圏内 33%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約34%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約33%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
     </div>
     
     <div class="horse-item">
@@ -298,6 +367,14 @@
     
     <div class="horse-item">
       <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">9</span>メイショウホダワラ</span>
+        <span class="horse-prob mono">複勝圏内 13%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約13%。逃げ脚質だが、このレースは逃げ馬が4頭おり先行争いが激しくなりペースが速まる可能性があるため、スタミナ面がやや不安要素。直近3走の平均着順は11.3着とやや不振。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">2</span>メメボス</span>
         <span class="horse-prob mono">複勝圏内 13%</span>
       </div>
@@ -306,10 +383,10 @@
     
     <div class="horse-item">
       <div class="horse-head">
-        <span class="horse-name"><span class="horse-num mono">9</span>メイショウホダワラ</span>
-        <span class="horse-prob mono">複勝圏内 12%</span>
+        <span class="horse-name"><span class="horse-num mono">3</span>トリスティ</span>
+        <span class="horse-prob mono">複勝圏内 7%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約12%。逃げ脚質だが、このレースは逃げ馬が4頭おり先行争いが激しくなりペースが速まる可能性があるため、スタミナ面がやや不安要素。直近3走の平均着順は11.3着とやや不振。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約7%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は10.0着とやや不振。</div>
     </div>
     
     <div class="horse-item">
@@ -318,14 +395,6 @@
         <span class="horse-prob mono">複勝圏内 7%</span>
       </div>
       <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約7%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は12.0着とやや不振。</div>
-    </div>
-    
-    <div class="horse-item">
-      <div class="horse-head">
-        <span class="horse-name"><span class="horse-num mono">3</span>トリスティ</span>
-        <span class="horse-prob mono">複勝圏内 6%</span>
-      </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約6%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は10.0着とやや不振。</div>
     </div>
     
     <div class="horse-item">
@@ -346,92 +415,99 @@
     
     <div class="horse-item">
       <div class="horse-head">
-        <span class="horse-name"><span class="horse-num mono">1</span>ハネマン</span>
+        <span class="horse-name"><span class="horse-num mono">13</span>シェーンルスカ</span>
         <span class="horse-prob mono">複勝圏内 2%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約2%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は10.7着とやや不振。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約2%。逃げ脚質だが、このレースは逃げ馬が4頭おり先行争いが激しくなりペースが速まる可能性があるため、スタミナ面がやや不安要素。直近3走の平均着順は11.0着とやや不振。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
-        <span class="horse-name"><span class="horse-num mono">13</span>シェーンルスカ</span>
+        <span class="horse-name"><span class="horse-num mono">1</span>ハネマン</span>
         <span class="horse-prob mono">複勝圏内 1%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約1%。逃げ脚質だが、このレースは逃げ馬が4頭おり先行争いが激しくなりペースが速まる可能性があるため、スタミナ面がやや不安要素。直近3走の平均着順は11.0着とやや不振。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約1%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は10.7着とやや不振。</div>
     </div>
     
   </div>
 
-  <div class="section-title"><span class="en">All Bets</span>券種ごとの買い目候補</div>
-  <div class="section-hint">期待値100%を超えるものだけを表示しています。券種名をタップすると開きます。</div>
+  <div class="section-title"><span class="en">All Bets</span>券種ごとの買い目一覧（参考）</div>
+  <div class="section-hint">期待値100%を超えるものを全て表示しています。上の「購入プラン」はこの中から自動選定したものです。</div>
   
   <details class="bet-group" open>
-    <summary>単勝 <span class="count">9点</span></summary>
+    <summary>単勝 <span class="count">10点</span></summary>
     <table>
       <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
       <tbody>
         
         <tr>
-          <td class="horses-cell">メメボス</td>
-          <td class="mono">41.6</td>
-          <td class="mono">4.4%</td>
-          <td class="ev-cell mono">182%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ドラリズム</td>
-          <td class="mono">35.8</td>
-          <td class="mono">4.9%</td>
-          <td class="ev-cell mono">177%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">トクシージェネラル</td>
-          <td class="mono">118.8</td>
-          <td class="mono">1.4%</td>
-          <td class="ev-cell mono">161%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">テンユウ</td>
-          <td class="mono">12.0</td>
-          <td class="mono">11.2%</td>
-          <td class="ev-cell mono">135%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">メイショウホダワラ</td>
-          <td class="mono">34.4</td>
-          <td class="mono">3.9%</td>
-          <td class="ev-cell mono">133%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ハネマン</td>
-          <td class="mono">235.9</td>
-          <td class="mono">0.5%</td>
-          <td class="ev-cell mono">129%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">シェーンルスカ</td>
+          <td class="horses-cell">13 シェーンルスカ</td>
           <td class="mono">278.6</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">122%</td>
+          <td class="mono">0.7%</td>
+          <td class="ev-cell mono">198%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">スタードメイソン</td>
+          <td class="horses-cell">11 ドラリズム</td>
+          <td class="mono">35.8</td>
+          <td class="mono">5.0%</td>
+          <td class="ev-cell mono">180%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 メメボス</td>
+          <td class="mono">41.6</td>
+          <td class="mono">4.2%</td>
+          <td class="ev-cell mono">175%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">9 メイショウホダワラ</td>
+          <td class="mono">34.4</td>
+          <td class="mono">4.2%</td>
+          <td class="ev-cell mono">145%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 トクシージェネラル</td>
+          <td class="mono">118.8</td>
+          <td class="mono">1.2%</td>
+          <td class="ev-cell mono">142%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 テンユウ</td>
+          <td class="mono">12.0</td>
+          <td class="mono">10.9%</td>
+          <td class="ev-cell mono">130%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">10 スタードメイソン</td>
           <td class="mono">52.1</td>
-          <td class="mono">2.3%</td>
-          <td class="ev-cell mono">121%</td>
+          <td class="mono">2.2%</td>
+          <td class="ev-cell mono">113%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">クラウンアールシー</td>
+          <td class="horses-cell">4 クラウンアールシー</td>
           <td class="mono">68.7</td>
-          <td class="mono">1.6%</td>
-          <td class="ev-cell mono">108%</td>
+          <td class="mono">1.5%</td>
+          <td class="ev-cell mono">105%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 ハネマン</td>
+          <td class="mono">235.9</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">104%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 トリスティ</td>
+          <td class="mono">47.9</td>
+          <td class="mono">2.2%</td>
+          <td class="ev-cell mono">104%</td>
         </tr>
         
       </tbody>
@@ -445,143 +521,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">メメボス - ドラリズム</td>
+          <td class="horses-cell">2 メメボス - 11 ドラリズム</td>
           <td class="mono">616.1</td>
-          <td class="mono">0.5%</td>
-          <td class="ev-cell mono">279%</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">274%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">メメボス - テンユウ</td>
-          <td class="mono">246.6</td>
-          <td class="mono">1.1%</td>
-          <td class="ev-cell mono">262%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">メイショウホダワラ - メメボス</td>
+          <td class="horses-cell">2 メメボス - 9 メイショウホダワラ</td>
           <td class="mono">731.5</td>
           <td class="mono">0.4%</td>
-          <td class="ev-cell mono">257%</td>
+          <td class="ev-cell mono">271%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">メメボス - スタードメイソン</td>
-          <td class="mono">993.4</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">208%</td>
+          <td class="horses-cell">2 メメボス - 7 テンユウ</td>
+          <td class="mono">246.6</td>
+          <td class="mono">1.0%</td>
+          <td class="ev-cell mono">244%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">メメボス - ルクスアドラー</td>
+          <td class="horses-cell">2 メメボス - 14 ルクスアドラー</td>
           <td class="mono">170.6</td>
           <td class="mono">1.2%</td>
-          <td class="ev-cell mono">207%</td>
+          <td class="ev-cell mono">204%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">メメボス - トクシージェネラル</td>
-          <td class="mono">1510.3</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">184%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">メイショウホダワラ - ドラリズム</td>
+          <td class="horses-cell">9 メイショウホダワラ - 11 ドラリズム</td>
           <td class="mono">455.6</td>
           <td class="mono">0.4%</td>
-          <td class="ev-cell mono">182%</td>
+          <td class="ev-cell mono">203%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ドラリズム - トクシージェネラル</td>
-          <td class="mono">1283.6</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">178%</td>
+          <td class="horses-cell">2 メメボス - 10 スタードメイソン</td>
+          <td class="mono">993.4</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">188%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">メメボス - ネッタイヤライ</td>
+          <td class="horses-cell">2 メメボス - 12 ネッタイヤライ</td>
           <td class="mono">83.9</td>
-          <td class="mono">2.1%</td>
-          <td class="ev-cell mono">176%</td>
+          <td class="mono">2.0%</td>
+          <td class="ev-cell mono">172%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">メメボス - ファンクション</td>
+          <td class="horses-cell">2 メメボス - 13 シェーンルスカ</td>
+          <td class="mono">2727.7</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">167%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 メメボス - 6 ファンクション</td>
           <td class="mono">90.5</td>
-          <td class="mono">1.9%</td>
-          <td class="ev-cell mono">175%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">テンユウ - トクシージェネラル</td>
-          <td class="mono">518.2</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">168%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ユーティジャーニー - トクシージェネラル</td>
-          <td class="mono">387.5</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">166%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ネッタイヤライ - ハネマン</td>
-          <td class="mono">638.5</td>
-          <td class="mono">0.3%</td>
+          <td class="mono">1.8%</td>
           <td class="ev-cell mono">165%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ネッタイヤライ - トクシージェネラル</td>
-          <td class="mono">236.3</td>
-          <td class="mono">0.6%</td>
-          <td class="ev-cell mono">152%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">メイショウホダワラ - テンユウ</td>
+          <td class="horses-cell">7 テンユウ - 9 メイショウホダワラ</td>
           <td class="mono">161.6</td>
-          <td class="mono">0.9%</td>
-          <td class="ev-cell mono">152%</td>
+          <td class="mono">1.0%</td>
+          <td class="ev-cell mono">160%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ユーティジャーニー - ハネマン</td>
-          <td class="mono">862.1</td>
+          <td class="horses-cell">8 トクシージェネラル - 11 ドラリズム</td>
+          <td class="mono">1283.6</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">160%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">13 シェーンルスカ - 5 ユーティジャーニー</td>
+          <td class="mono">709.4</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">148%</td>
+          <td class="ev-cell mono">158%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ユーティジャーニー - ドラリズム</td>
+          <td class="horses-cell">2 メメボス - 8 トクシージェネラル</td>
+          <td class="mono">1510.3</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">157%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 テンユウ - 13 シェーンルスカ</td>
+          <td class="mono">915.8</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">150%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">5 ユーティジャーニー - 11 ドラリズム</td>
           <td class="mono">90.7</td>
           <td class="mono">1.6%</td>
+          <td class="ev-cell mono">146%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 トクシージェネラル - 5 ユーティジャーニー</td>
+          <td class="mono">387.5</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">146%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">13 シェーンルスカ - 9 メイショウホダワラ</td>
+          <td class="mono">2352.5</td>
+          <td class="mono">0.1%</td>
           <td class="ev-cell mono">144%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ドラリズム - テンユウ</td>
-          <td class="mono">116.3</td>
-          <td class="mono">1.2%</td>
-          <td class="ev-cell mono">141%</td>
+          <td class="horses-cell">8 トクシージェネラル - 7 テンユウ</td>
+          <td class="mono">518.2</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">144%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">クラウンアールシー - ドラリズム</td>
+          <td class="horses-cell">12 ネッタイヤライ - 9 メイショウホダワラ</td>
+          <td class="mono">69.2</td>
+          <td class="mono">2.0%</td>
+          <td class="ev-cell mono">142%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">4 クラウンアールシー - 11 ドラリズム</td>
           <td class="mono">874.0</td>
           <td class="mono">0.2%</td>
           <td class="ev-cell mono">140%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ドラリズム - ファンクション</td>
-          <td class="mono">62.6</td>
-          <td class="mono">2.2%</td>
-          <td class="ev-cell mono">137%</td>
         </tr>
         
       </tbody>
@@ -595,143 +671,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">メメボス → テンユウ</td>
-          <td class="mono">577.7</td>
-          <td class="mono">0.5%</td>
-          <td class="ev-cell mono">296%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">メメボス → ドラリズム</td>
+          <td class="horses-cell">2 メメボス → 11 ドラリズム</td>
           <td class="mono">1272.7</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">287%</td>
+          <td class="ev-cell mono">282%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">メメボス → ネッタイヤライ</td>
+          <td class="horses-cell">2 メメボス → 7 テンユウ</td>
+          <td class="mono">577.7</td>
+          <td class="mono">0.5%</td>
+          <td class="ev-cell mono">276%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 メメボス → 12 ネッタイヤライ</td>
           <td class="mono">297.6</td>
-          <td class="mono">1.0%</td>
-          <td class="ev-cell mono">283%</td>
+          <td class="mono">0.9%</td>
+          <td class="ev-cell mono">276%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ドラリズム → メメボス</td>
+          <td class="horses-cell">11 ドラリズム → 2 メメボス</td>
           <td class="mono">1141.9</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">259%</td>
+          <td class="ev-cell mono">255%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">メメボス → ルクスアドラー</td>
+          <td class="horses-cell">2 メメボス → 14 ルクスアドラー</td>
           <td class="mono">438.7</td>
           <td class="mono">0.6%</td>
-          <td class="ev-cell mono">254%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ハネマン → ネッタイヤライ</td>
-          <td class="mono">2181.8</td>
-          <td class="mono">0.1%</td>
           <td class="ev-cell mono">250%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">メメボス → ファンクション</td>
+          <td class="horses-cell">2 メメボス → 6 ファンクション</td>
           <td class="mono">282.8</td>
-          <td class="mono">0.9%</td>
-          <td class="ev-cell mono">250%</td>
+          <td class="mono">0.8%</td>
+          <td class="ev-cell mono">236%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">テンユウ → メメボス</td>
+          <td class="horses-cell">7 テンユウ → 2 メメボス</td>
           <td class="mono">437.9</td>
-          <td class="mono">0.6%</td>
-          <td class="ev-cell mono">242%</td>
+          <td class="mono">0.5%</td>
+          <td class="ev-cell mono">225%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">トクシージェネラル → ネッタイヤライ</td>
-          <td class="mono">790.8</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">226%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">メメボス → メイショウホダワラ</td>
+          <td class="horses-cell">2 メメボス → 9 メイショウホダワラ</td>
           <td class="mono">1209.7</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">224%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">9 メイショウホダワラ → 11 ドラリズム</td>
+          <td class="mono">1005.6</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">223%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">9 メイショウホダワラ → 2 メメボス</td>
+          <td class="mono">1203.8</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">223%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">9 メイショウホダワラ → 7 テンユウ</td>
+          <td class="mono">454.2</td>
+          <td class="mono">0.5%</td>
+          <td class="ev-cell mono">217%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">11 ドラリズム → 9 メイショウホダワラ</td>
+          <td class="mono">954.5</td>
           <td class="mono">0.2%</td>
           <td class="ev-cell mono">213%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">メイショウホダワラ → メメボス</td>
-          <td class="mono">1203.8</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">211%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">メイショウホダワラ → テンユウ</td>
-          <td class="mono">454.2</td>
-          <td class="mono">0.5%</td>
-          <td class="ev-cell mono">205%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">メメボス → ユーティジャーニー</td>
-          <td class="mono">306.9</td>
-          <td class="mono">0.7%</td>
-          <td class="ev-cell mono">203%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">スタードメイソン → メメボス</td>
-          <td class="mono">1939.4</td>
+          <td class="horses-cell">1 ハネマン → 12 ネッタイヤライ</td>
+          <td class="mono">2181.8</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">201%</td>
+          <td class="ev-cell mono">204%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">メイショウホダワラ → ドラリズム</td>
-          <td class="mono">1005.6</td>
-          <td class="mono">0.2%</td>
+          <td class="horses-cell">8 トクシージェネラル → 12 ネッタイヤライ</td>
+          <td class="mono">790.8</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">202%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">9 メイショウホダワラ → 12 ネッタイヤライ</td>
+          <td class="mono">216.2</td>
+          <td class="mono">0.9%</td>
           <td class="ev-cell mono">200%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ドラリズム → メイショウホダワラ</td>
-          <td class="mono">954.5</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">192%</td>
+          <td class="horses-cell">2 メメボス → 5 ユーティジャーニー</td>
+          <td class="mono">306.9</td>
+          <td class="mono">0.6%</td>
+          <td class="ev-cell mono">194%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">メメボス → スタードメイソン</td>
-          <td class="mono">1796.8</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">190%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">トクシージェネラル → テンユウ</td>
-          <td class="mono">1203.8</td>
-          <td class="mono">0.2%</td>
+          <td class="horses-cell">11 ドラリズム → 5 ユーティジャーニー</td>
+          <td class="mono">241.2</td>
+          <td class="mono">0.8%</td>
           <td class="ev-cell mono">185%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ドラリズム → ファンクション</td>
+          <td class="horses-cell">11 ドラリズム → 6 ファンクション</td>
           <td class="mono">181.1</td>
           <td class="mono">1.0%</td>
           <td class="ev-cell mono">183%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ドラリズム → ユーティジャーニー</td>
-          <td class="mono">241.2</td>
-          <td class="mono">0.8%</td>
-          <td class="ev-cell mono">182%</td>
+          <td class="horses-cell">10 スタードメイソン → 2 メメボス</td>
+          <td class="mono">1939.4</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">181%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">9 メイショウホダワラ → 5 ユーティジャーニー</td>
+          <td class="mono">281.8</td>
+          <td class="mono">0.6%</td>
+          <td class="ev-cell mono">179%</td>
         </tr>
         
       </tbody>
@@ -745,143 +821,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">ユーティジャーニー - メメボス - ドラリズム</td>
+          <td class="horses-cell">2 メメボス - 5 ユーティジャーニー - 11 ドラリズム</td>
           <td class="mono">947.2</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">231%</td>
+          <td class="ev-cell mono">226%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">メメボス - テンユウ - ドラリズム</td>
-          <td class="mono">1166.4</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">211%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">メメボス - ファンクション - ドラリズム</td>
-          <td class="mono">593.1</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">207%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">テンユウ - メメボス - ファンクション</td>
-          <td class="mono">240.2</td>
-          <td class="mono">0.9%</td>
-          <td class="ev-cell mono">205%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">メイショウホダワラ - メメボス - ドラリズム</td>
+          <td class="horses-cell">2 メメボス - 9 メイショウホダワラ - 11 ドラリズム</td>
           <td class="mono">3547.7</td>
           <td class="mono">0.1%</td>
+          <td class="ev-cell mono">219%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 メメボス - 12 ネッタイヤライ - 9 メイショウホダワラ</td>
+          <td class="mono">643.9</td>
+          <td class="mono">0.3%</td>
           <td class="ev-cell mono">203%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">メイショウホダワラ - メメボス - テンユウ</td>
-          <td class="mono">1399.4</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">196%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">メイショウホダワラ - メメボス - ファンクション</td>
+          <td class="horses-cell">2 メメボス - 6 ファンクション - 9 メイショウホダワラ</td>
           <td class="mono">724.7</td>
           <td class="mono">0.3%</td>
-          <td class="ev-cell mono">195%</td>
+          <td class="ev-cell mono">201%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ネッタイヤライ - メメボス - テンユウ</td>
-          <td class="mono">205.7</td>
-          <td class="mono">0.9%</td>
-          <td class="ev-cell mono">193%</td>
+          <td class="horses-cell">2 メメボス - 7 テンユウ - 11 ドラリズム</td>
+          <td class="mono">1166.4</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">200%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">メイショウホダワラ - メメボス - ネッタイヤライ</td>
-          <td class="mono">643.9</td>
+          <td class="horses-cell">2 メメボス - 7 テンユウ - 9 メイショウホダワラ</td>
+          <td class="mono">1399.4</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">199%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 メメボス - 6 ファンクション - 11 ドラリズム</td>
+          <td class="mono">593.1</td>
           <td class="mono">0.3%</td>
-          <td class="ev-cell mono">191%</td>
+          <td class="ev-cell mono">199%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">メメボス - ネッタイヤライ - ドラリズム</td>
+          <td class="horses-cell">2 メメボス - 12 ネッタイヤライ - 11 ドラリズム</td>
           <td class="mono">487.0</td>
           <td class="mono">0.4%</td>
-          <td class="ev-cell mono">187%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ユーティジャーニー - メメボス - テンユウ</td>
-          <td class="mono">312.5</td>
-          <td class="mono">0.6%</td>
           <td class="ev-cell mono">186%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">メメボス - テンユウ - トクシージェネラル</td>
-          <td class="mono">3868.0</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">185%</td>
+          <td class="horses-cell">2 メメボス - 7 テンユウ - 6 ファンクション</td>
+          <td class="mono">240.2</td>
+          <td class="mono">0.8%</td>
+          <td class="ev-cell mono">186%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">メメボス - クラウンアールシー - ドラリズム</td>
+          <td class="horses-cell">2 メメボス - 7 テンユウ - 12 ネッタイヤライ</td>
+          <td class="mono">205.7</td>
+          <td class="mono">0.9%</td>
+          <td class="ev-cell mono">181%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 メメボス - 7 テンユウ - 5 ユーティジャーニー</td>
+          <td class="mono">312.5</td>
+          <td class="mono">0.5%</td>
+          <td class="ev-cell mono">172%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">6 ファンクション - 9 メイショウホダワラ - 11 ドラリズム</td>
+          <td class="mono">505.2</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">169%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 メメボス - 5 ユーティジャーニー - 9 メイショウホダワラ</td>
+          <td class="mono">838.2</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">165%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 メメボス - 13 シェーンルスカ - 5 ユーティジャーニー</td>
+          <td class="mono">5017.9</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">161%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 メメボス - 4 クラウンアールシー - 11 ドラリズム</td>
           <td class="mono">7328.8</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">166%</td>
+          <td class="ev-cell mono">160%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">メメボス - ファンクション - トクシージェネラル</td>
-          <td class="mono">1805.4</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">166%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">テンユウ - ネッタイヤライ - ハネマン</td>
-          <td class="mono">1450.5</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">164%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ネッタイヤライ - テンユウ - トクシージェネラル</td>
-          <td class="mono">565.1</td>
-          <td class="mono">0.3%</td>
+          <td class="horses-cell">7 テンユウ - 12 ネッタイヤライ - 9 メイショウホダワラ</td>
+          <td class="mono">180.8</td>
+          <td class="mono">0.9%</td>
           <td class="ev-cell mono">159%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ドラリズム - ネッタイヤライ - トクシージェネラル</td>
-          <td class="mono">1380.4</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">159%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">メイショウホダワラ - ネッタイヤライ - ハネマン</td>
-          <td class="mono">4455.9</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">159%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ユーティジャーニー - メイショウホダワラ - メメボス</td>
-          <td class="mono">838.2</td>
+          <td class="horses-cell">2 メメボス - 14 ルクスアドラー - 9 メイショウホダワラ</td>
+          <td class="mono">911.6</td>
           <td class="mono">0.2%</td>
           <td class="ev-cell mono">158%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">メメボス - ドラリズム - トクシージェネラル</td>
-          <td class="mono">7957.0</td>
-          <td class="mono">0.0%</td>
+          <td class="horses-cell">12 ネッタイヤライ - 9 メイショウホダワラ - 11 ドラリズム</td>
+          <td class="mono">408.8</td>
+          <td class="mono">0.4%</td>
           <td class="ev-cell mono">156%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 テンユウ - 9 メイショウホダワラ - 11 ドラリズム</td>
+          <td class="mono">895.4</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">154%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 メメボス - 7 テンユウ - 8 トクシージェネラル</td>
+          <td class="mono">3868.0</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">151%</td>
         </tr>
         
       </tbody>
@@ -895,143 +971,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">メメボス → テンユウ → ネッタイヤライ</td>
+          <td class="horses-cell">2 メメボス → 7 テンユウ → 12 ネッタイヤライ</td>
           <td class="mono">3294.0</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">417%</td>
+          <td class="ev-cell mono">390%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">メメボス → ドラリズム → ユーティジャーニー</td>
+          <td class="horses-cell">2 メメボス → 11 ドラリズム → 5 ユーティジャーニー</td>
           <td class="mono">10765.2</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">388%</td>
+          <td class="ev-cell mono">379%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">トクシージェネラル → テンユウ → ネッタイヤライ</td>
-          <td class="mono">10338.8</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">380%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">トクシージェネラル → ネッタイヤライ → テンユウ</td>
-          <td class="mono">9159.8</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">378%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">メメボス → ドラリズム → ネッタイヤライ</td>
+          <td class="horses-cell">2 メメボス → 11 ドラリズム → 12 ネッタイヤライ</td>
           <td class="mono">7008.2</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">364%</td>
+          <td class="ev-cell mono">360%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">トクシージェネラル → ネッタイヤライ → ドラリズム</td>
-          <td class="mono">19702.3</td>
+          <td class="horses-cell">2 メメボス → 11 ドラリズム → 9 メイショウホダワラ</td>
+          <td class="mono">34807.4</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">359%</td>
+          <td class="ev-cell mono">358%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">メメボス → ドラリズム → ファンクション</td>
+          <td class="horses-cell">2 メメボス → 9 メイショウホダワラ → 12 ネッタイヤライ</td>
+          <td class="mono">8353.7</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">356%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 メメボス → 11 ドラリズム → 6 ファンクション</td>
           <td class="mono">7405.8</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">357%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">メメボス → ドラリズム → テンユウ</td>
-          <td class="mono">12581.0</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">351%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">メメボス → ファンクション → ドラリズム</td>
-          <td class="mono">6001.2</td>
-          <td class="mono">0.1%</td>
           <td class="ev-cell mono">344%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">トクシージェネラル → ネッタイヤライ → メメボス</td>
-          <td class="mono">21310.7</td>
+          <td class="horses-cell">9 メイショウホダワラ → 2 メメボス → 12 ネッタイヤライ</td>
+          <td class="mono">8032.4</td>
           <td class="mono">0.0%</td>
           <td class="ev-cell mono">342%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">テンユウ → メメボス → ネッタイヤライ</td>
-          <td class="mono">2510.1</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">342%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">メメボス → メイショウホダワラ → ネッタイヤライ</td>
-          <td class="mono">8353.7</td>
+          <td class="horses-cell">2 メメボス → 9 メイショウホダワラ → 7 テンユウ</td>
+          <td class="mono">15356.2</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">335%</td>
+          <td class="ev-cell mono">337%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">メメボス → ドラリズム → メイショウホダワラ</td>
-          <td class="mono">34807.4</td>
+          <td class="horses-cell">2 メメボス → 11 ドラリズム → 7 テンユウ</td>
+          <td class="mono">12581.0</td>
           <td class="mono">0.0%</td>
           <td class="ev-cell mono">334%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">メメボス → ネッタイヤライ → テンユウ</td>
-          <td class="mono">2341.3</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">334%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ドラリズム → トクシージェネラル → ネッタイヤライ</td>
-          <td class="mono">21310.7</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">334%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">メメボス → トクシージェネラル → ルクスアドラー</td>
-          <td class="mono">40162.4</td>
+          <td class="horses-cell">9 メイショウホダワラ → 2 メメボス → 14 ルクスアドラー</td>
+          <td class="mono">12734.4</td>
           <td class="mono">0.0%</td>
           <td class="ev-cell mono">333%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">メメボス → トクシージェネラル → ネッタイヤライ</td>
-          <td class="mono">24284.2</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">332%</td>
+          <td class="horses-cell">2 メメボス → 6 ファンクション → 11 ドラリズム</td>
+          <td class="mono">6001.2</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">330%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ハネマン → ネッタイヤライ → ファンクション</td>
-          <td class="mono">11732.8</td>
+          <td class="horses-cell">13 シェーンルスカ → 2 メメボス → 7 テンユウ</td>
+          <td class="mono">94929.5</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">331%</td>
+          <td class="ev-cell mono">327%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">メメボス → メイショウホダワラ → テンユウ</td>
-          <td class="mono">15356.2</td>
+          <td class="horses-cell">8 トクシージェネラル → 12 ネッタイヤライ → 7 テンユウ</td>
+          <td class="mono">9159.8</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">331%</td>
+          <td class="ev-cell mono">327%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">メメボス → ネッタイヤライ → ドラリズム</td>
+          <td class="horses-cell">2 メメボス → 9 メイショウホダワラ → 6 ファンクション</td>
+          <td class="mono">8489.6</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">326%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 トクシージェネラル → 12 ネッタイヤライ → 11 ドラリズム</td>
+          <td class="mono">19702.3</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">326%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 トクシージェネラル → 7 テンユウ → 12 ネッタイヤライ</td>
+          <td class="mono">10338.8</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">326%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 メメボス → 12 ネッタイヤライ → 11 ドラリズム</td>
           <td class="mono">5195.1</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">327%</td>
+          <td class="ev-cell mono">324%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 テンユウ → 2 メメボス → 12 ネッタイヤライ</td>
+          <td class="mono">2510.1</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">319%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 メメボス → 5 ユーティジャーニー → 11 ドラリズム</td>
+          <td class="mono">8094.7</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">318%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 メメボス → 12 ネッタイヤライ → 7 テンユウ</td>
+          <td class="mono">2341.3</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">315%</td>
         </tr>
         
       </tbody>
@@ -1043,5 +1119,49 @@
 
   <div class="disclaimer">本ページの予想は参考情報です。的中・利益を保証しません。<br>馬券の購入は必ずご自身でIPAT等の公式ルートから行ってください。</div>
 </main>
+
+<script>
+(function () {
+  const UNIT = 100;  // JRAの購入単位（100円）に丸める
+
+  function recalc() {
+    const budget = parseFloat(document.getElementById('budgetInput').value) || 0;
+    const rows = Array.from(document.querySelectorAll('#planTable tbody tr[data-ev]'));
+    const totalRow = document.getElementById('planTotalRow');
+    const totalCell = document.getElementById('planTotal');
+
+    if (!rows.length) return;
+
+    if (budget <= 0) {
+      rows.forEach(function (tr) { tr.querySelector('.stake-cell').textContent = '-'; });
+      if (totalRow) totalRow.style.display = 'none';
+      return;
+    }
+
+    // 期待値(EV)が高いものほど多く配分する（EVの合計に対する比率で按分）
+    const evs = rows.map(function (tr) { return Math.max(0, parseFloat(tr.dataset.ev) - 1); }); // 100%超過分だけを重みにする
+    const totalWeight = evs.reduce(function (a, b) { return a + b; }, 0);
+
+    let allocated = 0;
+    rows.forEach(function (tr, i) {
+      const weight = totalWeight > 0 ? evs[i] / totalWeight : 1 / rows.length;
+      const raw = budget * weight;
+      const amount = Math.floor(raw / UNIT) * UNIT;
+      allocated += amount;
+      tr.querySelector('.stake-cell').textContent = amount > 0 ? amount.toLocaleString('ja-JP') + '円' : '見送り';
+    });
+
+    if (totalRow && totalCell) {
+      totalRow.style.display = '';
+      totalCell.textContent = allocated.toLocaleString('ja-JP') + '円 / ' + budget.toLocaleString('ja-JP') + '円中';
+    }
+  }
+
+  const input = document.getElementById('budgetInput');
+  if (input) {
+    input.addEventListener('input', recalc);
+  }
+})();
+</script>
 </body>
 </html>

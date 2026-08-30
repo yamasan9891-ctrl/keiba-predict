@@ -63,30 +63,66 @@
   }
   .summary-text { font-size: 13px; line-height: 1.75; color: var(--text-dim); }
 
-  /* --- 結論：一番のおすすめ --- */
-  .best-bet {
+  /* --- 結論：馬券風デザイン --- */
+  .ticket {
     position: relative;
     background: linear-gradient(180deg, #1a1408 0%, var(--surface) 70%);
     border: 1px solid var(--amber-dim);
+    border-radius: 10px;
     box-shadow: 0 0 0 1px rgba(240,162,2,0.08), 0 8px 24px -12px var(--amber-glow);
+    padding: 0;
+    overflow: hidden;
   }
-  .best-bet .tag {
-    font-size: 12px; font-weight: 800; color: var(--amber);
+  .ticket-head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 16px; background: rgba(240,162,2,0.08);
+    border-bottom: 1px dashed var(--amber-dim);
   }
-  .best-bet .type {
-    display: inline-block; font-size: 11px; color: var(--bg); background: var(--amber);
-    font-weight: 700; padding: 2px 8px; border-radius: 3px; margin-top: 8px;
+  .ticket-head .label { font-size: 11px; font-weight: 800; color: var(--amber); letter-spacing: 0.05em; }
+  .ticket-head .type-badge {
+    font-size: 11px; color: var(--bg); background: var(--amber);
+    font-weight: 800; padding: 3px 10px; border-radius: 3px;
   }
-  .best-bet .horses {
-    font-size: 21px; font-weight: 800; margin: 8px 0 12px;
-    color: var(--text); line-height: 1.4;
+  .ticket-body { padding: 16px; }
+  .ticket .horses {
+    font-size: 20px; font-weight: 800; margin: 0 0 14px;
+    color: var(--text); line-height: 1.45;
   }
-  .best-bet .stat-row { display: flex; }
-  .best-bet .stat { margin-right: 24px; }
-  .best-bet .stat .label { font-size: 10.5px; color: var(--text-dim); }
-  .best-bet .stat .value { font-size: 18px; font-weight: 800; margin-top: 2px; }
-  .best-bet .stat.ev .value { color: var(--amber); }
-  .best-bet .footnote { font-size: 11px; color: var(--text-dim); margin-top: 12px; line-height: 1.6; border-top: 1px solid var(--line); padding-top: 10px; }
+  .ticket-stats {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+    padding: 12px 0; border-top: 1px dashed var(--line); border-bottom: 1px dashed var(--line);
+  }
+  .ticket-stats .stat { text-align: center; }
+  .ticket-stats .stat .label { font-size: 10px; color: var(--text-dim); }
+  .ticket-stats .stat .value { font-size: 16px; font-weight: 800; margin-top: 3px; }
+  .ticket-stats .stat.ev .value { color: var(--amber); }
+
+  .ticket-amount {
+    margin-top: 14px; padding: 12px; background: var(--surface-2);
+    border-radius: 6px; display: flex; justify-content: space-between; align-items: center;
+  }
+  .ticket-amount .label { font-size: 11px; color: var(--text-dim); }
+  .ticket-amount .value { font-size: 22px; font-weight: 800; color: var(--green); }
+  .ticket-amount .value::before { content: "¥"; font-size: 14px; margin-right: 2px; }
+
+  .footnote { font-size: 11px; color: var(--text-dim); margin-top: 12px; line-height: 1.6; padding: 0 16px 14px; }
+
+  /* --- 予算入力 --- */
+  .budget-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
+    padding: 10px 14px; margin-bottom: 14px;
+  }
+  .budget-box label { font-size: 12px; color: var(--text-dim); white-space: nowrap; }
+  .budget-box input {
+    flex: 1; background: var(--surface-2); border: 1px solid var(--line); border-radius: 4px;
+    color: var(--text); font-size: 15px; padding: 7px 10px; font-family: inherit;
+    -moz-appearance: textfield;
+  }
+  .budget-box input::-webkit-outer-spin-button, .budget-box input::-webkit-inner-spin-button { margin: 0; }
+  .budget-box .unit { font-size: 12px; color: var(--text-dim); }
+  .stake-cell { color: var(--green); font-weight: 700; }
+
 
   /* --- 穴馬候補 --- */
   .dark-horse-card { border-left: 3px solid var(--green); }
@@ -178,18 +214,66 @@
   <div class="card summary-text">明確な逃げ馬が不在で、スローペースになりやすく先行馬が有利になりやすい。馬場状態は「良」。</div>
 
   
-  <div class="section-title"><span class="en">Conclusion</span>結論：一番のおすすめ</div>
-  <div class="card best-bet">
-    <div class="tag">🏆 このレースで最も期待値が高い買い目</div>
-    <div class="type">3連単</div>
-    <div class="horses">ハルカカナタ → ディープナイト → レイデアルマス</div>
-    <div class="stat-row mono">
-      <div class="stat"><div class="label">オッズ</div><div class="value">23347.1倍</div></div>
-      <div class="stat"><div class="label">的中確率</div><div class="value">0.0%</div></div>
-      <div class="stat ev"><div class="label">期待値</div><div class="value">541%</div></div>
-    </div>
-    <div class="footnote">期待値とは「100円賭けた時に理論上いくら戻ってくるか」の目安です。100%を超えるほど、賭け金に対して見込まれる払戻が大きいことを意味します（的中を保証するものではありません）。</div>
+  <div class="section-title"><span class="en">Betting Plan</span>AI推奨 購入プラン</div>
+  <div class="section-hint">実際の投票は複数点に分けるのが基本のため、期待値が高い順に複数の買い目を組み合わせています。予算を入れると自動で配分します。</div>
+  <div class="budget-box">
+    <label for="budgetInput">今回の予算</label>
+    <input type="number" id="budgetInput" inputmode="numeric" placeholder="例: 3000" min="0" step="100">
+    <span class="unit">円</span>
   </div>
+  <div class="card" style="padding:0; overflow:hidden;">
+    <table id="planTable">
+      <thead><tr><th>券種</th><th>買い目</th><th>オッズ</th><th>期待値</th><th>配分額</th></tr></thead>
+      <tbody>
+        
+        <tr data-ev="1.968320751484803">
+          <td class="mono">単勝</td>
+          <td class="horses-cell">6 ピュアノーブル</td>
+          <td class="mono">41.3</td>
+          <td class="ev-cell mono">197%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="1.6600398750697305">
+          <td class="mono">単勝</td>
+          <td class="horses-cell">4 ディープナイト</td>
+          <td class="mono">41.4</td>
+          <td class="ev-cell mono">166%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="1.6228116615593116">
+          <td class="mono">馬単</td>
+          <td class="horses-cell">10 ホットロッドハート → 7 マンナット</td>
+          <td class="mono">157.8</td>
+          <td class="ev-cell mono">162%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="1.602499921461857">
+          <td class="mono">馬連</td>
+          <td class="horses-cell">4 ディープナイト - 7 マンナット</td>
+          <td class="mono">104.7</td>
+          <td class="ev-cell mono">160%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="1.591306703709815">
+          <td class="mono">馬連</td>
+          <td class="horses-cell">2 ブラックミューズ - 4 ディープナイト</td>
+          <td class="mono">115.9</td>
+          <td class="ev-cell mono">159%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr id="planTotalRow" style="display:none;">
+          <td colspan="4" style="text-align:right; font-weight:800;">合計</td>
+          <td class="mono" id="planTotal" style="font-weight:800; color:var(--green);">-</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="footnote">配分額は、各買い目の期待値の大きさに比例して予算を振り分けた目安です（期待値が高いものほど多く配分）。1点に集中させず、複数点に分けて購入することでブレを抑える考え方に基づいています。あくまで参考情報であり、的中や利益を保証するものではありません。</div>
   
 
   
@@ -199,37 +283,27 @@
     
     <div class="dark-horse-item">
       <span class="dh-name">ピュアノーブル</span><span class="dh-badge">8番人気</span>
-      <div class="dh-stats mono">オッズ 41.3倍 ／ 勝率目安 4.6% ／ 期待値 189%</div>
+      <div class="dh-stats mono">オッズ 41.3倍 ／ 勝率目安 4.8% ／ 期待値 197%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">ディープナイト</span><span class="dh-badge">9番人気</span>
-      <div class="dh-stats mono">オッズ 41.4倍 ／ 勝率目安 4.2% ／ 期待値 172%</div>
+      <div class="dh-stats mono">オッズ 41.4倍 ／ 勝率目安 4.0% ／ 期待値 166%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">ホットロッドハート</span><span class="dh-badge">7番人気</span>
-      <div class="dh-stats mono">オッズ 27.6倍 ／ 勝率目安 5.6% ／ 期待値 153%</div>
-    </div>
-    
-    <div class="dark-horse-item">
-      <span class="dh-name">プッシュザリミット</span><span class="dh-badge">11番人気</span>
-      <div class="dh-stats mono">オッズ 196.2倍 ／ 勝率目安 0.7% ／ 期待値 133%</div>
+      <div class="dh-stats mono">オッズ 27.6倍 ／ 勝率目安 5.7% ／ 期待値 158%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">ハルカカナタ</span><span class="dh-badge">6番人気</span>
-      <div class="dh-stats mono">オッズ 24.8倍 ／ 勝率目安 5.3% ／ 期待値 132%</div>
-    </div>
-    
-    <div class="dark-horse-item">
-      <span class="dh-name">ゴルディアス</span><span class="dh-badge">10番人気</span>
-      <div class="dh-stats mono">オッズ 73.6倍 ／ 勝率目安 1.7% ／ 期待値 128%</div>
+      <div class="dh-stats mono">オッズ 24.8倍 ／ 勝率目安 5.1% ／ 期待値 127%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">メモリアデルレ</span><span class="dh-badge">5番人気</span>
-      <div class="dh-stats mono">オッズ 11.4倍 ／ 勝率目安 9.8% ／ 期待値 112%</div>
+      <div class="dh-stats mono">オッズ 11.4倍 ／ 勝率目安 9.4% ／ 期待値 108%</div>
     </div>
     
   </div>
@@ -249,25 +323,25 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">7</span>マンナット</span>
-        <span class="horse-prob mono">複勝圏内 47%</span>
+        <span class="horse-prob mono">複勝圏内 46%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約47%。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約46%。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">2</span>ブラックミューズ</span>
-        <span class="horse-prob mono">複勝圏内 43%</span>
+        <span class="horse-prob mono">複勝圏内 41%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約43%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約41%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">11</span>メモリアデルレ</span>
-        <span class="horse-prob mono">複勝圏内 27%</span>
+        <span class="horse-prob mono">複勝圏内 25%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約27%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約25%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。</div>
     </div>
     
     <div class="horse-item">
@@ -289,9 +363,9 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">8</span>ハルカカナタ</span>
-        <span class="horse-prob mono">複勝圏内 15%</span>
+        <span class="horse-prob mono">複勝圏内 14%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約15%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約14%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
     </div>
     
     <div class="horse-item">
@@ -328,8 +402,8 @@
     
   </div>
 
-  <div class="section-title"><span class="en">All Bets</span>券種ごとの買い目候補</div>
-  <div class="section-hint">期待値100%を超えるものだけを表示しています。券種名をタップすると開きます。</div>
+  <div class="section-title"><span class="en">All Bets</span>券種ごとの買い目一覧（参考）</div>
+  <div class="section-hint">期待値100%を超えるものを全て表示しています。上の「購入プラン」はこの中から自動選定したものです。</div>
   
   <details class="bet-group" open>
     <summary>単勝 <span class="count">7点</span></summary>
@@ -338,52 +412,52 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">ピュアノーブル</td>
+          <td class="horses-cell">6 ピュアノーブル</td>
           <td class="mono">41.3</td>
-          <td class="mono">4.6%</td>
-          <td class="ev-cell mono">189%</td>
+          <td class="mono">4.8%</td>
+          <td class="ev-cell mono">197%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ディープナイト</td>
+          <td class="horses-cell">4 ディープナイト</td>
           <td class="mono">41.4</td>
-          <td class="mono">4.2%</td>
-          <td class="ev-cell mono">172%</td>
+          <td class="mono">4.0%</td>
+          <td class="ev-cell mono">166%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ホットロッドハート</td>
-          <td class="mono">27.6</td>
-          <td class="mono">5.6%</td>
-          <td class="ev-cell mono">153%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">プッシュザリミット</td>
+          <td class="horses-cell">3 プッシュザリミット</td>
           <td class="mono">196.2</td>
-          <td class="mono">0.7%</td>
-          <td class="ev-cell mono">133%</td>
+          <td class="mono">0.8%</td>
+          <td class="ev-cell mono">158%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ハルカカナタ</td>
-          <td class="mono">24.8</td>
-          <td class="mono">5.3%</td>
-          <td class="ev-cell mono">132%</td>
+          <td class="horses-cell">10 ホットロッドハート</td>
+          <td class="mono">27.6</td>
+          <td class="mono">5.7%</td>
+          <td class="ev-cell mono">158%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ゴルディアス</td>
+          <td class="horses-cell">9 ゴルディアス</td>
           <td class="mono">73.6</td>
           <td class="mono">1.7%</td>
           <td class="ev-cell mono">128%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">メモリアデルレ</td>
+          <td class="horses-cell">8 ハルカカナタ</td>
+          <td class="mono">24.8</td>
+          <td class="mono">5.1%</td>
+          <td class="ev-cell mono">127%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">11 メモリアデルレ</td>
           <td class="mono">11.4</td>
-          <td class="mono">9.8%</td>
-          <td class="ev-cell mono">112%</td>
+          <td class="mono">9.4%</td>
+          <td class="ev-cell mono">108%</td>
         </tr>
         
       </tbody>
@@ -397,143 +471,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">ディープナイト - ホットロッドハート</td>
+          <td class="horses-cell">4 ディープナイト - 10 ホットロッドハート</td>
           <td class="mono">579.8</td>
           <td class="mono">0.5%</td>
-          <td class="ev-cell mono">282%</td>
+          <td class="ev-cell mono">279%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ディープナイト - ハルカカナタ</td>
-          <td class="mono">555.0</td>
-          <td class="mono">0.5%</td>
-          <td class="ev-cell mono">257%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">レイデアルマス - ディープナイト</td>
+          <td class="horses-cell">4 ディープナイト - 5 レイデアルマス</td>
           <td class="mono">304.0</td>
           <td class="mono">0.8%</td>
-          <td class="ev-cell mono">244%</td>
+          <td class="ev-cell mono">243%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ディープナイト - ピュアノーブル</td>
+          <td class="horses-cell">8 ハルカカナタ - 4 ディープナイト</td>
+          <td class="mono">555.0</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">238%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">4 ディープナイト - 6 ピュアノーブル</td>
           <td class="mono">485.1</td>
           <td class="mono">0.4%</td>
-          <td class="ev-cell mono">193%</td>
+          <td class="ev-cell mono">194%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ディープナイト - メモリアデルレ</td>
+          <td class="horses-cell">4 ディープナイト - 11 メモリアデルレ</td>
           <td class="mono">207.6</td>
-          <td class="mono">0.9%</td>
-          <td class="ev-cell mono">183%</td>
+          <td class="mono">0.8%</td>
+          <td class="ev-cell mono">169%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ブラックミューズ - ディープナイト</td>
-          <td class="mono">115.9</td>
-          <td class="mono">1.5%</td>
-          <td class="ev-cell mono">170%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ディープナイト - マンナット</td>
+          <td class="horses-cell">4 ディープナイト - 7 マンナット</td>
           <td class="mono">104.7</td>
-          <td class="mono">1.6%</td>
-          <td class="ev-cell mono">167%</td>
+          <td class="mono">1.5%</td>
+          <td class="ev-cell mono">160%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ゴルディアス - ディープナイト</td>
-          <td class="mono">941.3</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">141%</td>
+          <td class="horses-cell">2 ブラックミューズ - 4 ディープナイト</td>
+          <td class="mono">115.9</td>
+          <td class="mono">1.4%</td>
+          <td class="ev-cell mono">159%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ホットロッドハート - マンナット</td>
+          <td class="horses-cell">7 マンナット - 10 ホットロッドハート</td>
           <td class="mono">65.5</td>
-          <td class="mono">2.1%</td>
-          <td class="ev-cell mono">140%</td>
+          <td class="mono">2.2%</td>
+          <td class="ev-cell mono">144%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ディープナイト - エンルートフライト</td>
+          <td class="horses-cell">6 ピュアノーブル - 5 レイデアルマス</td>
+          <td class="mono">145.2</td>
+          <td class="mono">1.0%</td>
+          <td class="ev-cell mono">138%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 エンルートフライト - 4 ディープナイト</td>
           <td class="mono">52.8</td>
           <td class="mono">2.6%</td>
-          <td class="ev-cell mono">139%</td>
+          <td class="ev-cell mono">136%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ブラックミューズ - ホットロッドハート</td>
+          <td class="horses-cell">4 ディープナイト - 9 ゴルディアス</td>
+          <td class="mono">941.3</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">135%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 ブラックミューズ - 10 ホットロッドハート</td>
           <td class="mono">67.1</td>
           <td class="mono">2.0%</td>
-          <td class="ev-cell mono">133%</td>
+          <td class="ev-cell mono">132%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">レイデアルマス - ピュアノーブル</td>
-          <td class="mono">145.2</td>
-          <td class="mono">0.9%</td>
-          <td class="ev-cell mono">128%</td>
+          <td class="horses-cell">3 プッシュザリミット - 10 ホットロッドハート</td>
+          <td class="mono">1367.6</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">130%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">マンナット - ハルカカナタ</td>
+          <td class="horses-cell">6 ピュアノーブル - 10 ホットロッドハート</td>
+          <td class="mono">219.1</td>
+          <td class="mono">0.6%</td>
+          <td class="ev-cell mono">126%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 ハルカカナタ - 7 マンナット</td>
           <td class="mono">60.9</td>
           <td class="mono">2.0%</td>
-          <td class="ev-cell mono">125%</td>
+          <td class="ev-cell mono">119%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ホットロッドハート - ピュアノーブル</td>
-          <td class="mono">219.1</td>
-          <td class="mono">0.5%</td>
-          <td class="ev-cell mono">117%</td>
+          <td class="horses-cell">5 レイデアルマス - 10 ホットロッドハート</td>
+          <td class="mono">101.3</td>
+          <td class="mono">1.1%</td>
+          <td class="ev-cell mono">116%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ゴルディアス - メモリアデルレ</td>
-          <td class="mono">308.9</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">113%</td>
+          <td class="horses-cell">7 マンナット - 3 プッシュザリミット</td>
+          <td class="mono">366.4</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">111%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ブラックミューズ - メモリアデルレ</td>
-          <td class="mono">30.8</td>
+          <td class="horses-cell">7 マンナット - 5 レイデアルマス</td>
+          <td class="mono">30.3</td>
           <td class="mono">3.6%</td>
           <td class="ev-cell mono">110%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">レイデアルマス - ホットロッドハート</td>
-          <td class="mono">101.3</td>
-          <td class="mono">1.1%</td>
+          <td class="horses-cell">3 プッシュザリミット - 5 レイデアルマス</td>
+          <td class="mono">694.3</td>
+          <td class="mono">0.2%</td>
           <td class="ev-cell mono">109%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">レイデアルマス - マンナット</td>
-          <td class="mono">30.3</td>
-          <td class="mono">3.5%</td>
-          <td class="ev-cell mono">107%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">プッシュザリミット - ホットロッドハート</td>
-          <td class="mono">1367.6</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">106%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">レイデアルマス - ブラックミューズ</td>
-          <td class="mono">32.0</td>
-          <td class="mono">3.3%</td>
-          <td class="ev-cell mono">104%</td>
+          <td class="horses-cell">9 ゴルディアス - 11 メモリアデルレ</td>
+          <td class="mono">308.9</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">108%</td>
         </tr>
         
       </tbody>
@@ -547,143 +621,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">ホットロッドハート → ディープナイト</td>
+          <td class="horses-cell">10 ホットロッドハート → 4 ディープナイト</td>
           <td class="mono">1481.8</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">363%</td>
+          <td class="ev-cell mono">360%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ハルカカナタ → ディープナイト</td>
-          <td class="mono">1507.2</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">352%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ディープナイト → ホットロッドハート</td>
+          <td class="horses-cell">4 ディープナイト → 10 ホットロッドハート</td>
           <td class="mono">1377.6</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">332%</td>
+          <td class="ev-cell mono">328%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ディープナイト → ハルカカナタ</td>
-          <td class="mono">1259.5</td>
+          <td class="horses-cell">8 ハルカカナタ → 4 ディープナイト</td>
+          <td class="mono">1507.2</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">290%</td>
+          <td class="ev-cell mono">325%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ディープナイト → ブラックミューズ</td>
-          <td class="mono">418.8</td>
-          <td class="mono">0.7%</td>
-          <td class="ev-cell mono">288%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ディープナイト → レイデアルマス</td>
+          <td class="horses-cell">4 ディープナイト → 5 レイデアルマス</td>
           <td class="mono">731.7</td>
           <td class="mono">0.4%</td>
-          <td class="ev-cell mono">286%</td>
+          <td class="ev-cell mono">284%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ピュアノーブル → ディープナイト</td>
+          <td class="horses-cell">4 ディープナイト → 2 ブラックミューズ</td>
+          <td class="mono">418.8</td>
+          <td class="mono">0.6%</td>
+          <td class="ev-cell mono">269%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">4 ディープナイト → 8 ハルカカナタ</td>
+          <td class="mono">1259.5</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">268%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">6 ピュアノーブル → 4 ディープナイト</td>
           <td class="mono">1268.6</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">253%</td>
+          <td class="ev-cell mono">255%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ディープナイト → メモリアデルレ</td>
-          <td class="mono">581.9</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">249%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">レイデアルマス → ディープナイト</td>
+          <td class="horses-cell">5 レイデアルマス → 4 ディープナイト</td>
           <td class="mono">570.6</td>
           <td class="mono">0.4%</td>
-          <td class="ev-cell mono">235%</td>
+          <td class="ev-cell mono">234%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ゴルディアス → ディープナイト</td>
+          <td class="horses-cell">4 ディープナイト → 11 メモリアデルレ</td>
+          <td class="mono">581.9</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">230%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">9 ゴルディアス → 4 ディープナイト</td>
           <td class="mono">3040.3</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">225%</td>
+          <td class="ev-cell mono">215%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ディープナイト → ピュアノーブル</td>
-          <td class="mono">1007.6</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">200%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ディープナイト → ゴルディアス</td>
-          <td class="mono">2593.2</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">196%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ディープナイト → マンナット</td>
-          <td class="mono">259.7</td>
-          <td class="mono">0.7%</td>
-          <td class="ev-cell mono">192%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">メモリアデルレ → ディープナイト</td>
-          <td class="mono">418.8</td>
-          <td class="mono">0.5%</td>
-          <td class="ev-cell mono">190%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ホットロッドハート → プッシュザリミット</td>
+          <td class="horses-cell">10 ホットロッドハート → 3 プッシュザリミット</td>
           <td class="mono">4198.6</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">167%</td>
+          <td class="ev-cell mono">204%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ゴルディアス → メモリアデルレ</td>
-          <td class="mono">948.0</td>
+          <td class="horses-cell">4 ディープナイト → 6 ピュアノーブル</td>
+          <td class="mono">1007.6</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">165%</td>
+          <td class="ev-cell mono">201%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ピュアノーブル → レイデアルマス</td>
+          <td class="horses-cell">3 プッシュザリミット → 10 ホットロッドハート</td>
+          <td class="mono">4198.6</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">194%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">4 ディープナイト → 9 ゴルディアス</td>
+          <td class="mono">2593.2</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">188%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">4 ディープナイト → 7 マンナット</td>
+          <td class="mono">259.7</td>
+          <td class="mono">0.7%</td>
+          <td class="ev-cell mono">184%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">6 ピュアノーブル → 5 レイデアルマス</td>
           <td class="mono">382.5</td>
+          <td class="mono">0.5%</td>
+          <td class="ev-cell mono">178%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">11 メモリアデルレ → 4 ディープナイト</td>
+          <td class="mono">418.8</td>
           <td class="mono">0.4%</td>
-          <td class="ev-cell mono">165%</td>
+          <td class="ev-cell mono">175%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ディープナイト → エンルートフライト</td>
-          <td class="mono">141.0</td>
-          <td class="mono">1.1%</td>
-          <td class="ev-cell mono">161%</td>
+          <td class="horses-cell">10 ホットロッドハート → 7 マンナット</td>
+          <td class="mono">157.8</td>
+          <td class="mono">1.0%</td>
+          <td class="ev-cell mono">162%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">マンナット → ディープナイト</td>
-          <td class="mono">187.3</td>
-          <td class="mono">0.9%</td>
+          <td class="horses-cell">3 プッシュザリミット → 2 ブラックミューズ</td>
+          <td class="mono">1277.8</td>
+          <td class="mono">0.1%</td>
           <td class="ev-cell mono">160%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">プッシュザリミット → ホットロッドハート</td>
-          <td class="mono">4198.6</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">159%</td>
+          <td class="horses-cell">9 ゴルディアス → 11 メモリアデルレ</td>
+          <td class="mono">948.0</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">158%</td>
         </tr>
         
       </tbody>
@@ -697,143 +771,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">レイデアルマス - ディープナイト - ホットロッドハート</td>
+          <td class="horses-cell">4 ディープナイト - 5 レイデアルマス - 10 ホットロッドハート</td>
           <td class="mono">1482.9</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">226%</td>
+          <td class="ev-cell mono">231%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">レイデアルマス - ディープナイト - ハルカカナタ</td>
-          <td class="mono">1380.2</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">200%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">レイデアルマス - ディープナイト - ピュアノーブル</td>
+          <td class="horses-cell">4 ディープナイト - 6 ピュアノーブル - 5 レイデアルマス</td>
           <td class="mono">1525.5</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">189%</td>
+          <td class="ev-cell mono">197%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">レイデアルマス - ディープナイト - メモリアデルレ</td>
+          <td class="horses-cell">8 ハルカカナタ - 4 ディープナイト - 5 レイデアルマス</td>
+          <td class="mono">1380.2</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">191%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">4 ディープナイト - 5 レイデアルマス - 11 メモリアデルレ</td>
           <td class="mono">629.4</td>
           <td class="mono">0.3%</td>
-          <td class="ev-cell mono">178%</td>
+          <td class="ev-cell mono">170%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">レイデアルマス - ディープナイト - マンナット</td>
+          <td class="horses-cell">4 ディープナイト - 5 レイデアルマス - 7 マンナット</td>
           <td class="mono">316.9</td>
           <td class="mono">0.5%</td>
-          <td class="ev-cell mono">171%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ディープナイト - マンナット - ハルカカナタ</td>
-          <td class="mono">556.4</td>
-          <td class="mono">0.3%</td>
           <td class="ev-cell mono">169%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ホットロッドハート - ブラックミューズ - ディープナイト</td>
+          <td class="horses-cell">2 ブラックミューズ - 4 ディープナイト - 10 ホットロッドハート</td>
           <td class="mono">577.5</td>
           <td class="mono">0.3%</td>
-          <td class="ev-cell mono">169%</td>
+          <td class="ev-cell mono">161%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ホットロッドハート - ディープナイト - マンナット</td>
+          <td class="horses-cell">4 ディープナイト - 10 ホットロッドハート - 7 マンナット</td>
           <td class="mono">509.7</td>
           <td class="mono">0.3%</td>
-          <td class="ev-cell mono">163%</td>
+          <td class="ev-cell mono">161%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">レイデアルマス - ブラックミューズ - ディープナイト</td>
+          <td class="horses-cell">8 ハルカカナタ - 4 ディープナイト - 7 マンナット</td>
+          <td class="mono">556.4</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">156%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 ブラックミューズ - 4 ディープナイト - 5 レイデアルマス</td>
           <td class="mono">328.5</td>
           <td class="mono">0.5%</td>
-          <td class="ev-cell mono">162%</td>
+          <td class="ev-cell mono">156%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">マンナット - ブラックミューズ - ディープナイト</td>
+          <td class="horses-cell">7 マンナット - 5 レイデアルマス - 10 ホットロッドハート</td>
+          <td class="mono">190.6</td>
+          <td class="mono">0.8%</td>
+          <td class="ev-cell mono">148%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 ブラックミューズ - 4 ディープナイト - 7 マンナット</td>
           <td class="mono">151.7</td>
           <td class="mono">1.0%</td>
-          <td class="ev-cell mono">157%</td>
+          <td class="ev-cell mono">145%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ブラックミューズ - ディープナイト - メモリアデルレ</td>
-          <td class="mono">284.9</td>
-          <td class="mono">0.5%</td>
-          <td class="ev-cell mono">155%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ディープナイト - ホットロッドハート - メモリアデルレ</td>
-          <td class="mono">869.9</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">146%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">レイデアルマス - ホットロッドハート - マンナット</td>
-          <td class="mono">190.6</td>
-          <td class="mono">0.7%</td>
-          <td class="ev-cell mono">139%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ホットロッドハート - メモリアデルレ - マンナット</td>
-          <td class="mono">168.6</td>
-          <td class="mono">0.8%</td>
-          <td class="ev-cell mono">136%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">レイデアルマス - ブラックミューズ - ホットロッドハート</td>
-          <td class="mono">200.2</td>
-          <td class="mono">0.7%</td>
-          <td class="ev-cell mono">133%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ブラックミューズ - ディープナイト - ハルカカナタ</td>
-          <td class="mono">478.7</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">133%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ブラックミューズ - ディープナイト - ピュアノーブル</td>
-          <td class="mono">553.0</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">131%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">レイデアルマス - ディープナイト - エンルートフライト</td>
-          <td class="mono">137.2</td>
-          <td class="mono">1.0%</td>
-          <td class="ev-cell mono">131%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ディープナイト - メモリアデルレ - ハルカカナタ</td>
-          <td class="mono">810.2</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">130%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">レイデアルマス - ホットロッドハート - ピュアノーブル</td>
+          <td class="horses-cell">6 ピュアノーブル - 5 レイデアルマス - 10 ホットロッドハート</td>
           <td class="mono">760.9</td>
           <td class="mono">0.2%</td>
+          <td class="ev-cell mono">142%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">4 ディープナイト - 10 ホットロッドハート - 11 メモリアデルレ</td>
+          <td class="mono">869.9</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">138%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 ブラックミューズ - 4 ディープナイト - 11 メモリアデルレ</td>
+          <td class="mono">284.9</td>
+          <td class="mono">0.5%</td>
+          <td class="ev-cell mono">138%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 ブラックミューズ - 5 レイデアルマス - 10 ホットロッドハート</td>
+          <td class="mono">200.2</td>
+          <td class="mono">0.7%</td>
+          <td class="ev-cell mono">138%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 エンルートフライト - 4 ディープナイト - 5 レイデアルマス</td>
+          <td class="mono">137.2</td>
+          <td class="mono">1.0%</td>
+          <td class="ev-cell mono">134%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 マンナット - 10 ホットロッドハート - 11 メモリアデルレ</td>
+          <td class="mono">168.6</td>
+          <td class="mono">0.8%</td>
+          <td class="ev-cell mono">133%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 ブラックミューズ - 4 ディープナイト - 6 ピュアノーブル</td>
+          <td class="mono">553.0</td>
+          <td class="mono">0.2%</td>
           <td class="ev-cell mono">128%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">4 ディープナイト - 6 ピュアノーブル - 7 マンナット</td>
+          <td class="mono">464.4</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">121%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 ブラックミューズ - 4 ディープナイト - 8 ハルカカナタ</td>
+          <td class="mono">478.7</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">119%</td>
         </tr>
         
       </tbody>
@@ -847,143 +921,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">ハルカカナタ → ディープナイト → レイデアルマス</td>
+          <td class="horses-cell">8 ハルカカナタ → 4 ディープナイト → 5 レイデアルマス</td>
           <td class="mono">23347.1</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">541%</td>
+          <td class="ev-cell mono">514%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ハルカカナタ → ディープナイト → マンナット</td>
+          <td class="horses-cell">10 ホットロッドハート → 4 ディープナイト → 7 マンナット</td>
+          <td class="mono">10005.9</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">457%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 ハルカカナタ → 4 ディープナイト → 7 マンナット</td>
           <td class="mono">11297.0</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">496%</td>
+          <td class="ev-cell mono">455%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ホットロッドハート → ディープナイト → マンナット</td>
-          <td class="mono">10005.9</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">462%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ハルカカナタ → レイデアルマス → ディープナイト</td>
+          <td class="horses-cell">8 ハルカカナタ → 5 レイデアルマス → 4 ディープナイト</td>
           <td class="mono">17959.3</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">440%</td>
+          <td class="ev-cell mono">420%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ディープナイト → ホットロッドハート → ブラックミューズ</td>
-          <td class="mono">10005.9</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">423%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ディープナイト → ホットロッドハート → マンナット</td>
-          <td class="mono">9096.3</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">414%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ディープナイト → ホットロッドハート → レイデアルマス</td>
+          <td class="horses-cell">4 ディープナイト → 10 ホットロッドハート → 5 レイデアルマス</td>
           <td class="mono">16676.5</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">401%</td>
+          <td class="ev-cell mono">409%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ディープナイト → マンナット → ホットロッドハート</td>
-          <td class="mono">7613.2</td>
-          <td class="mono">0.1%</td>
+          <td class="horses-cell">4 ディープナイト → 10 ホットロッドハート → 7 マンナット</td>
+          <td class="mono">9096.3</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">408%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">4 ディープナイト → 10 ホットロッドハート → 2 ブラックミューズ</td>
+          <td class="mono">10005.9</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">407%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">4 ディープナイト → 5 レイデアルマス → 10 ホットロッドハート</td>
+          <td class="mono">15564.7</td>
+          <td class="mono">0.0%</td>
           <td class="ev-cell mono">397%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ハルカカナタ → ディープナイト → メモリアデルレ</td>
-          <td class="mono">15564.7</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">395%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ハルカカナタ → マンナット → ディープナイト</td>
+          <td class="horses-cell">4 ディープナイト → 7 マンナット → 10 ホットロッドハート</td>
           <td class="mono">7613.2</td>
           <td class="mono">0.1%</td>
           <td class="ev-cell mono">390%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ディープナイト → レイデアルマス → ホットロッドハート</td>
-          <td class="mono">15564.7</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">389%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ホットロッドハート → ディープナイト → ブラックミューズ</td>
-          <td class="mono">8979.6</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">385%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ハルカカナタ → ディープナイト → ブラックミューズ</td>
-          <td class="mono">9215.9</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">376%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ディープナイト → ブラックミューズ → ホットロッドハート</td>
-          <td class="mono">7869.8</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">376%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ハルカカナタ → ディープナイト → ホットロッドハート</td>
-          <td class="mono">25941.3</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">371%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ホットロッドハート → ディープナイト → レイデアルマス</td>
+          <td class="horses-cell">10 ホットロッドハート → 4 ディープナイト → 5 レイデアルマス</td>
           <td class="mono">15226.4</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">371%</td>
+          <td class="ev-cell mono">380%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ホットロッドハート → マンナット → ディープナイト</td>
+          <td class="horses-cell">10 ホットロッドハート → 4 ディープナイト → 2 ブラックミューズ</td>
+          <td class="mono">8979.6</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">372%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">10 ホットロッドハート → 7 マンナット → 4 ディープナイト</td>
           <td class="mono">6800.1</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">367%</td>
+          <td class="ev-cell mono">363%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ディープナイト → ピュアノーブル → マンナット</td>
+          <td class="horses-cell">4 ディープナイト → 6 ピュアノーブル → 7 マンナット</td>
           <td class="mono">9727.9</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">360%</td>
+          <td class="ev-cell mono">361%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ディープナイト → マンナット → ハルカカナタ</td>
-          <td class="mono">6866.8</td>
+          <td class="horses-cell">4 ディープナイト → 2 ブラックミューズ → 10 ホットロッドハート</td>
+          <td class="mono">7869.8</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">342%</td>
+          <td class="ev-cell mono">358%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ピュアノーブル → ディープナイト → マンナット</td>
+          <td class="horses-cell">8 ハルカカナタ → 7 マンナット → 4 ディープナイト</td>
+          <td class="mono">7613.2</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">358%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 ハルカカナタ → 4 ディープナイト → 10 ホットロッドハート</td>
+          <td class="mono">25941.3</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">351%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 ハルカカナタ → 4 ディープナイト → 11 メモリアデルレ</td>
+          <td class="mono">15564.7</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">349%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">10 ホットロッドハート → 5 レイデアルマス → 4 ディープナイト</td>
+          <td class="mono">12970.6</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">344%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">6 ピュアノーブル → 4 ディープナイト → 7 マンナット</td>
           <td class="mono">9096.3</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">338%</td>
+          <td class="ev-cell mono">340%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 ハルカカナタ → 4 ディープナイト → 2 ブラックミューズ</td>
+          <td class="mono">9215.9</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">337%</td>
         </tr>
         
       </tbody>
@@ -995,5 +1069,49 @@
 
   <div class="disclaimer">本ページの予想は参考情報です。的中・利益を保証しません。<br>馬券の購入は必ずご自身でIPAT等の公式ルートから行ってください。</div>
 </main>
+
+<script>
+(function () {
+  const UNIT = 100;  // JRAの購入単位（100円）に丸める
+
+  function recalc() {
+    const budget = parseFloat(document.getElementById('budgetInput').value) || 0;
+    const rows = Array.from(document.querySelectorAll('#planTable tbody tr[data-ev]'));
+    const totalRow = document.getElementById('planTotalRow');
+    const totalCell = document.getElementById('planTotal');
+
+    if (!rows.length) return;
+
+    if (budget <= 0) {
+      rows.forEach(function (tr) { tr.querySelector('.stake-cell').textContent = '-'; });
+      if (totalRow) totalRow.style.display = 'none';
+      return;
+    }
+
+    // 期待値(EV)が高いものほど多く配分する（EVの合計に対する比率で按分）
+    const evs = rows.map(function (tr) { return Math.max(0, parseFloat(tr.dataset.ev) - 1); }); // 100%超過分だけを重みにする
+    const totalWeight = evs.reduce(function (a, b) { return a + b; }, 0);
+
+    let allocated = 0;
+    rows.forEach(function (tr, i) {
+      const weight = totalWeight > 0 ? evs[i] / totalWeight : 1 / rows.length;
+      const raw = budget * weight;
+      const amount = Math.floor(raw / UNIT) * UNIT;
+      allocated += amount;
+      tr.querySelector('.stake-cell').textContent = amount > 0 ? amount.toLocaleString('ja-JP') + '円' : '見送り';
+    });
+
+    if (totalRow && totalCell) {
+      totalRow.style.display = '';
+      totalCell.textContent = allocated.toLocaleString('ja-JP') + '円 / ' + budget.toLocaleString('ja-JP') + '円中';
+    }
+  }
+
+  const input = document.getElementById('budgetInput');
+  if (input) {
+    input.addEventListener('input', recalc);
+  }
+})();
+</script>
 </body>
 </html>

@@ -63,30 +63,66 @@
   }
   .summary-text { font-size: 13px; line-height: 1.75; color: var(--text-dim); }
 
-  /* --- 結論：一番のおすすめ --- */
-  .best-bet {
+  /* --- 結論：馬券風デザイン --- */
+  .ticket {
     position: relative;
     background: linear-gradient(180deg, #1a1408 0%, var(--surface) 70%);
     border: 1px solid var(--amber-dim);
+    border-radius: 10px;
     box-shadow: 0 0 0 1px rgba(240,162,2,0.08), 0 8px 24px -12px var(--amber-glow);
+    padding: 0;
+    overflow: hidden;
   }
-  .best-bet .tag {
-    font-size: 12px; font-weight: 800; color: var(--amber);
+  .ticket-head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 16px; background: rgba(240,162,2,0.08);
+    border-bottom: 1px dashed var(--amber-dim);
   }
-  .best-bet .type {
-    display: inline-block; font-size: 11px; color: var(--bg); background: var(--amber);
-    font-weight: 700; padding: 2px 8px; border-radius: 3px; margin-top: 8px;
+  .ticket-head .label { font-size: 11px; font-weight: 800; color: var(--amber); letter-spacing: 0.05em; }
+  .ticket-head .type-badge {
+    font-size: 11px; color: var(--bg); background: var(--amber);
+    font-weight: 800; padding: 3px 10px; border-radius: 3px;
   }
-  .best-bet .horses {
-    font-size: 21px; font-weight: 800; margin: 8px 0 12px;
-    color: var(--text); line-height: 1.4;
+  .ticket-body { padding: 16px; }
+  .ticket .horses {
+    font-size: 20px; font-weight: 800; margin: 0 0 14px;
+    color: var(--text); line-height: 1.45;
   }
-  .best-bet .stat-row { display: flex; }
-  .best-bet .stat { margin-right: 24px; }
-  .best-bet .stat .label { font-size: 10.5px; color: var(--text-dim); }
-  .best-bet .stat .value { font-size: 18px; font-weight: 800; margin-top: 2px; }
-  .best-bet .stat.ev .value { color: var(--amber); }
-  .best-bet .footnote { font-size: 11px; color: var(--text-dim); margin-top: 12px; line-height: 1.6; border-top: 1px solid var(--line); padding-top: 10px; }
+  .ticket-stats {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+    padding: 12px 0; border-top: 1px dashed var(--line); border-bottom: 1px dashed var(--line);
+  }
+  .ticket-stats .stat { text-align: center; }
+  .ticket-stats .stat .label { font-size: 10px; color: var(--text-dim); }
+  .ticket-stats .stat .value { font-size: 16px; font-weight: 800; margin-top: 3px; }
+  .ticket-stats .stat.ev .value { color: var(--amber); }
+
+  .ticket-amount {
+    margin-top: 14px; padding: 12px; background: var(--surface-2);
+    border-radius: 6px; display: flex; justify-content: space-between; align-items: center;
+  }
+  .ticket-amount .label { font-size: 11px; color: var(--text-dim); }
+  .ticket-amount .value { font-size: 22px; font-weight: 800; color: var(--green); }
+  .ticket-amount .value::before { content: "¥"; font-size: 14px; margin-right: 2px; }
+
+  .footnote { font-size: 11px; color: var(--text-dim); margin-top: 12px; line-height: 1.6; padding: 0 16px 14px; }
+
+  /* --- 予算入力 --- */
+  .budget-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
+    padding: 10px 14px; margin-bottom: 14px;
+  }
+  .budget-box label { font-size: 12px; color: var(--text-dim); white-space: nowrap; }
+  .budget-box input {
+    flex: 1; background: var(--surface-2); border: 1px solid var(--line); border-radius: 4px;
+    color: var(--text); font-size: 15px; padding: 7px 10px; font-family: inherit;
+    -moz-appearance: textfield;
+  }
+  .budget-box input::-webkit-outer-spin-button, .budget-box input::-webkit-inner-spin-button { margin: 0; }
+  .budget-box .unit { font-size: 12px; color: var(--text-dim); }
+  .stake-cell { color: var(--green); font-weight: 700; }
+
 
   /* --- 穴馬候補 --- */
   .dark-horse-card { border-left: 3px solid var(--green); }
@@ -178,18 +214,66 @@
   <div class="card summary-text">明確な逃げ馬が不在で、スローペースになりやすく先行馬が有利になりやすい。馬場状態は「稍重」。</div>
 
   
-  <div class="section-title"><span class="en">Conclusion</span>結論：一番のおすすめ</div>
-  <div class="card best-bet">
-    <div class="tag">🏆 このレースで最も期待値が高い買い目</div>
-    <div class="type">3連単</div>
-    <div class="horses">ウヌボレヤサン → フクシマブリルハム → チェイサー</div>
-    <div class="stat-row mono">
-      <div class="stat"><div class="label">オッズ</div><div class="value">33868.2倍</div></div>
-      <div class="stat"><div class="label">的中確率</div><div class="value">0.0%</div></div>
-      <div class="stat ev"><div class="label">期待値</div><div class="value">727%</div></div>
-    </div>
-    <div class="footnote">期待値とは「100円賭けた時に理論上いくら戻ってくるか」の目安です。100%を超えるほど、賭け金に対して見込まれる払戻が大きいことを意味します（的中を保証するものではありません）。</div>
+  <div class="section-title"><span class="en">Betting Plan</span>AI推奨 購入プラン</div>
+  <div class="section-hint">実際の投票は複数点に分けるのが基本のため、期待値が高い順に複数の買い目を組み合わせています。予算を入れると自動で配分します。</div>
+  <div class="budget-box">
+    <label for="budgetInput">今回の予算</label>
+    <input type="number" id="budgetInput" inputmode="numeric" placeholder="例: 3000" min="0" step="100">
+    <span class="unit">円</span>
   </div>
+  <div class="card" style="padding:0; overflow:hidden;">
+    <table id="planTable">
+      <thead><tr><th>券種</th><th>買い目</th><th>オッズ</th><th>期待値</th><th>配分額</th></tr></thead>
+      <tbody>
+        
+        <tr data-ev="4.113731533479024">
+          <td class="mono">3連複</td>
+          <td class="horses-cell">7 イサギ - 3 フクシマブリルハム - 9 チェイサー</td>
+          <td class="mono">305.8</td>
+          <td class="ev-cell mono">411%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="3.7700942642384034">
+          <td class="mono">馬連</td>
+          <td class="horses-cell">3 フクシマブリルハム - 9 チェイサー</td>
+          <td class="mono">112.2</td>
+          <td class="ev-cell mono">377%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="3.590754474554093">
+          <td class="mono">馬単</td>
+          <td class="horses-cell">7 イサギ → 9 チェイサー</td>
+          <td class="mono">193.5</td>
+          <td class="ev-cell mono">359%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="3.4382356496719497">
+          <td class="mono">3連複</td>
+          <td class="horses-cell">3 フクシマブリルハム - 5 ホウオウバローロ - 9 チェイサー</td>
+          <td class="mono">294.8</td>
+          <td class="ev-cell mono">344%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="3.3503382948263285">
+          <td class="mono">馬単</td>
+          <td class="horses-cell">3 フクシマブリルハム → 9 チェイサー</td>
+          <td class="mono">208.0</td>
+          <td class="ev-cell mono">335%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr id="planTotalRow" style="display:none;">
+          <td colspan="4" style="text-align:right; font-weight:800;">合計</td>
+          <td class="mono" id="planTotal" style="font-weight:800; color:var(--green);">-</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="footnote">配分額は、各買い目の期待値の大きさに比例して予算を振り分けた目安です（期待値が高いものほど多く配分）。1点に集中させず、複数点に分けて購入することでブレを抑える考え方に基づいています。あくまで参考情報であり、的中や利益を保証するものではありません。</div>
   
 
   
@@ -199,32 +283,22 @@
     
     <div class="dark-horse-item">
       <span class="dh-name">デルマホダカ</span><span class="dh-badge">10番人気</span>
-      <div class="dh-stats mono">オッズ 79.9倍 ／ 勝率目安 2.1% ／ 期待値 170%</div>
-    </div>
-    
-    <div class="dark-horse-item">
-      <span class="dh-name">シックスパック</span><span class="dh-badge">9番人気</span>
-      <div class="dh-stats mono">オッズ 74.3倍 ／ 勝率目安 1.9% ／ 期待値 144%</div>
-    </div>
-    
-    <div class="dark-horse-item">
-      <span class="dh-name">ウヌボレヤサン</span><span class="dh-badge">11番人気</span>
-      <div class="dh-stats mono">オッズ 99.3倍 ／ 勝率目安 1.4% ／ 期待値 136%</div>
+      <div class="dh-stats mono">オッズ 79.9倍 ／ 勝率目安 2.3% ／ 期待値 188%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">イサギ</span><span class="dh-badge">6番人気</span>
-      <div class="dh-stats mono">オッズ 13.2倍 ／ 勝率目安 9.7% ／ 期待値 127%</div>
+      <div class="dh-stats mono">オッズ 13.2倍 ／ 勝率目安 10.3% ／ 期待値 135%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">ホウオウバローロ</span><span class="dh-badge">8番人気</span>
-      <div class="dh-stats mono">オッズ 14.4倍 ／ 勝率目安 8.4% ／ 期待値 120%</div>
+      <div class="dh-stats mono">オッズ 14.4倍 ／ 勝率目安 9.0% ／ 期待値 130%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">フクシマブリルハム</span><span class="dh-badge">7番人気</span>
-      <div class="dh-stats mono">オッズ 13.8倍 ／ 勝率目安 8.4% ／ 期待値 117%</div>
+      <div class="dh-stats mono">オッズ 13.8倍 ／ 勝率目安 9.0% ／ 期待値 125%</div>
     </div>
     
   </div>
@@ -235,26 +309,26 @@
     
     <div class="horse-item">
       <div class="horse-head">
-        <span class="horse-name"><span class="horse-num mono">10</span>ブリオメンテ</span>
-        <span class="horse-prob mono">複勝圏内 48%</span>
-      </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約48%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は8.0着とやや不振。</div>
-    </div>
-    
-    <div class="horse-item">
-      <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">9</span>チェイサー</span>
-        <span class="horse-prob mono">複勝圏内 47%</span>
+        <span class="horse-prob mono">複勝圏内 46%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約47%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は8.0着とやや不振。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約46%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は8.0着とやや不振。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">8</span>サマーナイト</span>
-        <span class="horse-prob mono">複勝圏内 45%</span>
+        <span class="horse-prob mono">複勝圏内 46%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約45%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約46%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">10</span>ブリオメンテ</span>
+        <span class="horse-prob mono">複勝圏内 41%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約41%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は8.0着とやや不振。</div>
     </div>
     
     <div class="horse-item">
@@ -268,9 +342,9 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">7</span>イサギ</span>
-        <span class="horse-prob mono">複勝圏内 28%</span>
+        <span class="horse-prob mono">複勝圏内 29%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約28%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約29%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
     </div>
     
     <div class="horse-item">
@@ -284,47 +358,47 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">3</span>フクシマブリルハム</span>
-        <span class="horse-prob mono">複勝圏内 24%</span>
+        <span class="horse-prob mono">複勝圏内 25%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約24%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は10.0着とやや不振。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約25%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は10.0着とやや不振。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">5</span>ホウオウバローロ</span>
-        <span class="horse-prob mono">複勝圏内 24%</span>
+        <span class="horse-prob mono">複勝圏内 25%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約24%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約25%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">6</span>デルマホダカ</span>
-        <span class="horse-prob mono">複勝圏内 6%</span>
+        <span class="horse-prob mono">複勝圏内 7%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約6%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約7%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">11</span>シックスパック</span>
-        <span class="horse-prob mono">複勝圏内 6%</span>
+        <span class="horse-prob mono">複勝圏内 5%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約6%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は9.3着とやや不振。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約5%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は9.3着とやや不振。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">2</span>ウヌボレヤサン</span>
-        <span class="horse-prob mono">複勝圏内 4%</span>
+        <span class="horse-prob mono">複勝圏内 3%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約4%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は12.7着とやや不振。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約3%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は12.7着とやや不振。</div>
     </div>
     
   </div>
 
-  <div class="section-title"><span class="en">All Bets</span>券種ごとの買い目候補</div>
-  <div class="section-hint">期待値100%を超えるものだけを表示しています。券種名をタップすると開きます。</div>
+  <div class="section-title"><span class="en">All Bets</span>券種ごとの買い目一覧（参考）</div>
+  <div class="section-hint">期待値100%を超えるものを全て表示しています。上の「購入プラン」はこの中から自動選定したものです。</div>
   
   <details class="bet-group" open>
     <summary>単勝 <span class="count">6点</span></summary>
@@ -333,45 +407,45 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">デルマホダカ</td>
+          <td class="horses-cell">6 デルマホダカ</td>
           <td class="mono">79.9</td>
-          <td class="mono">2.1%</td>
-          <td class="ev-cell mono">170%</td>
+          <td class="mono">2.3%</td>
+          <td class="ev-cell mono">188%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">シックスパック</td>
-          <td class="mono">74.3</td>
-          <td class="mono">1.9%</td>
-          <td class="ev-cell mono">144%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ウヌボレヤサン</td>
-          <td class="mono">99.3</td>
-          <td class="mono">1.4%</td>
-          <td class="ev-cell mono">136%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">イサギ</td>
+          <td class="horses-cell">7 イサギ</td>
           <td class="mono">13.2</td>
-          <td class="mono">9.7%</td>
-          <td class="ev-cell mono">127%</td>
+          <td class="mono">10.3%</td>
+          <td class="ev-cell mono">135%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ホウオウバローロ</td>
+          <td class="horses-cell">5 ホウオウバローロ</td>
           <td class="mono">14.4</td>
-          <td class="mono">8.4%</td>
-          <td class="ev-cell mono">120%</td>
+          <td class="mono">9.0%</td>
+          <td class="ev-cell mono">130%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">フクシマブリルハム</td>
+          <td class="horses-cell">3 フクシマブリルハム</td>
           <td class="mono">13.8</td>
-          <td class="mono">8.4%</td>
-          <td class="ev-cell mono">117%</td>
+          <td class="mono">9.0%</td>
+          <td class="ev-cell mono">125%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">11 シックスパック</td>
+          <td class="mono">74.3</td>
+          <td class="mono">1.7%</td>
+          <td class="ev-cell mono">123%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 ウヌボレヤサン</td>
+          <td class="mono">99.3</td>
+          <td class="mono">1.2%</td>
+          <td class="ev-cell mono">121%</td>
         </tr>
         
       </tbody>
@@ -385,143 +459,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">チェイサー - フクシマブリルハム</td>
+          <td class="horses-cell">3 フクシマブリルハム - 9 チェイサー</td>
           <td class="mono">112.2</td>
-          <td class="mono">3.2%</td>
-          <td class="ev-cell mono">359%</td>
+          <td class="mono">3.4%</td>
+          <td class="ev-cell mono">377%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">フクシマブリルハム - シックスパック</td>
+          <td class="horses-cell">3 フクシマブリルハム - 11 シックスパック</td>
           <td class="mono">995.4</td>
           <td class="mono">0.3%</td>
-          <td class="ev-cell mono">343%</td>
+          <td class="ev-cell mono">316%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">シックスパック - イサギ</td>
+          <td class="horses-cell">7 イサギ - 9 チェイサー</td>
+          <td class="mono">76.1</td>
+          <td class="mono">3.8%</td>
+          <td class="ev-cell mono">293%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 イサギ - 11 シックスパック</td>
           <td class="mono">730.4</td>
           <td class="mono">0.4%</td>
-          <td class="ev-cell mono">290%</td>
+          <td class="ev-cell mono">265%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">チェイサー - イサギ</td>
-          <td class="mono">76.1</td>
-          <td class="mono">3.7%</td>
-          <td class="ev-cell mono">280%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ウヌボレヤサン - フクシマブリルハム</td>
+          <td class="horses-cell">2 ウヌボレヤサン - 3 フクシマブリルハム</td>
           <td class="mono">1142.8</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">278%</td>
+          <td class="ev-cell mono">265%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">フクシマブリルハム - マテンロウカナロア</td>
+          <td class="horses-cell">1 マテンロウカナロア - 3 フクシマブリルハム</td>
           <td class="mono">121.2</td>
-          <td class="mono">1.9%</td>
-          <td class="ev-cell mono">231%</td>
+          <td class="mono">2.0%</td>
+          <td class="ev-cell mono">248%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">イサギ - マテンロウカナロア</td>
+          <td class="horses-cell">1 マテンロウカナロア - 7 イサギ</td>
           <td class="mono">102.9</td>
-          <td class="mono">2.2%</td>
-          <td class="ev-cell mono">226%</td>
+          <td class="mono">2.3%</td>
+          <td class="ev-cell mono">241%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">チェイサー - デルマホダカ</td>
+          <td class="horses-cell">6 デルマホダカ - 9 チェイサー</td>
           <td class="mono">266.2</td>
           <td class="mono">0.8%</td>
-          <td class="ev-cell mono">207%</td>
+          <td class="ev-cell mono">225%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ホウオウバローロ - ウヌボレヤサン</td>
-          <td class="mono">697.1</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">168%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ホウオウバローロ - シックスパック</td>
-          <td class="mono">478.4</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">163%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">デルマホダカ - マテンロウカナロア</td>
+          <td class="horses-cell">1 マテンロウカナロア - 6 デルマホダカ</td>
           <td class="mono">350.2</td>
           <td class="mono">0.5%</td>
+          <td class="ev-cell mono">180%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 イサギ - 3 フクシマブリルハム</td>
+          <td class="mono">82.3</td>
+          <td class="mono">2.0%</td>
+          <td class="ev-cell mono">169%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 ウヌボレヤサン - 5 ホウオウバローロ</td>
+          <td class="mono">697.1</td>
+          <td class="mono">0.2%</td>
           <td class="ev-cell mono">162%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">チェイサー - シックスパック</td>
-          <td class="mono">209.6</td>
-          <td class="mono">0.7%</td>
-          <td class="ev-cell mono">149%</td>
+          <td class="horses-cell">7 イサギ - 5 ホウオウバローロ</td>
+          <td class="mono">78.6</td>
+          <td class="mono">2.0%</td>
+          <td class="ev-cell mono">161%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">フクシマブリルハム - イサギ</td>
-          <td class="mono">82.3</td>
+          <td class="horses-cell">5 ホウオウバローロ - 11 シックスパック</td>
+          <td class="mono">478.4</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">152%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 フクシマブリルハム - 5 ホウオウバローロ</td>
+          <td class="mono">80.5</td>
           <td class="mono">1.8%</td>
-          <td class="ev-cell mono">148%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">チェイサー - ウヌボレヤサン</td>
-          <td class="mono">288.0</td>
-          <td class="mono">0.5%</td>
           <td class="ev-cell mono">144%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ウヌボレヤサン - イサギ</td>
+          <td class="horses-cell">5 ホウオウバローロ - 9 チェイサー</td>
+          <td class="mono">41.3</td>
+          <td class="mono">3.4%</td>
+          <td class="ev-cell mono">139%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 ウヌボレヤサン - 7 イサギ</td>
           <td class="mono">512.4</td>
           <td class="mono">0.3%</td>
-          <td class="ev-cell mono">144%</td>
+          <td class="ev-cell mono">136%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ウヌボレヤサン - ブリオメンテ</td>
-          <td class="mono">278.1</td>
-          <td class="mono">0.5%</td>
-          <td class="ev-cell mono">141%</td>
+          <td class="horses-cell">2 ウヌボレヤサン - 9 チェイサー</td>
+          <td class="mono">288.0</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">125%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ホウオウバローロ - イサギ</td>
-          <td class="mono">78.6</td>
-          <td class="mono">1.8%</td>
-          <td class="ev-cell mono">140%</td>
+          <td class="horses-cell">9 チェイサー - 11 シックスパック</td>
+          <td class="mono">209.6</td>
+          <td class="mono">0.6%</td>
+          <td class="ev-cell mono">125%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ホウオウバローロ - チェイサー</td>
-          <td class="mono">41.3</td>
-          <td class="mono">3.2%</td>
-          <td class="ev-cell mono">131%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">シックスパック - デルマホダカ</td>
+          <td class="horses-cell">6 デルマホダカ - 11 シックスパック</td>
           <td class="mono">1554.4</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">130%</td>
+          <td class="ev-cell mono">124%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ウヌボレヤサン - サマーナイト</td>
-          <td class="mono">263.8</td>
+          <td class="horses-cell">6 デルマホダカ - 5 ホウオウバローロ</td>
+          <td class="mono">273.2</td>
           <td class="mono">0.5%</td>
-          <td class="ev-cell mono">126%</td>
+          <td class="ev-cell mono">123%</td>
         </tr>
         
       </tbody>
@@ -535,143 +609,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">フクシマブリルハム → ウヌボレヤサン</td>
+          <td class="horses-cell">3 フクシマブリルハム → 2 ウヌボレヤサン</td>
           <td class="mono">3033.1</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">383%</td>
+          <td class="ev-cell mono">366%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ウヌボレヤサン → フクシマブリルハム</td>
+          <td class="horses-cell">7 イサギ → 9 チェイサー</td>
+          <td class="mono">193.5</td>
+          <td class="mono">1.9%</td>
+          <td class="ev-cell mono">359%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 フクシマブリルハム → 9 チェイサー</td>
+          <td class="mono">208.0</td>
+          <td class="mono">1.6%</td>
+          <td class="ev-cell mono">335%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 ウヌボレヤサン → 3 フクシマブリルハム</td>
           <td class="mono">2999.0</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">351%</td>
+          <td class="ev-cell mono">333%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">シックスパック → フクシマブリルハム</td>
-          <td class="mono">2069.1</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">344%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">フクシマブリルハム → シックスパック</td>
-          <td class="mono">1920.2</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">342%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">イサギ → チェイサー</td>
-          <td class="mono">193.5</td>
-          <td class="mono">1.8%</td>
-          <td class="ev-cell mono">342%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">イサギ → シックスパック</td>
-          <td class="mono">1627.5</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">336%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">シックスパック → イサギ</td>
-          <td class="mono">1756.0</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">334%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">チェイサー → フクシマブリルハム</td>
+          <td class="horses-cell">9 チェイサー → 3 フクシマブリルハム</td>
           <td class="mono">189.8</td>
           <td class="mono">1.7%</td>
-          <td class="ev-cell mono">317%</td>
+          <td class="ev-cell mono">332%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">フクシマブリルハム → チェイサー</td>
-          <td class="mono">208.0</td>
-          <td class="mono">1.5%</td>
-          <td class="ev-cell mono">317%</td>
+          <td class="horses-cell">3 フクシマブリルハム → 11 シックスパック</td>
+          <td class="mono">1920.2</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">316%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">イサギ → フクシマブリルハム</td>
+          <td class="horses-cell">11 シックスパック → 3 フクシマブリルハム</td>
+          <td class="mono">2069.1</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">315%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 イサギ → 11 シックスパック</td>
+          <td class="mono">1627.5</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">309%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">11 シックスパック → 7 イサギ</td>
+          <td class="mono">1756.0</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">304%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 イサギ → 3 フクシマブリルハム</td>
           <td class="mono">288.5</td>
-          <td class="mono">0.9%</td>
-          <td class="ev-cell mono">260%</td>
+          <td class="mono">1.0%</td>
+          <td class="ev-cell mono">298%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">フクシマブリルハム → イサギ</td>
+          <td class="horses-cell">3 フクシマブリルハム → 7 イサギ</td>
           <td class="mono">278.3</td>
-          <td class="mono">0.9%</td>
-          <td class="ev-cell mono">248%</td>
+          <td class="mono">1.0%</td>
+          <td class="ev-cell mono">283%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">デルマホダカ → チェイサー</td>
+          <td class="horses-cell">6 デルマホダカ → 9 チェイサー</td>
           <td class="mono">686.1</td>
           <td class="mono">0.4%</td>
-          <td class="ev-cell mono">246%</td>
+          <td class="ev-cell mono">268%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">イサギ → マテンロウカナロア</td>
+          <td class="horses-cell">7 イサギ → 1 マテンロウカナロア</td>
           <td class="mono">210.6</td>
-          <td class="mono">1.1%</td>
-          <td class="ev-cell mono">230%</td>
+          <td class="mono">1.2%</td>
+          <td class="ev-cell mono">247%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ウヌボレヤサン → ホウオウバローロ</td>
-          <td class="mono">1920.2</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">223%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">フクシマブリルハム → マテンロウカナロア</td>
-          <td class="mono">218.2</td>
-          <td class="mono">0.9%</td>
-          <td class="ev-cell mono">206%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">デルマホダカ → フクシマブリルハム</td>
+          <td class="horses-cell">6 デルマホダカ → 3 フクシマブリルハム</td>
           <td class="mono">1121.4</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">205%</td>
+          <td class="ev-cell mono">243%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">マテンロウカナロア → フクシマブリルハム</td>
-          <td class="mono">211.8</td>
-          <td class="mono">1.0%</td>
-          <td class="ev-cell mono">204%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">イサギ → ウヌボレヤサン</td>
-          <td class="mono">1375.8</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">201%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">デルマホダカ → イサギ</td>
+          <td class="horses-cell">6 デルマホダカ → 7 イサギ</td>
           <td class="mono">917.2</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">192%</td>
+          <td class="ev-cell mono">226%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ウヌボレヤサン → チェイサー</td>
-          <td class="mono">831.5</td>
-          <td class="mono">0.2%</td>
+          <td class="horses-cell">3 フクシマブリルハム → 1 マテンロウカナロア</td>
+          <td class="mono">218.2</td>
+          <td class="mono">1.0%</td>
+          <td class="ev-cell mono">222%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 マテンロウカナロア → 3 フクシマブリルハム</td>
+          <td class="mono">211.8</td>
+          <td class="mono">1.0%</td>
+          <td class="ev-cell mono">218%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 ウヌボレヤサン → 5 ホウオウバローロ</td>
+          <td class="mono">1920.2</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">213%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 イサギ → 2 ウヌボレヤサン</td>
+          <td class="mono">1375.8</td>
+          <td class="mono">0.1%</td>
           <td class="ev-cell mono">191%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">9 チェイサー → 7 イサギ</td>
+          <td class="mono">91.4</td>
+          <td class="mono">2.0%</td>
+          <td class="ev-cell mono">182%</td>
         </tr>
         
       </tbody>
@@ -685,143 +759,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">フクシマブリルハム - イサギ - シックスパック</td>
+          <td class="horses-cell">7 イサギ - 3 フクシマブリルハム - 9 チェイサー</td>
+          <td class="mono">305.8</td>
+          <td class="mono">1.3%</td>
+          <td class="ev-cell mono">411%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 イサギ - 3 フクシマブリルハム - 11 シックスパック</td>
           <td class="mono">3374.5</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">396%</td>
+          <td class="ev-cell mono">390%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">チェイサー - フクシマブリルハム - イサギ</td>
-          <td class="mono">305.8</td>
+          <td class="horses-cell">3 フクシマブリルハム - 5 ホウオウバローロ - 9 チェイサー</td>
+          <td class="mono">294.8</td>
           <td class="mono">1.2%</td>
-          <td class="ev-cell mono">365%</td>
+          <td class="ev-cell mono">344%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">チェイサー - フクシマブリルハム - シックスパック</td>
-          <td class="mono">1583.6</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">347%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">チェイサー - フクシマブリルハム - マテンロウカナロア</td>
+          <td class="horses-cell">1 マテンロウカナロア - 3 フクシマブリルハム - 9 チェイサー</td>
           <td class="mono">245.2</td>
           <td class="mono">1.3%</td>
-          <td class="ev-cell mono">312%</td>
+          <td class="ev-cell mono">330%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ホウオウバローロ - チェイサー - フクシマブリルハム</td>
-          <td class="mono">294.8</td>
-          <td class="mono">1.0%</td>
-          <td class="ev-cell mono">300%</td>
+          <td class="horses-cell">1 マテンロウカナロア - 3 フクシマブリルハム - 7 イサギ</td>
+          <td class="mono">406.1</td>
+          <td class="mono">0.8%</td>
+          <td class="ev-cell mono">320%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">フクシマブリルハム - マテンロウカナロア - シックスパック</td>
-          <td class="mono">2365.1</td>
+          <td class="horses-cell">3 フクシマブリルハム - 9 チェイサー - 11 シックスパック</td>
+          <td class="mono">1583.6</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">313%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 ウヌボレヤサン - 7 イサギ - 3 フクシマブリルハム</td>
+          <td class="mono">3505.6</td>
           <td class="mono">0.1%</td>
           <td class="ev-cell mono">296%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ウヌボレヤサン - フクシマブリルハム - イサギ</td>
-          <td class="mono">3505.6</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">290%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">チェイサー - フクシマブリルハム - ブリオメンテ</td>
-          <td class="mono">127.5</td>
-          <td class="mono">2.3%</td>
-          <td class="ev-cell mono">288%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">イサギ - フクシマブリルハム - マテンロウカナロア</td>
-          <td class="mono">406.1</td>
-          <td class="mono">0.7%</td>
-          <td class="ev-cell mono">277%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ホウオウバローロ - チェイサー - イサギ</td>
+          <td class="horses-cell">7 イサギ - 5 ホウオウバローロ - 9 チェイサー</td>
           <td class="mono">217.2</td>
-          <td class="mono">1.2%</td>
-          <td class="ev-cell mono">257%</td>
+          <td class="mono">1.3%</td>
+          <td class="ev-cell mono">292%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">フクシマブリルハム - ブリオメンテ - シックスパック</td>
-          <td class="mono">1096.3</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">243%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">チェイサー - フクシマブリルハム - デルマホダカ</td>
+          <td class="horses-cell">3 フクシマブリルハム - 6 デルマホダカ - 9 チェイサー</td>
           <td class="mono">991.9</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">239%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">チェイサー - シックスパック - イサギ</td>
-          <td class="mono">856.9</td>
           <td class="mono">0.3%</td>
-          <td class="ev-cell mono">218%</td>
+          <td class="ev-cell mono">280%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">チェイサー - ウヌボレヤサン - フクシマブリルハム</td>
-          <td class="mono">1406.8</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">217%</td>
+          <td class="horses-cell">1 マテンロウカナロア - 3 フクシマブリルハム - 11 シックスパック</td>
+          <td class="mono">2365.1</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">274%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">チェイサー - フクシマブリルハム - サマーナイト</td>
+          <td class="horses-cell">3 フクシマブリルハム - 10 ブリオメンテ - 9 チェイサー</td>
+          <td class="mono">127.5</td>
+          <td class="mono">2.0%</td>
+          <td class="ev-cell mono">260%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 サマーナイト - 3 フクシマブリルハム - 9 チェイサー</td>
           <td class="mono">101.7</td>
-          <td class="mono">2.1%</td>
-          <td class="ev-cell mono">216%</td>
+          <td class="mono">2.3%</td>
+          <td class="ev-cell mono">234%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ホウオウバローロ - フクシマブリルハム - シックスパック</td>
+          <td class="horses-cell">7 イサギ - 6 デルマホダカ - 9 チェイサー</td>
+          <td class="mono">713.5</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">232%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">4 ステラデルークス - 3 フクシマブリルハム - 9 チェイサー</td>
+          <td class="mono">194.6</td>
+          <td class="mono">1.2%</td>
+          <td class="ev-cell mono">227%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 マテンロウカナロア - 9 チェイサー - 7 イサギ</td>
+          <td class="mono">137.3</td>
+          <td class="mono">1.6%</td>
+          <td class="ev-cell mono">213%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 フクシマブリルハム - 5 ホウオウバローロ - 11 シックスパック</td>
           <td class="mono">2115.7</td>
           <td class="mono">0.1%</td>
           <td class="ev-cell mono">212%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">チェイサー - フクシマブリルハム - ステラデルークス</td>
-          <td class="mono">194.6</td>
-          <td class="mono">1.1%</td>
-          <td class="ev-cell mono">210%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">イサギ - チェイサー - マテンロウカナロア</td>
-          <td class="mono">137.3</td>
-          <td class="mono">1.5%</td>
+          <td class="horses-cell">2 ウヌボレヤサン - 3 フクシマブリルハム - 9 チェイサー</td>
+          <td class="mono">1406.8</td>
+          <td class="mono">0.1%</td>
           <td class="ev-cell mono">203%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ウヌボレヤサン - フクシマブリルハム - ブリオメンテ</td>
-          <td class="mono">1289.5</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">202%</td>
+          <td class="horses-cell">6 デルマホダカ - 5 ホウオウバローロ - 9 チェイサー</td>
+          <td class="mono">709.3</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">200%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">イサギ - チェイサー - デルマホダカ</td>
-          <td class="mono">713.5</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">200%</td>
+          <td class="horses-cell">7 イサギ - 5 ホウオウバローロ - 11 シックスパック</td>
+          <td class="mono">1689.9</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">196%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 イサギ - 9 チェイサー - 11 シックスパック</td>
+          <td class="mono">856.9</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">195%</td>
         </tr>
         
       </tbody>
@@ -835,143 +909,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">ウヌボレヤサン → フクシマブリルハム → チェイサー</td>
+          <td class="horses-cell">2 ウヌボレヤサン → 3 フクシマブリルハム → 9 チェイサー</td>
           <td class="mono">33868.2</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">727%</td>
+          <td class="ev-cell mono">681%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ウヌボレヤサン → チェイサー → フクシマブリルハム</td>
+          <td class="horses-cell">2 ウヌボレヤサン → 9 チェイサー → 3 フクシマブリルハム</td>
           <td class="mono">30642.7</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">723%</td>
+          <td class="ev-cell mono">670%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">フクシマブリルハム → チェイサー → ウヌボレヤサン</td>
-          <td class="mono">22578.8</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">628%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">フクシマブリルハム → ウヌボレヤサン → チェイサー</td>
-          <td class="mono">26265.1</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">608%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">フクシマブリルハム → チェイサー → マテンロウカナロア</td>
+          <td class="horses-cell">3 フクシマブリルハム → 9 チェイサー → 1 マテンロウカナロア</td>
           <td class="mono">2911.7</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">605%</td>
+          <td class="ev-cell mono">644%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">フクシマブリルハム → チェイサー → シックスパック</td>
-          <td class="mono">14299.9</td>
+          <td class="horses-cell">3 フクシマブリルハム → 9 チェイサー → 2 ウヌボレヤサン</td>
+          <td class="mono">22578.8</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">562%</td>
+          <td class="ev-cell mono">592%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">シックスパック → フクシマブリルハム → チェイサー</td>
-          <td class="mono">17874.9</td>
+          <td class="horses-cell">3 フクシマブリルハム → 2 ウヌボレヤサン → 9 チェイサー</td>
+          <td class="mono">26265.1</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">549%</td>
+          <td class="ev-cell mono">573%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">フクシマブリルハム → シックスパック → チェイサー</td>
-          <td class="mono">16291.0</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">536%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">フクシマブリルハム → マテンロウカナロア → チェイサー</td>
+          <td class="horses-cell">3 フクシマブリルハム → 1 マテンロウカナロア → 9 チェイサー</td>
           <td class="mono">2605.2</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">499%</td>
+          <td class="ev-cell mono">533%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">シックスパック → チェイサー → フクシマブリルハム</td>
-          <td class="mono">14460.6</td>
+          <td class="horses-cell">3 フクシマブリルハム → 9 チェイサー → 11 シックスパック</td>
+          <td class="mono">14299.9</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">512%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">11 シックスパック → 3 フクシマブリルハム → 9 チェイサー</td>
+          <td class="mono">17874.9</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">495%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 フクシマブリルハム → 11 シックスパック → 9 チェイサー</td>
+          <td class="mono">16291.0</td>
           <td class="mono">0.0%</td>
           <td class="ev-cell mono">488%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">フクシマブリルハム → ウヌボレヤサン → ブリオメンテ</td>
-          <td class="mono">20757.9</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">485%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ウヌボレヤサン → フクシマブリルハム → ブリオメンテ</td>
-          <td class="mono">21813.4</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">473%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">イサギ → シックスパック → チェイサー</td>
-          <td class="mono">12141.4</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">469%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ウヌボレヤサン → フクシマブリルハム → イサギ</td>
+          <td class="horses-cell">2 ウヌボレヤサン → 3 フクシマブリルハム → 7 イサギ</td>
           <td class="mono">36771.2</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">461%</td>
+          <td class="ev-cell mono">467%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">シックスパック → イサギ → フクシマブリルハム</td>
-          <td class="mono">25235.1</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">459%</td>
+          <td class="horses-cell">7 イサギ → 3 フクシマブリルハム → 9 チェイサー</td>
+          <td class="mono">2218.9</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">460%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ウヌボレヤサン → イサギ → フクシマブリルハム</td>
+          <td class="horses-cell">2 ウヌボレヤサン → 7 イサギ → 3 フクシマブリルハム</td>
           <td class="mono">35749.8</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">455%</td>
+          <td class="ev-cell mono">460%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">イサギ → シックスパック → フクシマブリルハム</td>
-          <td class="mono">22982.0</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">453%</td>
+          <td class="horses-cell">9 チェイサー → 7 イサギ → 3 フクシマブリルハム</td>
+          <td class="mono">1870.6</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">457%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">シックスパック → フクシマブリルハム → イサギ</td>
+          <td class="horses-cell">11 シックスパック → 7 イサギ → 3 フクシマブリルハム</td>
           <td class="mono">25235.1</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">452%</td>
+          <td class="ev-cell mono">448%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">イサギ → チェイサー → シックスパック</td>
-          <td class="mono">9749.9</td>
+          <td class="horses-cell">7 イサギ → 11 シックスパック → 3 フクシマブリルハム</td>
+          <td class="mono">22982.0</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">451%</td>
+          <td class="ev-cell mono">447%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">シックスパック → イサギ → チェイサー</td>
-          <td class="mono">12617.5</td>
+          <td class="horses-cell">3 フクシマブリルハム → 7 イサギ → 9 チェイサー</td>
+          <td class="mono">2170.3</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">444%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">11 シックスパック → 3 フクシマブリルハム → 7 イサギ</td>
+          <td class="mono">25235.1</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">449%</td>
+          <td class="ev-cell mono">441%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">11 シックスパック → 9 チェイサー → 3 フクシマブリルハム</td>
+          <td class="mono">14460.6</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">436%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 フクシマブリルハム → 2 ウヌボレヤサン → 7 イサギ</td>
+          <td class="mono">31390.1</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">433%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 イサギ → 9 チェイサー → 3 フクシマブリルハム</td>
+          <td class="mono">1873.3</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">427%</td>
         </tr>
         
       </tbody>
@@ -983,5 +1057,49 @@
 
   <div class="disclaimer">本ページの予想は参考情報です。的中・利益を保証しません。<br>馬券の購入は必ずご自身でIPAT等の公式ルートから行ってください。</div>
 </main>
+
+<script>
+(function () {
+  const UNIT = 100;  // JRAの購入単位（100円）に丸める
+
+  function recalc() {
+    const budget = parseFloat(document.getElementById('budgetInput').value) || 0;
+    const rows = Array.from(document.querySelectorAll('#planTable tbody tr[data-ev]'));
+    const totalRow = document.getElementById('planTotalRow');
+    const totalCell = document.getElementById('planTotal');
+
+    if (!rows.length) return;
+
+    if (budget <= 0) {
+      rows.forEach(function (tr) { tr.querySelector('.stake-cell').textContent = '-'; });
+      if (totalRow) totalRow.style.display = 'none';
+      return;
+    }
+
+    // 期待値(EV)が高いものほど多く配分する（EVの合計に対する比率で按分）
+    const evs = rows.map(function (tr) { return Math.max(0, parseFloat(tr.dataset.ev) - 1); }); // 100%超過分だけを重みにする
+    const totalWeight = evs.reduce(function (a, b) { return a + b; }, 0);
+
+    let allocated = 0;
+    rows.forEach(function (tr, i) {
+      const weight = totalWeight > 0 ? evs[i] / totalWeight : 1 / rows.length;
+      const raw = budget * weight;
+      const amount = Math.floor(raw / UNIT) * UNIT;
+      allocated += amount;
+      tr.querySelector('.stake-cell').textContent = amount > 0 ? amount.toLocaleString('ja-JP') + '円' : '見送り';
+    });
+
+    if (totalRow && totalCell) {
+      totalRow.style.display = '';
+      totalCell.textContent = allocated.toLocaleString('ja-JP') + '円 / ' + budget.toLocaleString('ja-JP') + '円中';
+    }
+  }
+
+  const input = document.getElementById('budgetInput');
+  if (input) {
+    input.addEventListener('input', recalc);
+  }
+})();
+</script>
 </body>
 </html>

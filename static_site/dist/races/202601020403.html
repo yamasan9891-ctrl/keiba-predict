@@ -63,30 +63,66 @@
   }
   .summary-text { font-size: 13px; line-height: 1.75; color: var(--text-dim); }
 
-  /* --- 結論：一番のおすすめ --- */
-  .best-bet {
+  /* --- 結論：馬券風デザイン --- */
+  .ticket {
     position: relative;
     background: linear-gradient(180deg, #1a1408 0%, var(--surface) 70%);
     border: 1px solid var(--amber-dim);
+    border-radius: 10px;
     box-shadow: 0 0 0 1px rgba(240,162,2,0.08), 0 8px 24px -12px var(--amber-glow);
+    padding: 0;
+    overflow: hidden;
   }
-  .best-bet .tag {
-    font-size: 12px; font-weight: 800; color: var(--amber);
+  .ticket-head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 16px; background: rgba(240,162,2,0.08);
+    border-bottom: 1px dashed var(--amber-dim);
   }
-  .best-bet .type {
-    display: inline-block; font-size: 11px; color: var(--bg); background: var(--amber);
-    font-weight: 700; padding: 2px 8px; border-radius: 3px; margin-top: 8px;
+  .ticket-head .label { font-size: 11px; font-weight: 800; color: var(--amber); letter-spacing: 0.05em; }
+  .ticket-head .type-badge {
+    font-size: 11px; color: var(--bg); background: var(--amber);
+    font-weight: 800; padding: 3px 10px; border-radius: 3px;
   }
-  .best-bet .horses {
-    font-size: 21px; font-weight: 800; margin: 8px 0 12px;
-    color: var(--text); line-height: 1.4;
+  .ticket-body { padding: 16px; }
+  .ticket .horses {
+    font-size: 20px; font-weight: 800; margin: 0 0 14px;
+    color: var(--text); line-height: 1.45;
   }
-  .best-bet .stat-row { display: flex; }
-  .best-bet .stat { margin-right: 24px; }
-  .best-bet .stat .label { font-size: 10.5px; color: var(--text-dim); }
-  .best-bet .stat .value { font-size: 18px; font-weight: 800; margin-top: 2px; }
-  .best-bet .stat.ev .value { color: var(--amber); }
-  .best-bet .footnote { font-size: 11px; color: var(--text-dim); margin-top: 12px; line-height: 1.6; border-top: 1px solid var(--line); padding-top: 10px; }
+  .ticket-stats {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+    padding: 12px 0; border-top: 1px dashed var(--line); border-bottom: 1px dashed var(--line);
+  }
+  .ticket-stats .stat { text-align: center; }
+  .ticket-stats .stat .label { font-size: 10px; color: var(--text-dim); }
+  .ticket-stats .stat .value { font-size: 16px; font-weight: 800; margin-top: 3px; }
+  .ticket-stats .stat.ev .value { color: var(--amber); }
+
+  .ticket-amount {
+    margin-top: 14px; padding: 12px; background: var(--surface-2);
+    border-radius: 6px; display: flex; justify-content: space-between; align-items: center;
+  }
+  .ticket-amount .label { font-size: 11px; color: var(--text-dim); }
+  .ticket-amount .value { font-size: 22px; font-weight: 800; color: var(--green); }
+  .ticket-amount .value::before { content: "¥"; font-size: 14px; margin-right: 2px; }
+
+  .footnote { font-size: 11px; color: var(--text-dim); margin-top: 12px; line-height: 1.6; padding: 0 16px 14px; }
+
+  /* --- 予算入力 --- */
+  .budget-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
+    padding: 10px 14px; margin-bottom: 14px;
+  }
+  .budget-box label { font-size: 12px; color: var(--text-dim); white-space: nowrap; }
+  .budget-box input {
+    flex: 1; background: var(--surface-2); border: 1px solid var(--line); border-radius: 4px;
+    color: var(--text); font-size: 15px; padding: 7px 10px; font-family: inherit;
+    -moz-appearance: textfield;
+  }
+  .budget-box input::-webkit-outer-spin-button, .budget-box input::-webkit-inner-spin-button { margin: 0; }
+  .budget-box .unit { font-size: 12px; color: var(--text-dim); }
+  .stake-cell { color: var(--green); font-weight: 700; }
+
 
   /* --- 穴馬候補 --- */
   .dark-horse-card { border-left: 3px solid var(--green); }
@@ -178,18 +214,66 @@
   <div class="card summary-text">逃げ馬は1頭で、比較的落ち着いたペースが予想される。馬場状態は「稍重」。</div>
 
   
-  <div class="section-title"><span class="en">Conclusion</span>結論：一番のおすすめ</div>
-  <div class="card best-bet">
-    <div class="tag">🏆 このレースで最も期待値が高い買い目</div>
-    <div class="type">3連単</div>
-    <div class="horses">ミアエッテ → サンエンジェルス → ペガサスウィンド</div>
-    <div class="stat-row mono">
-      <div class="stat"><div class="label">オッズ</div><div class="value">29538.9倍</div></div>
-      <div class="stat"><div class="label">的中確率</div><div class="value">0.0%</div></div>
-      <div class="stat ev"><div class="label">期待値</div><div class="value">737%</div></div>
-    </div>
-    <div class="footnote">期待値とは「100円賭けた時に理論上いくら戻ってくるか」の目安です。100%を超えるほど、賭け金に対して見込まれる払戻が大きいことを意味します（的中を保証するものではありません）。</div>
+  <div class="section-title"><span class="en">Betting Plan</span>AI推奨 購入プラン</div>
+  <div class="section-hint">実際の投票は複数点に分けるのが基本のため、期待値が高い順に複数の買い目を組み合わせています。予算を入れると自動で配分します。</div>
+  <div class="budget-box">
+    <label for="budgetInput">今回の予算</label>
+    <input type="number" id="budgetInput" inputmode="numeric" placeholder="例: 3000" min="0" step="100">
+    <span class="unit">円</span>
   </div>
+  <div class="card" style="padding:0; overflow:hidden;">
+    <table id="planTable">
+      <thead><tr><th>券種</th><th>買い目</th><th>オッズ</th><th>期待値</th><th>配分額</th></tr></thead>
+      <tbody>
+        
+        <tr data-ev="3.640666999120184">
+          <td class="mono">3連複</td>
+          <td class="horses-cell">8 サンエンジェルス - 1 ペガサスウィンド - 9 モンテール</td>
+          <td class="mono">330.5</td>
+          <td class="ev-cell mono">364%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="2.238443077778858">
+          <td class="mono">単勝</td>
+          <td class="horses-cell">10 ミアエッテ</td>
+          <td class="mono">184.8</td>
+          <td class="ev-cell mono">224%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="1.9649991871195036">
+          <td class="mono">馬連</td>
+          <td class="horses-cell">8 サンエンジェルス - 1 ペガサスウィンド</td>
+          <td class="mono">45.0</td>
+          <td class="ev-cell mono">196%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="1.9645056105874472">
+          <td class="mono">馬単</td>
+          <td class="horses-cell">8 サンエンジェルス → 1 ペガサスウィンド</td>
+          <td class="mono">91.8</td>
+          <td class="ev-cell mono">196%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="1.8926784547558702">
+          <td class="mono">馬単</td>
+          <td class="horses-cell">1 ペガサスウィンド → 8 サンエンジェルス</td>
+          <td class="mono">85.0</td>
+          <td class="ev-cell mono">189%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr id="planTotalRow" style="display:none;">
+          <td colspan="4" style="text-align:right; font-weight:800;">合計</td>
+          <td class="mono" id="planTotal" style="font-weight:800; color:var(--green);">-</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="footnote">配分額は、各買い目の期待値の大きさに比例して予算を振り分けた目安です（期待値が高いものほど多く配分）。1点に集中させず、複数点に分けて購入することでブレを抑える考え方に基づいています。あくまで参考情報であり、的中や利益を保証するものではありません。</div>
   
 
   
@@ -198,28 +282,18 @@
   <div class="card dark-horse-card">
     
     <div class="dark-horse-item">
-      <span class="dh-name">ミアエッテ</span><span class="dh-badge">14番人気</span>
-      <div class="dh-stats mono">オッズ 184.8倍 ／ 勝率目安 1.2% ／ 期待値 214%</div>
-    </div>
-    
-    <div class="dark-horse-item">
-      <span class="dh-name">ダンツアラーム</span><span class="dh-badge">12番人気</span>
-      <div class="dh-stats mono">オッズ 81.8倍 ／ 勝率目安 1.7% ／ 期待値 143%</div>
-    </div>
-    
-    <div class="dark-horse-item">
       <span class="dh-name">クリコイーコ</span><span class="dh-badge">11番人気</span>
-      <div class="dh-stats mono">オッズ 78.0倍 ／ 勝率目安 1.8% ／ 期待値 143%</div>
+      <div class="dh-stats mono">オッズ 78.0倍 ／ 勝率目安 2.0% ／ 期待値 160%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">ラスターヴァース</span><span class="dh-badge">10番人気</span>
-      <div class="dh-stats mono">オッズ 46.7倍 ／ 勝率目安 2.8% ／ 期待値 129%</div>
+      <div class="dh-stats mono">オッズ 46.7倍 ／ 勝率目安 2.3% ／ 期待値 109%</div>
     </div>
     
     <div class="dark-horse-item">
-      <span class="dh-name">サクセスブルー</span><span class="dh-badge">8番人気</span>
-      <div class="dh-stats mono">オッズ 17.1倍 ／ 勝率目安 5.9% ／ 期待値 101%</div>
+      <span class="dh-name">モンテール</span><span class="dh-badge">7番人気</span>
+      <div class="dh-stats mono">オッズ 16.3倍 ／ 勝率目安 6.6% ／ 期待値 108%</div>
     </div>
     
   </div>
@@ -231,17 +305,17 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">4</span>ポップアップ</span>
-        <span class="horse-prob mono">複勝圏内 56%</span>
+        <span class="horse-prob mono">複勝圏内 58%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約56%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約58%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">1</span>ペガサスウィンド</span>
-        <span class="horse-prob mono">複勝圏内 46%</span>
+        <span class="horse-prob mono">複勝圏内 44%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約46%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約44%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
     </div>
     
     <div class="horse-item">
@@ -255,65 +329,65 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">7</span>チャーチルデュース</span>
-        <span class="horse-prob mono">複勝圏内 34%</span>
+        <span class="horse-prob mono">複勝圏内 30%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約34%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約30%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">14</span>ホウオウファラオ</span>
-        <span class="horse-prob mono">複勝圏内 31%</span>
+        <span class="horse-prob mono">複勝圏内 29%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約31%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約29%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">13</span>ジャストグレース</span>
-        <span class="horse-prob mono">複勝圏内 24%</span>
+        <span class="horse-prob mono">複勝圏内 20%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約24%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は9.0着とやや不振。</div>
-    </div>
-    
-    <div class="horse-item">
-      <div class="horse-head">
-        <span class="horse-name"><span class="horse-num mono">2</span>サクセスブルー</span>
-        <span class="horse-prob mono">複勝圏内 17%</span>
-      </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約17%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は8.3着とやや不振。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約20%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は9.0着とやや不振。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">9</span>モンテール</span>
-        <span class="horse-prob mono">複勝圏内 16%</span>
+        <span class="horse-prob mono">複勝圏内 19%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約16%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は10.0着とやや不振。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約19%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は10.0着とやや不振。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">2</span>サクセスブルー</span>
+        <span class="horse-prob mono">複勝圏内 15%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約15%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は8.3着とやや不振。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">6</span>ヨドノサファイア</span>
-        <span class="horse-prob mono">複勝圏内 9%</span>
+        <span class="horse-prob mono">複勝圏内 10%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約9%。逃げ脚質で、他に逃げ馬が少なく単騎で楽なペースを刻める可能性が高く、粘り込みに期待。直近3走の平均着順は9.3着とやや不振。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約10%。逃げ脚質で、他に逃げ馬が少なく単騎で楽なペースを刻める可能性が高く、粘り込みに期待。直近3走の平均着順は9.3着とやや不振。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">3</span>ラスターヴァース</span>
-        <span class="horse-prob mono">複勝圏内 8%</span>
+        <span class="horse-prob mono">複勝圏内 7%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約8%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は11.0着とやや不振。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約7%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は11.0着とやや不振。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">12</span>クリコイーコ</span>
-        <span class="horse-prob mono">複勝圏内 5%</span>
+        <span class="horse-prob mono">複勝圏内 6%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約5%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約6%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。</div>
     </div>
     
     <div class="horse-item">
@@ -342,8 +416,8 @@
     
   </div>
 
-  <div class="section-title"><span class="en">All Bets</span>券種ごとの買い目候補</div>
-  <div class="section-hint">期待値100%を超えるものだけを表示しています。券種名をタップすると開きます。</div>
+  <div class="section-title"><span class="en">All Bets</span>券種ごとの買い目一覧（参考）</div>
+  <div class="section-hint">期待値100%を超えるものを全て表示しています。上の「購入プラン」はこの中から自動選定したものです。</div>
   
   <details class="bet-group" open>
     <summary>単勝 <span class="count">5点</span></summary>
@@ -352,38 +426,38 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">ミアエッテ</td>
+          <td class="horses-cell">10 ミアエッテ</td>
           <td class="mono">184.8</td>
           <td class="mono">1.2%</td>
-          <td class="ev-cell mono">214%</td>
+          <td class="ev-cell mono">224%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ダンツアラーム</td>
-          <td class="mono">81.8</td>
-          <td class="mono">1.7%</td>
-          <td class="ev-cell mono">143%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">クリコイーコ</td>
+          <td class="horses-cell">12 クリコイーコ</td>
           <td class="mono">78.0</td>
-          <td class="mono">1.8%</td>
-          <td class="ev-cell mono">143%</td>
+          <td class="mono">2.0%</td>
+          <td class="ev-cell mono">160%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ラスターヴァース</td>
+          <td class="horses-cell">11 ダンツアラーム</td>
+          <td class="mono">81.8</td>
+          <td class="mono">1.9%</td>
+          <td class="ev-cell mono">153%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 ラスターヴァース</td>
           <td class="mono">46.7</td>
-          <td class="mono">2.8%</td>
-          <td class="ev-cell mono">129%</td>
+          <td class="mono">2.3%</td>
+          <td class="ev-cell mono">109%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">サクセスブルー</td>
-          <td class="mono">17.1</td>
-          <td class="mono">5.9%</td>
-          <td class="ev-cell mono">101%</td>
+          <td class="horses-cell">9 モンテール</td>
+          <td class="mono">16.3</td>
+          <td class="mono">6.6%</td>
+          <td class="ev-cell mono">108%</td>
         </tr>
         
       </tbody>
@@ -397,143 +471,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">ミアエッテ - サンエンジェルス</td>
+          <td class="horses-cell">8 サンエンジェルス - 10 ミアエッテ</td>
           <td class="mono">1411.7</td>
           <td class="mono">0.3%</td>
-          <td class="ev-cell mono">413%</td>
+          <td class="ev-cell mono">445%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">クリコイーコ - ペガサスウィンド</td>
+          <td class="horses-cell">1 ペガサスウィンド - 12 クリコイーコ</td>
           <td class="mono">348.1</td>
-          <td class="mono">0.6%</td>
-          <td class="ev-cell mono">221%</td>
+          <td class="mono">0.7%</td>
+          <td class="ev-cell mono">244%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ダンツアラーム - ペガサスウィンド</td>
+          <td class="horses-cell">1 ペガサスウィンド - 11 ダンツアラーム</td>
           <td class="mono">356.2</td>
           <td class="mono">0.6%</td>
-          <td class="ev-cell mono">216%</td>
+          <td class="ev-cell mono">229%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ミアエッテ - ペガサスウィンド</td>
+          <td class="horses-cell">1 ペガサスウィンド - 10 ミアエッテ</td>
           <td class="mono">508.6</td>
           <td class="mono">0.4%</td>
-          <td class="ev-cell mono">204%</td>
+          <td class="ev-cell mono">210%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ラスターヴァース - クリコイーコ</td>
+          <td class="horses-cell">8 サンエンジェルス - 1 ペガサスウィンド</td>
+          <td class="mono">45.0</td>
+          <td class="mono">4.4%</td>
+          <td class="ev-cell mono">196%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 ラスターヴァース - 12 クリコイーコ</td>
           <td class="mono">1949.2</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">201%</td>
+          <td class="ev-cell mono">191%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ラスターヴァース - ダンツアラーム</td>
+          <td class="horses-cell">3 ラスターヴァース - 11 ダンツアラーム</td>
           <td class="mono">2031.7</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">200%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ペガサスウィンド - サンエンジェルス</td>
-          <td class="mono">45.0</td>
-          <td class="mono">4.3%</td>
-          <td class="ev-cell mono">194%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ミアエッテ - ジャストグレース</td>
-          <td class="mono">912.1</td>
-          <td class="mono">0.2%</td>
           <td class="ev-cell mono">182%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ラスターヴァース - サンエンジェルス</td>
-          <td class="mono">251.3</td>
-          <td class="mono">0.7%</td>
-          <td class="ev-cell mono">176%</td>
+          <td class="horses-cell">8 サンエンジェルス - 9 モンテール</td>
+          <td class="mono">102.2</td>
+          <td class="mono">1.8%</td>
+          <td class="ev-cell mono">181%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">デルマテイネ - サンエンジェルス</td>
+          <td class="horses-cell">8 サンエンジェルス - 5 デルマテイネ</td>
           <td class="mono">866.8</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">165%</td>
+          <td class="ev-cell mono">172%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ミアエッテ - チャーチルデュース</td>
+          <td class="horses-cell">10 ミアエッテ - 11 ダンツアラーム</td>
+          <td class="mono">3728.2</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">172%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">6 ヨドノサファイア - 10 ミアエッテ</td>
+          <td class="mono">1969.2</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">169%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">12 クリコイーコ - 9 モンテール</td>
+          <td class="mono">586.2</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">167%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">13 ジャストグレース - 10 ミアエッテ</td>
+          <td class="mono">912.1</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">163%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 チャーチルデュース - 10 ミアエッテ</td>
           <td class="mono">566.3</td>
           <td class="mono">0.3%</td>
-          <td class="ev-cell mono">164%</td>
+          <td class="ev-cell mono">158%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">クリコイーコ - ジャストグレース</td>
-          <td class="mono">508.6</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">161%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ラスターヴァース - ペガサスウィンド</td>
-          <td class="mono">163.6</td>
-          <td class="mono">1.0%</td>
+          <td class="horses-cell">1 ペガサスウィンド - 9 モンテール</td>
+          <td class="mono">67.4</td>
+          <td class="mono">2.3%</td>
           <td class="ev-cell mono">157%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ダンツアラーム - ミアエッテ</td>
-          <td class="mono">3728.2</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">153%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ダンツアラーム - ジャストグレース</td>
-          <td class="mono">489.8</td>
+          <td class="horses-cell">9 モンテール - 11 ダンツアラーム</td>
+          <td class="mono">597.2</td>
           <td class="mono">0.3%</td>
-          <td class="ev-cell mono">148%</td>
+          <td class="ev-cell mono">155%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">モンテール - サンエンジェルス</td>
-          <td class="mono">102.2</td>
-          <td class="mono">1.4%</td>
-          <td class="ev-cell mono">147%</td>
+          <td class="horses-cell">8 サンエンジェルス - 3 ラスターヴァース</td>
+          <td class="mono">251.3</td>
+          <td class="mono">0.6%</td>
+          <td class="ev-cell mono">154%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ミアエッテ - ホウオウファラオ</td>
+          <td class="horses-cell">12 クリコイーコ - 13 ジャストグレース</td>
+          <td class="mono">508.6</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">154%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">12 クリコイーコ - 10 ミアエッテ</td>
+          <td class="mono">2976.7</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">150%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">14 ホウオウファラオ - 10 ミアエッテ</td>
           <td class="mono">559.7</td>
           <td class="mono">0.3%</td>
-          <td class="ev-cell mono">145%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">モンテール - ラスターヴァース</td>
-          <td class="mono">448.0</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">143%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">モンテール - ジャストグレース</td>
-          <td class="mono">141.1</td>
-          <td class="mono">1.0%</td>
-          <td class="ev-cell mono">138%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ミアエッテ - ヨドノサファイア</td>
-          <td class="mono">1969.2</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">136%</td>
+          <td class="ev-cell mono">147%</td>
         </tr>
         
       </tbody>
@@ -547,143 +621,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">ミアエッテ → サンエンジェルス</td>
+          <td class="horses-cell">10 ミアエッテ → 8 サンエンジェルス</td>
           <td class="mono">2325.7</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">321%</td>
+          <td class="ev-cell mono">345%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">サンエンジェルス → ミアエッテ</td>
+          <td class="horses-cell">8 サンエンジェルス → 10 ミアエッテ</td>
           <td class="mono">1911.5</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">295%</td>
+          <td class="ev-cell mono">319%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ダンツアラーム → ペガサスウィンド</td>
+          <td class="horses-cell">11 ダンツアラーム → 1 ペガサスウィンド</td>
           <td class="mono">1041.3</td>
           <td class="mono">0.3%</td>
+          <td class="ev-cell mono">309%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">10 ミアエッテ → 12 クリコイーコ</td>
+          <td class="mono">11628.7</td>
+          <td class="mono">0.0%</td>
           <td class="ev-cell mono">292%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ダンツアラーム → ラスターヴァース</td>
-          <td class="mono">5581.8</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">273%</td>
+          <td class="horses-cell">11 ダンツアラーム → 9 モンテール</td>
+          <td class="mono">2250.7</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">286%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ミアエッテ → クリコイーコ</td>
-          <td class="mono">11628.7</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">249%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">クリコイーコ → ペガサスウィンド</td>
+          <td class="horses-cell">12 クリコイーコ → 1 ペガサスウィンド</td>
           <td class="mono">792.8</td>
           <td class="mono">0.3%</td>
+          <td class="ev-cell mono">257%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">11 ダンツアラーム → 3 ラスターヴァース</td>
+          <td class="mono">5581.8</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">250%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">12 クリコイーコ → 10 ミアエッテ</td>
+          <td class="mono">9303.0</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">235%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">12 クリコイーコ → 9 モンテール</td>
+          <td class="mono">1681.2</td>
+          <td class="mono">0.1%</td>
           <td class="ev-cell mono">233%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ダンツアラーム → モンテール</td>
-          <td class="mono">2250.7</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">222%</td>
+          <td class="horses-cell">12 クリコイーコ → 11 ダンツアラーム</td>
+          <td class="mono">5581.8</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">219%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ミアエッテ → ジャストグレース</td>
-          <td class="mono">2114.3</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">203%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">クリコイーコ → ミアエッテ</td>
+          <td class="horses-cell">11 ダンツアラーム → 10 ミアエッテ</td>
           <td class="mono">9303.0</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">200%</td>
+          <td class="ev-cell mono">215%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ダンツアラーム → ジャストグレース</td>
-          <td class="mono">1354.8</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">198%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">サンエンジェルス → ペガサスウィンド</td>
-          <td class="mono">91.8</td>
-          <td class="mono">2.1%</td>
-          <td class="ev-cell mono">193%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ダンツアラーム → ミアエッテ</td>
-          <td class="mono">9303.0</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">191%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ミアエッテ → ペガサスウィンド</td>
+          <td class="horses-cell">10 ミアエッテ → 1 ペガサスウィンド</td>
           <td class="mono">1033.6</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">191%</td>
+          <td class="ev-cell mono">197%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ミアエッテ → チャーチルデュース</td>
-          <td class="mono">1381.6</td>
-          <td class="mono">0.1%</td>
+          <td class="horses-cell">8 サンエンジェルス → 1 ペガサスウィンド</td>
+          <td class="mono">91.8</td>
+          <td class="mono">2.1%</td>
+          <td class="ev-cell mono">196%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 ペガサスウィンド → 8 サンエンジェルス</td>
+          <td class="mono">85.0</td>
+          <td class="mono">2.2%</td>
           <td class="ev-cell mono">189%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ラスターヴァース → サンエンジェルス</td>
-          <td class="mono">564.9</td>
+          <td class="horses-cell">3 ラスターヴァース → 9 モンテール</td>
+          <td class="mono">1182.5</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">188%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 ペガサスウィンド → 11 ダンツアラーム</td>
+          <td class="mono">545.0</td>
           <td class="mono">0.3%</td>
           <td class="ev-cell mono">188%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ペガサスウィンド → サンエンジェルス</td>
-          <td class="mono">85.0</td>
-          <td class="mono">2.2%</td>
-          <td class="ev-cell mono">187%</td>
+          <td class="horses-cell">1 ペガサスウィンド → 12 クリコイーコ</td>
+          <td class="mono">489.6</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">184%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ラスターヴァース → モンテール</td>
-          <td class="mono">1182.5</td>
+          <td class="horses-cell">11 ダンツアラーム → 8 サンエンジェルス</td>
+          <td class="mono">792.8</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">186%</td>
+          <td class="ev-cell mono">184%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">クリコイーコ → ダンツアラーム</td>
-          <td class="mono">5581.8</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">182%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ラスターヴァース → チャーチルデュース</td>
-          <td class="mono">542.9</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">179%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ミアエッテ → サクセスブルー</td>
-          <td class="mono">2584.1</td>
+          <td class="horses-cell">10 ミアエッテ → 7 チャーチルデュース</td>
+          <td class="mono">1381.6</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">179%</td>
+          <td class="ev-cell mono">183%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">10 ミアエッテ → 13 ジャストグレース</td>
+          <td class="mono">2114.3</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">183%</td>
         </tr>
         
       </tbody>
@@ -697,143 +771,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">ミアエッテ - ペガサスウィンド - サンエンジェルス</td>
-          <td class="mono">2322.4</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">415%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ダンツアラーム - ミアエッテ - サンエンジェルス</td>
-          <td class="mono">21448.9</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">360%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">モンテール - ミアエッテ - サンエンジェルス</td>
+          <td class="horses-cell">8 サンエンジェルス - 10 ミアエッテ - 9 モンテール</td>
           <td class="mono">6233.0</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">346%</td>
+          <td class="ev-cell mono">453%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ミアエッテ - チャーチルデュース - サンエンジェルス</td>
+          <td class="horses-cell">8 サンエンジェルス - 1 ペガサスウィンド - 10 ミアエッテ</td>
+          <td class="mono">2322.4</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">441%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 サンエンジェルス - 10 ミアエッテ - 11 ダンツアラーム</td>
+          <td class="mono">21448.9</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">418%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 ペガサスウィンド - 9 モンテール - 11 ダンツアラーム</td>
+          <td class="mono">2480.4</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">376%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 サンエンジェルス - 1 ペガサスウィンド - 9 モンテール</td>
+          <td class="mono">330.5</td>
+          <td class="mono">1.1%</td>
+          <td class="ev-cell mono">364%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 サンエンジェルス - 4 ポップアップ - 10 ミアエッテ</td>
+          <td class="mono">1277.1</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">344%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 サンエンジェルス - 7 チャーチルデュース - 10 ミアエッテ</td>
           <td class="mono">2523.4</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">316%</td>
+          <td class="ev-cell mono">313%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ジャストグレース - ミアエッテ - サンエンジェルス</td>
-          <td class="mono">3523.0</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">298%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">モンテール - ペガサスウィンド - サンエンジェルス</td>
-          <td class="mono">330.5</td>
-          <td class="mono">0.9%</td>
-          <td class="ev-cell mono">297%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ポップアップ - ミアエッテ - サンエンジェルス</td>
-          <td class="mono">1277.1</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">295%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">モンテール - ダンツアラーム - ペガサスウィンド</td>
-          <td class="mono">2480.4</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">295%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ラスターヴァース - ペガサスウィンド - サンエンジェルス</td>
-          <td class="mono">650.5</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">281%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">クリコイーコ - ミアエッテ - サンエンジェルス</td>
+          <td class="horses-cell">8 サンエンジェルス - 12 クリコイーコ - 10 ミアエッテ</td>
           <td class="mono">14585.2</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">256%</td>
+          <td class="ev-cell mono">311%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ホウオウファラオ - ミアエッテ - サンエンジェルス</td>
-          <td class="mono">2271.8</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">254%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">クリコイーコ - ペガサスウィンド - サンエンジェルス</td>
+          <td class="horses-cell">8 サンエンジェルス - 1 ペガサスウィンド - 12 クリコイーコ</td>
           <td class="mono">879.6</td>
           <td class="mono">0.3%</td>
-          <td class="ev-cell mono">250%</td>
+          <td class="ev-cell mono">284%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">モンテール - ラスターヴァース - サンエンジェルス</td>
+          <td class="horses-cell">8 サンエンジェルス - 13 ジャストグレース - 10 ミアエッテ</td>
+          <td class="mono">3523.0</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">273%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 サンエンジェルス - 14 ホウオウファラオ - 10 ミアエッテ</td>
+          <td class="mono">2271.8</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">265%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 サンエンジェルス - 1 ペガサスウィンド - 3 ラスターヴァース</td>
+          <td class="mono">650.5</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">241%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 サンエンジェルス - 3 ラスターヴァース - 9 モンテール</td>
           <td class="mono">1692.0</td>
           <td class="mono">0.1%</td>
+          <td class="ev-cell mono">240%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 ペガサスウィンド - 12 クリコイーコ - 11 ダンツアラーム</td>
+          <td class="mono">5099.7</td>
+          <td class="mono">0.0%</td>
           <td class="ev-cell mono">227%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ミアエッテ - ダンツアラーム - ペガサスウィンド</td>
+          <td class="horses-cell">8 サンエンジェルス - 12 クリコイーコ - 9 モンテール</td>
+          <td class="mono">1805.1</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">223%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 サンエンジェルス - 5 デルマテイネ - 9 モンテール</td>
+          <td class="mono">4861.7</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">222%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 ペガサスウィンド - 10 ミアエッテ - 11 ダンツアラーム</td>
           <td class="mono">8479.8</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">200%</td>
+          <td class="ev-cell mono">221%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ラスターヴァース - ペガサスウィンド - ダンツアラーム</td>
-          <td class="mono">3423.7</td>
+          <td class="horses-cell">1 ペガサスウィンド - 12 クリコイーコ - 9 モンテール</td>
+          <td class="mono">1325.9</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">220%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 ペガサスウィンド - 10 ミアエッテ - 9 モンテール</td>
+          <td class="mono">2257.7</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">196%</td>
+          <td class="ev-cell mono">220%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">サクセスブルー - ミアエッテ - サンエンジェルス</td>
-          <td class="mono">3270.2</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">194%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">クリコイーコ - ラスターヴァース - ペガサスウィンド</td>
-          <td class="mono">3212.6</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">192%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">クリコイーコ - ダンツアラーム - ペガサスウィンド</td>
-          <td class="mono">5099.7</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">191%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ミアエッテ - クリコイーコ - ペガサスウィンド</td>
+          <td class="horses-cell">1 ペガサスウィンド - 12 クリコイーコ - 10 ミアエッテ</td>
           <td class="mono">7596.5</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">188%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">モンテール - ラスターヴァース - ダンツアラーム</td>
-          <td class="mono">10271.3</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">183%</td>
+          <td class="ev-cell mono">217%</td>
         </tr>
         
       </tbody>
@@ -847,143 +921,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">ミアエッテ → サンエンジェルス → ペガサスウィンド</td>
+          <td class="horses-cell">10 ミアエッテ → 8 サンエンジェルス → 1 ペガサスウィンド</td>
           <td class="mono">29538.9</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">737%</td>
+          <td class="ev-cell mono">786%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ミアエッテ → ペガサスウィンド → サンエンジェルス</td>
+          <td class="horses-cell">10 ミアエッテ → 1 ペガサスウィンド → 8 サンエンジェルス</td>
           <td class="mono">25510.9</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">667%</td>
+          <td class="ev-cell mono">707%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ミアエッテ → ジャストグレース → サンエンジェルス</td>
+          <td class="horses-cell">11 ダンツアラーム → 9 モンテール → 1 ペガサスウィンド</td>
+          <td class="mono">28062.0</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">604%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">10 ミアエッテ → 13 ジャストグレース → 8 サンエンジェルス</td>
           <td class="mono">51021.8</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">637%</td>
+          <td class="ev-cell mono">582%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ミアエッテ → チャーチルデュース → サンエンジェルス</td>
+          <td class="horses-cell">8 サンエンジェルス → 10 ミアエッテ → 1 ペガサスウィンド</td>
+          <td class="mono">19353.1</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">579%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">10 ミアエッテ → 7 チャーチルデュース → 8 サンエンジェルス</td>
           <td class="mono">31180.0</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">576%</td>
+          <td class="ev-cell mono">568%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ミアエッテ → サンエンジェルス → ジャストグレース</td>
-          <td class="mono">43172.3</td>
+          <td class="horses-cell">10 ミアエッテ → 14 ホウオウファラオ → 8 サンエンジェルス</td>
+          <td class="mono">33014.1</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">561%</td>
+          <td class="ev-cell mono">565%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ミアエッテ → サンエンジェルス → チャーチルデュース</td>
+          <td class="horses-cell">10 ミアエッテ → 8 サンエンジェルス → 4 ポップアップ</td>
+          <td class="mono">15590.0</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">548%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">10 ミアエッテ → 8 サンエンジェルス → 7 チャーチルデュース</td>
           <td class="mono">29538.9</td>
           <td class="mono">0.0%</td>
           <td class="ev-cell mono">546%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ミアエッテ → ホウオウファラオ → サンエンジェルス</td>
-          <td class="mono">33014.1</td>
+          <td class="horses-cell">10 ミアエッテ → 8 サンエンジェルス → 13 ジャストグレース</td>
+          <td class="mono">43172.3</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">544%</td>
+          <td class="ev-cell mono">521%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">サンエンジェルス → ミアエッテ → ペガサスウィンド</td>
-          <td class="mono">19353.1</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">541%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ミアエッテ → サンエンジェルス → ポップアップ</td>
-          <td class="mono">15590.0</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">479%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ダンツアラーム → モンテール → ペガサスウィンド</td>
-          <td class="mono">28062.0</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">471%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ミアエッテ → サンエンジェルス → ホウオウファラオ</td>
-          <td class="mono">28062.0</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">469%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">サンエンジェルス → ミアエッテ → ジャストグレース</td>
-          <td class="mono">31180.0</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">454%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">サンエンジェルス → ミアエッテ → チャーチルデュース</td>
+          <td class="horses-cell">11 ダンツアラーム → 1 ペガサスウィンド → 9 モンテール</td>
           <td class="mono">21586.1</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">447%</td>
+          <td class="ev-cell mono">515%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">サンエンジェルス → ペガサスウィンド → ミアエッテ</td>
-          <td class="mono">12755.4</td>
+          <td class="horses-cell">10 ミアエッテ → 8 サンエンジェルス → 14 ホウオウファラオ</td>
+          <td class="mono">28062.0</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">429%</td>
+          <td class="ev-cell mono">491%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">サンエンジェルス → ミアエッテ → ポップアップ</td>
+          <td class="horses-cell">8 サンエンジェルス → 10 ミアエッテ → 4 ポップアップ</td>
           <td class="mono">12200.8</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">420%</td>
+          <td class="ev-cell mono">482%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ミアエッテ → ヨドノサファイア → ジャストグレース</td>
-          <td class="mono">140310.1</td>
+          <td class="horses-cell">8 サンエンジェルス → 1 ペガサスウィンド → 10 ミアエッテ</td>
+          <td class="mono">12755.4</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">411%</td>
+          <td class="ev-cell mono">457%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ダンツアラーム → ペガサスウィンド → モンテール</td>
+          <td class="horses-cell">8 サンエンジェルス → 10 ミアエッテ → 7 チャーチルデュース</td>
           <td class="mono">21586.1</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">407%</td>
+          <td class="ev-cell mono">449%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ミアエッテ → チャーチルデュース → クリコイーコ</td>
+          <td class="horses-cell">10 ミアエッテ → 6 ヨドノサファイア → 13 ジャストグレース</td>
           <td class="mono">140310.1</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">402%</td>
+          <td class="ev-cell mono">440%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ラスターヴァース → ダンツアラーム → ペガサスウィンド</td>
-          <td class="mono">46770.0</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">382%</td>
+          <td class="horses-cell">8 サンエンジェルス → 9 モンテール → 1 ペガサスウィンド</td>
+          <td class="mono">2483.3</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">434%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ダンツアラーム → ラスターヴァース → ペガサスウィンド</td>
-          <td class="mono">46770.0</td>
+          <td class="horses-cell">10 ミアエッテ → 7 チャーチルデュース → 12 クリコイーコ</td>
+          <td class="mono">140310.1</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">378%</td>
+          <td class="ev-cell mono">432%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 サンエンジェルス → 1 ペガサスウィンド → 9 モンテール</td>
+          <td class="mono">2175.3</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">427%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 サンエンジェルス → 10 ミアエッテ → 13 ジャストグレース</td>
+          <td class="mono">31180.0</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">423%</td>
         </tr>
         
       </tbody>
@@ -995,5 +1069,49 @@
 
   <div class="disclaimer">本ページの予想は参考情報です。的中・利益を保証しません。<br>馬券の購入は必ずご自身でIPAT等の公式ルートから行ってください。</div>
 </main>
+
+<script>
+(function () {
+  const UNIT = 100;  // JRAの購入単位（100円）に丸める
+
+  function recalc() {
+    const budget = parseFloat(document.getElementById('budgetInput').value) || 0;
+    const rows = Array.from(document.querySelectorAll('#planTable tbody tr[data-ev]'));
+    const totalRow = document.getElementById('planTotalRow');
+    const totalCell = document.getElementById('planTotal');
+
+    if (!rows.length) return;
+
+    if (budget <= 0) {
+      rows.forEach(function (tr) { tr.querySelector('.stake-cell').textContent = '-'; });
+      if (totalRow) totalRow.style.display = 'none';
+      return;
+    }
+
+    // 期待値(EV)が高いものほど多く配分する（EVの合計に対する比率で按分）
+    const evs = rows.map(function (tr) { return Math.max(0, parseFloat(tr.dataset.ev) - 1); }); // 100%超過分だけを重みにする
+    const totalWeight = evs.reduce(function (a, b) { return a + b; }, 0);
+
+    let allocated = 0;
+    rows.forEach(function (tr, i) {
+      const weight = totalWeight > 0 ? evs[i] / totalWeight : 1 / rows.length;
+      const raw = budget * weight;
+      const amount = Math.floor(raw / UNIT) * UNIT;
+      allocated += amount;
+      tr.querySelector('.stake-cell').textContent = amount > 0 ? amount.toLocaleString('ja-JP') + '円' : '見送り';
+    });
+
+    if (totalRow && totalCell) {
+      totalRow.style.display = '';
+      totalCell.textContent = allocated.toLocaleString('ja-JP') + '円 / ' + budget.toLocaleString('ja-JP') + '円中';
+    }
+  }
+
+  const input = document.getElementById('budgetInput');
+  if (input) {
+    input.addEventListener('input', recalc);
+  }
+})();
+</script>
 </body>
 </html>

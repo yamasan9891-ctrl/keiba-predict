@@ -63,30 +63,66 @@
   }
   .summary-text { font-size: 13px; line-height: 1.75; color: var(--text-dim); }
 
-  /* --- 結論：一番のおすすめ --- */
-  .best-bet {
+  /* --- 結論：馬券風デザイン --- */
+  .ticket {
     position: relative;
     background: linear-gradient(180deg, #1a1408 0%, var(--surface) 70%);
     border: 1px solid var(--amber-dim);
+    border-radius: 10px;
     box-shadow: 0 0 0 1px rgba(240,162,2,0.08), 0 8px 24px -12px var(--amber-glow);
+    padding: 0;
+    overflow: hidden;
   }
-  .best-bet .tag {
-    font-size: 12px; font-weight: 800; color: var(--amber);
+  .ticket-head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 16px; background: rgba(240,162,2,0.08);
+    border-bottom: 1px dashed var(--amber-dim);
   }
-  .best-bet .type {
-    display: inline-block; font-size: 11px; color: var(--bg); background: var(--amber);
-    font-weight: 700; padding: 2px 8px; border-radius: 3px; margin-top: 8px;
+  .ticket-head .label { font-size: 11px; font-weight: 800; color: var(--amber); letter-spacing: 0.05em; }
+  .ticket-head .type-badge {
+    font-size: 11px; color: var(--bg); background: var(--amber);
+    font-weight: 800; padding: 3px 10px; border-radius: 3px;
   }
-  .best-bet .horses {
-    font-size: 21px; font-weight: 800; margin: 8px 0 12px;
-    color: var(--text); line-height: 1.4;
+  .ticket-body { padding: 16px; }
+  .ticket .horses {
+    font-size: 20px; font-weight: 800; margin: 0 0 14px;
+    color: var(--text); line-height: 1.45;
   }
-  .best-bet .stat-row { display: flex; }
-  .best-bet .stat { margin-right: 24px; }
-  .best-bet .stat .label { font-size: 10.5px; color: var(--text-dim); }
-  .best-bet .stat .value { font-size: 18px; font-weight: 800; margin-top: 2px; }
-  .best-bet .stat.ev .value { color: var(--amber); }
-  .best-bet .footnote { font-size: 11px; color: var(--text-dim); margin-top: 12px; line-height: 1.6; border-top: 1px solid var(--line); padding-top: 10px; }
+  .ticket-stats {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+    padding: 12px 0; border-top: 1px dashed var(--line); border-bottom: 1px dashed var(--line);
+  }
+  .ticket-stats .stat { text-align: center; }
+  .ticket-stats .stat .label { font-size: 10px; color: var(--text-dim); }
+  .ticket-stats .stat .value { font-size: 16px; font-weight: 800; margin-top: 3px; }
+  .ticket-stats .stat.ev .value { color: var(--amber); }
+
+  .ticket-amount {
+    margin-top: 14px; padding: 12px; background: var(--surface-2);
+    border-radius: 6px; display: flex; justify-content: space-between; align-items: center;
+  }
+  .ticket-amount .label { font-size: 11px; color: var(--text-dim); }
+  .ticket-amount .value { font-size: 22px; font-weight: 800; color: var(--green); }
+  .ticket-amount .value::before { content: "¥"; font-size: 14px; margin-right: 2px; }
+
+  .footnote { font-size: 11px; color: var(--text-dim); margin-top: 12px; line-height: 1.6; padding: 0 16px 14px; }
+
+  /* --- 予算入力 --- */
+  .budget-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
+    padding: 10px 14px; margin-bottom: 14px;
+  }
+  .budget-box label { font-size: 12px; color: var(--text-dim); white-space: nowrap; }
+  .budget-box input {
+    flex: 1; background: var(--surface-2); border: 1px solid var(--line); border-radius: 4px;
+    color: var(--text); font-size: 15px; padding: 7px 10px; font-family: inherit;
+    -moz-appearance: textfield;
+  }
+  .budget-box input::-webkit-outer-spin-button, .budget-box input::-webkit-inner-spin-button { margin: 0; }
+  .budget-box .unit { font-size: 12px; color: var(--text-dim); }
+  .stake-cell { color: var(--green); font-weight: 700; }
+
 
   /* --- 穴馬候補 --- */
   .dark-horse-card { border-left: 3px solid var(--green); }
@@ -178,18 +214,66 @@
   <div class="card summary-text">逃げ馬は1頭で、比較的落ち着いたペースが予想される。馬場状態は「稍重」。</div>
 
   
-  <div class="section-title"><span class="en">Conclusion</span>結論：一番のおすすめ</div>
-  <div class="card best-bet">
-    <div class="tag">🏆 このレースで最も期待値が高い買い目</div>
-    <div class="type">3連単</div>
-    <div class="horses">ハッピーラブソング → パヴィーア → リンゲルブルーメ</div>
-    <div class="stat-row mono">
-      <div class="stat"><div class="label">オッズ</div><div class="value">66055.7倍</div></div>
-      <div class="stat"><div class="label">的中確率</div><div class="value">0.0%</div></div>
-      <div class="stat ev"><div class="label">期待値</div><div class="value">752%</div></div>
-    </div>
-    <div class="footnote">期待値とは「100円賭けた時に理論上いくら戻ってくるか」の目安です。100%を超えるほど、賭け金に対して見込まれる払戻が大きいことを意味します（的中を保証するものではありません）。</div>
+  <div class="section-title"><span class="en">Betting Plan</span>AI推奨 購入プラン</div>
+  <div class="section-hint">実際の投票は複数点に分けるのが基本のため、期待値が高い順に複数の買い目を組み合わせています。予算を入れると自動で配分します。</div>
+  <div class="budget-box">
+    <label for="budgetInput">今回の予算</label>
+    <input type="number" id="budgetInput" inputmode="numeric" placeholder="例: 3000" min="0" step="100">
+    <span class="unit">円</span>
   </div>
+  <div class="card" style="padding:0; overflow:hidden;">
+    <table id="planTable">
+      <thead><tr><th>券種</th><th>買い目</th><th>オッズ</th><th>期待値</th><th>配分額</th></tr></thead>
+      <tbody>
+        
+        <tr data-ev="3.6976517489172016">
+          <td class="mono">単勝</td>
+          <td class="horses-cell">3 ハッピーラブソング</td>
+          <td class="mono">194.4</td>
+          <td class="ev-cell mono">370%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="2.394978942484613">
+          <td class="mono">単勝</td>
+          <td class="horses-cell">8 メイショウサトノヒ</td>
+          <td class="mono">120.4</td>
+          <td class="ev-cell mono">239%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="1.828138622779379">
+          <td class="mono">単勝</td>
+          <td class="horses-cell">9 ピョイットハレルヤ</td>
+          <td class="mono">32.4</td>
+          <td class="ev-cell mono">183%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="1.8199042914291044">
+          <td class="mono">馬連</td>
+          <td class="horses-cell">1 ワイドグンサ - 10 リンゲルブルーメ</td>
+          <td class="mono">124.8</td>
+          <td class="ev-cell mono">182%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="1.70836140372089">
+          <td class="mono">馬連</td>
+          <td class="horses-cell">1 ワイドグンサ - 9 ピョイットハレルヤ</td>
+          <td class="mono">127.3</td>
+          <td class="ev-cell mono">171%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr id="planTotalRow" style="display:none;">
+          <td colspan="4" style="text-align:right; font-weight:800;">合計</td>
+          <td class="mono" id="planTotal" style="font-weight:800; color:var(--green);">-</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="footnote">配分額は、各買い目の期待値の大きさに比例して予算を振り分けた目安です（期待値が高いものほど多く配分）。1点に集中させず、複数点に分けて購入することでブレを抑える考え方に基づいています。あくまで参考情報であり、的中や利益を保証するものではありません。</div>
   
 
   
@@ -198,48 +282,23 @@
   <div class="card dark-horse-card">
     
     <div class="dark-horse-item">
-      <span class="dh-name">ハッピーラブソング</span><span class="dh-badge">16番人気</span>
-      <div class="dh-stats mono">オッズ 194.4倍 ／ 勝率目安 1.9% ／ 期待値 360%</div>
-    </div>
-    
-    <div class="dark-horse-item">
-      <span class="dh-name">メイショウサトノヒ</span><span class="dh-badge">14番人気</span>
-      <div class="dh-stats mono">オッズ 120.4倍 ／ 勝率目安 1.8% ／ 期待値 214%</div>
-    </div>
-    
-    <div class="dark-horse-item">
       <span class="dh-name">ピョイットハレルヤ</span><span class="dh-badge">10番人気</span>
-      <div class="dh-stats mono">オッズ 32.4倍 ／ 勝率目安 6.0% ／ 期待値 195%</div>
+      <div class="dh-stats mono">オッズ 32.4倍 ／ 勝率目安 5.6% ／ 期待値 183%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">ウォーターパラディ</span><span class="dh-badge">11番人気</span>
-      <div class="dh-stats mono">オッズ 43.8倍 ／ 勝率目安 4.2% ／ 期待値 184%</div>
-    </div>
-    
-    <div class="dark-horse-item">
-      <span class="dh-name">ハンザキ</span><span class="dh-badge">13番人気</span>
-      <div class="dh-stats mono">オッズ 87.8倍 ／ 勝率目安 1.6% ／ 期待値 137%</div>
-    </div>
-    
-    <div class="dark-horse-item">
-      <span class="dh-name">リンゲルブルーメ</span><span class="dh-badge">7番人気</span>
-      <div class="dh-stats mono">オッズ 19.1倍 ／ 勝率目安 6.9% ／ 期待値 132%</div>
+      <div class="dh-stats mono">オッズ 43.8倍 ／ 勝率目安 3.9% ／ 期待値 169%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">パヴィーア</span><span class="dh-badge">6番人気</span>
-      <div class="dh-stats mono">オッズ 16.6倍 ／ 勝率目安 7.9% ／ 期待値 131%</div>
+      <div class="dh-stats mono">オッズ 16.6倍 ／ 勝率目安 7.6% ／ 期待値 127%</div>
     </div>
     
     <div class="dark-horse-item">
-      <span class="dh-name">ヴィヴァシャス</span><span class="dh-badge">15番人気</span>
-      <div class="dh-stats mono">オッズ 156.1倍 ／ 勝率目安 0.8% ／ 期待値 127%</div>
-    </div>
-    
-    <div class="dark-horse-item">
-      <span class="dh-name">タイセイレグノ</span><span class="dh-badge">12番人気</span>
-      <div class="dh-stats mono">オッズ 70.7倍 ／ 勝率目安 1.4% ／ 期待値 100%</div>
+      <span class="dh-name">リンゲルブルーメ</span><span class="dh-badge">7番人気</span>
+      <div class="dh-stats mono">オッズ 19.1倍 ／ 勝率目安 6.1% ／ 期待値 117%</div>
     </div>
     
   </div>
@@ -259,73 +318,73 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">16</span>ジャンヌドゥレーヴ</span>
-        <span class="horse-prob mono">複勝圏内 39%</span>
+        <span class="horse-prob mono">複勝圏内 44%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約39%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は3.0着と好調を維持。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約44%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は3.0着と好調を維持。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">1</span>ワイドグンサ</span>
-        <span class="horse-prob mono">複勝圏内 37%</span>
+        <span class="horse-prob mono">複勝圏内 36%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約37%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約36%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">6</span>ジューンセクレタ</span>
-        <span class="horse-prob mono">複勝圏内 30%</span>
+        <span class="horse-prob mono">複勝圏内 32%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約30%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約32%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">2</span>パヴィーア</span>
-        <span class="horse-prob mono">複勝圏内 26%</span>
+        <span class="horse-prob mono">複勝圏内 25%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約26%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約25%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">10</span>リンゲルブルーメ</span>
-        <span class="horse-prob mono">複勝圏内 23%</span>
+        <span class="horse-prob mono">複勝圏内 20%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約23%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は10.0着とやや不振。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約20%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は10.0着とやや不振。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">12</span>マダムカマラード</span>
-        <span class="horse-prob mono">複勝圏内 21%</span>
+        <span class="horse-prob mono">複勝圏内 20%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約21%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は10.5着とやや不振。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約20%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は10.5着とやや不振。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">9</span>ピョイットハレルヤ</span>
-        <span class="horse-prob mono">複勝圏内 20%</span>
+        <span class="horse-prob mono">複勝圏内 19%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約20%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。</div>
-    </div>
-    
-    <div class="horse-item">
-      <div class="horse-head">
-        <span class="horse-name"><span class="horse-num mono">7</span>ウォーターパラディ</span>
-        <span class="horse-prob mono">複勝圏内 14%</span>
-      </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約14%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約19%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">11</span>アルプスオジョー</span>
-        <span class="horse-prob mono">複勝圏内 12%</span>
+        <span class="horse-prob mono">複勝圏内 13%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約12%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約13%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">7</span>ウォーターパラディ</span>
+        <span class="horse-prob mono">複勝圏内 13%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約13%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
     </div>
     
     <div class="horse-item">
@@ -338,18 +397,18 @@
     
     <div class="horse-item">
       <div class="horse-head">
-        <span class="horse-name"><span class="horse-num mono">3</span>ハッピーラブソング</span>
-        <span class="horse-prob mono">複勝圏内 6%</span>
+        <span class="horse-name"><span class="horse-num mono">8</span>メイショウサトノヒ</span>
+        <span class="horse-prob mono">複勝圏内 7%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約6%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は8.0着とやや不振。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約7%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
-        <span class="horse-name"><span class="horse-num mono">8</span>メイショウサトノヒ</span>
+        <span class="horse-name"><span class="horse-num mono">3</span>ハッピーラブソング</span>
         <span class="horse-prob mono">複勝圏内 6%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約6%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約6%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は8.0着とやや不振。</div>
     </div>
     
     <div class="horse-item">
@@ -378,8 +437,8 @@
     
   </div>
 
-  <div class="section-title"><span class="en">All Bets</span>券種ごとの買い目候補</div>
-  <div class="section-hint">期待値100%を超えるものだけを表示しています。券種名をタップすると開きます。</div>
+  <div class="section-title"><span class="en">All Bets</span>券種ごとの買い目一覧（参考）</div>
+  <div class="section-hint">期待値100%を超えるものを全て表示しています。上の「購入プラン」はこの中から自動選定したものです。</div>
   
   <details class="bet-group" open>
     <summary>単勝 <span class="count">9点</span></summary>
@@ -388,66 +447,66 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">ハッピーラブソング</td>
+          <td class="horses-cell">3 ハッピーラブソング</td>
           <td class="mono">194.4</td>
           <td class="mono">1.9%</td>
-          <td class="ev-cell mono">360%</td>
+          <td class="ev-cell mono">370%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">メイショウサトノヒ</td>
+          <td class="horses-cell">8 メイショウサトノヒ</td>
           <td class="mono">120.4</td>
-          <td class="mono">1.8%</td>
-          <td class="ev-cell mono">214%</td>
+          <td class="mono">2.0%</td>
+          <td class="ev-cell mono">239%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ピョイットハレルヤ</td>
+          <td class="horses-cell">9 ピョイットハレルヤ</td>
           <td class="mono">32.4</td>
-          <td class="mono">6.0%</td>
-          <td class="ev-cell mono">195%</td>
+          <td class="mono">5.6%</td>
+          <td class="ev-cell mono">183%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ウォーターパラディ</td>
+          <td class="horses-cell">7 ウォーターパラディ</td>
           <td class="mono">43.8</td>
-          <td class="mono">4.2%</td>
-          <td class="ev-cell mono">184%</td>
+          <td class="mono">3.9%</td>
+          <td class="ev-cell mono">169%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ハンザキ</td>
+          <td class="horses-cell">5 ヴィヴァシャス</td>
+          <td class="mono">156.1</td>
+          <td class="mono">1.0%</td>
+          <td class="ev-cell mono">161%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">14 ハンザキ</td>
           <td class="mono">87.8</td>
           <td class="mono">1.6%</td>
-          <td class="ev-cell mono">137%</td>
+          <td class="ev-cell mono">140%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">リンゲルブルーメ</td>
-          <td class="mono">19.1</td>
-          <td class="mono">6.9%</td>
-          <td class="ev-cell mono">132%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">パヴィーア</td>
+          <td class="horses-cell">2 パヴィーア</td>
           <td class="mono">16.6</td>
-          <td class="mono">7.9%</td>
-          <td class="ev-cell mono">131%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ヴィヴァシャス</td>
-          <td class="mono">156.1</td>
-          <td class="mono">0.8%</td>
+          <td class="mono">7.6%</td>
           <td class="ev-cell mono">127%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">タイセイレグノ</td>
+          <td class="horses-cell">10 リンゲルブルーメ</td>
+          <td class="mono">19.1</td>
+          <td class="mono">6.1%</td>
+          <td class="ev-cell mono">117%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">15 タイセイレグノ</td>
           <td class="mono">70.7</td>
-          <td class="mono">1.4%</td>
-          <td class="ev-cell mono">100%</td>
+          <td class="mono">1.6%</td>
+          <td class="ev-cell mono">113%</td>
         </tr>
         
       </tbody>
@@ -461,143 +520,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">ハッピーラブソング - リンゲルブルーメ</td>
+          <td class="horses-cell">3 ハッピーラブソング - 10 リンゲルブルーメ</td>
           <td class="mono">1287.0</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">345%</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">312%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ハッピーラブソング - マダムカマラード</td>
+          <td class="horses-cell">3 ハッピーラブソング - 12 マダムカマラード</td>
           <td class="mono">1134.1</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">278%</td>
+          <td class="ev-cell mono">269%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ハッピーラブソング - ウォーターパラディ</td>
-          <td class="mono">1697.2</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">272%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ハッピーラブソング - ワイドグンサ</td>
+          <td class="horses-cell">1 ワイドグンサ - 3 ハッピーラブソング</td>
           <td class="mono">592.6</td>
           <td class="mono">0.4%</td>
-          <td class="ev-cell mono">266%</td>
+          <td class="ev-cell mono">263%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ピョイットハレルヤ - ハッピーラブソング</td>
-          <td class="mono">1088.7</td>
+          <td class="horses-cell">7 ウォーターパラディ - 3 ハッピーラブソング</td>
+          <td class="mono">1697.2</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">253%</td>
+          <td class="ev-cell mono">256%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">パヴィーア - ハッピーラブソング</td>
+          <td class="horses-cell">2 パヴィーア - 3 ハッピーラブソング</td>
           <td class="mono">812.0</td>
           <td class="mono">0.3%</td>
-          <td class="ev-cell mono">249%</td>
+          <td class="ev-cell mono">248%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ピョイットハレルヤ - マダムカマラード</td>
-          <td class="mono">276.0</td>
-          <td class="mono">0.8%</td>
-          <td class="ev-cell mono">224%</td>
+          <td class="horses-cell">3 ハッピーラブソング - 9 ピョイットハレルヤ</td>
+          <td class="mono">1088.7</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">243%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ハッピーラブソング - タイニーワンダー</td>
-          <td class="mono">234.2</td>
-          <td class="mono">0.9%</td>
-          <td class="ev-cell mono">219%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">リンゲルブルーメ - ワイドグンサ</td>
-          <td class="mono">124.8</td>
-          <td class="mono">1.7%</td>
-          <td class="ev-cell mono">214%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ピョイットハレルヤ - ウォーターパラディ</td>
-          <td class="mono">377.2</td>
-          <td class="mono">0.5%</td>
-          <td class="ev-cell mono">201%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ハッピーラブソング - ジャンヌドゥレーヴ</td>
+          <td class="horses-cell">3 ハッピーラブソング - 16 ジャンヌドゥレーヴ</td>
           <td class="mono">406.2</td>
           <td class="mono">0.5%</td>
-          <td class="ev-cell mono">195%</td>
+          <td class="ev-cell mono">222%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ピョイットハレルヤ - ワイドグンサ</td>
-          <td class="mono">127.3</td>
-          <td class="mono">1.5%</td>
-          <td class="ev-cell mono">190%</td>
+          <td class="horses-cell">4 タイニーワンダー - 3 ハッピーラブソング</td>
+          <td class="mono">234.2</td>
+          <td class="mono">0.9%</td>
+          <td class="ev-cell mono">221%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">パヴィーア - マダムカマラード</td>
-          <td class="mono">172.6</td>
-          <td class="mono">1.1%</td>
-          <td class="ev-cell mono">185%</td>
+          <td class="horses-cell">12 マダムカマラード - 9 ピョイットハレルヤ</td>
+          <td class="mono">276.0</td>
+          <td class="mono">0.7%</td>
+          <td class="ev-cell mono">198%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">パヴィーア - リンゲルブルーメ</td>
-          <td class="mono">151.7</td>
-          <td class="mono">1.2%</td>
-          <td class="ev-cell mono">178%</td>
+          <td class="horses-cell">3 ハッピーラブソング - 11 アルプスオジョー</td>
+          <td class="mono">1245.6</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">188%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ピョイットハレルヤ - パヴィーア</td>
-          <td class="mono">174.4</td>
-          <td class="mono">1.0%</td>
-          <td class="ev-cell mono">178%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">マダムカマラード - メイショウサトノヒ</td>
+          <td class="horses-cell">8 メイショウサトノヒ - 12 マダムカマラード</td>
           <td class="mono">753.0</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">177%</td>
+          <td class="ev-cell mono">187%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ウォーターパラディ - ワイドグンサ</td>
-          <td class="mono">164.7</td>
-          <td class="mono">1.0%</td>
-          <td class="ev-cell mono">169%</td>
+          <td class="horses-cell">1 ワイドグンサ - 10 リンゲルブルーメ</td>
+          <td class="mono">124.8</td>
+          <td class="mono">1.5%</td>
+          <td class="ev-cell mono">182%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ハッピーラブソング - アルプスオジョー</td>
-          <td class="mono">1245.6</td>
+          <td class="horses-cell">8 メイショウサトノヒ - 3 ハッピーラブソング</td>
+          <td class="mono">2254.3</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">167%</td>
+          <td class="ev-cell mono">174%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ピョイットハレルヤ - メイショウサトノヒ</td>
+          <td class="horses-cell">8 メイショウサトノヒ - 9 ピョイットハレルヤ</td>
           <td class="mono">740.8</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">165%</td>
+          <td class="ev-cell mono">173%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">マダムカマラード - ワイドグンサ</td>
-          <td class="mono">102.9</td>
-          <td class="mono">1.6%</td>
+          <td class="horses-cell">7 ウォーターパラディ - 9 ピョイットハレルヤ</td>
+          <td class="mono">377.2</td>
+          <td class="mono">0.5%</td>
+          <td class="ev-cell mono">172%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 ワイドグンサ - 9 ピョイットハレルヤ</td>
+          <td class="mono">127.3</td>
+          <td class="mono">1.3%</td>
+          <td class="ev-cell mono">171%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 パヴィーア - 12 マダムカマラード</td>
+          <td class="mono">172.6</td>
+          <td class="mono">1.0%</td>
+          <td class="ev-cell mono">170%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 メイショウサトノヒ - 1 ワイドグンサ</td>
+          <td class="mono">365.0</td>
+          <td class="mono">0.5%</td>
+          <td class="ev-cell mono">170%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 パヴィーア - 9 ピョイットハレルヤ</td>
+          <td class="mono">174.4</td>
+          <td class="mono">0.9%</td>
           <td class="ev-cell mono">161%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 ハッピーラブソング - 6 ジューンセクレタ</td>
+          <td class="mono">400.2</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">158%</td>
         </tr>
         
       </tbody>
@@ -611,143 +670,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">ハッピーラブソング → リンゲルブルーメ</td>
+          <td class="horses-cell">3 ハッピーラブソング → 10 リンゲルブルーメ</td>
           <td class="mono">3026.9</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">395%</td>
+          <td class="ev-cell mono">359%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ハッピーラブソング → ピョイットハレルヤ</td>
-          <td class="mono">2920.1</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">332%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ハッピーラブソング → パヴィーア</td>
+          <td class="horses-cell">3 ハッピーラブソング → 2 パヴィーア</td>
           <td class="mono">2158.3</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">321%</td>
+          <td class="ev-cell mono">320%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ハッピーラブソング → マダムカマラード</td>
+          <td class="horses-cell">3 ハッピーラブソング → 9 ピョイットハレルヤ</td>
+          <td class="mono">2920.1</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">319%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 ハッピーラブソング → 12 マダムカマラード</td>
           <td class="mono">2640.5</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">316%</td>
+          <td class="ev-cell mono">307%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">リンゲルブルーメ → ハッピーラブソング</td>
-          <td class="mono">2236.1</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">308%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ハッピーラブソング → ワイドグンサ</td>
+          <td class="horses-cell">3 ハッピーラブソング → 1 ワイドグンサ</td>
           <td class="mono">1426.4</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">304%</td>
+          <td class="ev-cell mono">301%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ピョイットハレルヤ → マダムカマラード</td>
-          <td class="mono">713.2</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">289%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ハッピーラブソング → タイニーワンダー</td>
+          <td class="horses-cell">3 ハッピーラブソング → 4 タイニーワンダー</td>
           <td class="mono">681.8</td>
           <td class="mono">0.4%</td>
-          <td class="ev-cell mono">282%</td>
+          <td class="ev-cell mono">286%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">メイショウサトノヒ → リンゲルブルーメ</td>
+          <td class="horses-cell">10 リンゲルブルーメ → 3 ハッピーラブソング</td>
+          <td class="mono">2236.1</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">277%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 メイショウサトノヒ → 10 リンゲルブルーメ</td>
           <td class="mono">2103.4</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">263%</td>
+          <td class="ev-cell mono">261%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ピョイットハレルヤ → ハッピーラブソング</td>
+          <td class="horses-cell">8 メイショウサトノヒ → 12 マダムカマラード</td>
           <td class="mono">2121.4</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">252%</td>
+          <td class="ev-cell mono">258%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ウォーターパラディ → ワイドグンサ</td>
-          <td class="mono">499.4</td>
-          <td class="mono">0.5%</td>
-          <td class="ev-cell mono">246%</td>
+          <td class="horses-cell">9 ピョイットハレルヤ → 12 マダムカマラード</td>
+          <td class="mono">713.2</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">256%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">メイショウサトノヒ → マダムカマラード</td>
+          <td class="horses-cell">3 ハッピーラブソング → 16 ジャンヌドゥレーヴ</td>
+          <td class="mono">969.5</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">248%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">9 ピョイットハレルヤ → 3 ハッピーラブソング</td>
           <td class="mono">2121.4</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">243%</td>
+          <td class="ev-cell mono">241%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">パヴィーア → ハッピーラブソング</td>
+          <td class="horses-cell">3 ハッピーラブソング → 8 メイショウサトノヒ</td>
+          <td class="mono">6205.2</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">239%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 パヴィーア → 3 ハッピーラブソング</td>
           <td class="mono">1513.4</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">240%</td>
+          <td class="ev-cell mono">238%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ピョイットハレルヤ → ワイドグンサ</td>
-          <td class="mono">314.5</td>
-          <td class="mono">0.7%</td>
-          <td class="ev-cell mono">227%</td>
+          <td class="horses-cell">8 メイショウサトノヒ → 3 ハッピーラブソング</td>
+          <td class="mono">6053.8</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">234%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ウォーターパラディ → ハッピーラブソング</td>
-          <td class="mono">2788.8</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">226%</td>
+          <td class="horses-cell">3 ハッピーラブソング → 6 ジューンセクレタ</td>
+          <td class="mono">1222.7</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">232%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ハッピーラブソング → ジャンヌドゥレーヴ</td>
-          <td class="mono">969.5</td>
+          <td class="horses-cell">8 メイショウサトノヒ → 1 ワイドグンサ</td>
+          <td class="mono">992.8</td>
           <td class="mono">0.2%</td>
           <td class="ev-cell mono">220%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">パヴィーア → マダムカマラード</td>
-          <td class="mono">405.5</td>
-          <td class="mono">0.5%</td>
-          <td class="ev-cell mono">219%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ウォーターパラディ → マダムカマラード</td>
-          <td class="mono">787.9</td>
-          <td class="mono">0.3%</td>
+          <td class="horses-cell">7 ウォーターパラディ → 1 ワイドグンサ</td>
+          <td class="mono">499.4</td>
+          <td class="mono">0.4%</td>
           <td class="ev-cell mono">218%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ハッピーラブソング → ジューンセクレタ</td>
-          <td class="mono">1222.7</td>
-          <td class="mono">0.2%</td>
+          <td class="horses-cell">7 ウォーターパラディ → 3 ハッピーラブソング</td>
+          <td class="mono">2788.8</td>
+          <td class="mono">0.1%</td>
           <td class="ev-cell mono">213%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ワイドグンサ → ハッピーラブソング</td>
-          <td class="mono">886.4</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">209%</td>
+          <td class="horses-cell">8 メイショウサトノヒ → 16 ジャンヌドゥレーヴ</td>
+          <td class="mono">787.9</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">211%</td>
         </tr>
         
       </tbody>
@@ -761,143 +820,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">マダムカマラード - ハッピーラブソング - ワイドグンサ</td>
+          <td class="horses-cell">1 ワイドグンサ - 3 ハッピーラブソング - 12 マダムカマラード</td>
           <td class="mono">4579.1</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">449%</td>
+          <td class="ev-cell mono">418%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">マダムカマラード - ハッピーラブソング - リンゲルブルーメ</td>
-          <td class="mono">7256.2</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">414%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">リンゲルブルーメ - ハッピーラブソング - ワイドグンサ</td>
-          <td class="mono">3546.2</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">382%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">マダムカマラード - ハッピーラブソング - タイニーワンダー</td>
+          <td class="horses-cell">4 タイニーワンダー - 3 ハッピーラブソング - 12 マダムカマラード</td>
           <td class="mono">1715.1</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">378%</td>
+          <td class="ev-cell mono">360%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">パヴィーア - ハッピーラブソング - リンゲルブルーメ</td>
-          <td class="mono">4764.2</td>
+          <td class="horses-cell">3 ハッピーラブソング - 12 マダムカマラード - 10 リンゲルブルーメ</td>
+          <td class="mono">7256.2</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">352%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 ワイドグンサ - 3 ハッピーラブソング - 10 リンゲルブルーメ</td>
+          <td class="mono">3546.2</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">344%</td>
+          <td class="ev-cell mono">331%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ピョイットハレルヤ - マダムカマラード - ワイドグンサ</td>
-          <td class="mono">1015.7</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">338%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ピョイットハレルヤ - ハッピーラブソング - マダムカマラード</td>
-          <td class="mono">6835.6</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">337%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">リンゲルブルーメ - ハッピーラブソング - タイニーワンダー</td>
-          <td class="mono">1381.8</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">335%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">マダムカマラード - ハッピーラブソング - ウォーターパラディ</td>
-          <td class="mono">9894.9</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">332%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ピョイットハレルヤ - ハッピーラブソング - ワイドグンサ</td>
+          <td class="horses-cell">1 ワイドグンサ - 3 ハッピーラブソング - 9 ピョイットハレルヤ</td>
           <td class="mono">3573.1</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">332%</td>
+          <td class="ev-cell mono">306%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">パヴィーア - ハッピーラブソング - マダムカマラード</td>
+          <td class="horses-cell">3 ハッピーラブソング - 12 マダムカマラード - 9 ピョイットハレルヤ</td>
+          <td class="mono">6835.6</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">304%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 パヴィーア - 3 ハッピーラブソング - 12 マダムカマラード</td>
           <td class="mono">4896.0</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">322%</td>
+          <td class="ev-cell mono">302%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ピョイットハレルヤ - マダムカマラード - ウォーターパラディ</td>
-          <td class="mono">2456.5</td>
+          <td class="horses-cell">2 パヴィーア - 3 ハッピーラブソング - 10 リンゲルブルーメ</td>
+          <td class="mono">4764.2</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">280%</td>
+          <td class="ev-cell mono">300%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">マダムカマラード - ワイドグンサ - メイショウサトノヒ</td>
+          <td class="horses-cell">4 タイニーワンダー - 3 ハッピーラブソング - 10 リンゲルブルーメ</td>
+          <td class="mono">1381.8</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">296%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 ウォーターパラディ - 3 ハッピーラブソング - 12 マダムカマラード</td>
+          <td class="mono">9894.9</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">295%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 ハッピーラブソング - 16 ジャンヌドゥレーヴ - 9 ピョイットハレルヤ</td>
+          <td class="mono">2700.3</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">288%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 ワイドグンサ - 12 マダムカマラード - 9 ピョイットハレルヤ</td>
+          <td class="mono">1015.7</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">286%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 メイショウサトノヒ - 1 ワイドグンサ - 12 マダムカマラード</td>
           <td class="mono">2972.6</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">284%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 パヴィーア - 3 ハッピーラブソング - 16 ジャンヌドゥレーヴ</td>
+          <td class="mono">1884.1</td>
           <td class="mono">0.1%</td>
           <td class="ev-cell mono">279%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ピョイットハレルヤ - マダムカマラード - メイショウサトノヒ</td>
-          <td class="mono">5751.9</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">272%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ピョイットハレルヤ - ハッピーラブソング - ジャンヌドゥレーヴ</td>
-          <td class="mono">2700.3</td>
+          <td class="horses-cell">3 ハッピーラブソング - 16 ジャンヌドゥレーヴ - 10 リンゲルブルーメ</td>
+          <td class="mono">2323.4</td>
           <td class="mono">0.1%</td>
           <td class="ev-cell mono">270%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ハッピーラブソング - ジャンヌドゥレーヴ - リンゲルブルーメ</td>
-          <td class="mono">2323.4</td>
+          <td class="horses-cell">8 メイショウサトノヒ - 12 マダムカマラード - 9 ピョイットハレルヤ</td>
+          <td class="mono">5751.9</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">268%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 ハッピーラブソング - 12 マダムカマラード - 16 ジャンヌドゥレーヴ</td>
+          <td class="mono">2210.8</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">269%</td>
+          <td class="ev-cell mono">252%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">リンゲルブルーメ - マダムカマラード - ワイドグンサ</td>
-          <td class="mono">675.0</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">260%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ピョイットハレルヤ - ハッピーラブソング - リンゲルブルーメ</td>
-          <td class="mono">4732.3</td>
+          <td class="horses-cell">8 メイショウサトノヒ - 4 タイニーワンダー - 3 ハッピーラブソング</td>
+          <td class="mono">3743.3</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">256%</td>
+          <td class="ev-cell mono">249%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ピョイットハレルヤ - パヴィーア - マダムカマラード</td>
-          <td class="mono">1132.8</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">253%</td>
+          <td class="horses-cell">3 ハッピーラブソング - 10 リンゲルブルーメ - 11 アルプスオジョー</td>
+          <td class="mono">7648.4</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">233%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">パヴィーア - ハッピーラブソング - ジャンヌドゥレーヴ</td>
-          <td class="mono">1884.1</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">251%</td>
+          <td class="horses-cell">1 ワイドグンサ - 3 ハッピーラブソング - 14 ハンザキ</td>
+          <td class="mono">10035.2</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">233%</td>
         </tr>
         
       </tbody>
@@ -911,143 +970,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">ハッピーラブソング → パヴィーア → リンゲルブルーメ</td>
+          <td class="horses-cell">3 ハッピーラブソング → 2 パヴィーア → 10 リンゲルブルーメ</td>
           <td class="mono">66055.7</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">752%</td>
+          <td class="ev-cell mono">662%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ハッピーラブソング → リンゲルブルーメ → マダムカマラード</td>
-          <td class="mono">75492.2</td>
+          <td class="horses-cell">8 メイショウサトノヒ → 3 ハッピーラブソング → 12 マダムカマラード</td>
+          <td class="mono">264222.8</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">683%</td>
+          <td class="ev-cell mono">636%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ハッピーラブソング → マダムカマラード → タイニーワンダー</td>
+          <td class="horses-cell">3 ハッピーラブソング → 12 マダムカマラード → 4 タイニーワンダー</td>
           <td class="mono">21569.2</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">616%</td>
+          <td class="ev-cell mono">589%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">パヴィーア → ハッピーラブソング → マダムカマラード</td>
-          <td class="mono">52844.5</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">587%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">メイショウサトノヒ → ハッピーラブソング → マダムカマラード</td>
-          <td class="mono">264222.8</td>
+          <td class="horses-cell">3 ハッピーラブソング → 10 リンゲルブルーメ → 12 マダムカマラード</td>
+          <td class="mono">75492.2</td>
           <td class="mono">0.0%</td>
           <td class="ev-cell mono">583%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ウォーターパラディ → ハッピーラブソング → マダムカマラード</td>
-          <td class="mono">105689.1</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">577%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ハッピーラブソング → リンゲルブルーメ → タイニーワンダー</td>
-          <td class="mono">17913.4</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">562%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ハッピーラブソング → マダムカマラード → リンゲルブルーメ</td>
-          <td class="mono">62170.0</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">559%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ハッピーラブソング → マダムカマラード → ワイドグンサ</td>
-          <td class="mono">37746.1</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">554%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ハッピーラブソング → タイニーワンダー → リンゲルブルーメ</td>
-          <td class="mono">14679.0</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">551%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ハッピーラブソング → パヴィーア → マダムカマラード</td>
+          <td class="horses-cell">2 パヴィーア → 3 ハッピーラブソング → 12 マダムカマラード</td>
           <td class="mono">52844.5</td>
           <td class="mono">0.0%</td>
           <td class="ev-cell mono">551%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ハッピーラブソング → ワイドグンサ → マダムカマラード</td>
+          <td class="horses-cell">8 メイショウサトノヒ → 1 ワイドグンサ → 12 マダムカマラード</td>
           <td class="mono">35229.7</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">547%</td>
+          <td class="ev-cell mono">536%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ハッピーラブソング → マダムカマラード → パヴィーア</td>
-          <td class="mono">52844.5</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">542%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ピョイットハレルヤ → ハッピーラブソング → マダムカマラード</td>
-          <td class="mono">66055.7</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">539%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ハッピーラブソング → タイニーワンダー → マダムカマラード</td>
-          <td class="mono">15542.5</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">535%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">メイショウサトノヒ → ワイドグンサ → マダムカマラード</td>
-          <td class="mono">35229.7</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">524%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ハッピーラブソング → リンゲルブルーメ → パヴィーア</td>
-          <td class="mono">45951.7</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">517%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ハッピーラブソング → ピョイットハレルヤ → マダムカマラード</td>
-          <td class="mono">66055.7</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">516%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ピョイットハレルヤ → マダムカマラード → ワイドグンサ</td>
-          <td class="mono">9786.0</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">511%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ハッピーラブソング → ハンザキ → マダムカマラード</td>
+          <td class="horses-cell">8 メイショウサトノヒ → 14 ハンザキ → 12 マダムカマラード</td>
           <td class="mono">264222.8</td>
           <td class="mono">0.0%</td>
+          <td class="ev-cell mono">532%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 ハッピーラブソング → 12 マダムカマラード → 1 ワイドグンサ</td>
+          <td class="mono">37746.1</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">519%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 ハッピーラブソング → 2 パヴィーア → 12 マダムカマラード</td>
+          <td class="mono">52844.5</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">519%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 ウォーターパラディ → 3 ハッピーラブソング → 12 マダムカマラード</td>
+          <td class="mono">105689.1</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">513%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 ハッピーラブソング → 1 ワイドグンサ → 12 マダムカマラード</td>
+          <td class="mono">35229.7</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">512%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 ハッピーラブソング → 4 タイニーワンダー → 12 マダムカマラード</td>
+          <td class="mono">15542.5</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">512%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 ハッピーラブソング → 12 マダムカマラード → 2 パヴィーア</td>
+          <td class="mono">52844.5</td>
+          <td class="mono">0.0%</td>
           <td class="ev-cell mono">510%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 ハッピーラブソング → 14 ハンザキ → 12 マダムカマラード</td>
+          <td class="mono">264222.8</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">507%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 ハッピーラブソング → 10 リンゲルブルーメ → 4 タイニーワンダー</td>
+          <td class="mono">17913.4</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">500%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 ハッピーラブソング → 4 タイニーワンダー → 10 リンゲルブルーメ</td>
+          <td class="mono">14679.0</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">493%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">9 ピョイットハレルヤ → 3 ハッピーラブソング → 12 マダムカマラード</td>
+          <td class="mono">66055.7</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">487%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 ハッピーラブソング → 12 マダムカマラード → 10 リンゲルブルーメ</td>
+          <td class="mono">62170.0</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">480%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 ハッピーラブソング → 9 ピョイットハレルヤ → 12 マダムカマラード</td>
+          <td class="mono">66055.7</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">468%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 ハッピーラブソング → 9 ピョイットハレルヤ → 4 タイニーワンダー</td>
+          <td class="mono">18222.2</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">467%</td>
         </tr>
         
       </tbody>
@@ -1059,5 +1118,49 @@
 
   <div class="disclaimer">本ページの予想は参考情報です。的中・利益を保証しません。<br>馬券の購入は必ずご自身でIPAT等の公式ルートから行ってください。</div>
 </main>
+
+<script>
+(function () {
+  const UNIT = 100;  // JRAの購入単位（100円）に丸める
+
+  function recalc() {
+    const budget = parseFloat(document.getElementById('budgetInput').value) || 0;
+    const rows = Array.from(document.querySelectorAll('#planTable tbody tr[data-ev]'));
+    const totalRow = document.getElementById('planTotalRow');
+    const totalCell = document.getElementById('planTotal');
+
+    if (!rows.length) return;
+
+    if (budget <= 0) {
+      rows.forEach(function (tr) { tr.querySelector('.stake-cell').textContent = '-'; });
+      if (totalRow) totalRow.style.display = 'none';
+      return;
+    }
+
+    // 期待値(EV)が高いものほど多く配分する（EVの合計に対する比率で按分）
+    const evs = rows.map(function (tr) { return Math.max(0, parseFloat(tr.dataset.ev) - 1); }); // 100%超過分だけを重みにする
+    const totalWeight = evs.reduce(function (a, b) { return a + b; }, 0);
+
+    let allocated = 0;
+    rows.forEach(function (tr, i) {
+      const weight = totalWeight > 0 ? evs[i] / totalWeight : 1 / rows.length;
+      const raw = budget * weight;
+      const amount = Math.floor(raw / UNIT) * UNIT;
+      allocated += amount;
+      tr.querySelector('.stake-cell').textContent = amount > 0 ? amount.toLocaleString('ja-JP') + '円' : '見送り';
+    });
+
+    if (totalRow && totalCell) {
+      totalRow.style.display = '';
+      totalCell.textContent = allocated.toLocaleString('ja-JP') + '円 / ' + budget.toLocaleString('ja-JP') + '円中';
+    }
+  }
+
+  const input = document.getElementById('budgetInput');
+  if (input) {
+    input.addEventListener('input', recalc);
+  }
+})();
+</script>
 </body>
 </html>

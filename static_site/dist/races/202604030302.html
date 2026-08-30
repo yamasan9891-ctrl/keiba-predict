@@ -63,30 +63,66 @@
   }
   .summary-text { font-size: 13px; line-height: 1.75; color: var(--text-dim); }
 
-  /* --- 結論：一番のおすすめ --- */
-  .best-bet {
+  /* --- 結論：馬券風デザイン --- */
+  .ticket {
     position: relative;
     background: linear-gradient(180deg, #1a1408 0%, var(--surface) 70%);
     border: 1px solid var(--amber-dim);
+    border-radius: 10px;
     box-shadow: 0 0 0 1px rgba(240,162,2,0.08), 0 8px 24px -12px var(--amber-glow);
+    padding: 0;
+    overflow: hidden;
   }
-  .best-bet .tag {
-    font-size: 12px; font-weight: 800; color: var(--amber);
+  .ticket-head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 16px; background: rgba(240,162,2,0.08);
+    border-bottom: 1px dashed var(--amber-dim);
   }
-  .best-bet .type {
-    display: inline-block; font-size: 11px; color: var(--bg); background: var(--amber);
-    font-weight: 700; padding: 2px 8px; border-radius: 3px; margin-top: 8px;
+  .ticket-head .label { font-size: 11px; font-weight: 800; color: var(--amber); letter-spacing: 0.05em; }
+  .ticket-head .type-badge {
+    font-size: 11px; color: var(--bg); background: var(--amber);
+    font-weight: 800; padding: 3px 10px; border-radius: 3px;
   }
-  .best-bet .horses {
-    font-size: 21px; font-weight: 800; margin: 8px 0 12px;
-    color: var(--text); line-height: 1.4;
+  .ticket-body { padding: 16px; }
+  .ticket .horses {
+    font-size: 20px; font-weight: 800; margin: 0 0 14px;
+    color: var(--text); line-height: 1.45;
   }
-  .best-bet .stat-row { display: flex; }
-  .best-bet .stat { margin-right: 24px; }
-  .best-bet .stat .label { font-size: 10.5px; color: var(--text-dim); }
-  .best-bet .stat .value { font-size: 18px; font-weight: 800; margin-top: 2px; }
-  .best-bet .stat.ev .value { color: var(--amber); }
-  .best-bet .footnote { font-size: 11px; color: var(--text-dim); margin-top: 12px; line-height: 1.6; border-top: 1px solid var(--line); padding-top: 10px; }
+  .ticket-stats {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+    padding: 12px 0; border-top: 1px dashed var(--line); border-bottom: 1px dashed var(--line);
+  }
+  .ticket-stats .stat { text-align: center; }
+  .ticket-stats .stat .label { font-size: 10px; color: var(--text-dim); }
+  .ticket-stats .stat .value { font-size: 16px; font-weight: 800; margin-top: 3px; }
+  .ticket-stats .stat.ev .value { color: var(--amber); }
+
+  .ticket-amount {
+    margin-top: 14px; padding: 12px; background: var(--surface-2);
+    border-radius: 6px; display: flex; justify-content: space-between; align-items: center;
+  }
+  .ticket-amount .label { font-size: 11px; color: var(--text-dim); }
+  .ticket-amount .value { font-size: 22px; font-weight: 800; color: var(--green); }
+  .ticket-amount .value::before { content: "¥"; font-size: 14px; margin-right: 2px; }
+
+  .footnote { font-size: 11px; color: var(--text-dim); margin-top: 12px; line-height: 1.6; padding: 0 16px 14px; }
+
+  /* --- 予算入力 --- */
+  .budget-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
+    padding: 10px 14px; margin-bottom: 14px;
+  }
+  .budget-box label { font-size: 12px; color: var(--text-dim); white-space: nowrap; }
+  .budget-box input {
+    flex: 1; background: var(--surface-2); border: 1px solid var(--line); border-radius: 4px;
+    color: var(--text); font-size: 15px; padding: 7px 10px; font-family: inherit;
+    -moz-appearance: textfield;
+  }
+  .budget-box input::-webkit-outer-spin-button, .budget-box input::-webkit-inner-spin-button { margin: 0; }
+  .budget-box .unit { font-size: 12px; color: var(--text-dim); }
+  .stake-cell { color: var(--green); font-weight: 700; }
+
 
   /* --- 穴馬候補 --- */
   .dark-horse-card { border-left: 3px solid var(--green); }
@@ -178,18 +214,66 @@
   <div class="card summary-text">明確な逃げ馬が不在で、スローペースになりやすく先行馬が有利になりやすい。馬場状態は「稍重」。</div>
 
   
-  <div class="section-title"><span class="en">Conclusion</span>結論：一番のおすすめ</div>
-  <div class="card best-bet">
-    <div class="tag">🏆 このレースで最も期待値が高い買い目</div>
-    <div class="type">3連単</div>
-    <div class="horses">ダイヒョウカーク → バターショコラ → ガードオブオナー</div>
-    <div class="stat-row mono">
-      <div class="stat"><div class="label">オッズ</div><div class="value">399377.4倍</div></div>
-      <div class="stat"><div class="label">的中確率</div><div class="value">0.0%</div></div>
-      <div class="stat ev"><div class="label">期待値</div><div class="value">1024%</div></div>
-    </div>
-    <div class="footnote">期待値とは「100円賭けた時に理論上いくら戻ってくるか」の目安です。100%を超えるほど、賭け金に対して見込まれる払戻が大きいことを意味します（的中を保証するものではありません）。</div>
+  <div class="section-title"><span class="en">Betting Plan</span>AI推奨 購入プラン</div>
+  <div class="section-hint">実際の投票は複数点に分けるのが基本のため、期待値が高い順に複数の買い目を組み合わせています。予算を入れると自動で配分します。</div>
+  <div class="budget-box">
+    <label for="budgetInput">今回の予算</label>
+    <input type="number" id="budgetInput" inputmode="numeric" placeholder="例: 3000" min="0" step="100">
+    <span class="unit">円</span>
   </div>
+  <div class="card" style="padding:0; overflow:hidden;">
+    <table id="planTable">
+      <thead><tr><th>券種</th><th>買い目</th><th>オッズ</th><th>期待値</th><th>配分額</th></tr></thead>
+      <tbody>
+        
+        <tr data-ev="2.1418380341082033">
+          <td class="mono">単勝</td>
+          <td class="horses-cell">4 ダイヒョウカーク</td>
+          <td class="mono">125.0</td>
+          <td class="ev-cell mono">214%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="1.9220970025531074">
+          <td class="mono">単勝</td>
+          <td class="horses-cell">13 バターショコラ</td>
+          <td class="mono">173.7</td>
+          <td class="ev-cell mono">192%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="1.888350587309191">
+          <td class="mono">3連複</td>
+          <td class="horses-cell">6 ガードオブオナー - 10 マーゴットライズ - 15 カシマライフウ</td>
+          <td class="mono">97.2</td>
+          <td class="ev-cell mono">189%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="1.5993453779279834">
+          <td class="mono">馬単</td>
+          <td class="horses-cell">10 マーゴットライズ → 15 カシマライフウ</td>
+          <td class="mono">121.4</td>
+          <td class="ev-cell mono">160%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="1.3961926328300522">
+          <td class="mono">単勝</td>
+          <td class="horses-cell">8 エターナルホープ</td>
+          <td class="mono">17.0</td>
+          <td class="ev-cell mono">140%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr id="planTotalRow" style="display:none;">
+          <td colspan="4" style="text-align:right; font-weight:800;">合計</td>
+          <td class="mono" id="planTotal" style="font-weight:800; color:var(--green);">-</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="footnote">配分額は、各買い目の期待値の大きさに比例して予算を振り分けた目安です（期待値が高いものほど多く配分）。1点に集中させず、複数点に分けて購入することでブレを抑える考え方に基づいています。あくまで参考情報であり、的中や利益を保証するものではありません。</div>
   
 
   
@@ -198,38 +282,23 @@
   <div class="card dark-horse-card">
     
     <div class="dark-horse-item">
-      <span class="dh-name">ダイヒョウカーク</span><span class="dh-badge">10番人気</span>
-      <div class="dh-stats mono">オッズ 125.0倍 ／ 勝率目安 1.6% ／ 期待値 195%</div>
-    </div>
-    
-    <div class="dark-horse-item">
-      <span class="dh-name">オーパパ</span><span class="dh-badge">14番人気</span>
-      <div class="dh-stats mono">オッズ 209.7倍 ／ 勝率目安 0.8% ／ 期待値 168%</div>
-    </div>
-    
-    <div class="dark-horse-item">
-      <span class="dh-name">バターショコラ</span><span class="dh-badge">12番人気</span>
-      <div class="dh-stats mono">オッズ 173.7倍 ／ 勝率目安 0.9% ／ 期待値 158%</div>
-    </div>
-    
-    <div class="dark-horse-item">
       <span class="dh-name">エターナルホープ</span><span class="dh-badge">5番人気</span>
-      <div class="dh-stats mono">オッズ 17.0倍 ／ 勝率目安 8.4% ／ 期待値 143%</div>
-    </div>
-    
-    <div class="dark-horse-item">
-      <span class="dh-name">ネイティヴプライド</span><span class="dh-badge">8番人気</span>
-      <div class="dh-stats mono">オッズ 26.0倍 ／ 勝率目安 4.7% ／ 期待値 122%</div>
-    </div>
-    
-    <div class="dark-horse-item">
-      <span class="dh-name">オウケンサクラコ</span><span class="dh-badge">7番人気</span>
-      <div class="dh-stats mono">オッズ 22.2倍 ／ 勝率目安 5.3% ／ 期待値 117%</div>
+      <div class="dh-stats mono">オッズ 17.0倍 ／ 勝率目安 8.2% ／ 期待値 140%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">マーゴットライズ</span><span class="dh-badge">6番人気</span>
-      <div class="dh-stats mono">オッズ 18.0倍 ／ 勝率目安 6.3% ／ 期待値 114%</div>
+      <div class="dh-stats mono">オッズ 18.0倍 ／ 勝率目安 6.6% ／ 期待値 118%</div>
+    </div>
+    
+    <div class="dark-horse-item">
+      <span class="dh-name">ネイティヴプライド</span><span class="dh-badge">8番人気</span>
+      <div class="dh-stats mono">オッズ 26.0倍 ／ 勝率目安 4.4% ／ 期待値 115%</div>
+    </div>
+    
+    <div class="dark-horse-item">
+      <span class="dh-name">オウケンサクラコ</span><span class="dh-badge">7番人気</span>
+      <div class="dh-stats mono">オッズ 22.2倍 ／ 勝率目安 5.0% ／ 期待値 110%</div>
     </div>
     
   </div>
@@ -241,33 +310,33 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">7</span>ゴールドプレイヤー</span>
-        <span class="horse-prob mono">複勝圏内 55%</span>
+        <span class="horse-prob mono">複勝圏内 58%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約55%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約58%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">15</span>カシマライフウ</span>
-        <span class="horse-prob mono">複勝圏内 54%</span>
+        <span class="horse-prob mono">複勝圏内 58%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約54%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約58%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">6</span>ガードオブオナー</span>
-        <span class="horse-prob mono">複勝圏内 52%</span>
+        <span class="horse-prob mono">複勝圏内 50%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約52%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約50%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">11</span>アデルフィー</span>
-        <span class="horse-prob mono">複勝圏内 47%</span>
+        <span class="horse-prob mono">複勝圏内 50%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約47%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約50%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。</div>
     </div>
     
     <div class="horse-item">
@@ -281,17 +350,17 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">10</span>マーゴットライズ</span>
-        <span class="horse-prob mono">複勝圏内 19%</span>
+        <span class="horse-prob mono">複勝圏内 20%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約19%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は14.3着とやや不振。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約20%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は14.3着とやや不振。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">9</span>オウケンサクラコ</span>
-        <span class="horse-prob mono">複勝圏内 16%</span>
+        <span class="horse-prob mono">複勝圏内 15%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約16%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約15%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
     </div>
     
     <div class="horse-item">
@@ -313,9 +382,9 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">1</span>ロマンス</span>
-        <span class="horse-prob mono">複勝圏内 4%</span>
+        <span class="horse-prob mono">複勝圏内 5%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約4%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は9.5着とやや不振。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約5%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は9.5着とやや不振。</div>
     </div>
     
     <div class="horse-item">
@@ -337,9 +406,9 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">12</span>ヌビアン</span>
-        <span class="horse-prob mono">複勝圏内 2%</span>
+        <span class="horse-prob mono">複勝圏内 1%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約2%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は10.0着とやや不振。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約1%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は10.0着とやや不振。</div>
     </div>
     
     <div class="horse-item">
@@ -353,69 +422,76 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">14</span>ハチマン</span>
-        <span class="horse-prob mono">複勝圏内 1%</span>
+        <span class="horse-prob mono">複勝圏内 0%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約1%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は13.3着とやや不振。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約0%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は13.3着とやや不振。</div>
     </div>
     
   </div>
 
-  <div class="section-title"><span class="en">All Bets</span>券種ごとの買い目候補</div>
-  <div class="section-hint">期待値100%を超えるものだけを表示しています。券種名をタップすると開きます。</div>
+  <div class="section-title"><span class="en">All Bets</span>券種ごとの買い目一覧（参考）</div>
+  <div class="section-hint">期待値100%を超えるものを全て表示しています。上の「購入プラン」はこの中から自動選定したものです。</div>
   
   <details class="bet-group" open>
-    <summary>単勝 <span class="count">7点</span></summary>
+    <summary>単勝 <span class="count">8点</span></summary>
     <table>
       <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
       <tbody>
         
         <tr>
-          <td class="horses-cell">ダイヒョウカーク</td>
+          <td class="horses-cell">4 ダイヒョウカーク</td>
           <td class="mono">125.0</td>
-          <td class="mono">1.6%</td>
-          <td class="ev-cell mono">195%</td>
+          <td class="mono">1.7%</td>
+          <td class="ev-cell mono">214%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">オーパパ</td>
-          <td class="mono">209.7</td>
-          <td class="mono">0.8%</td>
-          <td class="ev-cell mono">168%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バターショコラ</td>
+          <td class="horses-cell">13 バターショコラ</td>
           <td class="mono">173.7</td>
-          <td class="mono">0.9%</td>
-          <td class="ev-cell mono">158%</td>
+          <td class="mono">1.1%</td>
+          <td class="ev-cell mono">192%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">エターナルホープ</td>
+          <td class="horses-cell">2 オーパパ</td>
+          <td class="mono">209.7</td>
+          <td class="mono">0.7%</td>
+          <td class="ev-cell mono">147%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 エターナルホープ</td>
           <td class="mono">17.0</td>
-          <td class="mono">8.4%</td>
-          <td class="ev-cell mono">143%</td>
+          <td class="mono">8.2%</td>
+          <td class="ev-cell mono">140%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ネイティヴプライド</td>
-          <td class="mono">26.0</td>
-          <td class="mono">4.7%</td>
-          <td class="ev-cell mono">122%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">オウケンサクラコ</td>
-          <td class="mono">22.2</td>
-          <td class="mono">5.3%</td>
-          <td class="ev-cell mono">117%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">マーゴットライズ</td>
+          <td class="horses-cell">10 マーゴットライズ</td>
           <td class="mono">18.0</td>
-          <td class="mono">6.3%</td>
-          <td class="ev-cell mono">114%</td>
+          <td class="mono">6.6%</td>
+          <td class="ev-cell mono">118%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 ネイティヴプライド</td>
+          <td class="mono">26.0</td>
+          <td class="mono">4.4%</td>
+          <td class="ev-cell mono">115%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">9 オウケンサクラコ</td>
+          <td class="mono">22.2</td>
+          <td class="mono">5.0%</td>
+          <td class="ev-cell mono">110%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 ロマンス</td>
+          <td class="mono">68.4</td>
+          <td class="mono">1.5%</td>
+          <td class="ev-cell mono">103%</td>
         </tr>
         
       </tbody>
@@ -429,143 +505,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">ガードオブオナー - バターショコラ</td>
-          <td class="mono">635.3</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">222%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">アデルフィー - バターショコラ</td>
-          <td class="mono">657.8</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">207%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">カシマライフウ - バターショコラ</td>
+          <td class="horses-cell">13 バターショコラ - 15 カシマライフウ</td>
           <td class="mono">565.9</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">207%</td>
+          <td class="mono">0.5%</td>
+          <td class="ev-cell mono">263%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バターショコラ - エターナルホープ</td>
+          <td class="horses-cell">13 バターショコラ - 11 アデルフィー</td>
+          <td class="mono">657.8</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">260%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">6 ガードオブオナー - 13 バターショコラ</td>
+          <td class="mono">635.3</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">251%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 エターナルホープ - 13 バターショコラ</td>
           <td class="mono">984.4</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">158%</td>
+          <td class="ev-cell mono">188%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">オウケンサクラコ - バターショコラ</td>
+          <td class="horses-cell">13 バターショコラ - 9 オウケンサクラコ</td>
           <td class="mono">1561.8</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">154%</td>
+          <td class="ev-cell mono">177%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ダイヒョウカーク - ガードオブオナー</td>
+          <td class="horses-cell">1 ロマンス - 15 カシマライフウ</td>
+          <td class="mono">275.8</td>
+          <td class="mono">0.6%</td>
+          <td class="ev-cell mono">175%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">4 ダイヒョウカーク - 11 アデルフィー</td>
+          <td class="mono">269.2</td>
+          <td class="mono">0.6%</td>
+          <td class="ev-cell mono">165%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">4 ダイヒョウカーク - 6 ガードオブオナー</td>
           <td class="mono">254.6</td>
           <td class="mono">0.6%</td>
-          <td class="ev-cell mono">154%</td>
+          <td class="ev-cell mono">156%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">プリヴィマーク - カシマライフウ</td>
-          <td class="mono">824.6</td>
+          <td class="horses-cell">4 ダイヒョウカーク - 9 オウケンサクラコ</td>
+          <td class="mono">853.6</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">149%</td>
+          <td class="ev-cell mono">150%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ヌビアン - ガードオブオナー</td>
-          <td class="mono">594.8</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">149%</td>
+          <td class="horses-cell">13 バターショコラ - 10 マーゴットライズ</td>
+          <td class="mono">967.3</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">146%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">カシマライフウ - ロマンス</td>
-          <td class="mono">275.8</td>
-          <td class="mono">0.5%</td>
-          <td class="ev-cell mono">148%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ダイヒョウカーク - アデルフィー</td>
-          <td class="mono">269.2</td>
+          <td class="horses-cell">7 ゴールドプレイヤー - 13 バターショコラ</td>
+          <td class="mono">314.3</td>
           <td class="mono">0.5%</td>
           <td class="ev-cell mono">146%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">オウケンサクラコ - ダイヒョウカーク</td>
-          <td class="mono">853.6</td>
+          <td class="horses-cell">4 ダイヒョウカーク - 13 バターショコラ</td>
+          <td class="mono">3472.9</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">134%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 ネイティヴプライド - 13 バターショコラ</td>
+          <td class="mono">1306.4</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">132%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">4 ダイヒョウカーク - 15 カシマライフウ</td>
+          <td class="mono">181.0</td>
+          <td class="mono">0.7%</td>
+          <td class="ev-cell mono">131%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">5 プリヴィマーク - 15 カシマライフウ</td>
+          <td class="mono">824.6</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">145%</td>
+          <td class="ev-cell mono">125%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">オウケンサクラコ - ガードオブオナー</td>
-          <td class="mono">67.9</td>
-          <td class="mono">2.1%</td>
-          <td class="ev-cell mono">140%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">オーパパ - マーゴットライズ</td>
-          <td class="mono">1205.0</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">127%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">オーパパ - エターナルホープ</td>
-          <td class="mono">876.3</td>
-          <td class="mono">0.1%</td>
+          <td class="horses-cell">4 ダイヒョウカーク - 3 ネイティヴプライド</td>
+          <td class="mono">790.8</td>
+          <td class="mono">0.2%</td>
           <td class="ev-cell mono">124%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">マーゴットライズ - ガードオブオナー</td>
-          <td class="mono">48.8</td>
-          <td class="mono">2.5%</td>
+          <td class="horses-cell">6 ガードオブオナー - 9 オウケンサクラコ</td>
+          <td class="mono">67.9</td>
+          <td class="mono">1.8%</td>
+          <td class="ev-cell mono">123%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">10 マーゴットライズ - 15 カシマライフウ</td>
+          <td class="mono">43.1</td>
+          <td class="mono">2.8%</td>
           <td class="ev-cell mono">122%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ガードオブオナー - エターナルホープ</td>
-          <td class="mono">36.0</td>
-          <td class="mono">3.4%</td>
-          <td class="ev-cell mono">121%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ネイティヴプライド - ダイヒョウカーク</td>
-          <td class="mono">790.8</td>
-          <td class="mono">0.2%</td>
+          <td class="horses-cell">4 ダイヒョウカーク - 7 ゴールドプレイヤー</td>
+          <td class="mono">167.0</td>
+          <td class="mono">0.7%</td>
           <td class="ev-cell mono">120%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ヌビアン - エターナルホープ</td>
-          <td class="mono">1035.4</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">119%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">オーパパ - ガードオブオナー</td>
-          <td class="mono">376.7</td>
+          <td class="horses-cell">8 エターナルホープ - 1 ロマンス</td>
+          <td class="mono">459.8</td>
           <td class="mono">0.3%</td>
-          <td class="ev-cell mono">116%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ゴールドプレイヤー - バターショコラ</td>
-          <td class="mono">314.3</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">116%</td>
+          <td class="ev-cell mono">120%</td>
         </tr>
         
       </tbody>
@@ -579,143 +655,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">オーパパ → バターショコラ</td>
+          <td class="horses-cell">13 バターショコラ → 15 カシマライフウ</td>
+          <td class="mono">1784.2</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">374%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 オーパパ → 13 バターショコラ</td>
           <td class="mono">42820.9</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">315%</td>
+          <td class="ev-cell mono">334%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バターショコラ → カシマライフウ</td>
+          <td class="horses-cell">13 バターショコラ → 6 ガードオブオナー</td>
           <td class="mono">1784.2</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">295%</td>
+          <td class="ev-cell mono">324%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バターショコラ → ガードオブオナー</td>
-          <td class="mono">1784.2</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">284%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ダイヒョウカーク → ガードオブオナー</td>
-          <td class="mono">804.9</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">222%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バターショコラ → エターナルホープ</td>
+          <td class="horses-cell">13 バターショコラ → 8 エターナルホープ</td>
           <td class="mono">2744.9</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">211%</td>
+          <td class="ev-cell mono">252%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バターショコラ → オウケンサクラコ</td>
-          <td class="mono">4198.1</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">202%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バターショコラ → アデルフィー</td>
+          <td class="horses-cell">13 バターショコラ → 11 アデルフィー</td>
           <td class="mono">1346.5</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">244%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">13 バターショコラ → 9 オウケンサクラコ</td>
+          <td class="mono">4198.1</td>
           <td class="mono">0.1%</td>
+          <td class="ev-cell mono">233%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">4 ダイヒョウカーク → 6 ガードオブオナー</td>
+          <td class="mono">804.9</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">227%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 ロマンス → 15 カシマライフウ</td>
+          <td class="mono">699.6</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">201%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">4 ダイヒョウカーク → 15 カシマライフウ</td>
+          <td class="mono">598.0</td>
+          <td class="mono">0.3%</td>
           <td class="ev-cell mono">195%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ヌビアン → ガードオブオナー</td>
-          <td class="mono">1685.8</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">192%</td>
+          <td class="horses-cell">15 カシマライフウ → 13 バターショコラ</td>
+          <td class="mono">748.6</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">191%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">オーパパ → マーゴットライズ</td>
-          <td class="mono">3453.3</td>
+          <td class="horses-cell">8 エターナルホープ → 13 バターショコラ</td>
+          <td class="mono">1911.6</td>
           <td class="mono">0.1%</td>
+          <td class="ev-cell mono">189%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">13 バターショコラ → 7 ゴールドプレイヤー</td>
+          <td class="mono">892.1</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">187%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">13 バターショコラ → 2 オーパパ</td>
+          <td class="mono">23789.4</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">186%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">11 アデルフィー → 13 バターショコラ</td>
+          <td class="mono">829.8</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">178%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">4 ダイヒョウカーク → 11 アデルフィー</td>
+          <td class="mono">627.8</td>
+          <td class="mono">0.3%</td>
           <td class="ev-cell mono">177%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バターショコラ → オーパパ</td>
-          <td class="mono">23789.4</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">175%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">プリヴィマーク → カシマライフウ</td>
-          <td class="mono">2141.0</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">175%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ダイヒョウカーク → カシマライフウ</td>
-          <td class="mono">598.0</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">171%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ロマンス → カシマライフウ</td>
-          <td class="mono">699.6</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">170%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">オウケンサクラコ → ガードオブオナー</td>
-          <td class="mono">174.7</td>
-          <td class="mono">1.0%</td>
-          <td class="ev-cell mono">168%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">エターナルホープ → バターショコラ</td>
-          <td class="mono">1911.6</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">159%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ダイヒョウカーク → オウケンサクラコ</td>
+          <td class="horses-cell">4 ダイヒョウカーク → 9 オウケンサクラコ</td>
           <td class="mono">1894.7</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">158%</td>
+          <td class="ev-cell mono">164%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ダイヒョウカーク → アデルフィー</td>
-          <td class="mono">627.8</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">157%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">オーパパ → ガードオブオナー</td>
-          <td class="mono">1115.1</td>
+          <td class="horses-cell">10 マーゴットライズ → 13 バターショコラ</td>
+          <td class="mono">2099.0</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">157%</td>
+          <td class="ev-cell mono">163%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">マーゴットライズ → ガードオブオナー</td>
-          <td class="mono">128.5</td>
-          <td class="mono">1.2%</td>
-          <td class="ev-cell mono">151%</td>
+          <td class="horses-cell">10 マーゴットライズ → 15 カシマライフウ</td>
+          <td class="mono">121.4</td>
+          <td class="mono">1.3%</td>
+          <td class="ev-cell mono">160%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">カシマライフウ → バターショコラ</td>
-          <td class="mono">748.6</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">150%</td>
+          <td class="horses-cell">2 オーパパ → 10 マーゴットライズ</td>
+          <td class="mono">3453.3</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">160%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">13 バターショコラ → 4 ダイヒョウカーク</td>
+          <td class="mono">8234.7</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">158%</td>
         </tr>
         
       </tbody>
@@ -729,143 +805,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">カシマライフウ - ガードオブオナー - バターショコラ</td>
+          <td class="horses-cell">6 ガードオブオナー - 13 バターショコラ - 15 カシマライフウ</td>
           <td class="mono">964.5</td>
           <td class="mono">0.3%</td>
-          <td class="ev-cell mono">253%</td>
+          <td class="ev-cell mono">298%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ダイヒョウカーク - ガードオブオナー - バターショコラ</td>
+          <td class="horses-cell">4 ダイヒョウカーク - 6 ガードオブオナー - 13 バターショコラ</td>
           <td class="mono">11999.9</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">223%</td>
+          <td class="ev-cell mono">275%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">オウケンサクラコ - ガードオブオナー - バターショコラ</td>
-          <td class="mono">3159.8</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">205%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バターショコラ - ガードオブオナー - エターナルホープ</td>
-          <td class="mono">1909.0</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">205%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ダイヒョウカーク - カシマライフウ - バターショコラ</td>
+          <td class="horses-cell">4 ダイヒョウカーク - 13 バターショコラ - 15 カシマライフウ</td>
           <td class="mono">9882.3</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">193%</td>
+          <td class="ev-cell mono">271%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バターショコラ - カシマライフウ - エターナルホープ</td>
+          <td class="horses-cell">13 バターショコラ - 10 マーゴットライズ - 15 カシマライフウ</td>
+          <td class="mono">2167.7</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">240%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 エターナルホープ - 13 バターショコラ - 15 カシマライフウ</td>
           <td class="mono">1668.8</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">189%</td>
+          <td class="ev-cell mono">235%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">マーゴットライズ - カシマライフウ - ガードオブオナー</td>
+          <td class="horses-cell">8 エターナルホープ - 6 ガードオブオナー - 13 バターショコラ</td>
+          <td class="mono">1909.0</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">225%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">6 ガードオブオナー - 13 バターショコラ - 9 オウケンサクラコ</td>
+          <td class="mono">3159.8</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">217%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 ロマンス - 13 バターショコラ - 15 カシマライフウ</td>
+          <td class="mono">8330.5</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">201%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">6 ガードオブオナー - 13 バターショコラ - 10 マーゴットライズ</td>
+          <td class="mono">2149.2</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">199%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 ゴールドプレイヤー - 13 バターショコラ - 15 カシマライフウ</td>
+          <td class="mono">535.3</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">198%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">6 ガードオブオナー - 13 バターショコラ - 11 アデルフィー</td>
+          <td class="mono">752.2</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">194%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">6 ガードオブオナー - 10 マーゴットライズ - 15 カシマライフウ</td>
           <td class="mono">97.2</td>
           <td class="mono">1.9%</td>
           <td class="ev-cell mono">189%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">カシマライフウ - マーゴットライズ - バターショコラ</td>
-          <td class="mono">2167.7</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">181%</td>
+          <td class="horses-cell">4 ダイヒョウカーク - 10 マーゴットライズ - 15 カシマライフウ</td>
+          <td class="mono">1090.9</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">188%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">オウケンサクラコ - ダイヒョウカーク - ガードオブオナー</td>
-          <td class="mono">1579.9</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">178%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">マーゴットライズ - ガードオブオナー - バターショコラ</td>
-          <td class="mono">2149.2</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">170%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">プリヴィマーク - カシマライフウ - エターナルホープ</td>
-          <td class="mono">3017.9</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">168%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ガードオブオナー - カシマライフウ - ロマンス</td>
+          <td class="horses-cell">1 ロマンス - 6 ガードオブオナー - 15 カシマライフウ</td>
           <td class="mono">435.6</td>
           <td class="mono">0.4%</td>
-          <td class="ev-cell mono">168%</td>
+          <td class="ev-cell mono">184%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">アデルフィー - ガードオブオナー - バターショコラ</td>
-          <td class="mono">752.2</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">167%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">オーパパ - ガードオブオナー - エターナルホープ</td>
-          <td class="mono">1699.8</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">161%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">カシマライフウ - ガードオブオナー - エターナルホープ</td>
-          <td class="mono">61.2</td>
-          <td class="mono">2.6%</td>
-          <td class="ev-cell mono">161%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ヌビアン - ガードオブオナー - エターナルホープ</td>
-          <td class="mono">2086.9</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">161%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">カシマライフウ - ガードオブオナー - ハチマン</td>
-          <td class="mono">2888.2</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">160%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ダイヒョウカーク - ガードオブオナー - アデルフィー</td>
-          <td class="mono">409.9</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">158%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ダイヒョウカーク - カシマライフウ - マーゴットライズ</td>
-          <td class="mono">1090.9</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">157%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">カシマライフウ - ロマンス - エターナルホープ</td>
+          <td class="horses-cell">8 エターナルホープ - 1 ロマンス - 15 カシマライフウ</td>
           <td class="mono">927.3</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">154%</td>
+          <td class="ev-cell mono">179%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">4 ダイヒョウカーク - 13 バターショコラ - 11 アデルフィー</td>
+          <td class="mono">7813.9</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">179%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 エターナルホープ - 13 バターショコラ - 11 アデルフィー</td>
+          <td class="mono">1452.4</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">171%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">4 ダイヒョウカーク - 6 ガードオブオナー - 9 オウケンサクラコ</td>
+          <td class="mono">1579.9</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">169%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">4 ダイヒョウカーク - 6 ガードオブオナー - 11 アデルフィー</td>
+          <td class="mono">409.9</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">165%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 ロマンス - 4 ダイヒョウカーク - 15 カシマライフウ</td>
+          <td class="mono">4344.8</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">163%</td>
         </tr>
         
       </tbody>
@@ -879,143 +955,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">ダイヒョウカーク → バターショコラ → ガードオブオナー</td>
+          <td class="horses-cell">4 ダイヒョウカーク → 13 バターショコラ → 6 ガードオブオナー</td>
           <td class="mono">399377.4</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">1024%</td>
+          <td class="ev-cell mono">1285%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バターショコラ → ダイヒョウカーク → ガードオブオナー</td>
+          <td class="horses-cell">13 バターショコラ → 4 ダイヒョウカーク → 6 ガードオブオナー</td>
           <td class="mono">266251.6</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">678%</td>
+          <td class="ev-cell mono">852%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バターショコラ → カシマライフウ → ガードオブオナー</td>
+          <td class="horses-cell">13 バターショコラ → 15 カシマライフウ → 6 ガードオブオナー</td>
           <td class="mono">17750.1</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">629%</td>
+          <td class="ev-cell mono">752%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バターショコラ → ガードオブオナー → カシマライフウ</td>
+          <td class="horses-cell">4 ダイヒョウカーク → 6 ガードオブオナー → 13 バターショコラ</td>
+          <td class="mono">159750.9</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">609%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">13 バターショコラ → 6 ガードオブオナー → 15 カシマライフウ</td>
           <td class="mono">14522.8</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">597%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">13 バターショコラ → 10 マーゴットライズ → 15 カシマライフウ</td>
+          <td class="mono">39937.7</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">596%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">13 バターショコラ → 10 マーゴットライズ → 6 ガードオブオナー</td>
+          <td class="mono">42039.7</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">543%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">13 バターショコラ → 15 カシマライフウ → 8 エターナルホープ</td>
+          <td class="mono">24204.6</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">520%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">13 バターショコラ → 9 オウケンサクラコ → 6 ガードオブオナー</td>
+          <td class="mono">53250.3</td>
           <td class="mono">0.0%</td>
           <td class="ev-cell mono">510%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ダイヒョウカーク → ガードオブオナー → バターショコラ</td>
-          <td class="mono">159750.9</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">493%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バターショコラ → オウケンサクラコ → ガードオブオナー</td>
-          <td class="mono">53250.3</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">475%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バターショコラ → マーゴットライズ → ガードオブオナー</td>
-          <td class="mono">42039.7</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">456%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バターショコラ → マーゴットライズ → カシマライフウ</td>
-          <td class="mono">39937.7</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">451%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バターショコラ → アデルフィー → ガードオブオナー</td>
+          <td class="horses-cell">13 バターショコラ → 11 アデルフィー → 6 ガードオブオナー</td>
           <td class="mono">14263.4</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">430%</td>
+          <td class="ev-cell mono">507%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バターショコラ → カシマライフウ → エターナルホープ</td>
-          <td class="mono">24204.6</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">415%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バターショコラ → ガードオブオナー → アデルフィー</td>
-          <td class="mono">13312.5</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">409%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バターショコラ → ガードオブオナー → オウケンサクラコ</td>
-          <td class="mono">39937.7</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">409%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バターショコラ → ガードオブオナー → ダイヒョウカーク</td>
+          <td class="horses-cell">13 バターショコラ → 6 ガードオブオナー → 4 ダイヒョウカーク</td>
           <td class="mono">133125.8</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">405%</td>
+          <td class="ev-cell mono">500%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バターショコラ → エターナルホープ → カシマライフウ</td>
+          <td class="horses-cell">13 バターショコラ → 4 ダイヒョウカーク → 15 カシマライフウ</td>
+          <td class="mono">133125.8</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">492%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">13 バターショコラ → 8 エターナルホープ → 15 カシマライフウ</td>
           <td class="mono">25766.2</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">395%</td>
+          <td class="ev-cell mono">489%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バターショコラ → ガードオブオナー → マーゴットライズ</td>
+          <td class="horses-cell">13 バターショコラ → 6 ガードオブオナー → 11 アデルフィー</td>
+          <td class="mono">13312.5</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">473%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">13 バターショコラ → 15 カシマライフウ → 10 マーゴットライズ</td>
+          <td class="mono">27543.2</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">473%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">13 バターショコラ → 15 カシマライフウ → 4 ダイヒョウカーク</td>
+          <td class="mono">99844.3</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">447%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">13 バターショコラ → 6 ガードオブオナー → 10 マーゴットライズ</td>
           <td class="mono">30721.3</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">378%</td>
+          <td class="ev-cell mono">443%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バターショコラ → ネイティヴプライド → ガードオブオナー</td>
-          <td class="mono">46985.5</td>
+          <td class="horses-cell">10 マーゴットライズ → 13 バターショコラ → 15 カシマライフウ</td>
+          <td class="mono">27543.2</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">373%</td>
+          <td class="ev-cell mono">435%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バターショコラ → ガードオブオナー → ネイティヴプライド</td>
+          <td class="horses-cell">13 バターショコラ → 6 ガードオブオナー → 9 オウケンサクラコ</td>
           <td class="mono">39937.7</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">366%</td>
+          <td class="ev-cell mono">435%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ダイヒョウカーク → ガードオブオナー → オーパパ</td>
-          <td class="mono">133125.8</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">363%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">カシマライフウ → バターショコラ → ガードオブオナー</td>
+          <td class="horses-cell">15 カシマライフウ → 13 バターショコラ → 6 ガードオブオナー</td>
           <td class="mono">8407.9</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">360%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バターショコラ → オーパパ → カシマライフウ</td>
-          <td class="mono">266251.6</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">360%</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">433%</td>
         </tr>
         
       </tbody>
@@ -1027,5 +1103,49 @@
 
   <div class="disclaimer">本ページの予想は参考情報です。的中・利益を保証しません。<br>馬券の購入は必ずご自身でIPAT等の公式ルートから行ってください。</div>
 </main>
+
+<script>
+(function () {
+  const UNIT = 100;  // JRAの購入単位（100円）に丸める
+
+  function recalc() {
+    const budget = parseFloat(document.getElementById('budgetInput').value) || 0;
+    const rows = Array.from(document.querySelectorAll('#planTable tbody tr[data-ev]'));
+    const totalRow = document.getElementById('planTotalRow');
+    const totalCell = document.getElementById('planTotal');
+
+    if (!rows.length) return;
+
+    if (budget <= 0) {
+      rows.forEach(function (tr) { tr.querySelector('.stake-cell').textContent = '-'; });
+      if (totalRow) totalRow.style.display = 'none';
+      return;
+    }
+
+    // 期待値(EV)が高いものほど多く配分する（EVの合計に対する比率で按分）
+    const evs = rows.map(function (tr) { return Math.max(0, parseFloat(tr.dataset.ev) - 1); }); // 100%超過分だけを重みにする
+    const totalWeight = evs.reduce(function (a, b) { return a + b; }, 0);
+
+    let allocated = 0;
+    rows.forEach(function (tr, i) {
+      const weight = totalWeight > 0 ? evs[i] / totalWeight : 1 / rows.length;
+      const raw = budget * weight;
+      const amount = Math.floor(raw / UNIT) * UNIT;
+      allocated += amount;
+      tr.querySelector('.stake-cell').textContent = amount > 0 ? amount.toLocaleString('ja-JP') + '円' : '見送り';
+    });
+
+    if (totalRow && totalCell) {
+      totalRow.style.display = '';
+      totalCell.textContent = allocated.toLocaleString('ja-JP') + '円 / ' + budget.toLocaleString('ja-JP') + '円中';
+    }
+  }
+
+  const input = document.getElementById('budgetInput');
+  if (input) {
+    input.addEventListener('input', recalc);
+  }
+})();
+</script>
 </body>
 </html>

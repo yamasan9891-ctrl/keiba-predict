@@ -63,30 +63,66 @@
   }
   .summary-text { font-size: 13px; line-height: 1.75; color: var(--text-dim); }
 
-  /* --- 結論：一番のおすすめ --- */
-  .best-bet {
+  /* --- 結論：馬券風デザイン --- */
+  .ticket {
     position: relative;
     background: linear-gradient(180deg, #1a1408 0%, var(--surface) 70%);
     border: 1px solid var(--amber-dim);
+    border-radius: 10px;
     box-shadow: 0 0 0 1px rgba(240,162,2,0.08), 0 8px 24px -12px var(--amber-glow);
+    padding: 0;
+    overflow: hidden;
   }
-  .best-bet .tag {
-    font-size: 12px; font-weight: 800; color: var(--amber);
+  .ticket-head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 16px; background: rgba(240,162,2,0.08);
+    border-bottom: 1px dashed var(--amber-dim);
   }
-  .best-bet .type {
-    display: inline-block; font-size: 11px; color: var(--bg); background: var(--amber);
-    font-weight: 700; padding: 2px 8px; border-radius: 3px; margin-top: 8px;
+  .ticket-head .label { font-size: 11px; font-weight: 800; color: var(--amber); letter-spacing: 0.05em; }
+  .ticket-head .type-badge {
+    font-size: 11px; color: var(--bg); background: var(--amber);
+    font-weight: 800; padding: 3px 10px; border-radius: 3px;
   }
-  .best-bet .horses {
-    font-size: 21px; font-weight: 800; margin: 8px 0 12px;
-    color: var(--text); line-height: 1.4;
+  .ticket-body { padding: 16px; }
+  .ticket .horses {
+    font-size: 20px; font-weight: 800; margin: 0 0 14px;
+    color: var(--text); line-height: 1.45;
   }
-  .best-bet .stat-row { display: flex; }
-  .best-bet .stat { margin-right: 24px; }
-  .best-bet .stat .label { font-size: 10.5px; color: var(--text-dim); }
-  .best-bet .stat .value { font-size: 18px; font-weight: 800; margin-top: 2px; }
-  .best-bet .stat.ev .value { color: var(--amber); }
-  .best-bet .footnote { font-size: 11px; color: var(--text-dim); margin-top: 12px; line-height: 1.6; border-top: 1px solid var(--line); padding-top: 10px; }
+  .ticket-stats {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+    padding: 12px 0; border-top: 1px dashed var(--line); border-bottom: 1px dashed var(--line);
+  }
+  .ticket-stats .stat { text-align: center; }
+  .ticket-stats .stat .label { font-size: 10px; color: var(--text-dim); }
+  .ticket-stats .stat .value { font-size: 16px; font-weight: 800; margin-top: 3px; }
+  .ticket-stats .stat.ev .value { color: var(--amber); }
+
+  .ticket-amount {
+    margin-top: 14px; padding: 12px; background: var(--surface-2);
+    border-radius: 6px; display: flex; justify-content: space-between; align-items: center;
+  }
+  .ticket-amount .label { font-size: 11px; color: var(--text-dim); }
+  .ticket-amount .value { font-size: 22px; font-weight: 800; color: var(--green); }
+  .ticket-amount .value::before { content: "¥"; font-size: 14px; margin-right: 2px; }
+
+  .footnote { font-size: 11px; color: var(--text-dim); margin-top: 12px; line-height: 1.6; padding: 0 16px 14px; }
+
+  /* --- 予算入力 --- */
+  .budget-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
+    padding: 10px 14px; margin-bottom: 14px;
+  }
+  .budget-box label { font-size: 12px; color: var(--text-dim); white-space: nowrap; }
+  .budget-box input {
+    flex: 1; background: var(--surface-2); border: 1px solid var(--line); border-radius: 4px;
+    color: var(--text); font-size: 15px; padding: 7px 10px; font-family: inherit;
+    -moz-appearance: textfield;
+  }
+  .budget-box input::-webkit-outer-spin-button, .budget-box input::-webkit-inner-spin-button { margin: 0; }
+  .budget-box .unit { font-size: 12px; color: var(--text-dim); }
+  .stake-cell { color: var(--green); font-weight: 700; }
+
 
   /* --- 穴馬候補 --- */
   .dark-horse-card { border-left: 3px solid var(--green); }
@@ -178,18 +214,66 @@
   <div class="card summary-text">明確な逃げ馬が不在で、スローペースになりやすく先行馬が有利になりやすい。馬場状態は「良」。</div>
 
   
-  <div class="section-title"><span class="en">Conclusion</span>結論：一番のおすすめ</div>
-  <div class="card best-bet">
-    <div class="tag">🏆 このレースで最も期待値が高い買い目</div>
-    <div class="type">3連単</div>
-    <div class="horses">ニシノリリックス → ウイニングレイ → エクスマキナ</div>
-    <div class="stat-row mono">
-      <div class="stat"><div class="label">オッズ</div><div class="value">1459.5倍</div></div>
-      <div class="stat"><div class="label">的中確率</div><div class="value">0.2%</div></div>
-      <div class="stat ev"><div class="label">期待値</div><div class="value">300%</div></div>
-    </div>
-    <div class="footnote">期待値とは「100円賭けた時に理論上いくら戻ってくるか」の目安です。100%を超えるほど、賭け金に対して見込まれる払戻が大きいことを意味します（的中を保証するものではありません）。</div>
+  <div class="section-title"><span class="en">Betting Plan</span>AI推奨 購入プラン</div>
+  <div class="section-hint">実際の投票は複数点に分けるのが基本のため、期待値が高い順に複数の買い目を組み合わせています。予算を入れると自動で配分します。</div>
+  <div class="budget-box">
+    <label for="budgetInput">今回の予算</label>
+    <input type="number" id="budgetInput" inputmode="numeric" placeholder="例: 3000" min="0" step="100">
+    <span class="unit">円</span>
   </div>
+  <div class="card" style="padding:0; overflow:hidden;">
+    <table id="planTable">
+      <thead><tr><th>券種</th><th>買い目</th><th>オッズ</th><th>期待値</th><th>配分額</th></tr></thead>
+      <tbody>
+        
+        <tr data-ev="2.476247522681374">
+          <td class="mono">単勝</td>
+          <td class="horses-cell">2 ニシノリリックス</td>
+          <td class="mono">61.7</td>
+          <td class="ev-cell mono">248%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="2.3989317772897265">
+          <td class="mono">馬単</td>
+          <td class="horses-cell">2 ニシノリリックス → 5 エクスマキナ</td>
+          <td class="mono">194.3</td>
+          <td class="ev-cell mono">240%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="2.1595115307160273">
+          <td class="mono">単勝</td>
+          <td class="horses-cell">1 ケイジャーダ</td>
+          <td class="mono">99.3</td>
+          <td class="ev-cell mono">216%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="1.9147517385202741">
+          <td class="mono">馬連</td>
+          <td class="horses-cell">2 ニシノリリックス - 6 ウイニングレイ</td>
+          <td class="mono">144.8</td>
+          <td class="ev-cell mono">191%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="1.8985364357355683">
+          <td class="mono">馬連</td>
+          <td class="horses-cell">2 ニシノリリックス - 5 エクスマキナ</td>
+          <td class="mono">65.1</td>
+          <td class="ev-cell mono">190%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr id="planTotalRow" style="display:none;">
+          <td colspan="4" style="text-align:right; font-weight:800;">合計</td>
+          <td class="mono" id="planTotal" style="font-weight:800; color:var(--green);">-</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="footnote">配分額は、各買い目の期待値の大きさに比例して予算を振り分けた目安です（期待値が高いものほど多く配分）。1点に集中させず、複数点に分けて購入することでブレを抑える考え方に基づいています。あくまで参考情報であり、的中や利益を保証するものではありません。</div>
   
 
   
@@ -199,22 +283,17 @@
     
     <div class="dark-horse-item">
       <span class="dh-name">ニシノリリックス</span><span class="dh-badge">6番人気</span>
-      <div class="dh-stats mono">オッズ 61.7倍 ／ 勝率目安 3.6% ／ 期待値 225%</div>
+      <div class="dh-stats mono">オッズ 61.7倍 ／ 勝率目安 4.0% ／ 期待値 248%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">ケイジャーダ</span><span class="dh-badge">7番人気</span>
-      <div class="dh-stats mono">オッズ 99.3倍 ／ 勝率目安 2.2% ／ 期待値 217%</div>
+      <div class="dh-stats mono">オッズ 99.3倍 ／ 勝率目安 2.2% ／ 期待値 216%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">ハンデンブレイズ</span><span class="dh-badge">5番人気</span>
-      <div class="dh-stats mono">オッズ 14.9倍 ／ 勝率目安 8.9% ／ 期待値 133%</div>
-    </div>
-    
-    <div class="dark-horse-item">
-      <span class="dh-name">ルークスイテルム</span><span class="dh-badge">8番人気</span>
-      <div class="dh-stats mono">オッズ 191.7倍 ／ 勝率目安 0.6% ／ 期待値 112%</div>
+      <div class="dh-stats mono">オッズ 14.9倍 ／ 勝率目安 9.6% ／ 期待値 144%</div>
     </div>
     
   </div>
@@ -226,17 +305,17 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">5</span>エクスマキナ</span>
-        <span class="horse-prob mono">複勝圏内 70%</span>
+        <span class="horse-prob mono">複勝圏内 72%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約70%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約72%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">3</span>イカルステソーロ</span>
-        <span class="horse-prob mono">複勝圏内 54%</span>
+        <span class="horse-prob mono">複勝圏内 50%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約54%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約50%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
     </div>
     
     <div class="horse-item">
@@ -250,25 +329,25 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">6</span>ウイニングレイ</span>
-        <span class="horse-prob mono">複勝圏内 38%</span>
+        <span class="horse-prob mono">複勝圏内 36%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約38%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は8.0着とやや不振。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約36%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は8.0着とやや不振。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">7</span>ハンデンブレイズ</span>
-        <span class="horse-prob mono">複勝圏内 22%</span>
+        <span class="horse-prob mono">複勝圏内 23%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約22%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約23%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">2</span>ニシノリリックス</span>
-        <span class="horse-prob mono">複勝圏内 9%</span>
+        <span class="horse-prob mono">複勝圏内 10%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約9%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は8.0着とやや不振。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約10%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は8.0着とやや不振。</div>
     </div>
     
     <div class="horse-item">
@@ -289,41 +368,34 @@
     
   </div>
 
-  <div class="section-title"><span class="en">All Bets</span>券種ごとの買い目候補</div>
-  <div class="section-hint">期待値100%を超えるものだけを表示しています。券種名をタップすると開きます。</div>
+  <div class="section-title"><span class="en">All Bets</span>券種ごとの買い目一覧（参考）</div>
+  <div class="section-hint">期待値100%を超えるものを全て表示しています。上の「購入プラン」はこの中から自動選定したものです。</div>
   
   <details class="bet-group" open>
-    <summary>単勝 <span class="count">4点</span></summary>
+    <summary>単勝 <span class="count">3点</span></summary>
     <table>
       <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
       <tbody>
         
         <tr>
-          <td class="horses-cell">ニシノリリックス</td>
+          <td class="horses-cell">2 ニシノリリックス</td>
           <td class="mono">61.7</td>
-          <td class="mono">3.6%</td>
-          <td class="ev-cell mono">225%</td>
+          <td class="mono">4.0%</td>
+          <td class="ev-cell mono">248%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ケイジャーダ</td>
+          <td class="horses-cell">1 ケイジャーダ</td>
           <td class="mono">99.3</td>
           <td class="mono">2.2%</td>
-          <td class="ev-cell mono">217%</td>
+          <td class="ev-cell mono">216%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ハンデンブレイズ</td>
+          <td class="horses-cell">7 ハンデンブレイズ</td>
           <td class="mono">14.9</td>
-          <td class="mono">8.9%</td>
-          <td class="ev-cell mono">133%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ルークスイテルム</td>
-          <td class="mono">191.7</td>
-          <td class="mono">0.6%</td>
-          <td class="ev-cell mono">112%</td>
+          <td class="mono">9.6%</td>
+          <td class="ev-cell mono">144%</td>
         </tr>
         
       </tbody>
@@ -331,72 +403,86 @@
   </details>
   
   <details class="bet-group">
-    <summary>馬連 <span class="count">9点</span></summary>
+    <summary>馬連 <span class="count">11点</span></summary>
     <table>
       <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
       <tbody>
         
         <tr>
-          <td class="horses-cell">ニシノリリックス - ウイニングレイ</td>
+          <td class="horses-cell">2 ニシノリリックス - 6 ウイニングレイ</td>
           <td class="mono">144.8</td>
           <td class="mono">1.3%</td>
-          <td class="ev-cell mono">181%</td>
+          <td class="ev-cell mono">191%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ウイニングレイ - ケイジャーダ</td>
+          <td class="horses-cell">2 ニシノリリックス - 5 エクスマキナ</td>
+          <td class="mono">65.1</td>
+          <td class="mono">2.9%</td>
+          <td class="ev-cell mono">190%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 ケイジャーダ - 6 ウイニングレイ</td>
           <td class="mono">224.0</td>
           <td class="mono">0.7%</td>
-          <td class="ev-cell mono">167%</td>
+          <td class="ev-cell mono">159%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">エクスマキナ - ニシノリリックス</td>
-          <td class="mono">65.1</td>
-          <td class="mono">2.5%</td>
-          <td class="ev-cell mono">165%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">エクスマキナ - ケイジャーダ</td>
-          <td class="mono">91.0</td>
-          <td class="mono">1.5%</td>
-          <td class="ev-cell mono">137%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ニシノリリックス - ハンデンブレイズ</td>
+          <td class="horses-cell">2 ニシノリリックス - 7 ハンデンブレイズ</td>
           <td class="mono">173.0</td>
-          <td class="mono">0.7%</td>
-          <td class="ev-cell mono">120%</td>
+          <td class="mono">0.8%</td>
+          <td class="ev-cell mono">144%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ニシノリリックス - イカルステソーロ</td>
+          <td class="horses-cell">1 ケイジャーダ - 5 エクスマキナ</td>
+          <td class="mono">91.0</td>
+          <td class="mono">1.6%</td>
+          <td class="ev-cell mono">143%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 ニシノリリックス - 4 タイセイソアリング</td>
+          <td class="mono">75.5</td>
+          <td class="mono">1.7%</td>
+          <td class="ev-cell mono">129%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 ニシノリリックス - 3 イカルステソーロ</td>
           <td class="mono">64.0</td>
           <td class="mono">1.9%</td>
-          <td class="ev-cell mono">119%</td>
+          <td class="ev-cell mono">122%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ニシノリリックス - タイセイソアリング</td>
-          <td class="mono">75.5</td>
-          <td class="mono">1.6%</td>
-          <td class="ev-cell mono">118%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">イカルステソーロ - ウイニングレイ</td>
-          <td class="mono">13.5</td>
-          <td class="mono">8.4%</td>
-          <td class="ev-cell mono">113%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">イカルステソーロ - ハンデンブレイズ</td>
+          <td class="horses-cell">7 ハンデンブレイズ - 3 イカルステソーロ</td>
           <td class="mono">23.0</td>
-          <td class="mono">4.6%</td>
-          <td class="ev-cell mono">107%</td>
+          <td class="mono">4.7%</td>
+          <td class="ev-cell mono">108%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 ケイジャーダ - 7 ハンデンブレイズ</td>
+          <td class="mono">237.0</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">106%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 ハンデンブレイズ - 5 エクスマキナ</td>
+          <td class="mono">14.7</td>
+          <td class="mono">7.2%</td>
+          <td class="ev-cell mono">106%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 イカルステソーロ - 6 ウイニングレイ</td>
+          <td class="mono">13.5</td>
+          <td class="mono">7.4%</td>
+          <td class="ev-cell mono">100%</td>
         </tr>
         
       </tbody>
@@ -410,143 +496,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">ニシノリリックス → ウイニングレイ</td>
+          <td class="horses-cell">2 ニシノリリックス → 6 ウイニングレイ</td>
           <td class="mono">409.0</td>
           <td class="mono">0.6%</td>
-          <td class="ev-cell mono">239%</td>
+          <td class="ev-cell mono">254%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ニシノリリックス → エクスマキナ</td>
+          <td class="horses-cell">2 ニシノリリックス → 5 エクスマキナ</td>
           <td class="mono">194.3</td>
-          <td class="mono">1.1%</td>
-          <td class="ev-cell mono">210%</td>
+          <td class="mono">1.2%</td>
+          <td class="ev-cell mono">240%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ニシノリリックス → イカルステソーロ</td>
+          <td class="horses-cell">2 ニシノリリックス → 3 イカルステソーロ</td>
           <td class="mono">251.7</td>
-          <td class="mono">0.8%</td>
-          <td class="ev-cell mono">209%</td>
+          <td class="mono">0.9%</td>
+          <td class="ev-cell mono">217%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ケイジャーダ → ウイニングレイ</td>
+          <td class="horses-cell">2 ニシノリリックス → 7 ハンデンブレイズ</td>
+          <td class="mono">527.4</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">212%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 ニシノリリックス → 4 タイセイソアリング</td>
+          <td class="mono">259.4</td>
+          <td class="mono">0.8%</td>
+          <td class="ev-cell mono">203%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 ケイジャーダ → 6 ウイニングレイ</td>
           <td class="mono">570.0</td>
           <td class="mono">0.3%</td>
-          <td class="ev-cell mono">197%</td>
+          <td class="ev-cell mono">188%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ニシノリリックス → タイセイソアリング</td>
-          <td class="mono">259.4</td>
-          <td class="mono">0.7%</td>
-          <td class="ev-cell mono">185%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ニシノリリックス → ハンデンブレイズ</td>
-          <td class="mono">527.4</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">178%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ケイジャーダ → タイセイソアリング</td>
-          <td class="mono">400.5</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">168%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ケイジャーダ → エクスマキナ</td>
-          <td class="mono">247.0</td>
-          <td class="mono">0.6%</td>
-          <td class="ev-cell mono">157%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ウイニングレイ → ニシノリリックス</td>
-          <td class="mono">231.8</td>
-          <td class="mono">0.7%</td>
-          <td class="ev-cell mono">154%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ケイジャーダ → イカルステソーロ</td>
-          <td class="mono">311.0</td>
-          <td class="mono">0.5%</td>
-          <td class="ev-cell mono">153%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ハンデンブレイズ → ニシノリリックス</td>
+          <td class="horses-cell">7 ハンデンブレイズ → 2 ニシノリリックス</td>
           <td class="mono">408.2</td>
           <td class="mono">0.4%</td>
+          <td class="ev-cell mono">175%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 ケイジャーダ → 4 タイセイソアリング</td>
+          <td class="mono">400.5</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">167%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">6 ウイニングレイ → 2 ニシノリリックス</td>
+          <td class="mono">231.8</td>
+          <td class="mono">0.7%</td>
+          <td class="ev-cell mono">162%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 ケイジャーダ → 5 エクスマキナ</td>
+          <td class="mono">247.0</td>
+          <td class="mono">0.7%</td>
+          <td class="ev-cell mono">162%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 ハンデンブレイズ → 5 エクスマキナ</td>
+          <td class="mono">46.0</td>
+          <td class="mono">3.1%</td>
           <td class="ev-cell mono">145%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ウイニングレイ → ケイジャーダ</td>
-          <td class="mono">346.1</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">138%</td>
+          <td class="horses-cell">1 ケイジャーダ → 3 イカルステソーロ</td>
+          <td class="mono">311.0</td>
+          <td class="mono">0.5%</td>
+          <td class="ev-cell mono">142%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ハンデンブレイズ → イカルステソーロ</td>
-          <td class="mono">64.0</td>
-          <td class="mono">2.1%</td>
-          <td class="ev-cell mono">137%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ケイジャーダ → ハンデンブレイズ</td>
+          <td class="horses-cell">1 ケイジャーダ → 7 ハンデンブレイズ</td>
           <td class="mono">656.8</td>
           <td class="mono">0.2%</td>
+          <td class="ev-cell mono">141%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 ハンデンブレイズ → 3 イカルステソーロ</td>
+          <td class="mono">64.0</td>
+          <td class="mono">2.2%</td>
+          <td class="ev-cell mono">140%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 ハンデンブレイズ → 4 タイセイソアリング</td>
+          <td class="mono">66.0</td>
+          <td class="mono">2.0%</td>
+          <td class="ev-cell mono">132%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">6 ウイニングレイ → 1 ケイジャーダ</td>
+          <td class="mono">346.1</td>
+          <td class="mono">0.4%</td>
           <td class="ev-cell mono">131%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ハンデンブレイズ → エクスマキナ</td>
-          <td class="mono">46.0</td>
-          <td class="mono">2.8%</td>
-          <td class="ev-cell mono">128%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ウイニングレイ → イカルステソーロ</td>
-          <td class="mono">30.7</td>
-          <td class="mono">4.0%</td>
-          <td class="ev-cell mono">123%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ルークスイテルム → タイセイソアリング</td>
-          <td class="mono">1113.1</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">123%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ハンデンブレイズ → タイセイソアリング</td>
-          <td class="mono">66.0</td>
-          <td class="mono">1.8%</td>
-          <td class="ev-cell mono">121%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ルークスイテルム → ウイニングレイ</td>
-          <td class="mono">1281.7</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">116%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">エクスマキナ → ニシノリリックス</td>
+          <td class="horses-cell">5 エクスマキナ → 2 ニシノリリックス</td>
           <td class="mono">78.1</td>
-          <td class="mono">1.5%</td>
+          <td class="mono">1.7%</td>
+          <td class="ev-cell mono">131%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 ハンデンブレイズ → 1 ケイジャーダ</td>
+          <td class="mono">489.5</td>
+          <td class="mono">0.2%</td>
           <td class="ev-cell mono">113%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">6 ウイニングレイ → 3 イカルステソーロ</td>
+          <td class="mono">30.7</td>
+          <td class="mono">3.6%</td>
+          <td class="ev-cell mono">110%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">5 エクスマキナ → 1 ケイジャーダ</td>
+          <td class="mono">113.9</td>
+          <td class="mono">0.9%</td>
+          <td class="ev-cell mono">104%</td>
         </tr>
         
       </tbody>
@@ -554,72 +640,79 @@
   </details>
   
   <details class="bet-group">
-    <summary>3連複 <span class="count">9点</span></summary>
+    <summary>3連複 <span class="count">10点</span></summary>
     <table>
       <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
       <tbody>
         
         <tr>
-          <td class="horses-cell">エクスマキナ - ニシノリリックス - ウイニングレイ</td>
+          <td class="horses-cell">2 ニシノリリックス - 6 ウイニングレイ - 5 エクスマキナ</td>
           <td class="mono">76.9</td>
-          <td class="mono">1.8%</td>
-          <td class="ev-cell mono">135%</td>
+          <td class="mono">2.0%</td>
+          <td class="ev-cell mono">150%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ハンデンブレイズ - イカルステソーロ - ウイニングレイ</td>
-          <td class="mono">40.4</td>
-          <td class="mono">3.1%</td>
+          <td class="horses-cell">2 ニシノリリックス - 4 タイセイソアリング - 5 エクスマキナ</td>
+          <td class="mono">49.5</td>
+          <td class="mono">2.6%</td>
+          <td class="ev-cell mono">129%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 ニシノリリックス - 7 ハンデンブレイズ - 6 ウイニングレイ</td>
+          <td class="mono">267.8</td>
+          <td class="mono">0.5%</td>
           <td class="ev-cell mono">127%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">エクスマキナ - ウイニングレイ - ケイジャーダ</td>
-          <td class="mono">114.2</td>
-          <td class="mono">1.0%</td>
-          <td class="ev-cell mono">118%</td>
+          <td class="horses-cell">7 ハンデンブレイズ - 3 イカルステソーロ - 6 ウイニングレイ</td>
+          <td class="mono">40.4</td>
+          <td class="mono">3.0%</td>
+          <td class="ev-cell mono">121%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ニシノリリックス - イカルステソーロ - ウイニングレイ</td>
-          <td class="mono">95.7</td>
-          <td class="mono">1.2%</td>
-          <td class="ev-cell mono">116%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ニシノリリックス - タイセイソアリング - ウイニングレイ</td>
+          <td class="horses-cell">2 ニシノリリックス - 4 タイセイソアリング - 6 ウイニングレイ</td>
           <td class="mono">114.5</td>
           <td class="mono">1.0%</td>
-          <td class="ev-cell mono">113%</td>
+          <td class="ev-cell mono">119%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">エクスマキナ - ニシノリリックス - タイセイソアリング</td>
-          <td class="mono">49.5</td>
-          <td class="mono">2.2%</td>
-          <td class="ev-cell mono">111%</td>
+          <td class="horses-cell">1 ケイジャーダ - 6 ウイニングレイ - 5 エクスマキナ</td>
+          <td class="mono">114.2</td>
+          <td class="mono">1.0%</td>
+          <td class="ev-cell mono">119%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ハンデンブレイズ - ニシノリリックス - ウイニングレイ</td>
-          <td class="mono">267.8</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">110%</td>
+          <td class="horses-cell">2 ニシノリリックス - 7 ハンデンブレイズ - 5 エクスマキナ</td>
+          <td class="mono">97.5</td>
+          <td class="mono">1.2%</td>
+          <td class="ev-cell mono">115%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">エクスマキナ - イカルステソーロ - ウイニングレイ</td>
-          <td class="mono">7.7</td>
-          <td class="mono">13.5%</td>
-          <td class="ev-cell mono">104%</td>
+          <td class="horses-cell">2 ニシノリリックス - 3 イカルステソーロ - 6 ウイニングレイ</td>
+          <td class="mono">95.7</td>
+          <td class="mono">1.2%</td>
+          <td class="ev-cell mono">112%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">エクスマキナ - ニシノリリックス - イカルステソーロ</td>
+          <td class="horses-cell">2 ニシノリリックス - 3 イカルステソーロ - 5 エクスマキナ</td>
           <td class="mono">36.2</td>
-          <td class="mono">2.8%</td>
-          <td class="ev-cell mono">100%</td>
+          <td class="mono">3.0%</td>
+          <td class="ev-cell mono">107%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 ニシノリリックス - 7 ハンデンブレイズ - 3 イカルステソーロ</td>
+          <td class="mono">141.8</td>
+          <td class="mono">0.7%</td>
+          <td class="ev-cell mono">101%</td>
         </tr>
         
       </tbody>
@@ -633,143 +726,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">ニシノリリックス → ウイニングレイ → エクスマキナ</td>
+          <td class="horses-cell">2 ニシノリリックス → 6 ウイニングレイ → 5 エクスマキナ</td>
           <td class="mono">1459.5</td>
           <td class="mono">0.2%</td>
+          <td class="ev-cell mono">330%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 ニシノリリックス → 5 エクスマキナ → 6 ウイニングレイ</td>
+          <td class="mono">1159.4</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">320%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 ニシノリリックス → 5 エクスマキナ → 4 タイセイソアリング</td>
+          <td class="mono">859.9</td>
+          <td class="mono">0.3%</td>
           <td class="ev-cell mono">300%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ニシノリリックス → エクスマキナ → ウイニングレイ</td>
-          <td class="mono">1159.4</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">284%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ニシノリリックス → エクスマキナ → タイセイソアリング</td>
-          <td class="mono">859.9</td>
+          <td class="horses-cell">2 ニシノリリックス → 4 タイセイソアリング → 5 エクスマキナ</td>
+          <td class="mono">922.1</td>
           <td class="mono">0.3%</td>
-          <td class="ev-cell mono">257%</td>
+          <td class="ev-cell mono">276%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ニシノリリックス → ウイニングレイ → タイセイソアリング</td>
+          <td class="horses-cell">2 ニシノリリックス → 6 ウイニングレイ → 4 タイセイソアリング</td>
           <td class="mono">1855.9</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">252%</td>
+          <td class="ev-cell mono">267%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ケイジャーダ → ウイニングレイ → エクスマキナ</td>
-          <td class="mono">2067.9</td>
+          <td class="horses-cell">2 ニシノリリックス → 7 ハンデンブレイズ → 5 エクスマキナ</td>
+          <td class="mono">1876.1</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">247%</td>
+          <td class="ev-cell mono">258%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ケイジャーダ → エクスマキナ → ウイニングレイ</td>
+          <td class="horses-cell">2 ニシノリリックス → 7 ハンデンブレイズ → 6 ウイニングレイ</td>
+          <td class="mono">3685.3</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">255%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 ニシノリリックス → 5 エクスマキナ → 7 ハンデンブレイズ</td>
+          <td class="mono">1425.2</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">255%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 ニシノリリックス → 6 ウイニングレイ → 7 ハンデンブレイズ</td>
+          <td class="mono">3439.6</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">254%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 ケイジャーダ → 5 エクスマキナ → 6 ウイニングレイ</td>
           <td class="mono">1711.2</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">245%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 ケイジャーダ → 6 ウイニングレイ → 5 エクスマキナ</td>
+          <td class="mono">2067.9</td>
           <td class="mono">0.1%</td>
           <td class="ev-cell mono">243%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ニシノリリックス → タイセイソアリング → エクスマキナ</td>
-          <td class="mono">922.1</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">241%</td>
+          <td class="horses-cell">2 ニシノリリックス → 4 タイセイソアリング → 6 ウイニングレイ</td>
+          <td class="mono">1582.6</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">239%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ニシノリリックス → ウイニングレイ → イカルステソーロ</td>
+          <td class="horses-cell">2 ニシノリリックス → 6 ウイニングレイ → 3 イカルステソーロ</td>
           <td class="mono">1484.7</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">235%</td>
+          <td class="ev-cell mono">234%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ニシノリリックス → タイセイソアリング → ウイニングレイ</td>
-          <td class="mono">1582.6</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">224%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ニシノリリックス → ウイニングレイ → ハンデンブレイズ</td>
-          <td class="mono">3439.6</td>
-          <td class="mono">0.1%</td>
+          <td class="horses-cell">2 ニシノリリックス → 5 エクスマキナ → 3 イカルステソーロ</td>
+          <td class="mono">577.4</td>
+          <td class="mono">0.4%</td>
           <td class="ev-cell mono">221%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ニシノリリックス → ハンデンブレイズ → ウイニングレイ</td>
-          <td class="mono">3685.3</td>
+          <td class="horses-cell">1 ケイジャーダ → 5 エクスマキナ → 7 ハンデンブレイズ</td>
+          <td class="mono">2377.6</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">219%</td>
+          <td class="ev-cell mono">220%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ルークスイテルム → エクスマキナ → ウイニングレイ</td>
-          <td class="mono">5669.7</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">207%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ケイジャーダ → ウイニングレイ → タイセイソアリング</td>
-          <td class="mono">2625.6</td>
+          <td class="horses-cell">7 ハンデンブレイズ → 2 ニシノリリックス → 5 エクスマキナ</td>
+          <td class="mono">1439.1</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">207%</td>
+          <td class="ev-cell mono">211%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ニシノリリックス → ハンデンブレイズ → エクスマキナ</td>
-          <td class="mono">1876.1</td>
+          <td class="horses-cell">1 ケイジャーダ → 7 ハンデンブレイズ → 5 エクスマキナ</td>
+          <td class="mono">2923.1</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">210%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 ケイジャーダ → 5 エクスマキナ → 4 タイセイソアリング</td>
+          <td class="mono">1162.0</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">209%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 ハンデンブレイズ → 2 ニシノリリックス → 6 ウイニングレイ</td>
+          <td class="mono">2796.4</td>
           <td class="mono">0.1%</td>
           <td class="ev-cell mono">206%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ニシノリリックス → エクスマキナ → ハンデンブレイズ</td>
-          <td class="mono">1425.2</td>
+          <td class="horses-cell">1 ケイジャーダ → 6 ウイニングレイ → 4 タイセイソアリング</td>
+          <td class="mono">2625.6</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">201%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ニシノリリックス → エクスマキナ → イカルステソーロ</td>
-          <td class="mono">577.4</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">201%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ケイジャーダ → エクスマキナ → タイセイソアリング</td>
-          <td class="mono">1162.0</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">201%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ルークスイテルム → ウイニングレイ → エクスマキナ</td>
-          <td class="mono">6369.6</td>
-          <td class="mono">0.0%</td>
           <td class="ev-cell mono">196%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ニシノリリックス → イカルステソーロ → ウイニングレイ</td>
-          <td class="mono">1133.9</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">196%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ケイジャーダ → エクスマキナ → ハンデンブレイズ</td>
-          <td class="mono">2377.6</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">194%</td>
         </tr>
         
       </tbody>
@@ -781,5 +874,49 @@
 
   <div class="disclaimer">本ページの予想は参考情報です。的中・利益を保証しません。<br>馬券の購入は必ずご自身でIPAT等の公式ルートから行ってください。</div>
 </main>
+
+<script>
+(function () {
+  const UNIT = 100;  // JRAの購入単位（100円）に丸める
+
+  function recalc() {
+    const budget = parseFloat(document.getElementById('budgetInput').value) || 0;
+    const rows = Array.from(document.querySelectorAll('#planTable tbody tr[data-ev]'));
+    const totalRow = document.getElementById('planTotalRow');
+    const totalCell = document.getElementById('planTotal');
+
+    if (!rows.length) return;
+
+    if (budget <= 0) {
+      rows.forEach(function (tr) { tr.querySelector('.stake-cell').textContent = '-'; });
+      if (totalRow) totalRow.style.display = 'none';
+      return;
+    }
+
+    // 期待値(EV)が高いものほど多く配分する（EVの合計に対する比率で按分）
+    const evs = rows.map(function (tr) { return Math.max(0, parseFloat(tr.dataset.ev) - 1); }); // 100%超過分だけを重みにする
+    const totalWeight = evs.reduce(function (a, b) { return a + b; }, 0);
+
+    let allocated = 0;
+    rows.forEach(function (tr, i) {
+      const weight = totalWeight > 0 ? evs[i] / totalWeight : 1 / rows.length;
+      const raw = budget * weight;
+      const amount = Math.floor(raw / UNIT) * UNIT;
+      allocated += amount;
+      tr.querySelector('.stake-cell').textContent = amount > 0 ? amount.toLocaleString('ja-JP') + '円' : '見送り';
+    });
+
+    if (totalRow && totalCell) {
+      totalRow.style.display = '';
+      totalCell.textContent = allocated.toLocaleString('ja-JP') + '円 / ' + budget.toLocaleString('ja-JP') + '円中';
+    }
+  }
+
+  const input = document.getElementById('budgetInput');
+  if (input) {
+    input.addEventListener('input', recalc);
+  }
+})();
+</script>
 </body>
 </html>

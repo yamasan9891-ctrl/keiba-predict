@@ -63,30 +63,66 @@
   }
   .summary-text { font-size: 13px; line-height: 1.75; color: var(--text-dim); }
 
-  /* --- 結論：一番のおすすめ --- */
-  .best-bet {
+  /* --- 結論：馬券風デザイン --- */
+  .ticket {
     position: relative;
     background: linear-gradient(180deg, #1a1408 0%, var(--surface) 70%);
     border: 1px solid var(--amber-dim);
+    border-radius: 10px;
     box-shadow: 0 0 0 1px rgba(240,162,2,0.08), 0 8px 24px -12px var(--amber-glow);
+    padding: 0;
+    overflow: hidden;
   }
-  .best-bet .tag {
-    font-size: 12px; font-weight: 800; color: var(--amber);
+  .ticket-head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 16px; background: rgba(240,162,2,0.08);
+    border-bottom: 1px dashed var(--amber-dim);
   }
-  .best-bet .type {
-    display: inline-block; font-size: 11px; color: var(--bg); background: var(--amber);
-    font-weight: 700; padding: 2px 8px; border-radius: 3px; margin-top: 8px;
+  .ticket-head .label { font-size: 11px; font-weight: 800; color: var(--amber); letter-spacing: 0.05em; }
+  .ticket-head .type-badge {
+    font-size: 11px; color: var(--bg); background: var(--amber);
+    font-weight: 800; padding: 3px 10px; border-radius: 3px;
   }
-  .best-bet .horses {
-    font-size: 21px; font-weight: 800; margin: 8px 0 12px;
-    color: var(--text); line-height: 1.4;
+  .ticket-body { padding: 16px; }
+  .ticket .horses {
+    font-size: 20px; font-weight: 800; margin: 0 0 14px;
+    color: var(--text); line-height: 1.45;
   }
-  .best-bet .stat-row { display: flex; }
-  .best-bet .stat { margin-right: 24px; }
-  .best-bet .stat .label { font-size: 10.5px; color: var(--text-dim); }
-  .best-bet .stat .value { font-size: 18px; font-weight: 800; margin-top: 2px; }
-  .best-bet .stat.ev .value { color: var(--amber); }
-  .best-bet .footnote { font-size: 11px; color: var(--text-dim); margin-top: 12px; line-height: 1.6; border-top: 1px solid var(--line); padding-top: 10px; }
+  .ticket-stats {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+    padding: 12px 0; border-top: 1px dashed var(--line); border-bottom: 1px dashed var(--line);
+  }
+  .ticket-stats .stat { text-align: center; }
+  .ticket-stats .stat .label { font-size: 10px; color: var(--text-dim); }
+  .ticket-stats .stat .value { font-size: 16px; font-weight: 800; margin-top: 3px; }
+  .ticket-stats .stat.ev .value { color: var(--amber); }
+
+  .ticket-amount {
+    margin-top: 14px; padding: 12px; background: var(--surface-2);
+    border-radius: 6px; display: flex; justify-content: space-between; align-items: center;
+  }
+  .ticket-amount .label { font-size: 11px; color: var(--text-dim); }
+  .ticket-amount .value { font-size: 22px; font-weight: 800; color: var(--green); }
+  .ticket-amount .value::before { content: "¥"; font-size: 14px; margin-right: 2px; }
+
+  .footnote { font-size: 11px; color: var(--text-dim); margin-top: 12px; line-height: 1.6; padding: 0 16px 14px; }
+
+  /* --- 予算入力 --- */
+  .budget-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
+    padding: 10px 14px; margin-bottom: 14px;
+  }
+  .budget-box label { font-size: 12px; color: var(--text-dim); white-space: nowrap; }
+  .budget-box input {
+    flex: 1; background: var(--surface-2); border: 1px solid var(--line); border-radius: 4px;
+    color: var(--text); font-size: 15px; padding: 7px 10px; font-family: inherit;
+    -moz-appearance: textfield;
+  }
+  .budget-box input::-webkit-outer-spin-button, .budget-box input::-webkit-inner-spin-button { margin: 0; }
+  .budget-box .unit { font-size: 12px; color: var(--text-dim); }
+  .stake-cell { color: var(--green); font-weight: 700; }
+
 
   /* --- 穴馬候補 --- */
   .dark-horse-card { border-left: 3px solid var(--green); }
@@ -178,18 +214,66 @@
   <div class="card summary-text">逃げ馬は2頭で、比較的落ち着いたペースが予想される。馬場状態は「良」。</div>
 
   
-  <div class="section-title"><span class="en">Conclusion</span>結論：一番のおすすめ</div>
-  <div class="card best-bet">
-    <div class="tag">🏆 このレースで最も期待値が高い買い目</div>
-    <div class="type">単勝</div>
-    <div class="horses">ニシノインヴィクタ</div>
-    <div class="stat-row mono">
-      <div class="stat"><div class="label">オッズ</div><div class="value">nan倍</div></div>
-      <div class="stat"><div class="label">的中確率</div><div class="value">24.9%</div></div>
-      <div class="stat ev"><div class="label">期待値</div><div class="value">nan%</div></div>
-    </div>
-    <div class="footnote">期待値とは「100円賭けた時に理論上いくら戻ってくるか」の目安です。100%を超えるほど、賭け金に対して見込まれる払戻が大きいことを意味します（的中を保証するものではありません）。</div>
+  <div class="section-title"><span class="en">Betting Plan</span>AI推奨 購入プラン</div>
+  <div class="section-hint">実際の投票は複数点に分けるのが基本のため、期待値が高い順に複数の買い目を組み合わせています。予算を入れると自動で配分します。</div>
+  <div class="budget-box">
+    <label for="budgetInput">今回の予算</label>
+    <input type="number" id="budgetInput" inputmode="numeric" placeholder="例: 3000" min="0" step="100">
+    <span class="unit">円</span>
   </div>
+  <div class="card" style="padding:0; overflow:hidden;">
+    <table id="planTable">
+      <thead><tr><th>券種</th><th>買い目</th><th>オッズ</th><th>期待値</th><th>配分額</th></tr></thead>
+      <tbody>
+        
+        <tr data-ev="nan">
+          <td class="mono">単勝</td>
+          <td class="horses-cell">2 ニシノインヴィクタ</td>
+          <td class="mono">nan</td>
+          <td class="ev-cell mono">nan%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="1.6786178246410157">
+          <td class="mono">単勝</td>
+          <td class="horses-cell">10 ヨシノヤッタルデー</td>
+          <td class="mono">159.5</td>
+          <td class="ev-cell mono">168%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="1.5529285523747276">
+          <td class="mono">単勝</td>
+          <td class="horses-cell">1 フレイムジョーカー</td>
+          <td class="mono">39.4</td>
+          <td class="ev-cell mono">155%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="1.0795193307454958">
+          <td class="mono">単勝</td>
+          <td class="horses-cell">3 ニシノクードクール</td>
+          <td class="mono">53.1</td>
+          <td class="ev-cell mono">108%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="1.0427926170338433">
+          <td class="mono">単勝</td>
+          <td class="horses-cell">6 エポカスピーガ</td>
+          <td class="mono">43.5</td>
+          <td class="ev-cell mono">104%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr id="planTotalRow" style="display:none;">
+          <td colspan="4" style="text-align:right; font-weight:800;">合計</td>
+          <td class="mono" id="planTotal" style="font-weight:800; color:var(--green);">-</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="footnote">配分額は、各買い目の期待値の大きさに比例して予算を振り分けた目安です（期待値が高いものほど多く配分）。1点に集中させず、複数点に分けて購入することでブレを抑える考え方に基づいています。あくまで参考情報であり、的中や利益を保証するものではありません。</div>
   
 
   
@@ -199,22 +283,17 @@
     
     <div class="dark-horse-item">
       <span class="dh-name">フレイムジョーカー</span><span class="dh-badge">7.0番人気</span>
-      <div class="dh-stats mono">オッズ 39.4倍 ／ 勝率目安 3.8% ／ 期待値 149%</div>
-    </div>
-    
-    <div class="dark-horse-item">
-      <span class="dh-name">ヨシノヤッタルデー</span><span class="dh-badge">10.0番人気</span>
-      <div class="dh-stats mono">オッズ 159.5倍 ／ 勝率目安 0.8% ／ 期待値 126%</div>
+      <div class="dh-stats mono">オッズ 39.4倍 ／ 勝率目安 3.9% ／ 期待値 155%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">ニシノクードクール</span><span class="dh-badge">9.0番人気</span>
-      <div class="dh-stats mono">オッズ 53.1倍 ／ 勝率目安 2.1% ／ 期待値 111%</div>
+      <div class="dh-stats mono">オッズ 53.1倍 ／ 勝率目安 2.0% ／ 期待値 108%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">エポカスピーガ</span><span class="dh-badge">8.0番人気</span>
-      <div class="dh-stats mono">オッズ 43.5倍 ／ 勝率目安 2.5% ／ 期待値 110%</div>
+      <div class="dh-stats mono">オッズ 43.5倍 ／ 勝率目安 2.4% ／ 期待値 104%</div>
     </div>
     
   </div>
@@ -226,25 +305,25 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">2</span>ニシノインヴィクタ</span>
-        <span class="horse-prob mono">複勝圏内 82%</span>
+        <span class="horse-prob mono">複勝圏内 79%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約82%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は12.3着とやや不振。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約79%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は12.3着とやや不振。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">5</span>マルディランダ</span>
-        <span class="horse-prob mono">複勝圏内 60%</span>
+        <span class="horse-prob mono">複勝圏内 58%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約60%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約58%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">13</span>ゴールデンステップ</span>
-        <span class="horse-prob mono">複勝圏内 59%</span>
+        <span class="horse-prob mono">複勝圏内 58%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約59%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約58%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
     </div>
     
     <div class="horse-item">
@@ -258,25 +337,25 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">9</span>オーサムストローク</span>
-        <span class="horse-prob mono">複勝圏内 35%</span>
+        <span class="horse-prob mono">複勝圏内 34%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約35%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は8.7着とやや不振。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約34%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は8.7着とやや不振。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">11</span>トラマンダーレ</span>
-        <span class="horse-prob mono">複勝圏内 16%</span>
+        <span class="horse-prob mono">複勝圏内 17%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約16%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は12.7着とやや不振。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約17%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は12.7着とやや不振。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">1</span>フレイムジョーカー</span>
-        <span class="horse-prob mono">複勝圏内 12%</span>
+        <span class="horse-prob mono">複勝圏内 13%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約12%。逃げ脚質で、主導権を握れれば粘り込みが期待できる。直近3走の平均着順は9.0着とやや不振。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約13%。逃げ脚質で、主導権を握れれば粘り込みが期待できる。直近3走の平均着順は9.0着とやや不振。</div>
     </div>
     
     <div class="horse-item">
@@ -329,8 +408,8 @@
     
   </div>
 
-  <div class="section-title"><span class="en">All Bets</span>券種ごとの買い目候補</div>
-  <div class="section-hint">期待値100%を超えるものだけを表示しています。券種名をタップすると開きます。</div>
+  <div class="section-title"><span class="en">All Bets</span>券種ごとの買い目一覧（参考）</div>
+  <div class="section-hint">期待値100%を超えるものを全て表示しています。上の「購入プラン」はこの中から自動選定したものです。</div>
   
   <details class="bet-group" open>
     <summary>単勝 <span class="count">4点</span></summary>
@@ -339,184 +418,31 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">フレイムジョーカー</td>
-          <td class="mono">39.4</td>
-          <td class="mono">3.8%</td>
-          <td class="ev-cell mono">149%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ヨシノヤッタルデー</td>
+          <td class="horses-cell">10 ヨシノヤッタルデー</td>
           <td class="mono">159.5</td>
-          <td class="mono">0.8%</td>
-          <td class="ev-cell mono">126%</td>
+          <td class="mono">1.1%</td>
+          <td class="ev-cell mono">168%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ニシノクードクール</td>
+          <td class="horses-cell">1 フレイムジョーカー</td>
+          <td class="mono">39.4</td>
+          <td class="mono">3.9%</td>
+          <td class="ev-cell mono">155%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 ニシノクードクール</td>
           <td class="mono">53.1</td>
-          <td class="mono">2.1%</td>
-          <td class="ev-cell mono">111%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">エポカスピーガ</td>
-          <td class="mono">43.5</td>
-          <td class="mono">2.5%</td>
-          <td class="ev-cell mono">110%</td>
-        </tr>
-        
-      </tbody>
-    </table>
-  </details>
-  
-  <details class="bet-group">
-    <summary>馬連 <span class="count">3点</span></summary>
-    <table>
-      <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
-      <tbody>
-        
-        <tr>
-          <td class="horses-cell">ヨシノヤッタルデー - ブラックシールド</td>
-          <td class="mono">722.0</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">134%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バトンロード - ブラックシールド</td>
-          <td class="mono">1324.8</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">116%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">トラマンダーレ - ヨシノヤッタルデー</td>
-          <td class="mono">1295.1</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">103%</td>
-        </tr>
-        
-      </tbody>
-    </table>
-  </details>
-  
-  <details class="bet-group">
-    <summary>馬単 <span class="count">16点</span></summary>
-    <table>
-      <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
-      <tbody>
-        
-        <tr>
-          <td class="horses-cell">バトンロード → ブラックシールド</td>
-          <td class="mono">4233.1</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">175%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ヨシノヤッタルデー → オーサムストローク</td>
-          <td class="mono">1806.1</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">150%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">フレイムジョーカー → ブラックシールド</td>
-          <td class="mono">335.2</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">145%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ヨシノヤッタルデー → マルディランダ</td>
-          <td class="mono">960.7</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">140%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ヨシノヤッタルデー → ブラックシールド</td>
-          <td class="mono">1575.1</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">139%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">フレイムジョーカー → トラマンダーレ</td>
-          <td class="mono">705.5</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">135%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">スノーリン → ブラックシールド</td>
-          <td class="mono">3473.3</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">129%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ニシノクードクール → ブラックシールド</td>
-          <td class="mono">539.6</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">127%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ブラックシールド → スノーリン</td>
-          <td class="mono">2709.2</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">112%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ニシノクードクール → トラマンダーレ</td>
-          <td class="mono">1058.2</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">111%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">エポカスピーガ → ブラックシールド</td>
-          <td class="mono">378.3</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">109%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ヨシノヤッタルデー → ゴールデンステップ</td>
-          <td class="mono">761.0</td>
-          <td class="mono">0.1%</td>
+          <td class="mono">2.0%</td>
           <td class="ev-cell mono">108%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">スノーリン → フレイムジョーカー</td>
-          <td class="mono">8466.2</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">107%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">スノーリン → トラマンダーレ</td>
-          <td class="mono">6450.5</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">106%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ブラックシールド → フレイムジョーカー</td>
-          <td class="mono">219.1</td>
-          <td class="mono">0.5%</td>
-          <td class="ev-cell mono">102%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ブラックシールド → バトンロード</td>
-          <td class="mono">2184.8</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">101%</td>
+          <td class="horses-cell">6 エポカスピーガ</td>
+          <td class="mono">43.5</td>
+          <td class="mono">2.4%</td>
+          <td class="ev-cell mono">104%</td>
         </tr>
         
       </tbody>
@@ -524,12 +450,219 @@
   </details>
   
   <details class="bet-group">
-    <summary>3連複 <span class="count">0点</span></summary>
+    <summary>馬連 <span class="count">7点</span></summary>
     <table>
       <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
       <tbody>
         
-        <tr><td colspan="4" style="color:var(--text-dim);">該当なし</td></tr>
+        <tr>
+          <td class="horses-cell">8 ブラックシールド - 10 ヨシノヤッタルデー</td>
+          <td class="mono">722.0</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">181%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">10 ヨシノヤッタルデー - 11 トラマンダーレ</td>
+          <td class="mono">1295.1</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">151%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">10 ヨシノヤッタルデー - 9 オーサムストローク</td>
+          <td class="mono">505.7</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">119%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 フレイムジョーカー - 11 トラマンダーレ</td>
+          <td class="mono">253.3</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">112%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">5 マルディランダ - 10 ヨシノヤッタルデー</td>
+          <td class="mono">256.9</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">107%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 ブラックシールド - 1 フレイムジョーカー</td>
+          <td class="mono">107.9</td>
+          <td class="mono">1.0%</td>
+          <td class="ev-cell mono">103%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 ブラックシールド - 7 バトンロード</td>
+          <td class="mono">1324.8</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">102%</td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </details>
+  
+  <details class="bet-group">
+    <summary>馬単 <span class="count">17点</span></summary>
+    <table>
+      <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
+      <tbody>
+        
+        <tr>
+          <td class="horses-cell">10 ヨシノヤッタルデー → 9 オーサムストローク</td>
+          <td class="mono">1806.1</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">202%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">10 ヨシノヤッタルデー → 8 ブラックシールド</td>
+          <td class="mono">1575.1</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">187%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">10 ヨシノヤッタルデー → 5 マルディランダ</td>
+          <td class="mono">960.7</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">182%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 フレイムジョーカー → 11 トラマンダーレ</td>
+          <td class="mono">705.5</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">155%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 バトンロード → 8 ブラックシールド</td>
+          <td class="mono">4233.1</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">154%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 フレイムジョーカー → 8 ブラックシールド</td>
+          <td class="mono">335.2</td>
+          <td class="mono">0.5%</td>
+          <td class="ev-cell mono">153%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">10 ヨシノヤッタルデー → 11 トラマンダーレ</td>
+          <td class="mono">2555.8</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">146%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">10 ヨシノヤッタルデー → 13 ゴールデンステップ</td>
+          <td class="mono">761.0</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">144%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">10 ヨシノヤッタルデー → 1 フレイムジョーカー</td>
+          <td class="mono">3150.2</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">132%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 ブラックシールド → 10 ヨシノヤッタルデー</td>
+          <td class="mono">953.9</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">126%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 ニシノクードクール → 8 ブラックシールド</td>
+          <td class="mono">539.6</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">125%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 ニシノクードクール → 11 トラマンダーレ</td>
+          <td class="mono">1058.2</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">118%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">11 トラマンダーレ → 10 ヨシノヤッタルデー</td>
+          <td class="mono">1881.3</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">112%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 ブラックシールド → 1 フレイムジョーカー</td>
+          <td class="mono">219.1</td>
+          <td class="mono">0.5%</td>
+          <td class="ev-cell mono">108%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">11 トラマンダーレ → 1 フレイムジョーカー</td>
+          <td class="mono">478.6</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">107%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 フレイムジョーカー → 10 ヨシノヤッタルデー</td>
+          <td class="mono">2418.9</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">104%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">6 エポカスピーガ → 8 ブラックシールド</td>
+          <td class="mono">378.3</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">104%</td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </details>
+  
+  <details class="bet-group">
+    <summary>3連複 <span class="count">3点</span></summary>
+    <table>
+      <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
+      <tbody>
+        
+        <tr>
+          <td class="horses-cell">8 ブラックシールド - 10 ヨシノヤッタルデー - 11 トラマンダーレ</td>
+          <td class="mono">2769.6</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">126%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 ブラックシールド - 1 フレイムジョーカー - 11 トラマンダーレ</td>
+          <td class="mono">607.4</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">107%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">5 マルディランダ - 10 ヨシノヤッタルデー - 11 トラマンダーレ</td>
+          <td class="mono">1297.8</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">103%</td>
+        </tr>
         
       </tbody>
     </table>
@@ -542,143 +675,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">ヨシノヤッタルデー → トラマンダーレ → マルディランダ</td>
+          <td class="horses-cell">10 ヨシノヤッタルデー → 11 トラマンダーレ → 5 マルディランダ</td>
           <td class="mono">45741.3</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">345%</td>
+          <td class="ev-cell mono">496%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ヨシノヤッタルデー → マルディランダ → トラマンダーレ</td>
+          <td class="horses-cell">10 ヨシノヤッタルデー → 5 マルディランダ → 11 トラマンダーレ</td>
           <td class="mono">29108.1</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">256%</td>
+          <td class="ev-cell mono">364%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">スノーリン → トラマンダーレ → マルディランダ</td>
-          <td class="mono">80047.3</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">253%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バトンロード → ブラックシールド → マルディランダ</td>
-          <td class="mono">27842.5</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">237%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">スノーリン → ブラックシールド → マルディランダ</td>
-          <td class="mono">30494.2</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">232%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ヨシノヤッタルデー → ブラックシールド → マルディランダ</td>
+          <td class="horses-cell">10 ヨシノヤッタルデー → 8 ブラックシールド → 5 マルディランダ</td>
           <td class="mono">11858.8</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">215%</td>
+          <td class="ev-cell mono">285%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ブラックシールド → バトンロード → マルディランダ</td>
-          <td class="mono">22082.0</td>
+          <td class="horses-cell">11 トラマンダーレ → 10 ヨシノヤッタルデー → 5 マルディランダ</td>
+          <td class="mono">23717.7</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">269%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">10 ヨシノヤッタルデー → 5 マルディランダ → 8 ブラックシールド</td>
+          <td class="mono">10005.9</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">260%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">10 ヨシノヤッタルデー → 1 フレイムジョーカー → 5 マルディランダ</td>
+          <td class="mono">30494.2</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">240%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">10 ヨシノヤッタルデー → 11 トラマンダーレ → 8 ブラックシールド</td>
+          <td class="mono">32018.9</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">217%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">10 ヨシノヤッタルデー → 8 ブラックシールド → 9 オーサムストローク</td>
+          <td class="mono">14892.5</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">211%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 フレイムジョーカー → 11 トラマンダーレ → 8 ブラックシールド</td>
+          <td class="mono">7809.4</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">211%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">10 ヨシノヤッタルデー → 8 ブラックシールド → 11 トラマンダーレ</td>
+          <td class="mono">29108.1</td>
           <td class="mono">0.0%</td>
           <td class="ev-cell mono">210%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">スノーリン → ゴールデンステップ → ブラックシールド</td>
-          <td class="mono">25615.1</td>
+          <td class="horses-cell">10 ヨシノヤッタルデー → 9 オーサムストローク → 5 マルディランダ</td>
+          <td class="mono">9148.2</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">205%</td>
+          <td class="ev-cell mono">206%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">スノーリン → オーサムストローク → ヨシノヤッタルデー</td>
-          <td class="mono">640378.7</td>
+          <td class="horses-cell">7 バトンロード → 8 ブラックシールド → 5 マルディランダ</td>
+          <td class="mono">27842.5</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">199%</td>
+          <td class="ev-cell mono">204%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ヨシノヤッタルデー → マルディランダ → ブラックシールド</td>
-          <td class="mono">10005.9</td>
+          <td class="horses-cell">8 ブラックシールド → 10 ヨシノヤッタルデー → 5 マルディランダ</td>
+          <td class="mono">7533.8</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">198%</td>
+          <td class="ev-cell mono">202%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バトンロード → マルディランダ → ブラックシールド</td>
-          <td class="mono">21345.9</td>
+          <td class="horses-cell">10 ヨシノヤッタルデー → 8 ブラックシールド → 1 フレイムジョーカー</td>
+          <td class="mono">37669.3</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">197%</td>
+          <td class="ev-cell mono">200%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">トラマンダーレ → ヨシノヤッタルデー → マルディランダ</td>
+          <td class="horses-cell">10 ヨシノヤッタルデー → 13 ゴールデンステップ → 11 トラマンダーレ</td>
+          <td class="mono">16009.4</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">200%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">10 ヨシノヤッタルデー → 9 オーサムストローク → 8 ブラックシールド</td>
+          <td class="mono">13625.0</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">192%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 フレイムジョーカー → 10 ヨシノヤッタルデー → 5 マルディランダ</td>
           <td class="mono">23717.7</td>
           <td class="mono">0.0%</td>
+          <td class="ev-cell mono">192%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">10 ヨシノヤッタルデー → 5 マルディランダ → 9 オーサムストローク</td>
+          <td class="mono">7715.4</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">190%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">10 ヨシノヤッタルデー → 11 トラマンダーレ → 13 ゴールデンステップ</td>
+          <td class="mono">17307.5</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">188%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">10 ヨシノヤッタルデー → 13 ゴールデンステップ → 8 ブラックシールド</td>
+          <td class="mono">7195.2</td>
+          <td class="mono">0.0%</td>
           <td class="ev-cell mono">187%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">フレイムジョーカー → トラマンダーレ → ブラックシールド</td>
-          <td class="mono">7809.4</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">181%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ヨシノヤッタルデー → スノーリン → オーサムストローク</td>
-          <td class="mono">640378.7</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">181%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">スノーリン → マルディランダ → ブラックシールド</td>
-          <td class="mono">21345.9</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">177%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ヨシノヤッタルデー → フレイムジョーカー → マルディランダ</td>
-          <td class="mono">30494.2</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">175%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">スノーリン → ブラックシールド → ゴールデンステップ</td>
-          <td class="mono">22082.0</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">164%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">フレイムジョーカー → スノーリン → ブラックシールド</td>
-          <td class="mono">106729.7</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">161%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">フレイムジョーカー → スノーリン → マルディランダ</td>
-          <td class="mono">64037.8</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">159%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">スノーリン → マルディランダ → トラマンダーレ</td>
-          <td class="mono">42691.9</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">157%</td>
         </tr>
         
       </tbody>
@@ -690,5 +823,49 @@
 
   <div class="disclaimer">本ページの予想は参考情報です。的中・利益を保証しません。<br>馬券の購入は必ずご自身でIPAT等の公式ルートから行ってください。</div>
 </main>
+
+<script>
+(function () {
+  const UNIT = 100;  // JRAの購入単位（100円）に丸める
+
+  function recalc() {
+    const budget = parseFloat(document.getElementById('budgetInput').value) || 0;
+    const rows = Array.from(document.querySelectorAll('#planTable tbody tr[data-ev]'));
+    const totalRow = document.getElementById('planTotalRow');
+    const totalCell = document.getElementById('planTotal');
+
+    if (!rows.length) return;
+
+    if (budget <= 0) {
+      rows.forEach(function (tr) { tr.querySelector('.stake-cell').textContent = '-'; });
+      if (totalRow) totalRow.style.display = 'none';
+      return;
+    }
+
+    // 期待値(EV)が高いものほど多く配分する（EVの合計に対する比率で按分）
+    const evs = rows.map(function (tr) { return Math.max(0, parseFloat(tr.dataset.ev) - 1); }); // 100%超過分だけを重みにする
+    const totalWeight = evs.reduce(function (a, b) { return a + b; }, 0);
+
+    let allocated = 0;
+    rows.forEach(function (tr, i) {
+      const weight = totalWeight > 0 ? evs[i] / totalWeight : 1 / rows.length;
+      const raw = budget * weight;
+      const amount = Math.floor(raw / UNIT) * UNIT;
+      allocated += amount;
+      tr.querySelector('.stake-cell').textContent = amount > 0 ? amount.toLocaleString('ja-JP') + '円' : '見送り';
+    });
+
+    if (totalRow && totalCell) {
+      totalRow.style.display = '';
+      totalCell.textContent = allocated.toLocaleString('ja-JP') + '円 / ' + budget.toLocaleString('ja-JP') + '円中';
+    }
+  }
+
+  const input = document.getElementById('budgetInput');
+  if (input) {
+    input.addEventListener('input', recalc);
+  }
+})();
+</script>
 </body>
 </html>

@@ -63,30 +63,66 @@
   }
   .summary-text { font-size: 13px; line-height: 1.75; color: var(--text-dim); }
 
-  /* --- 結論：一番のおすすめ --- */
-  .best-bet {
+  /* --- 結論：馬券風デザイン --- */
+  .ticket {
     position: relative;
     background: linear-gradient(180deg, #1a1408 0%, var(--surface) 70%);
     border: 1px solid var(--amber-dim);
+    border-radius: 10px;
     box-shadow: 0 0 0 1px rgba(240,162,2,0.08), 0 8px 24px -12px var(--amber-glow);
+    padding: 0;
+    overflow: hidden;
   }
-  .best-bet .tag {
-    font-size: 12px; font-weight: 800; color: var(--amber);
+  .ticket-head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 16px; background: rgba(240,162,2,0.08);
+    border-bottom: 1px dashed var(--amber-dim);
   }
-  .best-bet .type {
-    display: inline-block; font-size: 11px; color: var(--bg); background: var(--amber);
-    font-weight: 700; padding: 2px 8px; border-radius: 3px; margin-top: 8px;
+  .ticket-head .label { font-size: 11px; font-weight: 800; color: var(--amber); letter-spacing: 0.05em; }
+  .ticket-head .type-badge {
+    font-size: 11px; color: var(--bg); background: var(--amber);
+    font-weight: 800; padding: 3px 10px; border-radius: 3px;
   }
-  .best-bet .horses {
-    font-size: 21px; font-weight: 800; margin: 8px 0 12px;
-    color: var(--text); line-height: 1.4;
+  .ticket-body { padding: 16px; }
+  .ticket .horses {
+    font-size: 20px; font-weight: 800; margin: 0 0 14px;
+    color: var(--text); line-height: 1.45;
   }
-  .best-bet .stat-row { display: flex; }
-  .best-bet .stat { margin-right: 24px; }
-  .best-bet .stat .label { font-size: 10.5px; color: var(--text-dim); }
-  .best-bet .stat .value { font-size: 18px; font-weight: 800; margin-top: 2px; }
-  .best-bet .stat.ev .value { color: var(--amber); }
-  .best-bet .footnote { font-size: 11px; color: var(--text-dim); margin-top: 12px; line-height: 1.6; border-top: 1px solid var(--line); padding-top: 10px; }
+  .ticket-stats {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+    padding: 12px 0; border-top: 1px dashed var(--line); border-bottom: 1px dashed var(--line);
+  }
+  .ticket-stats .stat { text-align: center; }
+  .ticket-stats .stat .label { font-size: 10px; color: var(--text-dim); }
+  .ticket-stats .stat .value { font-size: 16px; font-weight: 800; margin-top: 3px; }
+  .ticket-stats .stat.ev .value { color: var(--amber); }
+
+  .ticket-amount {
+    margin-top: 14px; padding: 12px; background: var(--surface-2);
+    border-radius: 6px; display: flex; justify-content: space-between; align-items: center;
+  }
+  .ticket-amount .label { font-size: 11px; color: var(--text-dim); }
+  .ticket-amount .value { font-size: 22px; font-weight: 800; color: var(--green); }
+  .ticket-amount .value::before { content: "¥"; font-size: 14px; margin-right: 2px; }
+
+  .footnote { font-size: 11px; color: var(--text-dim); margin-top: 12px; line-height: 1.6; padding: 0 16px 14px; }
+
+  /* --- 予算入力 --- */
+  .budget-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
+    padding: 10px 14px; margin-bottom: 14px;
+  }
+  .budget-box label { font-size: 12px; color: var(--text-dim); white-space: nowrap; }
+  .budget-box input {
+    flex: 1; background: var(--surface-2); border: 1px solid var(--line); border-radius: 4px;
+    color: var(--text); font-size: 15px; padding: 7px 10px; font-family: inherit;
+    -moz-appearance: textfield;
+  }
+  .budget-box input::-webkit-outer-spin-button, .budget-box input::-webkit-inner-spin-button { margin: 0; }
+  .budget-box .unit { font-size: 12px; color: var(--text-dim); }
+  .stake-cell { color: var(--green); font-weight: 700; }
+
 
   /* --- 穴馬候補 --- */
   .dark-horse-card { border-left: 3px solid var(--green); }
@@ -178,18 +214,66 @@
   <div class="card summary-text">明確な逃げ馬が不在で、スローペースになりやすく先行馬が有利になりやすい。馬場状態は「稍重」。</div>
 
   
-  <div class="section-title"><span class="en">Conclusion</span>結論：一番のおすすめ</div>
-  <div class="card best-bet">
-    <div class="tag">🏆 このレースで最も期待値が高い買い目</div>
-    <div class="type">3連単</div>
-    <div class="horses">バレエマスター → サヴォーナ → ロデオドライブ</div>
-    <div class="stat-row mono">
-      <div class="stat"><div class="label">オッズ</div><div class="value">6182.2倍</div></div>
-      <div class="stat"><div class="label">的中確率</div><div class="value">0.1%</div></div>
-      <div class="stat ev"><div class="label">期待値</div><div class="value">546%</div></div>
-    </div>
-    <div class="footnote">期待値とは「100円賭けた時に理論上いくら戻ってくるか」の目安です。100%を超えるほど、賭け金に対して見込まれる払戻が大きいことを意味します（的中を保証するものではありません）。</div>
+  <div class="section-title"><span class="en">Betting Plan</span>AI推奨 購入プラン</div>
+  <div class="section-hint">実際の投票は複数点に分けるのが基本のため、期待値が高い順に複数の買い目を組み合わせています。予算を入れると自動で配分します。</div>
+  <div class="budget-box">
+    <label for="budgetInput">今回の予算</label>
+    <input type="number" id="budgetInput" inputmode="numeric" placeholder="例: 3000" min="0" step="100">
+    <span class="unit">円</span>
   </div>
+  <div class="card" style="padding:0; overflow:hidden;">
+    <table id="planTable">
+      <thead><tr><th>券種</th><th>買い目</th><th>オッズ</th><th>期待値</th><th>配分額</th></tr></thead>
+      <tbody>
+        
+        <tr data-ev="4.309084115759251">
+          <td class="mono">馬連</td>
+          <td class="horses-cell">2 サヴォーナ - 10 バレエマスター</td>
+          <td class="mono">379.8</td>
+          <td class="ev-cell mono">431%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="3.432119319079775">
+          <td class="mono">馬単</td>
+          <td class="horses-cell">10 バレエマスター → 3 ロデオドライブ</td>
+          <td class="mono">272.8</td>
+          <td class="ev-cell mono">343%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="3.1589198114392496">
+          <td class="mono">馬単</td>
+          <td class="horses-cell">10 バレエマスター → 5 ゾロアストロ</td>
+          <td class="mono">220.1</td>
+          <td class="ev-cell mono">316%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="2.6996790414617613">
+          <td class="mono">単勝</td>
+          <td class="horses-cell">10 バレエマスター</td>
+          <td class="mono">36.9</td>
+          <td class="ev-cell mono">270%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="2.469678069672739">
+          <td class="mono">馬単</td>
+          <td class="horses-cell">2 サヴォーナ → 5 ゾロアストロ</td>
+          <td class="mono">175.3</td>
+          <td class="ev-cell mono">247%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr id="planTotalRow" style="display:none;">
+          <td colspan="4" style="text-align:right; font-weight:800;">合計</td>
+          <td class="mono" id="planTotal" style="font-weight:800; color:var(--green);">-</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="footnote">配分額は、各買い目の期待値の大きさに比例して予算を振り分けた目安です（期待値が高いものほど多く配分）。1点に集中させず、複数点に分けて購入することでブレを抑える考え方に基づいています。あくまで参考情報であり、的中や利益を保証するものではありません。</div>
   
 
   
@@ -199,37 +283,27 @@
     
     <div class="dark-horse-item">
       <span class="dh-name">バレエマスター</span><span class="dh-badge">9番人気</span>
-      <div class="dh-stats mono">オッズ 36.9倍 ／ 勝率目安 6.5% ／ 期待値 238%</div>
+      <div class="dh-stats mono">オッズ 36.9倍 ／ 勝率目安 7.3% ／ 期待値 270%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">ジュンブロッサム</span><span class="dh-badge">10番人気</span>
-      <div class="dh-stats mono">オッズ 60.5倍 ／ 勝率目安 3.0% ／ 期待値 180%</div>
+      <div class="dh-stats mono">オッズ 60.5倍 ／ 勝率目安 3.7% ／ 期待値 223%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">サヴォーナ</span><span class="dh-badge">8番人気</span>
-      <div class="dh-stats mono">オッズ 26.5倍 ／ 勝率目安 6.6% ／ 期待値 175%</div>
+      <div class="dh-stats mono">オッズ 26.5倍 ／ 勝率目安 7.2% ／ 期待値 191%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">ボーンディスウェイ</span><span class="dh-badge">11番人気</span>
-      <div class="dh-stats mono">オッズ 85.1倍 ／ 勝率目安 1.8% ／ 期待値 151%</div>
+      <div class="dh-stats mono">オッズ 85.1倍 ／ 勝率目安 2.2% ／ 期待値 184%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">チェルヴィニア</span><span class="dh-badge">6番人気</span>
-      <div class="dh-stats mono">オッズ 15.5倍 ／ 勝率目安 6.8% ／ 期待値 106%</div>
-    </div>
-    
-    <div class="dark-horse-item">
-      <span class="dh-name">アーバンシック</span><span class="dh-badge">7番人気</span>
-      <div class="dh-stats mono">オッズ 18.4倍 ／ 勝率目安 5.6% ／ 期待値 104%</div>
-    </div>
-    
-    <div class="dark-horse-item">
-      <span class="dh-name">ステレンボッシュ</span><span class="dh-badge">5番人気</span>
-      <div class="dh-stats mono">オッズ 13.3倍 ／ 勝率目安 7.6% ／ 期待値 101%</div>
+      <div class="dh-stats mono">オッズ 15.5倍 ／ 勝率目安 7.3% ／ 期待値 113%</div>
     </div>
     
   </div>
@@ -249,57 +323,57 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">8</span>ダノンシーマ</span>
-        <span class="horse-prob mono">複勝圏内 60%</span>
+        <span class="horse-prob mono">複勝圏内 58%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約60%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は2.3着と好調を維持。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約58%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は2.3着と好調を維持。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">3</span>ロデオドライブ</span>
-        <span class="horse-prob mono">複勝圏内 57%</span>
+        <span class="horse-prob mono">複勝圏内 55%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約57%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は1.3着と好調を維持。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約55%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は1.3着と好調を維持。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">4</span>ドゥレッツァ</span>
-        <span class="horse-prob mono">複勝圏内 31%</span>
+        <span class="horse-prob mono">複勝圏内 30%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約31%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は8.5着とやや不振。</div>
-    </div>
-    
-    <div class="horse-item">
-      <div class="horse-head">
-        <span class="horse-name"><span class="horse-num mono">11</span>ステレンボッシュ</span>
-        <span class="horse-prob mono">複勝圏内 26%</span>
-      </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約26%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
-    </div>
-    
-    <div class="horse-item">
-      <div class="horse-head">
-        <span class="horse-name"><span class="horse-num mono">6</span>チェルヴィニア</span>
-        <span class="horse-prob mono">複勝圏内 23%</span>
-      </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約23%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
-    </div>
-    
-    <div class="horse-item">
-      <div class="horse-head">
-        <span class="horse-name"><span class="horse-num mono">2</span>サヴォーナ</span>
-        <span class="horse-prob mono">複勝圏内 22%</span>
-      </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約22%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約30%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は8.5着とやや不振。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">10</span>バレエマスター</span>
-        <span class="horse-prob mono">複勝圏内 22%</span>
+        <span class="horse-prob mono">複勝圏内 25%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約22%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は9.0着とやや不振。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約25%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は9.0着とやや不振。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">11</span>ステレンボッシュ</span>
+        <span class="horse-prob mono">複勝圏内 25%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約25%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">6</span>チェルヴィニア</span>
+        <span class="horse-prob mono">複勝圏内 25%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約25%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">2</span>サヴォーナ</span>
+        <span class="horse-prob mono">複勝圏内 25%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約25%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
     </div>
     
     <div class="horse-item">
@@ -313,77 +387,63 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">7</span>ジュンブロッサム</span>
-        <span class="horse-prob mono">複勝圏内 10%</span>
+        <span class="horse-prob mono">複勝圏内 13%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約10%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は9.7着とやや不振。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約13%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は9.7着とやや不振。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">1</span>ボーンディスウェイ</span>
-        <span class="horse-prob mono">複勝圏内 6%</span>
+        <span class="horse-prob mono">複勝圏内 7%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約6%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は8.7着とやや不振。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約7%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は8.7着とやや不振。</div>
     </div>
     
   </div>
 
-  <div class="section-title"><span class="en">All Bets</span>券種ごとの買い目候補</div>
-  <div class="section-hint">期待値100%を超えるものだけを表示しています。券種名をタップすると開きます。</div>
+  <div class="section-title"><span class="en">All Bets</span>券種ごとの買い目一覧（参考）</div>
+  <div class="section-hint">期待値100%を超えるものを全て表示しています。上の「購入プラン」はこの中から自動選定したものです。</div>
   
   <details class="bet-group" open>
-    <summary>単勝 <span class="count">7点</span></summary>
+    <summary>単勝 <span class="count">5点</span></summary>
     <table>
       <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
       <tbody>
         
         <tr>
-          <td class="horses-cell">バレエマスター</td>
+          <td class="horses-cell">10 バレエマスター</td>
           <td class="mono">36.9</td>
-          <td class="mono">6.5%</td>
-          <td class="ev-cell mono">238%</td>
+          <td class="mono">7.3%</td>
+          <td class="ev-cell mono">270%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ジュンブロッサム</td>
+          <td class="horses-cell">7 ジュンブロッサム</td>
           <td class="mono">60.5</td>
-          <td class="mono">3.0%</td>
-          <td class="ev-cell mono">180%</td>
+          <td class="mono">3.7%</td>
+          <td class="ev-cell mono">223%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">サヴォーナ</td>
+          <td class="horses-cell">2 サヴォーナ</td>
           <td class="mono">26.5</td>
-          <td class="mono">6.6%</td>
-          <td class="ev-cell mono">175%</td>
+          <td class="mono">7.2%</td>
+          <td class="ev-cell mono">191%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ボーンディスウェイ</td>
+          <td class="horses-cell">1 ボーンディスウェイ</td>
           <td class="mono">85.1</td>
-          <td class="mono">1.8%</td>
-          <td class="ev-cell mono">151%</td>
+          <td class="mono">2.2%</td>
+          <td class="ev-cell mono">184%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">チェルヴィニア</td>
+          <td class="horses-cell">6 チェルヴィニア</td>
           <td class="mono">15.5</td>
-          <td class="mono">6.8%</td>
-          <td class="ev-cell mono">106%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">アーバンシック</td>
-          <td class="mono">18.4</td>
-          <td class="mono">5.6%</td>
-          <td class="ev-cell mono">104%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ステレンボッシュ</td>
-          <td class="mono">13.3</td>
-          <td class="mono">7.6%</td>
-          <td class="ev-cell mono">101%</td>
+          <td class="mono">7.3%</td>
+          <td class="ev-cell mono">113%</td>
         </tr>
         
       </tbody>
@@ -397,143 +457,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">サヴォーナ - バレエマスター</td>
+          <td class="horses-cell">2 サヴォーナ - 10 バレエマスター</td>
           <td class="mono">379.8</td>
-          <td class="mono">0.9%</td>
-          <td class="ev-cell mono">347%</td>
+          <td class="mono">1.1%</td>
+          <td class="ev-cell mono">431%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">サヴォーナ - ジュンブロッサム</td>
+          <td class="horses-cell">2 サヴォーナ - 7 ジュンブロッサム</td>
           <td class="mono">482.0</td>
-          <td class="mono">0.4%</td>
+          <td class="mono">0.6%</td>
+          <td class="ev-cell mono">271%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 ジュンブロッサム - 10 バレエマスター</td>
+          <td class="mono">426.0</td>
+          <td class="mono">0.6%</td>
+          <td class="ev-cell mono">244%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">6 チェルヴィニア - 10 バレエマスター</td>
+          <td class="mono">199.1</td>
+          <td class="mono">1.2%</td>
+          <td class="ev-cell mono">230%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 サヴォーナ - 6 チェルヴィニア</td>
+          <td class="mono">191.8</td>
+          <td class="mono">1.1%</td>
+          <td class="ev-cell mono">218%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 ボーンディスウェイ - 10 バレエマスター</td>
+          <td class="mono">649.6</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">215%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 サヴォーナ - 11 ステレンボッシュ</td>
+          <td class="mono">178.1</td>
+          <td class="mono">1.1%</td>
+          <td class="ev-cell mono">202%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 ロデオドライブ - 10 バレエマスター</td>
+          <td class="mono">75.7</td>
+          <td class="mono">2.6%</td>
           <td class="ev-cell mono">200%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">サヴォーナ - ステレンボッシュ</td>
-          <td class="mono">178.1</td>
-          <td class="mono">1.1%</td>
-          <td class="ev-cell mono">193%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バレエマスター - チェルヴィニア</td>
-          <td class="mono">199.1</td>
-          <td class="mono">0.9%</td>
-          <td class="ev-cell mono">189%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">アーバンシック - サヴォーナ</td>
+          <td class="horses-cell">2 サヴォーナ - 9 アーバンシック</td>
           <td class="mono">237.5</td>
           <td class="mono">0.8%</td>
-          <td class="ev-cell mono">188%</td>
+          <td class="ev-cell mono">197%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ロデオドライブ - バレエマスター</td>
-          <td class="mono">75.7</td>
-          <td class="mono">2.5%</td>
-          <td class="ev-cell mono">187%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">サヴォーナ - チェルヴィニア</td>
-          <td class="mono">191.8</td>
-          <td class="mono">1.0%</td>
-          <td class="ev-cell mono">186%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ステレンボッシュ - バレエマスター</td>
+          <td class="horses-cell">10 バレエマスター - 11 ステレンボッシュ</td>
           <td class="mono">167.9</td>
-          <td class="mono">1.1%</td>
+          <td class="mono">1.2%</td>
+          <td class="ev-cell mono">194%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">10 バレエマスター - 9 アーバンシック</td>
+          <td class="mono">225.8</td>
+          <td class="mono">0.8%</td>
+          <td class="ev-cell mono">191%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 サヴォーナ - 5 ゾロアストロ</td>
+          <td class="mono">61.4</td>
+          <td class="mono">3.0%</td>
+          <td class="ev-cell mono">185%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">4 ドゥレッツァ - 10 バレエマスター</td>
+          <td class="mono">127.1</td>
+          <td class="mono">1.4%</td>
           <td class="ev-cell mono">178%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">アーバンシック - バレエマスター</td>
-          <td class="mono">225.8</td>
-          <td class="mono">0.8%</td>
+          <td class="horses-cell">5 ゾロアストロ - 10 バレエマスター</td>
+          <td class="mono">57.5</td>
+          <td class="mono">3.1%</td>
+          <td class="ev-cell mono">176%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 サヴォーナ - 4 ドゥレッツァ</td>
+          <td class="mono">127.1</td>
+          <td class="mono">1.4%</td>
           <td class="ev-cell mono">175%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ゾロアストロ - サヴォーナ</td>
-          <td class="mono">61.4</td>
-          <td class="mono">2.8%</td>
-          <td class="ev-cell mono">173%</td>
+          <td class="horses-cell">2 サヴォーナ - 1 ボーンディスウェイ</td>
+          <td class="mono">515.9</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">168%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バレエマスター - ジュンブロッサム</td>
-          <td class="mono">426.0</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">172%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">サヴォーナ - ドゥレッツァ</td>
-          <td class="mono">127.1</td>
-          <td class="mono">1.3%</td>
-          <td class="ev-cell mono">165%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ドゥレッツァ - バレエマスター</td>
-          <td class="mono">127.1</td>
-          <td class="mono">1.3%</td>
+          <td class="horses-cell">7 ジュンブロッサム - 11 ステレンボッシュ</td>
+          <td class="mono">282.5</td>
+          <td class="mono">0.6%</td>
           <td class="ev-cell mono">162%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ゾロアストロ - バレエマスター</td>
-          <td class="mono">57.5</td>
-          <td class="mono">2.8%</td>
-          <td class="ev-cell mono">158%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バレエマスター - ボーンディスウェイ</td>
-          <td class="mono">649.6</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">155%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">アーバンシック - ボーンディスウェイ</td>
+          <td class="horses-cell">1 ボーンディスウェイ - 9 アーバンシック</td>
           <td class="mono">662.1</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">137%</td>
+          <td class="ev-cell mono">160%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ステレンボッシュ - ジュンブロッサム</td>
-          <td class="mono">282.5</td>
-          <td class="mono">0.5%</td>
-          <td class="ev-cell mono">136%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ドゥレッツァ - ボーンディスウェイ</td>
-          <td class="mono">387.1</td>
+          <td class="horses-cell">1 ボーンディスウェイ - 6 チェルヴィニア</td>
+          <td class="mono">483.3</td>
           <td class="mono">0.3%</td>
-          <td class="ev-cell mono">132%</td>
+          <td class="ev-cell mono">160%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ドゥレッツァ - ジュンブロッサム</td>
+          <td class="horses-cell">4 ドゥレッツァ - 7 ジュンブロッサム</td>
           <td class="mono">228.7</td>
-          <td class="mono">0.6%</td>
-          <td class="ev-cell mono">132%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バレエマスター - ダノンシーマ</td>
-          <td class="mono">49.1</td>
-          <td class="mono">2.6%</td>
-          <td class="ev-cell mono">127%</td>
+          <td class="mono">0.7%</td>
+          <td class="ev-cell mono">158%</td>
         </tr>
         
       </tbody>
@@ -547,143 +607,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">バレエマスター → サヴォーナ</td>
+          <td class="horses-cell">10 バレエマスター → 2 サヴォーナ</td>
           <td class="mono">893.2</td>
-          <td class="mono">0.5%</td>
-          <td class="ev-cell mono">407%</td>
+          <td class="mono">0.6%</td>
+          <td class="ev-cell mono">507%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">サヴォーナ → バレエマスター</td>
+          <td class="horses-cell">2 サヴォーナ → 10 バレエマスター</td>
           <td class="mono">791.5</td>
-          <td class="mono">0.5%</td>
-          <td class="ev-cell mono">362%</td>
+          <td class="mono">0.6%</td>
+          <td class="ev-cell mono">449%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バレエマスター → ロデオドライブ</td>
+          <td class="horses-cell">10 バレエマスター → 3 ロデオドライブ</td>
           <td class="mono">272.8</td>
-          <td class="mono">1.2%</td>
-          <td class="ev-cell mono">317%</td>
+          <td class="mono">1.3%</td>
+          <td class="ev-cell mono">343%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バレエマスター → ゾロアストロ</td>
+          <td class="horses-cell">10 バレエマスター → 6 チェルヴィニア</td>
+          <td class="mono">591.4</td>
+          <td class="mono">0.6%</td>
+          <td class="ev-cell mono">342%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">10 バレエマスター → 5 ゾロアストロ</td>
           <td class="mono">220.1</td>
-          <td class="mono">1.3%</td>
+          <td class="mono">1.4%</td>
+          <td class="ev-cell mono">316%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">10 バレエマスター → 4 ドゥレッツァ</td>
+          <td class="mono">437.4</td>
+          <td class="mono">0.7%</td>
+          <td class="ev-cell mono">303%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 ジュンブロッサム → 2 サヴォーナ</td>
+          <td class="mono">1024.0</td>
+          <td class="mono">0.3%</td>
           <td class="ev-cell mono">282%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バレエマスター → チェルヴィニア</td>
-          <td class="mono">591.4</td>
-          <td class="mono">0.5%</td>
-          <td class="ev-cell mono">280%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バレエマスター → ドゥレッツァ</td>
-          <td class="mono">437.4</td>
-          <td class="mono">0.6%</td>
-          <td class="ev-cell mono">274%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バレエマスター → アーバンシック</td>
+          <td class="horses-cell">10 バレエマスター → 9 アーバンシック</td>
           <td class="mono">644.1</td>
           <td class="mono">0.4%</td>
-          <td class="ev-cell mono">250%</td>
+          <td class="ev-cell mono">275%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バレエマスター → ステレンボッシュ</td>
+          <td class="horses-cell">10 バレエマスター → 7 ジュンブロッサム</td>
+          <td class="mono">927.5</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">270%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 サヴォーナ → 7 ジュンブロッサム</td>
+          <td class="mono">937.6</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">268%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 ジュンブロッサム → 10 バレエマスター</td>
+          <td class="mono">943.3</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">265%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">10 バレエマスター → 11 ステレンボッシュ</td>
           <td class="mono">450.0</td>
-          <td class="mono">0.5%</td>
-          <td class="ev-cell mono">237%</td>
+          <td class="mono">0.6%</td>
+          <td class="ev-cell mono">260%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">サヴォーナ → ゾロアストロ</td>
+          <td class="horses-cell">2 サヴォーナ → 5 ゾロアストロ</td>
           <td class="mono">175.3</td>
-          <td class="mono">1.3%</td>
-          <td class="ev-cell mono">230%</td>
+          <td class="mono">1.4%</td>
+          <td class="ev-cell mono">247%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">サヴォーナ → アーバンシック</td>
+          <td class="horses-cell">6 チェルヴィニア → 10 バレエマスター</td>
+          <td class="mono">400.1</td>
+          <td class="mono">0.6%</td>
+          <td class="ev-cell mono">231%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 ボーンディスウェイ → 10 バレエマスター</td>
+          <td class="mono">1419.0</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">229%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 サヴォーナ → 9 アーバンシック</td>
           <td class="mono">536.5</td>
           <td class="mono">0.4%</td>
-          <td class="ev-cell mono">213%</td>
+          <td class="ev-cell mono">225%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ジュンブロッサム → サヴォーナ</td>
-          <td class="mono">1024.0</td>
+          <td class="horses-cell">10 バレエマスター → 1 ボーンディスウェイ</td>
+          <td class="mono">1308.6</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">208%</td>
+          <td class="ev-cell mono">223%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">サヴォーナ → ステレンボッシュ</td>
-          <td class="mono">367.9</td>
-          <td class="mono">0.5%</td>
-          <td class="ev-cell mono">198%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">サヴォーナ → ジュンブロッサム</td>
-          <td class="mono">937.6</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">198%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バレエマスター → ジュンブロッサム</td>
-          <td class="mono">927.5</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">191%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">アーバンシック → サヴォーナ</td>
-          <td class="mono">485.0</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">191%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">チェルヴィニア → バレエマスター</td>
-          <td class="mono">400.1</td>
-          <td class="mono">0.5%</td>
-          <td class="ev-cell mono">190%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ステレンボッシュ → サヴォーナ</td>
-          <td class="mono">346.9</td>
-          <td class="mono">0.5%</td>
-          <td class="ev-cell mono">189%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ジュンブロッサム → バレエマスター</td>
-          <td class="mono">943.3</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">187%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">サヴォーナ → チェルヴィニア</td>
+          <td class="horses-cell">2 サヴォーナ → 6 チェルヴィニア</td>
           <td class="mono">385.2</td>
-          <td class="mono">0.5%</td>
-          <td class="ev-cell mono">187%</td>
+          <td class="mono">0.6%</td>
+          <td class="ev-cell mono">218%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">チェルヴィニア → サヴォーナ</td>
+          <td class="horses-cell">6 チェルヴィニア → 2 サヴォーナ</td>
           <td class="mono">376.3</td>
-          <td class="mono">0.5%</td>
-          <td class="ev-cell mono">183%</td>
+          <td class="mono">0.6%</td>
+          <td class="ev-cell mono">214%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 サヴォーナ → 11 ステレンボッシュ</td>
+          <td class="mono">367.9</td>
+          <td class="mono">0.6%</td>
+          <td class="ev-cell mono">209%</td>
         </tr>
         
       </tbody>
@@ -697,143 +757,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">バレエマスター - サヴォーナ - ドゥレッツァ</td>
-          <td class="mono">808.8</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">238%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">サヴォーナ - バレエマスター - ステレンボッシュ</td>
-          <td class="mono">953.2</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">232%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バレエマスター - サヴォーナ - チェルヴィニア</td>
+          <td class="horses-cell">2 サヴォーナ - 6 チェルヴィニア - 10 バレエマスター</td>
           <td class="mono">1001.0</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">217%</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">292%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">サヴォーナ - ロデオドライブ - バレエマスター</td>
+          <td class="horses-cell">2 サヴォーナ - 4 ドゥレッツァ - 10 バレエマスター</td>
+          <td class="mono">808.8</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">288%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 サヴォーナ - 10 バレエマスター - 11 ステレンボッシュ</td>
+          <td class="mono">953.2</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">278%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 サヴォーナ - 3 ロデオドライブ - 10 バレエマスター</td>
           <td class="mono">350.2</td>
-          <td class="mono">0.6%</td>
-          <td class="ev-cell mono">211%</td>
+          <td class="mono">0.7%</td>
+          <td class="ev-cell mono">247%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">アーバンシック - サヴォーナ - バレエマスター</td>
+          <td class="horses-cell">2 サヴォーナ - 10 バレエマスター - 9 アーバンシック</td>
           <td class="mono">1155.7</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">203%</td>
+          <td class="ev-cell mono">243%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ゾロアストロ - サヴォーナ - バレエマスター</td>
-          <td class="mono">282.3</td>
-          <td class="mono">0.7%</td>
-          <td class="ev-cell mono">192%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">アーバンシック - ロデオドライブ - バレエマスター</td>
-          <td class="mono">360.3</td>
-          <td class="mono">0.5%</td>
-          <td class="ev-cell mono">183%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">サヴォーナ - ジュンブロッサム - ステレンボッシュ</td>
-          <td class="mono">1615.2</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">175%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ゾロアストロ - ロデオドライブ - バレエマスター</td>
-          <td class="mono">85.5</td>
-          <td class="mono">2.0%</td>
-          <td class="ev-cell mono">169%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ジュンブロッサム - サヴォーナ - ドゥレッツァ</td>
-          <td class="mono">1273.5</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">167%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">サヴォーナ - ドゥレッツァ - ステレンボッシュ</td>
-          <td class="mono">473.4</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">167%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バレエマスター - ロデオドライブ - ドゥレッツァ</td>
-          <td class="mono">188.6</td>
-          <td class="mono">0.9%</td>
-          <td class="ev-cell mono">161%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ゾロアストロ - サヴォーナ - ステレンボッシュ</td>
-          <td class="mono">195.4</td>
-          <td class="mono">0.8%</td>
-          <td class="ev-cell mono">159%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">アーバンシック - サヴォーナ - ロデオドライブ</td>
-          <td class="mono">300.2</td>
-          <td class="mono">0.5%</td>
-          <td class="ev-cell mono">156%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バレエマスター - ロデオドライブ - チェルヴィニア</td>
-          <td class="mono">248.4</td>
-          <td class="mono">0.6%</td>
-          <td class="ev-cell mono">156%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ゾロアストロ - サヴォーナ - ドゥレッツァ</td>
-          <td class="mono">156.3</td>
-          <td class="mono">1.0%</td>
-          <td class="ev-cell mono">154%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ゾロアストロ - サヴォーナ - ジュンブロッサム</td>
-          <td class="mono">507.1</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">153%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バレエマスター - サヴォーナ - ジュンブロッサム</td>
+          <td class="horses-cell">2 サヴォーナ - 7 ジュンブロッサム - 10 バレエマスター</td>
           <td class="mono">1688.4</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">153%</td>
+          <td class="ev-cell mono">239%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">サヴォーナ - バレエマスター - ダノンシーマ</td>
-          <td class="mono">236.3</td>
-          <td class="mono">0.6%</td>
-          <td class="ev-cell mono">151%</td>
+          <td class="horses-cell">2 サヴォーナ - 5 ゾロアストロ - 10 バレエマスター</td>
+          <td class="mono">282.3</td>
+          <td class="mono">0.8%</td>
+          <td class="ev-cell mono">235%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ロデオドライブ - バレエマスター - ステレンボッシュ</td>
-          <td class="mono">213.9</td>
+          <td class="horses-cell">2 サヴォーナ - 7 ジュンブロッサム - 11 ステレンボッシュ</td>
+          <td class="mono">1615.2</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">228%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 サヴォーナ - 4 ドゥレッツァ - 7 ジュンブロッサム</td>
+          <td class="mono">1273.5</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">220%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 サヴォーナ - 7 ジュンブロッサム - 6 チェルヴィニア</td>
+          <td class="mono">1460.0</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">206%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 サヴォーナ - 7 ジュンブロッサム - 5 ゾロアストロ</td>
+          <td class="mono">507.1</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">204%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 ジュンブロッサム - 3 ロデオドライブ - 10 バレエマスター</td>
+          <td class="mono">568.6</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">198%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 ロデオドライブ - 10 バレエマスター - 9 アーバンシック</td>
+          <td class="mono">360.3</td>
+          <td class="mono">0.5%</td>
+          <td class="ev-cell mono">187%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">4 ドゥレッツァ - 10 バレエマスター - 7 ジュンブロッサム</td>
+          <td class="mono">1058.2</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">186%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 ロデオドライブ - 6 チェルヴィニア - 10 バレエマスター</td>
+          <td class="mono">248.4</td>
           <td class="mono">0.7%</td>
-          <td class="ev-cell mono">150%</td>
+          <td class="ev-cell mono">179%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 サヴォーナ - 7 ジュンブロッサム - 3 ロデオドライブ</td>
+          <td class="mono">521.2</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">179%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 ジュンブロッサム - 6 チェルヴィニア - 10 バレエマスター</td>
+          <td class="mono">1228.4</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">177%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 サヴォーナ - 10 バレエマスター - 8 ダノンシーマ</td>
+          <td class="mono">236.3</td>
+          <td class="mono">0.7%</td>
+          <td class="ev-cell mono">177%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 ロデオドライブ - 5 ゾロアストロ - 10 バレエマスター</td>
+          <td class="mono">85.5</td>
+          <td class="mono">2.1%</td>
+          <td class="ev-cell mono">176%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 サヴォーナ - 4 ドゥレッツァ - 6 チェルヴィニア</td>
+          <td class="mono">477.1</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">170%</td>
         </tr>
         
       </tbody>
@@ -847,143 +907,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">バレエマスター → サヴォーナ → ロデオドライブ</td>
+          <td class="horses-cell">10 バレエマスター → 2 サヴォーナ → 3 ロデオドライブ</td>
           <td class="mono">6182.2</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">546%</td>
+          <td class="ev-cell mono">654%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バレエマスター → ロデオドライブ → サヴォーナ</td>
+          <td class="horses-cell">10 バレエマスター → 3 ロデオドライブ → 2 サヴォーナ</td>
           <td class="mono">4686.2</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">469%</td>
+          <td class="ev-cell mono">552%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バレエマスター → サヴォーナ → ドゥレッツァ</td>
-          <td class="mono">9401.6</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">448%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バレエマスター → サヴォーナ → ゾロアストロ</td>
+          <td class="horses-cell">10 バレエマスター → 2 サヴォーナ → 5 ゾロアストロ</td>
           <td class="mono">4566.9</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">445%</td>
+          <td class="ev-cell mono">551%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バレエマスター → ドゥレッツァ → サヴォーナ</td>
+          <td class="horses-cell">10 バレエマスター → 2 サヴォーナ → 4 ドゥレッツァ</td>
+          <td class="mono">9401.6</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">549%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">10 バレエマスター → 4 ドゥレッツァ → 2 サヴォーナ</td>
           <td class="mono">8748.2</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">429%</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">520%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バレエマスター → サヴォーナ → ステレンボッシュ</td>
-          <td class="mono">10405.5</td>
+          <td class="horses-cell">10 バレエマスター → 2 サヴォーナ → 6 チェルヴィニア</td>
+          <td class="mono">10637.5</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">416%</td>
+          <td class="ev-cell mono">517%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">サヴォーナ → バレエマスター → ゾロアストロ</td>
+          <td class="horses-cell">2 サヴォーナ → 10 バレエマスター → 5 ゾロアストロ</td>
           <td class="mono">4258.0</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">415%</td>
+          <td class="ev-cell mono">513%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">サヴォーナ → バレエマスター → ドゥレッツァ</td>
-          <td class="mono">8566.3</td>
+          <td class="horses-cell">10 バレエマスター → 2 サヴォーナ → 11 ステレンボッシュ</td>
+          <td class="mono">10405.5</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">409%</td>
+          <td class="ev-cell mono">505%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バレエマスター → ゾロアストロ → サヴォーナ</td>
+          <td class="horses-cell">10 バレエマスター → 5 ゾロアストロ → 2 サヴォーナ</td>
           <td class="mono">3605.0</td>
           <td class="mono">0.1%</td>
+          <td class="ev-cell mono">499%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 サヴォーナ → 10 バレエマスター → 4 ドゥレッツァ</td>
+          <td class="mono">8566.3</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">499%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">10 バレエマスター → 6 チェルヴィニア → 2 サヴォーナ</td>
+          <td class="mono">10200.5</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">496%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 サヴォーナ → 10 バレエマスター → 6 チェルヴィニア</td>
+          <td class="mono">9813.9</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">476%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 サヴォーナ → 10 バレエマスター → 3 ロデオドライブ</td>
+          <td class="mono">4490.0</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">475%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">10 バレエマスター → 11 ステレンボッシュ → 2 サヴォーナ</td>
+          <td class="mono">9257.6</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">450%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">10 バレエマスター → 2 サヴォーナ → 9 アーバンシック</td>
+          <td class="mono">11878.3</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">426%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 サヴォーナ → 10 バレエマスター → 11 ステレンボッシュ</td>
+          <td class="mono">8735.6</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">424%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 ジュンブロッサム → 2 サヴォーナ → 11 ステレンボッシュ</td>
+          <td class="mono">18235.8</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">413%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 サヴォーナ → 10 バレエマスター → 9 アーバンシック</td>
+          <td class="mono">11357.4</td>
+          <td class="mono">0.0%</td>
           <td class="ev-cell mono">407%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">サヴォーナ → バレエマスター → ロデオドライブ</td>
-          <td class="mono">4490.0</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">397%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バレエマスター → サヴォーナ → チェルヴィニア</td>
-          <td class="mono">10637.5</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">382%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バレエマスター → ステレンボッシュ → サヴォーナ</td>
-          <td class="mono">9257.6</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">375%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バレエマスター → チェルヴィニア → サヴォーナ</td>
-          <td class="mono">10200.5</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">368%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">サヴォーナ → バレエマスター → チェルヴィニア</td>
-          <td class="mono">9813.9</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">353%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バレエマスター → サヴォーナ → アーバンシック</td>
-          <td class="mono">11878.3</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">351%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">サヴォーナ → バレエマスター → ステレンボッシュ</td>
-          <td class="mono">8735.6</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">350%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バレエマスター → ドゥレッツァ → ロデオドライブ</td>
-          <td class="mono">2756.4</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">344%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バレエマスター → チェルヴィニア → ロデオドライブ</td>
+          <td class="horses-cell">10 バレエマスター → 6 チェルヴィニア → 3 ロデオドライブ</td>
           <td class="mono">3750.5</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">344%</td>
+          <td class="ev-cell mono">404%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バレエマスター → ロデオドライブ → チェルヴィニア</td>
-          <td class="mono">3282.5</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">340%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">バレエマスター → ロデオドライブ → アーバンシック</td>
-          <td class="mono">3975.0</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">339%</td>
+          <td class="horses-cell">10 バレエマスター → 9 アーバンシック → 2 サヴォーナ</td>
+          <td class="mono">11429.0</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">401%</td>
         </tr>
         
       </tbody>
@@ -995,5 +1055,49 @@
 
   <div class="disclaimer">本ページの予想は参考情報です。的中・利益を保証しません。<br>馬券の購入は必ずご自身でIPAT等の公式ルートから行ってください。</div>
 </main>
+
+<script>
+(function () {
+  const UNIT = 100;  // JRAの購入単位（100円）に丸める
+
+  function recalc() {
+    const budget = parseFloat(document.getElementById('budgetInput').value) || 0;
+    const rows = Array.from(document.querySelectorAll('#planTable tbody tr[data-ev]'));
+    const totalRow = document.getElementById('planTotalRow');
+    const totalCell = document.getElementById('planTotal');
+
+    if (!rows.length) return;
+
+    if (budget <= 0) {
+      rows.forEach(function (tr) { tr.querySelector('.stake-cell').textContent = '-'; });
+      if (totalRow) totalRow.style.display = 'none';
+      return;
+    }
+
+    // 期待値(EV)が高いものほど多く配分する（EVの合計に対する比率で按分）
+    const evs = rows.map(function (tr) { return Math.max(0, parseFloat(tr.dataset.ev) - 1); }); // 100%超過分だけを重みにする
+    const totalWeight = evs.reduce(function (a, b) { return a + b; }, 0);
+
+    let allocated = 0;
+    rows.forEach(function (tr, i) {
+      const weight = totalWeight > 0 ? evs[i] / totalWeight : 1 / rows.length;
+      const raw = budget * weight;
+      const amount = Math.floor(raw / UNIT) * UNIT;
+      allocated += amount;
+      tr.querySelector('.stake-cell').textContent = amount > 0 ? amount.toLocaleString('ja-JP') + '円' : '見送り';
+    });
+
+    if (totalRow && totalCell) {
+      totalRow.style.display = '';
+      totalCell.textContent = allocated.toLocaleString('ja-JP') + '円 / ' + budget.toLocaleString('ja-JP') + '円中';
+    }
+  }
+
+  const input = document.getElementById('budgetInput');
+  if (input) {
+    input.addEventListener('input', recalc);
+  }
+})();
+</script>
 </body>
 </html>

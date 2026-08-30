@@ -63,30 +63,66 @@
   }
   .summary-text { font-size: 13px; line-height: 1.75; color: var(--text-dim); }
 
-  /* --- 結論：一番のおすすめ --- */
-  .best-bet {
+  /* --- 結論：馬券風デザイン --- */
+  .ticket {
     position: relative;
     background: linear-gradient(180deg, #1a1408 0%, var(--surface) 70%);
     border: 1px solid var(--amber-dim);
+    border-radius: 10px;
     box-shadow: 0 0 0 1px rgba(240,162,2,0.08), 0 8px 24px -12px var(--amber-glow);
+    padding: 0;
+    overflow: hidden;
   }
-  .best-bet .tag {
-    font-size: 12px; font-weight: 800; color: var(--amber);
+  .ticket-head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 16px; background: rgba(240,162,2,0.08);
+    border-bottom: 1px dashed var(--amber-dim);
   }
-  .best-bet .type {
-    display: inline-block; font-size: 11px; color: var(--bg); background: var(--amber);
-    font-weight: 700; padding: 2px 8px; border-radius: 3px; margin-top: 8px;
+  .ticket-head .label { font-size: 11px; font-weight: 800; color: var(--amber); letter-spacing: 0.05em; }
+  .ticket-head .type-badge {
+    font-size: 11px; color: var(--bg); background: var(--amber);
+    font-weight: 800; padding: 3px 10px; border-radius: 3px;
   }
-  .best-bet .horses {
-    font-size: 21px; font-weight: 800; margin: 8px 0 12px;
-    color: var(--text); line-height: 1.4;
+  .ticket-body { padding: 16px; }
+  .ticket .horses {
+    font-size: 20px; font-weight: 800; margin: 0 0 14px;
+    color: var(--text); line-height: 1.45;
   }
-  .best-bet .stat-row { display: flex; }
-  .best-bet .stat { margin-right: 24px; }
-  .best-bet .stat .label { font-size: 10.5px; color: var(--text-dim); }
-  .best-bet .stat .value { font-size: 18px; font-weight: 800; margin-top: 2px; }
-  .best-bet .stat.ev .value { color: var(--amber); }
-  .best-bet .footnote { font-size: 11px; color: var(--text-dim); margin-top: 12px; line-height: 1.6; border-top: 1px solid var(--line); padding-top: 10px; }
+  .ticket-stats {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+    padding: 12px 0; border-top: 1px dashed var(--line); border-bottom: 1px dashed var(--line);
+  }
+  .ticket-stats .stat { text-align: center; }
+  .ticket-stats .stat .label { font-size: 10px; color: var(--text-dim); }
+  .ticket-stats .stat .value { font-size: 16px; font-weight: 800; margin-top: 3px; }
+  .ticket-stats .stat.ev .value { color: var(--amber); }
+
+  .ticket-amount {
+    margin-top: 14px; padding: 12px; background: var(--surface-2);
+    border-radius: 6px; display: flex; justify-content: space-between; align-items: center;
+  }
+  .ticket-amount .label { font-size: 11px; color: var(--text-dim); }
+  .ticket-amount .value { font-size: 22px; font-weight: 800; color: var(--green); }
+  .ticket-amount .value::before { content: "¥"; font-size: 14px; margin-right: 2px; }
+
+  .footnote { font-size: 11px; color: var(--text-dim); margin-top: 12px; line-height: 1.6; padding: 0 16px 14px; }
+
+  /* --- 予算入力 --- */
+  .budget-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
+    padding: 10px 14px; margin-bottom: 14px;
+  }
+  .budget-box label { font-size: 12px; color: var(--text-dim); white-space: nowrap; }
+  .budget-box input {
+    flex: 1; background: var(--surface-2); border: 1px solid var(--line); border-radius: 4px;
+    color: var(--text); font-size: 15px; padding: 7px 10px; font-family: inherit;
+    -moz-appearance: textfield;
+  }
+  .budget-box input::-webkit-outer-spin-button, .budget-box input::-webkit-inner-spin-button { margin: 0; }
+  .budget-box .unit { font-size: 12px; color: var(--text-dim); }
+  .stake-cell { color: var(--green); font-weight: 700; }
+
 
   /* --- 穴馬候補 --- */
   .dark-horse-card { border-left: 3px solid var(--green); }
@@ -178,18 +214,66 @@
   <div class="card summary-text">逃げ馬は1頭で、比較的落ち着いたペースが予想される。馬場状態は「稍重」。</div>
 
   
-  <div class="section-title"><span class="en">Conclusion</span>結論：一番のおすすめ</div>
-  <div class="card best-bet">
-    <div class="tag">🏆 このレースで最も期待値が高い買い目</div>
-    <div class="type">3連単</div>
-    <div class="horses">レッドカメリア → ハルヒメ → ニルマーネル</div>
-    <div class="stat-row mono">
-      <div class="stat"><div class="label">オッズ</div><div class="value">15037.0倍</div></div>
-      <div class="stat"><div class="label">的中確率</div><div class="value">0.0%</div></div>
-      <div class="stat ev"><div class="label">期待値</div><div class="value">363%</div></div>
-    </div>
-    <div class="footnote">期待値とは「100円賭けた時に理論上いくら戻ってくるか」の目安です。100%を超えるほど、賭け金に対して見込まれる払戻が大きいことを意味します（的中を保証するものではありません）。</div>
+  <div class="section-title"><span class="en">Betting Plan</span>AI推奨 購入プラン</div>
+  <div class="section-hint">実際の投票は複数点に分けるのが基本のため、期待値が高い順に複数の買い目を組み合わせています。予算を入れると自動で配分します。</div>
+  <div class="budget-box">
+    <label for="budgetInput">今回の予算</label>
+    <input type="number" id="budgetInput" inputmode="numeric" placeholder="例: 3000" min="0" step="100">
+    <span class="unit">円</span>
   </div>
+  <div class="card" style="padding:0; overflow:hidden;">
+    <table id="planTable">
+      <thead><tr><th>券種</th><th>買い目</th><th>オッズ</th><th>期待値</th><th>配分額</th></tr></thead>
+      <tbody>
+        
+        <tr data-ev="2.856434263701466">
+          <td class="mono">単勝</td>
+          <td class="horses-cell">3 レッドカメリア</td>
+          <td class="mono">84.3</td>
+          <td class="ev-cell mono">286%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="1.5192904817344013">
+          <td class="mono">馬連</td>
+          <td class="horses-cell">7 ミレニアルピンク - 9 ラプランセス</td>
+          <td class="mono">98.1</td>
+          <td class="ev-cell mono">152%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="1.2591145771192158">
+          <td class="mono">単勝</td>
+          <td class="horses-cell">13 ナンナンプー</td>
+          <td class="mono">48.7</td>
+          <td class="ev-cell mono">126%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="1.152564602952951">
+          <td class="mono">単勝</td>
+          <td class="horses-cell">16 スプリングデイ</td>
+          <td class="mono">43.8</td>
+          <td class="ev-cell mono">115%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="1.008294174480505">
+          <td class="mono">単勝</td>
+          <td class="horses-cell">2 プリュノワール</td>
+          <td class="mono">21.9</td>
+          <td class="ev-cell mono">101%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr id="planTotalRow" style="display:none;">
+          <td colspan="4" style="text-align:right; font-weight:800;">合計</td>
+          <td class="mono" id="planTotal" style="font-weight:800; color:var(--green);">-</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="footnote">配分額は、各買い目の期待値の大きさに比例して予算を振り分けた目安です（期待値が高いものほど多く配分）。1点に集中させず、複数点に分けて購入することでブレを抑える考え方に基づいています。あくまで参考情報であり、的中や利益を保証するものではありません。</div>
   
 
   
@@ -199,32 +283,22 @@
     
     <div class="dark-horse-item">
       <span class="dh-name">レッドカメリア</span><span class="dh-badge">14番人気</span>
-      <div class="dh-stats mono">オッズ 84.3倍 ／ 勝率目安 2.1% ／ 期待値 180%</div>
+      <div class="dh-stats mono">オッズ 84.3倍 ／ 勝率目安 3.4% ／ 期待値 286%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">ナンナンプー</span><span class="dh-badge">12番人気</span>
-      <div class="dh-stats mono">オッズ 48.7倍 ／ 勝率目安 2.6% ／ 期待値 124%</div>
-    </div>
-    
-    <div class="dark-horse-item">
-      <span class="dh-name">ペイシャアーサー</span><span class="dh-badge">13番人気</span>
-      <div class="dh-stats mono">オッズ 82.9倍 ／ 勝率目安 1.4% ／ 期待値 119%</div>
+      <div class="dh-stats mono">オッズ 48.7倍 ／ 勝率目安 2.6% ／ 期待値 126%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">スプリングデイ</span><span class="dh-badge">11番人気</span>
-      <div class="dh-stats mono">オッズ 43.8倍 ／ 勝率目安 2.7% ／ 期待値 117%</div>
+      <div class="dh-stats mono">オッズ 43.8倍 ／ 勝率目安 2.6% ／ 期待値 115%</div>
     </div>
     
     <div class="dark-horse-item">
-      <span class="dh-name">ペガサスノース</span><span class="dh-badge">15番人気</span>
-      <div class="dh-stats mono">オッズ 89.7倍 ／ 勝率目安 1.2% ／ 期待値 112%</div>
-    </div>
-    
-    <div class="dark-horse-item">
-      <span class="dh-name">ロードヴェルテクス</span><span class="dh-badge">16番人気</span>
-      <div class="dh-stats mono">オッズ 180.1倍 ／ 勝率目安 0.6% ／ 期待値 101%</div>
+      <span class="dh-name">プリュノワール</span><span class="dh-badge">10番人気</span>
+      <div class="dh-stats mono">オッズ 21.9倍 ／ 勝率目安 4.6% ／ 期待値 101%</div>
     </div>
     
   </div>
@@ -236,17 +310,17 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">9</span>ラプランセス</span>
-        <span class="horse-prob mono">複勝圏内 46%</span>
+        <span class="horse-prob mono">複勝圏内 49%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約46%。逃げ脚質で、他に逃げ馬が少なく単騎で楽なペースを刻める可能性が高く、粘り込みに期待。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約49%。逃げ脚質で、他に逃げ馬が少なく単騎で楽なペースを刻める可能性が高く、粘り込みに期待。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">15</span>ツルノマイハシ</span>
-        <span class="horse-prob mono">複勝圏内 45%</span>
+        <span class="horse-prob mono">複勝圏内 46%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約45%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約46%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
     </div>
     
     <div class="horse-item">
@@ -260,57 +334,65 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">5</span>グロリアスマーチ</span>
-        <span class="horse-prob mono">複勝圏内 38%</span>
+        <span class="horse-prob mono">複勝圏内 39%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約38%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
-    </div>
-    
-    <div class="horse-item">
-      <div class="horse-head">
-        <span class="horse-name"><span class="horse-num mono">10</span>ハルヒメ</span>
-        <span class="horse-prob mono">複勝圏内 32%</span>
-      </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約32%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
-    </div>
-    
-    <div class="horse-item">
-      <div class="horse-head">
-        <span class="horse-name"><span class="horse-num mono">14</span>マグネシアブリック</span>
-        <span class="horse-prob mono">複勝圏内 31%</span>
-      </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約31%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は9.7着とやや不振。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約39%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">8</span>ジーティーエスピ</span>
-        <span class="horse-prob mono">複勝圏内 31%</span>
+        <span class="horse-prob mono">複勝圏内 30%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約31%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約30%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">10</span>ハルヒメ</span>
+        <span class="horse-prob mono">複勝圏内 30%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約30%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">1</span>ハッピーラッキー</span>
-        <span class="horse-prob mono">複勝圏内 31%</span>
+        <span class="horse-prob mono">複勝圏内 30%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約31%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約30%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">14</span>マグネシアブリック</span>
+        <span class="horse-prob mono">複勝圏内 29%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約29%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は9.7着とやや不振。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">7</span>ミレニアルピンク</span>
-        <span class="horse-prob mono">複勝圏内 22%</span>
+        <span class="horse-prob mono">複勝圏内 20%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約22%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約20%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">2</span>プリュノワール</span>
-        <span class="horse-prob mono">複勝圏内 16%</span>
+        <span class="horse-prob mono">複勝圏内 17%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約16%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約17%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
+    </div>
+    
+    <div class="horse-item">
+      <div class="horse-head">
+        <span class="horse-name"><span class="horse-num mono">3</span>レッドカメリア</span>
+        <span class="horse-prob mono">複勝圏内 13%</span>
+      </div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約13%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
     </div>
     
     <div class="horse-item">
@@ -331,86 +413,64 @@
     
     <div class="horse-item">
       <div class="horse-head">
-        <span class="horse-name"><span class="horse-num mono">3</span>レッドカメリア</span>
-        <span class="horse-prob mono">複勝圏内 8%</span>
-      </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約8%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
-    </div>
-    
-    <div class="horse-item">
-      <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">12</span>ペイシャアーサー</span>
-        <span class="horse-prob mono">複勝圏内 5%</span>
+        <span class="horse-prob mono">複勝圏内 4%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約5%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は13.7着とやや不振。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約4%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は13.7着とやや不振。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">11</span>ペガサスノース</span>
-        <span class="horse-prob mono">複勝圏内 5%</span>
+        <span class="horse-prob mono">複勝圏内 4%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約5%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は8.3着とやや不振。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約4%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は8.3着とやや不振。</div>
     </div>
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">6</span>ロードヴェルテクス</span>
-        <span class="horse-prob mono">複勝圏内 2%</span>
+        <span class="horse-prob mono">複勝圏内 1%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約2%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は10.0着とやや不振。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約1%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は10.0着とやや不振。</div>
     </div>
     
   </div>
 
-  <div class="section-title"><span class="en">All Bets</span>券種ごとの買い目候補</div>
-  <div class="section-hint">期待値100%を超えるものだけを表示しています。券種名をタップすると開きます。</div>
+  <div class="section-title"><span class="en">All Bets</span>券種ごとの買い目一覧（参考）</div>
+  <div class="section-hint">期待値100%を超えるものを全て表示しています。上の「購入プラン」はこの中から自動選定したものです。</div>
   
   <details class="bet-group" open>
-    <summary>単勝 <span class="count">6点</span></summary>
+    <summary>単勝 <span class="count">4点</span></summary>
     <table>
       <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
       <tbody>
         
         <tr>
-          <td class="horses-cell">レッドカメリア</td>
+          <td class="horses-cell">3 レッドカメリア</td>
           <td class="mono">84.3</td>
-          <td class="mono">2.1%</td>
-          <td class="ev-cell mono">180%</td>
+          <td class="mono">3.4%</td>
+          <td class="ev-cell mono">286%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ナンナンプー</td>
+          <td class="horses-cell">13 ナンナンプー</td>
           <td class="mono">48.7</td>
           <td class="mono">2.6%</td>
-          <td class="ev-cell mono">124%</td>
+          <td class="ev-cell mono">126%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ペイシャアーサー</td>
-          <td class="mono">82.9</td>
-          <td class="mono">1.4%</td>
-          <td class="ev-cell mono">119%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">スプリングデイ</td>
+          <td class="horses-cell">16 スプリングデイ</td>
           <td class="mono">43.8</td>
-          <td class="mono">2.7%</td>
-          <td class="ev-cell mono">117%</td>
+          <td class="mono">2.6%</td>
+          <td class="ev-cell mono">115%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ペガサスノース</td>
-          <td class="mono">89.7</td>
-          <td class="mono">1.2%</td>
-          <td class="ev-cell mono">112%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ロードヴェルテクス</td>
-          <td class="mono">180.1</td>
-          <td class="mono">0.6%</td>
+          <td class="horses-cell">2 プリュノワール</td>
+          <td class="mono">21.9</td>
+          <td class="mono">4.6%</td>
           <td class="ev-cell mono">101%</td>
         </tr>
         
@@ -425,143 +485,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">ミレニアルピンク - ナンナンプー</td>
+          <td class="horses-cell">3 レッドカメリア - 9 ラプランセス</td>
+          <td class="mono">264.6</td>
+          <td class="mono">1.0%</td>
+          <td class="ev-cell mono">256%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 レッドカメリア - 10 ハルヒメ</td>
+          <td class="mono">420.5</td>
+          <td class="mono">0.6%</td>
+          <td class="ev-cell mono">244%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 レッドカメリア - 5 グロリアスマーチ</td>
+          <td class="mono">293.9</td>
+          <td class="mono">0.8%</td>
+          <td class="ev-cell mono">223%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 ハッピーラッキー - 3 レッドカメリア</td>
+          <td class="mono">381.3</td>
+          <td class="mono">0.6%</td>
+          <td class="ev-cell mono">221%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 レッドカメリア - 15 ツルノマイハシ</td>
+          <td class="mono">248.3</td>
+          <td class="mono">0.9%</td>
+          <td class="ev-cell mono">221%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 ジーティーエスピ - 3 レッドカメリア</td>
+          <td class="mono">376.7</td>
+          <td class="mono">0.6%</td>
+          <td class="ev-cell mono">219%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 レッドカメリア - 14 マグネシアブリック</td>
+          <td class="mono">394.7</td>
+          <td class="mono">0.5%</td>
+          <td class="ev-cell mono">216%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 ミレニアルピンク - 3 レッドカメリア</td>
+          <td class="mono">523.5</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">199%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 ミレニアルピンク - 13 ナンナンプー</td>
           <td class="mono">682.6</td>
           <td class="mono">0.3%</td>
-          <td class="ev-cell mono">215%</td>
+          <td class="ev-cell mono">198%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ニルマーネル - ナンナンプー</td>
-          <td class="mono">296.2</td>
-          <td class="mono">0.6%</td>
-          <td class="ev-cell mono">189%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">レッドカメリア - ハルヒメ</td>
-          <td class="mono">420.5</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">162%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">グロリアスマーチ - ナンナンプー</td>
-          <td class="mono">293.6</td>
-          <td class="mono">0.6%</td>
-          <td class="ev-cell mono">162%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ハッピーラッキー - ナンナンプー</td>
-          <td class="mono">358.2</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">159%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ラプランセス - ミレニアルピンク</td>
-          <td class="mono">98.1</td>
-          <td class="mono">1.6%</td>
-          <td class="ev-cell mono">156%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ペイシャアーサー - ナンナンプー</td>
-          <td class="mono">2027.0</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">151%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">レッドカメリア - ペイシャアーサー</td>
+          <td class="horses-cell">3 レッドカメリア - 12 ペイシャアーサー</td>
           <td class="mono">2430.2</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">151%</td>
+          <td class="ev-cell mono">193%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ラプランセス - レッドカメリア</td>
-          <td class="mono">264.6</td>
+          <td class="horses-cell">4 ニルマーネル - 13 ナンナンプー</td>
+          <td class="mono">296.2</td>
           <td class="mono">0.6%</td>
+          <td class="ev-cell mono">192%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 レッドカメリア - 13 ナンナンプー</td>
+          <td class="mono">1012.3</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">183%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">4 ニルマーネル - 3 レッドカメリア</td>
+          <td class="mono">210.0</td>
+          <td class="mono">0.9%</td>
+          <td class="ev-cell mono">179%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 プリュノワール - 3 レッドカメリア</td>
+          <td class="mono">536.2</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">174%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">13 ナンナンプー - 5 グロリアスマーチ</td>
+          <td class="mono">293.6</td>
+          <td class="mono">0.6%</td>
+          <td class="ev-cell mono">170%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 ハッピーラッキー - 13 ナンナンプー</td>
+          <td class="mono">358.2</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">158%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 レッドカメリア - 11 ペガサスノース</td>
+          <td class="mono">2357.5</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">157%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 ミレニアルピンク - 9 ラプランセス</td>
+          <td class="mono">98.1</td>
+          <td class="mono">1.5%</td>
+          <td class="ev-cell mono">152%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">13 ナンナンプー - 15 ツルノマイハシ</td>
+          <td class="mono">220.9</td>
+          <td class="mono">0.7%</td>
           <td class="ev-cell mono">149%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ミレニアルピンク - ロードヴェルテクス</td>
-          <td class="mono">2174.3</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">148%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">レッドカメリア - マグネシアブリック</td>
-          <td class="mono">394.7</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">148%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ツルノマイハシ - ナンナンプー</td>
-          <td class="mono">220.9</td>
-          <td class="mono">0.7%</td>
-          <td class="ev-cell mono">147%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ペイシャアーサー - ハルヒメ</td>
-          <td class="mono">565.5</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">146%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">スプリングデイ - ナンナンプー</td>
-          <td class="mono">1036.5</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">146%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ハルヒメ - ナンナンプー</td>
-          <td class="mono">310.1</td>
-          <td class="mono">0.5%</td>
-          <td class="ev-cell mono">143%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ペガサスノース - ハッピーラッキー</td>
-          <td class="mono">669.4</td>
+          <td class="horses-cell">3 レッドカメリア - 16 スプリングデイ</td>
+          <td class="mono">807.8</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">143%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">レッドカメリア - ハッピーラッキー</td>
-          <td class="mono">381.3</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">141%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ハルヒメ - ミレニアルピンク</td>
-          <td class="mono">128.8</td>
-          <td class="mono">1.1%</td>
-          <td class="ev-cell mono">140%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">レッドカメリア - ジーティーエスピ</td>
-          <td class="mono">376.7</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">139%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ニルマーネル - ハルヒメ</td>
-          <td class="mono">62.5</td>
-          <td class="mono">2.2%</td>
-          <td class="ev-cell mono">138%</td>
+          <td class="ev-cell mono">149%</td>
         </tr>
         
       </tbody>
@@ -575,143 +635,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">ナンナンプー → ミレニアルピンク</td>
-          <td class="mono">1734.9</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">269%</td>
+          <td class="horses-cell">3 レッドカメリア → 5 グロリアスマーチ</td>
+          <td class="mono">934.2</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">341%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ナンナンプー → ニルマーネル</td>
-          <td class="mono">725.5</td>
+          <td class="horses-cell">3 レッドカメリア → 14 マグネシアブリック</td>
+          <td class="mono">1168.7</td>
           <td class="mono">0.3%</td>
-          <td class="ev-cell mono">221%</td>
+          <td class="ev-cell mono">313%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ナンナンプー → グロリアスマーチ</td>
+          <td class="horses-cell">3 レッドカメリア → 9 ラプランセス</td>
+          <td class="mono">648.0</td>
+          <td class="mono">0.5%</td>
+          <td class="ev-cell mono">297%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 レッドカメリア → 1 ハッピーラッキー</td>
+          <td class="mono">1030.7</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">292%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 レッドカメリア → 10 ハルヒメ</td>
+          <td class="mono">1030.7</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">292%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 レッドカメリア → 4 ニルマーネル</td>
+          <td class="mono">652.6</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">266%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 レッドカメリア → 15 ツルノマイハシ</td>
+          <td class="mono">612.5</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">260%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">13 ナンナンプー → 7 ミレニアルピンク</td>
+          <td class="mono">1734.9</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">247%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 レッドカメリア → 8 ジーティーエスピ</td>
+          <td class="mono">870.1</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">246%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 レッドカメリア → 12 ペイシャアーサー</td>
+          <td class="mono">5943.1</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">239%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">12 ペイシャアーサー → 3 レッドカメリア</td>
+          <td class="mono">5943.1</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">233%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">13 ナンナンプー → 5 グロリアスマーチ</td>
           <td class="mono">816.7</td>
           <td class="mono">0.3%</td>
-          <td class="ev-cell mono">216%</td>
+          <td class="ev-cell mono">226%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">レッドカメリア → マグネシアブリック</td>
-          <td class="mono">1168.7</td>
+          <td class="horses-cell">13 ナンナンプー → 4 ニルマーネル</td>
+          <td class="mono">725.5</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">223%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 レッドカメリア → 16 スプリングデイ</td>
+          <td class="mono">2347.2</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">217%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 レッドカメリア → 13 ナンナンプー</td>
+          <td class="mono">2347.2</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">213%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 レッドカメリア → 7 ミレニアルピンク</td>
+          <td class="mono">1066.1</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">212%</td>
+          <td class="ev-cell mono">201%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">レッドカメリア → グロリアスマーチ</td>
-          <td class="mono">934.2</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">205%</td>
+          <td class="horses-cell">13 ナンナンプー → 3 レッドカメリア</td>
+          <td class="mono">2182.2</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">196%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ロードヴェルテクス → ミレニアルピンク</td>
-          <td class="mono">5819.3</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">193%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">レッドカメリア → ハルヒメ</td>
-          <td class="mono">1030.7</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">192%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">スプリングデイ → ジーティーエスピ</td>
-          <td class="mono">843.8</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">191%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ミレニアルピンク → ナンナンプー</td>
-          <td class="mono">1183.5</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">190%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">レッドカメリア → ペイシャアーサー</td>
-          <td class="mono">5943.1</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">186%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ペイシャアーサー → レッドカメリア</td>
-          <td class="mono">5943.1</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">184%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">レッドカメリア → ハッピーラッキー</td>
-          <td class="mono">1030.7</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">184%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">スプリングデイ → ラプランセス</td>
+          <td class="horses-cell">16 スプリングデイ → 9 ラプランセス</td>
           <td class="mono">534.0</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">180%</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">188%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ナンナンプー → ハッピーラッキー</td>
-          <td class="mono">831.3</td>
+          <td class="horses-cell">9 ラプランセス → 3 レッドカメリア</td>
+          <td class="mono">367.5</td>
+          <td class="mono">0.5%</td>
+          <td class="ev-cell mono">187%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 レッドカメリア → 2 プリュノワール</td>
+          <td class="mono">1140.1</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">179%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">スプリングデイ → ハルヒメ</td>
-          <td class="mono">740.9</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">174%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ミレニアルピンク → ラプランセス</td>
-          <td class="mono">227.2</td>
-          <td class="mono">0.8%</td>
-          <td class="ev-cell mono">174%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">レッドカメリア → ラプランセス</td>
-          <td class="mono">648.0</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">172%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ペイシャアーサー → ナンナンプー</td>
-          <td class="mono">4579.1</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">170%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ペイシャアーサー → ラプランセス</td>
-          <td class="mono">940.4</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">167%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ナンナンプー → ハルヒメ</td>
-          <td class="mono">737.0</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">165%</td>
+          <td class="ev-cell mono">184%</td>
         </tr>
         
       </tbody>
@@ -725,143 +785,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">ラプランセス - ミレニアルピンク - ナンナンプー</td>
+          <td class="horses-cell">7 ミレニアルピンク - 3 レッドカメリア - 9 ラプランセス</td>
+          <td class="mono">1619.6</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">293%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">4 ニルマーネル - 3 レッドカメリア - 13 ナンナンプー</td>
+          <td class="mono">3912.5</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">289%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">4 ニルマーネル - 3 レッドカメリア - 10 ハルヒメ</td>
+          <td class="mono">1073.9</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">262%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">4 ニルマーネル - 3 レッドカメリア - 9 ラプランセス</td>
+          <td class="mono">583.6</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">245%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 レッドカメリア - 5 グロリアスマーチ - 10 ハルヒメ</td>
+          <td class="mono">1122.1</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">243%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 レッドカメリア - 5 グロリアスマーチ - 9 ラプランセス</td>
+          <td class="mono">597.5</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">222%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 ミレニアルピンク - 13 ナンナンプー - 9 ラプランセス</td>
           <td class="mono">1555.1</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">215%</td>
+          <td class="ev-cell mono">213%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ミレニアルピンク - ハッピーラッキー - ナンナンプー</td>
+          <td class="horses-cell">1 ハッピーラッキー - 3 レッドカメリア - 7 ミレニアルピンク</td>
+          <td class="mono">1961.0</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">206%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 レッドカメリア - 12 ペイシャアーサー - 9 ラプランセス</td>
+          <td class="mono">5575.7</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">205%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 ハッピーラッキー - 3 レッドカメリア - 5 グロリアスマーチ</td>
+          <td class="mono">915.9</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">198%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 レッドカメリア - 13 ナンナンプー - 5 グロリアスマーチ</td>
+          <td class="mono">2968.9</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">194%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 レッドカメリア - 14 マグネシアブリック - 10 ハルヒメ</td>
+          <td class="mono">1260.0</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">193%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 ハッピーラッキー - 3 レッドカメリア - 14 マグネシアブリック</td>
+          <td class="mono">1251.1</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">192%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 ハッピーラッキー - 13 ナンナンプー - 7 ミレニアルピンク</td>
           <td class="mono">2395.5</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">212%</td>
+          <td class="ev-cell mono">191%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ラプランセス - レッドカメリア - ミレニアルピンク</td>
-          <td class="mono">1619.6</td>
+          <td class="horses-cell">2 プリュノワール - 3 レッドカメリア - 5 グロリアスマーチ</td>
+          <td class="mono">1601.8</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">190%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 ジーティーエスピ - 3 レッドカメリア - 5 グロリアスマーチ</td>
+          <td class="mono">875.8</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">190%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 レッドカメリア - 16 スプリングデイ - 9 ラプランセス</td>
+          <td class="mono">2198.1</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">189%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 ミレニアルピンク - 3 レッドカメリア - 13 ナンナンプー</td>
+          <td class="mono">5948.8</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">189%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 プリュノワール - 7 ミレニアルピンク - 3 レッドカメリア</td>
+          <td class="mono">3213.3</td>
           <td class="mono">0.1%</td>
           <td class="ev-cell mono">186%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ニルマーネル - ハルヒメ - ナンナンプー</td>
-          <td class="mono">944.6</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">184%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">レッドカメリア - ニルマーネル - ナンナンプー</td>
-          <td class="mono">3912.5</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">177%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ミレニアルピンク - ラプランセス - ハッピーラッキー</td>
-          <td class="mono">370.3</td>
-          <td class="mono">0.5%</td>
-          <td class="ev-cell mono">175%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ハルヒメ - レッドカメリア - ニルマーネル</td>
-          <td class="mono">1073.9</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">173%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ニルマーネル - ミレニアルピンク - ナンナンプー</td>
-          <td class="mono">1325.8</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">173%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ラプランセス - ペガサスノース - ミレニアルピンク</td>
-          <td class="mono">2597.7</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">173%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ナンナンプー - ニルマーネル - ペガサスノース</td>
-          <td class="mono">6558.3</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">171%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ペイシャアーサー - ハッピーラッキー - ナンナンプー</td>
-          <td class="mono">8082.0</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">165%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ミレニアルピンク - ラプランセス - ロードヴェルテクス</td>
-          <td class="mono">5424.5</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">161%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">グロリアスマーチ - ニルマーネル - ナンナンプー</td>
-          <td class="mono">681.2</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">159%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ミレニアルピンク - スプリングデイ - ロードヴェルテクス</td>
-          <td class="mono">27122.7</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">158%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ハルヒメ - ニルマーネル - ロードヴェルテクス</td>
-          <td class="mono">3792.0</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">158%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ラプランセス - ニルマーネル - ロードヴェルテクス</td>
-          <td class="mono">2524.0</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">157%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">スプリングデイ - ハッピーラッキー - ナンナンプー</td>
-          <td class="mono">4041.0</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">157%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ラプランセス - ペイシャアーサー - ハルヒメ</td>
-          <td class="mono">1356.1</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">155%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">グロリアスマーチ - レッドカメリア - ハルヒメ</td>
-          <td class="mono">1122.1</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">154%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ハルヒメ - スプリングデイ - ハッピーラッキー</td>
-          <td class="mono">1108.9</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">154%</td>
+          <td class="horses-cell">3 レッドカメリア - 10 ハルヒメ - 15 ツルノマイハシ</td>
+          <td class="mono">716.3</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">183%</td>
         </tr>
         
       </tbody>
@@ -875,143 +935,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">レッドカメリア → ハルヒメ → ニルマーネル</td>
+          <td class="horses-cell">3 レッドカメリア → 10 ハルヒメ → 4 ニルマーネル</td>
           <td class="mono">15037.0</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">363%</td>
+          <td class="ev-cell mono">557%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ナンナンプー → ミレニアルピンク → グロリアスマーチ</td>
-          <td class="mono">20344.1</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">347%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ナンナンプー → ラプランセス → ミレニアルピンク</td>
-          <td class="mono">14822.1</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">329%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ナンナンプー → ニルマーネル → ハルヒメ</td>
-          <td class="mono">10807.8</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">327%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ナンナンプー → ハルヒメ → ニルマーネル</td>
-          <td class="mono">11156.4</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">326%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ナンナンプー → ミレニアルピンク → ラプランセス</td>
-          <td class="mono">15720.5</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">325%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ナンナンプー → グロリアスマーチ → ミレニアルピンク</td>
-          <td class="mono">17888.8</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">319%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">レッドカメリア → ペイシャアーサー → ハルヒメ</td>
-          <td class="mono">115283.7</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">319%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">レッドカメリア → ニルマーネル → ハルヒメ</td>
+          <td class="horses-cell">3 レッドカメリア → 4 ニルマーネル → 10 ハルヒメ</td>
           <td class="mono">12653.0</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">316%</td>
+          <td class="ev-cell mono">489%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ナンナンプー → ニルマーネル → ツルノマイハシ</td>
-          <td class="mono">7306.7</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">311%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ナンナンプー → ミレニアルピンク → ツルノマイハシ</td>
-          <td class="mono">14822.1</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">302%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">レッドカメリア → ミレニアルピンク → ラプランセス</td>
+          <td class="horses-cell">3 レッドカメリア → 7 ミレニアルピンク → 9 ラプランセス</td>
           <td class="mono">17585.6</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">301%</td>
+          <td class="ev-cell mono">474%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ロードヴェルテクス → ミレニアルピンク → ラプランセス</td>
-          <td class="mono">69170.2</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">300%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ナンナンプー → ミレニアルピンク → ニルマーネル</td>
-          <td class="mono">15258.1</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">299%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">レッドカメリア → ハルヒメ → グロリアスマーチ</td>
+          <td class="horses-cell">3 レッドカメリア → 10 ハルヒメ → 5 グロリアスマーチ</td>
           <td class="mono">14020.9</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">294%</td>
+          <td class="ev-cell mono">467%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ナンナンプー → ニルマーネル → グロリアスマーチ</td>
-          <td class="mono">8234.5</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">294%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">レッドカメリア → ラプランセス → ミレニアルピンク</td>
+          <td class="horses-cell">3 レッドカメリア → 9 ラプランセス → 7 ミレニアルピンク</td>
           <td class="mono">15485.8</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">284%</td>
+          <td class="ev-cell mono">456%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ナンナンプー → グロリアスマーチ → マグネシアブリック</td>
-          <td class="mono">11277.7</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">283%</td>
+          <td class="horses-cell">3 レッドカメリア → 9 ラプランセス → 4 ニルマーネル</td>
+          <td class="mono">7155.5</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">455%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">レッドカメリア → ハルヒメ → ペイシャアーサー</td>
-          <td class="mono">94323.0</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">282%</td>
+          <td class="horses-cell">3 レッドカメリア → 4 ニルマーネル → 9 ラプランセス</td>
+          <td class="mono">6871.2</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">429%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ナンナンプー → マグネシアブリック → グロリアスマーチ</td>
-          <td class="mono">11277.7</td>
+          <td class="horses-cell">3 レッドカメリア → 5 グロリアスマーチ → 10 ハルヒメ</td>
+          <td class="mono">11657.9</td>
           <td class="mono">0.0%</td>
-          <td class="ev-cell mono">278%</td>
+          <td class="ev-cell mono">399%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 レッドカメリア → 12 ペイシャアーサー → 10 ハルヒメ</td>
+          <td class="mono">115283.7</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">391%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 レッドカメリア → 9 ラプランセス → 15 ツルノマイハシ</td>
+          <td class="mono">5861.8</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">388%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 レッドカメリア → 10 ハルヒメ → 15 ツルノマイハシ</td>
+          <td class="mono">9976.4</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">385%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 レッドカメリア → 10 ハルヒメ → 14 マグネシアブリック</td>
+          <td class="mono">15720.5</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">383%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 レッドカメリア → 15 ツルノマイハシ → 9 ラプランセス</td>
+          <td class="mono">5828.9</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">382%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 レッドカメリア → 15 ツルノマイハシ → 10 ハルヒメ</td>
+          <td class="mono">9432.3</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">381%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">10 ハルヒメ → 3 レッドカメリア → 4 ニルマーネル</td>
+          <td class="mono">9696.7</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">378%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 レッドカメリア → 14 マグネシアブリック → 10 ハルヒメ</td>
+          <td class="mono">15485.8</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">376%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">13 ナンナンプー → 3 レッドカメリア → 4 ニルマーネル</td>
+          <td class="mono">33469.4</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">371%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 レッドカメリア → 9 ラプランセス → 16 スプリングデイ</td>
+          <td class="mono">25306.1</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">365%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 レッドカメリア → 9 ラプランセス → 14 マグネシアブリック</td>
+          <td class="mono">8718.9</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">365%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">3 レッドカメリア → 7 ミレニアルピンク → 15 ツルノマイハシ</td>
+          <td class="mono">14613.4</td>
+          <td class="mono">0.0%</td>
+          <td class="ev-cell mono">365%</td>
         </tr>
         
       </tbody>
@@ -1023,5 +1083,49 @@
 
   <div class="disclaimer">本ページの予想は参考情報です。的中・利益を保証しません。<br>馬券の購入は必ずご自身でIPAT等の公式ルートから行ってください。</div>
 </main>
+
+<script>
+(function () {
+  const UNIT = 100;  // JRAの購入単位（100円）に丸める
+
+  function recalc() {
+    const budget = parseFloat(document.getElementById('budgetInput').value) || 0;
+    const rows = Array.from(document.querySelectorAll('#planTable tbody tr[data-ev]'));
+    const totalRow = document.getElementById('planTotalRow');
+    const totalCell = document.getElementById('planTotal');
+
+    if (!rows.length) return;
+
+    if (budget <= 0) {
+      rows.forEach(function (tr) { tr.querySelector('.stake-cell').textContent = '-'; });
+      if (totalRow) totalRow.style.display = 'none';
+      return;
+    }
+
+    // 期待値(EV)が高いものほど多く配分する（EVの合計に対する比率で按分）
+    const evs = rows.map(function (tr) { return Math.max(0, parseFloat(tr.dataset.ev) - 1); }); // 100%超過分だけを重みにする
+    const totalWeight = evs.reduce(function (a, b) { return a + b; }, 0);
+
+    let allocated = 0;
+    rows.forEach(function (tr, i) {
+      const weight = totalWeight > 0 ? evs[i] / totalWeight : 1 / rows.length;
+      const raw = budget * weight;
+      const amount = Math.floor(raw / UNIT) * UNIT;
+      allocated += amount;
+      tr.querySelector('.stake-cell').textContent = amount > 0 ? amount.toLocaleString('ja-JP') + '円' : '見送り';
+    });
+
+    if (totalRow && totalCell) {
+      totalRow.style.display = '';
+      totalCell.textContent = allocated.toLocaleString('ja-JP') + '円 / ' + budget.toLocaleString('ja-JP') + '円中';
+    }
+  }
+
+  const input = document.getElementById('budgetInput');
+  if (input) {
+    input.addEventListener('input', recalc);
+  }
+})();
+</script>
 </body>
 </html>

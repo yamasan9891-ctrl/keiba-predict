@@ -63,30 +63,66 @@
   }
   .summary-text { font-size: 13px; line-height: 1.75; color: var(--text-dim); }
 
-  /* --- 結論：一番のおすすめ --- */
-  .best-bet {
+  /* --- 結論：馬券風デザイン --- */
+  .ticket {
     position: relative;
     background: linear-gradient(180deg, #1a1408 0%, var(--surface) 70%);
     border: 1px solid var(--amber-dim);
+    border-radius: 10px;
     box-shadow: 0 0 0 1px rgba(240,162,2,0.08), 0 8px 24px -12px var(--amber-glow);
+    padding: 0;
+    overflow: hidden;
   }
-  .best-bet .tag {
-    font-size: 12px; font-weight: 800; color: var(--amber);
+  .ticket-head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 16px; background: rgba(240,162,2,0.08);
+    border-bottom: 1px dashed var(--amber-dim);
   }
-  .best-bet .type {
-    display: inline-block; font-size: 11px; color: var(--bg); background: var(--amber);
-    font-weight: 700; padding: 2px 8px; border-radius: 3px; margin-top: 8px;
+  .ticket-head .label { font-size: 11px; font-weight: 800; color: var(--amber); letter-spacing: 0.05em; }
+  .ticket-head .type-badge {
+    font-size: 11px; color: var(--bg); background: var(--amber);
+    font-weight: 800; padding: 3px 10px; border-radius: 3px;
   }
-  .best-bet .horses {
-    font-size: 21px; font-weight: 800; margin: 8px 0 12px;
-    color: var(--text); line-height: 1.4;
+  .ticket-body { padding: 16px; }
+  .ticket .horses {
+    font-size: 20px; font-weight: 800; margin: 0 0 14px;
+    color: var(--text); line-height: 1.45;
   }
-  .best-bet .stat-row { display: flex; }
-  .best-bet .stat { margin-right: 24px; }
-  .best-bet .stat .label { font-size: 10.5px; color: var(--text-dim); }
-  .best-bet .stat .value { font-size: 18px; font-weight: 800; margin-top: 2px; }
-  .best-bet .stat.ev .value { color: var(--amber); }
-  .best-bet .footnote { font-size: 11px; color: var(--text-dim); margin-top: 12px; line-height: 1.6; border-top: 1px solid var(--line); padding-top: 10px; }
+  .ticket-stats {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+    padding: 12px 0; border-top: 1px dashed var(--line); border-bottom: 1px dashed var(--line);
+  }
+  .ticket-stats .stat { text-align: center; }
+  .ticket-stats .stat .label { font-size: 10px; color: var(--text-dim); }
+  .ticket-stats .stat .value { font-size: 16px; font-weight: 800; margin-top: 3px; }
+  .ticket-stats .stat.ev .value { color: var(--amber); }
+
+  .ticket-amount {
+    margin-top: 14px; padding: 12px; background: var(--surface-2);
+    border-radius: 6px; display: flex; justify-content: space-between; align-items: center;
+  }
+  .ticket-amount .label { font-size: 11px; color: var(--text-dim); }
+  .ticket-amount .value { font-size: 22px; font-weight: 800; color: var(--green); }
+  .ticket-amount .value::before { content: "¥"; font-size: 14px; margin-right: 2px; }
+
+  .footnote { font-size: 11px; color: var(--text-dim); margin-top: 12px; line-height: 1.6; padding: 0 16px 14px; }
+
+  /* --- 予算入力 --- */
+  .budget-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
+    padding: 10px 14px; margin-bottom: 14px;
+  }
+  .budget-box label { font-size: 12px; color: var(--text-dim); white-space: nowrap; }
+  .budget-box input {
+    flex: 1; background: var(--surface-2); border: 1px solid var(--line); border-radius: 4px;
+    color: var(--text); font-size: 15px; padding: 7px 10px; font-family: inherit;
+    -moz-appearance: textfield;
+  }
+  .budget-box input::-webkit-outer-spin-button, .budget-box input::-webkit-inner-spin-button { margin: 0; }
+  .budget-box .unit { font-size: 12px; color: var(--text-dim); }
+  .stake-cell { color: var(--green); font-weight: 700; }
+
 
   /* --- 穴馬候補 --- */
   .dark-horse-card { border-left: 3px solid var(--green); }
@@ -178,18 +214,66 @@
   <div class="card summary-text">明確な逃げ馬が不在で、スローペースになりやすく先行馬が有利になりやすい。馬場状態は「良」。</div>
 
   
-  <div class="section-title"><span class="en">Conclusion</span>結論：一番のおすすめ</div>
-  <div class="card best-bet">
-    <div class="tag">🏆 このレースで最も期待値が高い買い目</div>
-    <div class="type">3連単</div>
-    <div class="horses">コーズウルルン → コスモノーチラス → イルリサット</div>
-    <div class="stat-row mono">
-      <div class="stat"><div class="label">オッズ</div><div class="value">2635.2倍</div></div>
-      <div class="stat"><div class="label">的中確率</div><div class="value">0.1%</div></div>
-      <div class="stat ev"><div class="label">期待値</div><div class="value">236%</div></div>
-    </div>
-    <div class="footnote">期待値とは「100円賭けた時に理論上いくら戻ってくるか」の目安です。100%を超えるほど、賭け金に対して見込まれる払戻が大きいことを意味します（的中を保証するものではありません）。</div>
+  <div class="section-title"><span class="en">Betting Plan</span>AI推奨 購入プラン</div>
+  <div class="section-hint">実際の投票は複数点に分けるのが基本のため、期待値が高い順に複数の買い目を組み合わせています。予算を入れると自動で配分します。</div>
+  <div class="budget-box">
+    <label for="budgetInput">今回の予算</label>
+    <input type="number" id="budgetInput" inputmode="numeric" placeholder="例: 3000" min="0" step="100">
+    <span class="unit">円</span>
   </div>
+  <div class="card" style="padding:0; overflow:hidden;">
+    <table id="planTable">
+      <thead><tr><th>券種</th><th>買い目</th><th>オッズ</th><th>期待値</th><th>配分額</th></tr></thead>
+      <tbody>
+        
+        <tr data-ev="2.4041642939386123">
+          <td class="mono">馬単</td>
+          <td class="horses-cell">1 コスモノーチラス → 6 イルリサット</td>
+          <td class="mono">79.1</td>
+          <td class="ev-cell mono">240%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="2.235556085708125">
+          <td class="mono">3連単</td>
+          <td class="horses-cell">1 コスモノーチラス → 6 イルリサット → 3 ヴァンクライ</td>
+          <td class="mono">147.5</td>
+          <td class="ev-cell mono">224%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="2.0976122237003203">
+          <td class="mono">3連単</td>
+          <td class="horses-cell">1 コスモノーチラス → 3 ヴァンクライ → 6 イルリサット</td>
+          <td class="mono">127.3</td>
+          <td class="ev-cell mono">210%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="2.023063756177267">
+          <td class="mono">馬単</td>
+          <td class="horses-cell">7 ゴルタン → 6 イルリサット</td>
+          <td class="mono">181.8</td>
+          <td class="ev-cell mono">202%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr data-ev="1.923203118128212">
+          <td class="mono">馬単</td>
+          <td class="horses-cell">1 コスモノーチラス → 3 ヴァンクライ</td>
+          <td class="mono">53.1</td>
+          <td class="ev-cell mono">192%</td>
+          <td class="mono stake-cell">-</td>
+        </tr>
+        
+        <tr id="planTotalRow" style="display:none;">
+          <td colspan="4" style="text-align:right; font-weight:800;">合計</td>
+          <td class="mono" id="planTotal" style="font-weight:800; color:var(--green);">-</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="footnote">配分額は、各買い目の期待値の大きさに比例して予算を振り分けた目安です（期待値が高いものほど多く配分）。1点に集中させず、複数点に分けて購入することでブレを抑える考え方に基づいています。あくまで参考情報であり、的中や利益を保証するものではありません。</div>
   
 
   
@@ -198,23 +282,23 @@
   <div class="card dark-horse-card">
     
     <div class="dark-horse-item">
-      <span class="dh-name">コーズウルルン</span><span class="dh-badge">8番人気</span>
-      <div class="dh-stats mono">オッズ 57.2倍 ／ 勝率目安 2.8% ／ 期待値 163%</div>
+      <span class="dh-name">ゴルタン</span><span class="dh-badge">7番人気</span>
+      <div class="dh-stats mono">オッズ 45.9倍 ／ 勝率目安 4.0% ／ 期待値 185%</div>
     </div>
     
     <div class="dark-horse-item">
-      <span class="dh-name">ゴルタン</span><span class="dh-badge">7番人気</span>
-      <div class="dh-stats mono">オッズ 45.9倍 ／ 勝率目安 3.5% ／ 期待値 162%</div>
+      <span class="dh-name">コーズウルルン</span><span class="dh-badge">8番人気</span>
+      <div class="dh-stats mono">オッズ 57.2倍 ／ 勝率目安 2.7% ／ 期待値 156%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">アイアムイガイニモ</span><span class="dh-badge">6番人気</span>
-      <div class="dh-stats mono">オッズ 28.7倍 ／ 勝率目安 5.3% ／ 期待値 151%</div>
+      <div class="dh-stats mono">オッズ 28.7倍 ／ 勝率目安 5.3% ／ 期待値 152%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">トーセンイルン</span><span class="dh-badge">5番人気</span>
-      <div class="dh-stats mono">オッズ 18.7倍 ／ 勝率目安 7.6% ／ 期待値 143%</div>
+      <div class="dh-stats mono">オッズ 18.7倍 ／ 勝率目安 7.7% ／ 期待値 145%</div>
     </div>
     
   </div>
@@ -226,9 +310,9 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">3</span>ヴァンクライ</span>
-        <span class="horse-prob mono">複勝圏内 78%</span>
+        <span class="horse-prob mono">複勝圏内 76%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約78%。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約76%。</div>
     </div>
     
     <div class="horse-item">
@@ -258,9 +342,9 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">5</span>トーセンイルン</span>
-        <span class="horse-prob mono">複勝圏内 18%</span>
+        <span class="horse-prob mono">複勝圏内 19%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約18%。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約19%。</div>
     </div>
     
     <div class="horse-item">
@@ -274,9 +358,9 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">7</span>ゴルタン</span>
-        <span class="horse-prob mono">複勝圏内 9%</span>
+        <span class="horse-prob mono">複勝圏内 10%</span>
       </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約9%。</div>
+      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約10%。</div>
     </div>
     
     <div class="horse-item">
@@ -289,8 +373,8 @@
     
   </div>
 
-  <div class="section-title"><span class="en">All Bets</span>券種ごとの買い目候補</div>
-  <div class="section-hint">期待値100%を超えるものだけを表示しています。券種名をタップすると開きます。</div>
+  <div class="section-title"><span class="en">All Bets</span>券種ごとの買い目一覧（参考）</div>
+  <div class="section-hint">期待値100%を超えるものを全て表示しています。上の「購入プラン」はこの中から自動選定したものです。</div>
   
   <details class="bet-group" open>
     <summary>単勝 <span class="count">6点</span></summary>
@@ -299,45 +383,45 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">コスモノーチラス</td>
-          <td class="mono">16.6</td>
-          <td class="mono">10.1%</td>
-          <td class="ev-cell mono">168%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">コーズウルルン</td>
-          <td class="mono">57.2</td>
-          <td class="mono">2.8%</td>
-          <td class="ev-cell mono">163%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ゴルタン</td>
+          <td class="horses-cell">7 ゴルタン</td>
           <td class="mono">45.9</td>
-          <td class="mono">3.5%</td>
-          <td class="ev-cell mono">162%</td>
+          <td class="mono">4.0%</td>
+          <td class="ev-cell mono">185%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">アイアムイガイニモ</td>
+          <td class="horses-cell">1 コスモノーチラス</td>
+          <td class="mono">16.6</td>
+          <td class="mono">10.3%</td>
+          <td class="ev-cell mono">171%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">4 コーズウルルン</td>
+          <td class="mono">57.2</td>
+          <td class="mono">2.7%</td>
+          <td class="ev-cell mono">156%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 アイアムイガイニモ</td>
           <td class="mono">28.7</td>
           <td class="mono">5.3%</td>
-          <td class="ev-cell mono">151%</td>
+          <td class="ev-cell mono">152%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">トーセンイルン</td>
+          <td class="horses-cell">5 トーセンイルン</td>
           <td class="mono">18.7</td>
-          <td class="mono">7.6%</td>
-          <td class="ev-cell mono">143%</td>
+          <td class="mono">7.7%</td>
+          <td class="ev-cell mono">145%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">トワイライトローズ</td>
+          <td class="horses-cell">8 トワイライトローズ</td>
           <td class="mono">8.7</td>
-          <td class="mono">12.2%</td>
-          <td class="ev-cell mono">106%</td>
+          <td class="mono">11.9%</td>
+          <td class="ev-cell mono">104%</td>
         </tr>
         
       </tbody>
@@ -345,72 +429,86 @@
   </details>
   
   <details class="bet-group">
-    <summary>馬連 <span class="count">9点</span></summary>
+    <summary>馬連 <span class="count">11点</span></summary>
     <table>
       <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
       <tbody>
         
         <tr>
-          <td class="horses-cell">トーセンイルン - コスモノーチラス</td>
+          <td class="horses-cell">1 コスモノーチラス - 5 トーセンイルン</td>
           <td class="mono">92.4</td>
-          <td class="mono">1.7%</td>
-          <td class="ev-cell mono">157%</td>
+          <td class="mono">1.8%</td>
+          <td class="ev-cell mono">162%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">イルリサット - コスモノーチラス</td>
+          <td class="horses-cell">1 コスモノーチラス - 6 イルリサット</td>
           <td class="mono">22.8</td>
-          <td class="mono">6.6%</td>
-          <td class="ev-cell mono">150%</td>
+          <td class="mono">6.7%</td>
+          <td class="ev-cell mono">154%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">コーズウルルン - コスモノーチラス</td>
+          <td class="horses-cell">1 コスモノーチラス - 4 コーズウルルン</td>
           <td class="mono">235.5</td>
           <td class="mono">0.6%</td>
-          <td class="ev-cell mono">145%</td>
+          <td class="ev-cell mono">142%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ヴァンクライ - コスモノーチラス</td>
+          <td class="horses-cell">1 コスモノーチラス - 3 ヴァンクライ</td>
           <td class="mono">14.8</td>
           <td class="mono">8.4%</td>
-          <td class="ev-cell mono">125%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">コスモノーチラス - トワイライトローズ</td>
-          <td class="mono">44.5</td>
-          <td class="mono">2.8%</td>
           <td class="ev-cell mono">124%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">アイアムイガイニモ - コスモノーチラス</td>
-          <td class="mono">93.2</td>
-          <td class="mono">1.2%</td>
-          <td class="ev-cell mono">108%</td>
+          <td class="horses-cell">8 トワイライトローズ - 1 コスモノーチラス</td>
+          <td class="mono">44.5</td>
+          <td class="mono">2.8%</td>
+          <td class="ev-cell mono">123%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">トーセンイルン - トワイライトローズ</td>
+          <td class="horses-cell">7 ゴルタン - 5 トーセンイルン</td>
+          <td class="mono">179.2</td>
+          <td class="mono">0.7%</td>
+          <td class="ev-cell mono">119%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 ゴルタン - 6 イルリサット</td>
+          <td class="mono">45.1</td>
+          <td class="mono">2.6%</td>
+          <td class="ev-cell mono">116%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">2 アイアムイガイニモ - 1 コスモノーチラス</td>
+          <td class="mono">93.2</td>
+          <td class="mono">1.2%</td>
+          <td class="ev-cell mono">110%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 ゴルタン - 3 ヴァンクライ</td>
+          <td class="mono">34.4</td>
+          <td class="mono">3.2%</td>
+          <td class="ev-cell mono">110%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 トワイライトローズ - 5 トーセンイルン</td>
           <td class="mono">51.1</td>
-          <td class="mono">2.1%</td>
+          <td class="mono">2.0%</td>
           <td class="ev-cell mono">105%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">トーセンイルン - ゴルタン</td>
-          <td class="mono">179.2</td>
-          <td class="mono">0.6%</td>
-          <td class="ev-cell mono">102%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ゴルタン - イルリサット</td>
-          <td class="mono">45.1</td>
-          <td class="mono">2.2%</td>
-          <td class="ev-cell mono">100%</td>
+          <td class="horses-cell">8 トワイライトローズ - 7 ゴルタン</td>
+          <td class="mono">98.2</td>
+          <td class="mono">1.0%</td>
+          <td class="ev-cell mono">103%</td>
         </tr>
         
       </tbody>
@@ -424,143 +522,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">コスモノーチラス → イルリサット</td>
+          <td class="horses-cell">1 コスモノーチラス → 6 イルリサット</td>
           <td class="mono">79.1</td>
           <td class="mono">3.0%</td>
-          <td class="ev-cell mono">235%</td>
+          <td class="ev-cell mono">240%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">コーズウルルン → コスモノーチラス</td>
+          <td class="horses-cell">4 コーズウルルン → 1 コスモノーチラス</td>
           <td class="mono">782.3</td>
           <td class="mono">0.3%</td>
-          <td class="ev-cell mono">232%</td>
+          <td class="ev-cell mono">226%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">コスモノーチラス → ヴァンクライ</td>
+          <td class="horses-cell">7 ゴルタン → 6 イルリサット</td>
+          <td class="mono">181.8</td>
+          <td class="mono">1.1%</td>
+          <td class="ev-cell mono">202%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 ゴルタン → 5 トーセンイルン</td>
+          <td class="mono">603.9</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">197%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 コスモノーチラス → 3 ヴァンクライ</td>
           <td class="mono">53.1</td>
           <td class="mono">3.6%</td>
           <td class="ev-cell mono">192%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">コスモノーチラス → トーセンイルン</td>
+          <td class="horses-cell">7 ゴルタン → 3 ヴァンクライ</td>
+          <td class="mono">138.0</td>
+          <td class="mono">1.3%</td>
+          <td class="ev-cell mono">183%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 コスモノーチラス → 5 トーセンイルン</td>
           <td class="mono">204.3</td>
           <td class="mono">0.9%</td>
-          <td class="ev-cell mono">176%</td>
+          <td class="ev-cell mono">182%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ゴルタン → イルリサット</td>
-          <td class="mono">181.8</td>
-          <td class="mono">1.0%</td>
-          <td class="ev-cell mono">175%</td>
+          <td class="horses-cell">7 ゴルタン → 8 トワイライトローズ</td>
+          <td class="mono">358.6</td>
+          <td class="mono">0.5%</td>
+          <td class="ev-cell mono">180%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">コスモノーチラス → トワイライトローズ</td>
+          <td class="horses-cell">1 コスモノーチラス → 8 トワイライトローズ</td>
           <td class="mono">127.5</td>
           <td class="mono">1.4%</td>
-          <td class="ev-cell mono">175%</td>
+          <td class="ev-cell mono">174%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">コーズウルルン → トワイライトローズ</td>
-          <td class="mono">483.4</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">172%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">コスモノーチラス → コーズウルルン</td>
+          <td class="horses-cell">1 コスモノーチラス → 4 コーズウルルン</td>
           <td class="mono">527.5</td>
           <td class="mono">0.3%</td>
-          <td class="ev-cell mono">169%</td>
+          <td class="ev-cell mono">165%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ゴルタン → トーセンイルン</td>
-          <td class="mono">603.9</td>
+          <td class="horses-cell">4 コーズウルルン → 8 トワイライトローズ</td>
+          <td class="mono">483.4</td>
           <td class="mono">0.3%</td>
-          <td class="ev-cell mono">169%</td>
+          <td class="ev-cell mono">161%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ゴルタン → ヴァンクライ</td>
-          <td class="mono">138.0</td>
-          <td class="mono">1.2%</td>
-          <td class="ev-cell mono">162%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ゴルタン → トワイライトローズ</td>
-          <td class="mono">358.6</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">160%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">アイアムイガイニモ → コスモノーチラス</td>
+          <td class="horses-cell">2 アイアムイガイニモ → 1 コスモノーチラス</td>
           <td class="mono">279.1</td>
           <td class="mono">0.6%</td>
-          <td class="ev-cell mono">157%</td>
+          <td class="ev-cell mono">161%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">コーズウルルン → イルリサット</td>
-          <td class="mono">203.4</td>
-          <td class="mono">0.8%</td>
-          <td class="ev-cell mono">157%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">トーセンイルン → コスモノーチラス</td>
+          <td class="horses-cell">5 トーセンイルン → 1 コスモノーチラス</td>
           <td class="mono">183.9</td>
-          <td class="mono">0.8%</td>
-          <td class="ev-cell mono">154%</td>
+          <td class="mono">0.9%</td>
+          <td class="ev-cell mono">159%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">トーセンイルン → トワイライトローズ</td>
+          <td class="horses-cell">7 ゴルタン → 1 コスモノーチラス</td>
+          <td class="mono">351.6</td>
+          <td class="mono">0.4%</td>
+          <td class="ev-cell mono">152%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">4 コーズウルルン → 6 イルリサット</td>
+          <td class="mono">203.4</td>
+          <td class="mono">0.7%</td>
+          <td class="ev-cell mono">151%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">5 トーセンイルン → 8 トワイライトローズ</td>
           <td class="mono">140.9</td>
           <td class="mono">1.0%</td>
-          <td class="ev-cell mono">142%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">コーズウルルン → ヴァンクライ</td>
-          <td class="mono">150.2</td>
-          <td class="mono">0.9%</td>
           <td class="ev-cell mono">141%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">コスモノーチラス → アイアムイガイニモ</td>
+          <td class="horses-cell">1 コスモノーチラス → 2 アイアムイガイニモ</td>
           <td class="mono">231.7</td>
           <td class="mono">0.6%</td>
-          <td class="ev-cell mono">138%</td>
+          <td class="ev-cell mono">141%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">トーセンイルン → イルリサット</td>
+          <td class="horses-cell">7 ゴルタン → 2 アイアムイガイニモ</td>
+          <td class="mono">630.9</td>
+          <td class="mono">0.2%</td>
+          <td class="ev-cell mono">140%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">5 トーセンイルン → 6 イルリサット</td>
           <td class="mono">62.7</td>
           <td class="mono">2.2%</td>
-          <td class="ev-cell mono">136%</td>
+          <td class="ev-cell mono">139%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">トワイライトローズ → コスモノーチラス</td>
-          <td class="mono">94.7</td>
-          <td class="mono">1.4%</td>
-          <td class="ev-cell mono">133%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">アイアムイガイニモ → イルリサット</td>
+          <td class="horses-cell">2 アイアムイガイニモ → 6 イルリサット</td>
           <td class="mono">89.9</td>
           <td class="mono">1.5%</td>
-          <td class="ev-cell mono">132%</td>
+          <td class="ev-cell mono">133%</td>
         </tr>
         
       </tbody>
@@ -568,79 +666,93 @@
   </details>
   
   <details class="bet-group">
-    <summary>3連複 <span class="count">10点</span></summary>
+    <summary>3連複 <span class="count">12点</span></summary>
     <table>
       <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
       <tbody>
         
         <tr>
-          <td class="horses-cell">イルリサット - コスモノーチラス - トワイライトローズ</td>
+          <td class="horses-cell">1 コスモノーチラス - 6 イルリサット - 5 トーセンイルン</td>
+          <td class="mono">62.9</td>
+          <td class="mono">2.2%</td>
+          <td class="ev-cell mono">137%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 トワイライトローズ - 1 コスモノーチラス - 6 イルリサット</td>
           <td class="mono">37.8</td>
           <td class="mono">3.5%</td>
           <td class="ev-cell mono">133%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ヴァンクライ - コスモノーチラス - トワイライトローズ</td>
+          <td class="horses-cell">8 トワイライトローズ - 1 コスモノーチラス - 3 ヴァンクライ</td>
           <td class="mono">27.5</td>
-          <td class="mono">4.8%</td>
-          <td class="ev-cell mono">131%</td>
+          <td class="mono">4.6%</td>
+          <td class="ev-cell mono">127%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">トーセンイルン - イルリサット - コスモノーチラス</td>
-          <td class="mono">62.9</td>
-          <td class="mono">2.1%</td>
-          <td class="ev-cell mono">131%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">トーセンイルン - ヴァンクライ - コスモノーチラス</td>
+          <td class="horses-cell">1 コスモノーチラス - 3 ヴァンクライ - 5 トーセンイルン</td>
           <td class="mono">42.6</td>
           <td class="mono">2.8%</td>
-          <td class="ev-cell mono">120%</td>
+          <td class="ev-cell mono">121%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">コーズウルルン - コスモノーチラス - イルリサット</td>
-          <td class="mono">157.3</td>
-          <td class="mono">0.7%</td>
+          <td class="horses-cell">2 アイアムイガイニモ - 1 コスモノーチラス - 6 イルリサット</td>
+          <td class="mono">81.2</td>
+          <td class="mono">1.4%</td>
+          <td class="ev-cell mono">117%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">8 トワイライトローズ - 7 ゴルタン - 3 ヴァンクライ</td>
+          <td class="mono">69.1</td>
+          <td class="mono">1.7%</td>
           <td class="ev-cell mono">116%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">アイアムイガイニモ - コスモノーチラス - イルリサット</td>
-          <td class="mono">81.2</td>
-          <td class="mono">1.4%</td>
+          <td class="horses-cell">1 コスモノーチラス - 4 コーズウルルン - 6 イルリサット</td>
+          <td class="mono">157.3</td>
+          <td class="mono">0.7%</td>
           <td class="ev-cell mono">114%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">トーセンイルン - コスモノーチラス - トワイライトローズ</td>
+          <td class="horses-cell">8 トワイライトローズ - 1 コスモノーチラス - 5 トーセンイルン</td>
           <td class="mono">141.3</td>
           <td class="mono">0.8%</td>
-          <td class="ev-cell mono">111%</td>
+          <td class="ev-cell mono">112%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">トーセンイルン - イルリサット - トワイライトローズ</td>
+          <td class="horses-cell">8 トワイライトローズ - 6 イルリサット - 5 トーセンイルン</td>
           <td class="mono">42.4</td>
           <td class="mono">2.6%</td>
           <td class="ev-cell mono">109%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ヴァンクライ - コスモノーチラス - コーズウルルン</td>
-          <td class="mono">108.6</td>
-          <td class="mono">1.0%</td>
-          <td class="ev-cell mono">108%</td>
+          <td class="horses-cell">1 コスモノーチラス - 3 ヴァンクライ - 7 ゴルタン</td>
+          <td class="mono">73.3</td>
+          <td class="mono">1.4%</td>
+          <td class="ev-cell mono">104%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ヴァンクライ - ゴルタン - トワイライトローズ</td>
-          <td class="mono">69.1</td>
-          <td class="mono">1.5%</td>
-          <td class="ev-cell mono">107%</td>
+          <td class="horses-cell">1 コスモノーチラス - 3 ヴァンクライ - 4 コーズウルルン</td>
+          <td class="mono">108.6</td>
+          <td class="mono">0.9%</td>
+          <td class="ev-cell mono">103%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 コスモノーチラス - 6 イルリサット - 7 ゴルタン</td>
+          <td class="mono">92.5</td>
+          <td class="mono">1.1%</td>
+          <td class="ev-cell mono">101%</td>
         </tr>
         
       </tbody>
@@ -654,143 +766,143 @@
       <tbody>
         
         <tr>
-          <td class="horses-cell">コーズウルルン → コスモノーチラス → イルリサット</td>
-          <td class="mono">2635.2</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">236%</td>
+          <td class="horses-cell">1 コスモノーチラス → 5 トーセンイルン → 6 イルリサット</td>
+          <td class="mono">818.0</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">235%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">コスモノーチラス → トーセンイルン → イルリサット</td>
-          <td class="mono">818.0</td>
+          <td class="horses-cell">4 コーズウルルン → 1 コスモノーチラス → 6 イルリサット</td>
+          <td class="mono">2635.2</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">232%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">5 トーセンイルン → 1 コスモノーチラス → 6 イルリサット</td>
+          <td class="mono">806.6</td>
           <td class="mono">0.3%</td>
           <td class="ev-cell mono">225%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">コスモノーチラス → イルリサット → ヴァンクライ</td>
+          <td class="horses-cell">1 コスモノーチラス → 6 イルリサット → 3 ヴァンクライ</td>
           <td class="mono">147.5</td>
           <td class="mono">1.5%</td>
-          <td class="ev-cell mono">221%</td>
+          <td class="ev-cell mono">224%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">コスモノーチラス → コーズウルルン → イルリサット</td>
-          <td class="mono">2249.7</td>
+          <td class="horses-cell">7 ゴルタン → 5 トーセンイルン → 6 イルリサット</td>
+          <td class="mono">2233.2</td>
           <td class="mono">0.1%</td>
           <td class="ev-cell mono">218%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">トーセンイルン → コスモノーチラス → イルリサット</td>
-          <td class="mono">806.6</td>
-          <td class="mono">0.3%</td>
+          <td class="horses-cell">7 ゴルタン → 3 ヴァンクライ → 8 トワイライトローズ</td>
+          <td class="mono">880.9</td>
+          <td class="mono">0.2%</td>
           <td class="ev-cell mono">216%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">コスモノーチラス → トワイライトローズ → イルリサット</td>
+          <td class="horses-cell">1 コスモノーチラス → 5 トーセンイルン → 3 ヴァンクライ</td>
+          <td class="mono">628.1</td>
+          <td class="mono">0.3%</td>
+          <td class="ev-cell mono">215%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 コスモノーチラス → 4 コーズウルルン → 6 イルリサット</td>
+          <td class="mono">2249.7</td>
+          <td class="mono">0.1%</td>
+          <td class="ev-cell mono">214%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 ゴルタン → 3 ヴァンクライ → 6 イルリサット</td>
+          <td class="mono">393.1</td>
+          <td class="mono">0.5%</td>
+          <td class="ev-cell mono">214%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">7 ゴルタン → 6 イルリサット → 3 ヴァンクライ</td>
+          <td class="mono">419.7</td>
+          <td class="mono">0.5%</td>
+          <td class="ev-cell mono">212%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">1 コスモノーチラス → 8 トワイライトローズ → 6 イルリサット</td>
           <td class="mono">453.6</td>
           <td class="mono">0.5%</td>
           <td class="ev-cell mono">211%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">コスモノーチラス → トーセンイルン → ヴァンクライ</td>
-          <td class="mono">628.1</td>
-          <td class="mono">0.3%</td>
+          <td class="horses-cell">1 コスモノーチラス → 6 イルリサット → 5 トーセンイルン</td>
+          <td class="mono">567.1</td>
+          <td class="mono">0.4%</td>
           <td class="ev-cell mono">211%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">コスモノーチラス → ヴァンクライ → イルリサット</td>
+          <td class="horses-cell">1 コスモノーチラス → 3 ヴァンクライ → 6 イルリサット</td>
           <td class="mono">127.3</td>
-          <td class="mono">1.7%</td>
+          <td class="mono">1.6%</td>
           <td class="ev-cell mono">210%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">コーズウルルン → イルリサット → コスモノーチラス</td>
+          <td class="horses-cell">4 コーズウルルン → 6 イルリサット → 1 コスモノーチラス</td>
           <td class="mono">1901.2</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">210%</td>
+          <td class="ev-cell mono">205%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">コーズウルルン → トワイライトローズ → イルリサット</td>
-          <td class="mono">1846.3</td>
+          <td class="horses-cell">7 ゴルタン → 5 トーセンイルン → 3 ヴァンクライ</td>
+          <td class="mono">1760.6</td>
           <td class="mono">0.1%</td>
-          <td class="ev-cell mono">204%</td>
+          <td class="ev-cell mono">205%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">コスモノーチラス → イルリサット → トーセンイルン</td>
-          <td class="mono">567.1</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">202%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">コスモノーチラス → イルリサット → トワイライトローズ</td>
+          <td class="horses-cell">1 コスモノーチラス → 6 イルリサット → 8 トワイライトローズ</td>
           <td class="mono">351.8</td>
           <td class="mono">0.6%</td>
+          <td class="ev-cell mono">201%</td>
+        </tr>
+        
+        <tr>
+          <td class="horses-cell">5 トーセンイルン → 1 コスモノーチラス → 3 ヴァンクライ</td>
+          <td class="mono">602.9</td>
+          <td class="mono">0.3%</td>
           <td class="ev-cell mono">200%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">トーセンイルン → コスモノーチラス → ヴァンクライ</td>
-          <td class="mono">602.9</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">197%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">コスモノーチラス → ヴァンクライ → トワイライトローズ</td>
-          <td class="mono">257.9</td>
-          <td class="mono">0.8%</td>
-          <td class="ev-cell mono">197%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ゴルタン → ヴァンクライ → トワイライトローズ</td>
-          <td class="mono">880.9</td>
+          <td class="horses-cell">7 ゴルタン → 8 トワイライトローズ → 3 ヴァンクライ</td>
+          <td class="mono">1060.0</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">196%</td>
+          <td class="ev-cell mono">199%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">コスモノーチラス → トワイライトローズ → ヴァンクライ</td>
-          <td class="mono">344.0</td>
-          <td class="mono">0.6%</td>
-          <td class="ev-cell mono">195%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">アイアムイガイニモ → コスモノーチラス → イルリサット</td>
+          <td class="horses-cell">2 アイアムイガイニモ → 1 コスモノーチラス → 6 イルリサット</td>
           <td class="mono">1101.4</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">193%</td>
+          <td class="ev-cell mono">199%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">コーズウルルン → ヴァンクライ → トワイライトローズ</td>
-          <td class="mono">1081.8</td>
+          <td class="horses-cell">7 ゴルタン → 6 イルリサット → 8 トワイライトローズ</td>
+          <td class="mono">1026.0</td>
           <td class="mono">0.2%</td>
-          <td class="ev-cell mono">190%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">ゴルタン → ヴァンクライ → イルリサット</td>
-          <td class="mono">393.1</td>
-          <td class="mono">0.5%</td>
-          <td class="ev-cell mono">189%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">コスモノーチラス → トーセンイルン → トワイライトローズ</td>
-          <td class="mono">1483.3</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">189%</td>
+          <td class="ev-cell mono">196%</td>
         </tr>
         
       </tbody>
@@ -802,5 +914,49 @@
 
   <div class="disclaimer">本ページの予想は参考情報です。的中・利益を保証しません。<br>馬券の購入は必ずご自身でIPAT等の公式ルートから行ってください。</div>
 </main>
+
+<script>
+(function () {
+  const UNIT = 100;  // JRAの購入単位（100円）に丸める
+
+  function recalc() {
+    const budget = parseFloat(document.getElementById('budgetInput').value) || 0;
+    const rows = Array.from(document.querySelectorAll('#planTable tbody tr[data-ev]'));
+    const totalRow = document.getElementById('planTotalRow');
+    const totalCell = document.getElementById('planTotal');
+
+    if (!rows.length) return;
+
+    if (budget <= 0) {
+      rows.forEach(function (tr) { tr.querySelector('.stake-cell').textContent = '-'; });
+      if (totalRow) totalRow.style.display = 'none';
+      return;
+    }
+
+    // 期待値(EV)が高いものほど多く配分する（EVの合計に対する比率で按分）
+    const evs = rows.map(function (tr) { return Math.max(0, parseFloat(tr.dataset.ev) - 1); }); // 100%超過分だけを重みにする
+    const totalWeight = evs.reduce(function (a, b) { return a + b; }, 0);
+
+    let allocated = 0;
+    rows.forEach(function (tr, i) {
+      const weight = totalWeight > 0 ? evs[i] / totalWeight : 1 / rows.length;
+      const raw = budget * weight;
+      const amount = Math.floor(raw / UNIT) * UNIT;
+      allocated += amount;
+      tr.querySelector('.stake-cell').textContent = amount > 0 ? amount.toLocaleString('ja-JP') + '円' : '見送り';
+    });
+
+    if (totalRow && totalCell) {
+      totalRow.style.display = '';
+      totalCell.textContent = allocated.toLocaleString('ja-JP') + '円 / ' + budget.toLocaleString('ja-JP') + '円中';
+    }
+  }
+
+  const input = document.getElementById('budgetInput');
+  if (input) {
+    input.addEventListener('input', recalc);
+  }
+})();
+</script>
 </body>
 </html>
