@@ -30,23 +30,45 @@
   a { color: inherit; }
 
   header {
-    padding: 16px 16px 18px;
+    padding: 16px 16px 0;
     border-bottom: 1px solid var(--line);
   }
   .back { font-size: 12px; color: var(--text-dim); text-decoration: none; }
   .back:active { color: var(--amber); }
   h1 { font-size: 18px; margin: 10px 0 4px; font-weight: 800; }
-  .race-meta { font-size: 11.5px; color: var(--text-dim); }
+  .race-meta { font-size: 11.5px; color: var(--text-dim); padding-bottom: 12px; }
 
-  main { max-width: 760px; margin: 0 auto; padding: 0 14px; }
+  /* --- タブ --- */
+  .tabs {
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .tab-btn {
+    flex: 0 0 auto;
+    padding: 11px 16px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-dim);
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    font-family: inherit;
+  }
+  .tab-btn.active { color: var(--amber); border-bottom-color: var(--amber); }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  main { max-width: 760px; margin: 0 auto; padding: 14px 14px 0; }
 
   .section-title {
     font-size: 13.5px;
     font-weight: 800;
     color: var(--text);
-    margin: 28px 0 10px;
+    margin: 20px 0 10px;
     display: flex; align-items: baseline; gap: 8px;
   }
+  .section-title:first-child { margin-top: 4px; }
   .section-title .en {
     font-size: 9.5px; font-weight: 700; letter-spacing: 0.1em; color: var(--amber-dim);
     text-transform: uppercase;
@@ -63,66 +85,19 @@
   }
   .summary-text { font-size: 13px; line-height: 1.75; color: var(--text-dim); }
 
-  /* --- 結論：馬券風デザイン --- */
-  .ticket {
-    position: relative;
-    background: linear-gradient(180deg, #1a1408 0%, var(--surface) 70%);
-    border: 1px solid var(--amber-dim);
-    border-radius: 10px;
-    box-shadow: 0 0 0 1px rgba(240,162,2,0.08), 0 8px 24px -12px var(--amber-glow);
-    padding: 0;
-    overflow: hidden;
+  /* --- 出走表 --- */
+  .shutuba-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .shutuba-table th {
+    background: var(--surface-2); color: var(--text-dim); font-weight: 700; font-size: 10.5px;
+    padding: 8px 5px; border-bottom: 1px solid var(--line); white-space: nowrap;
   }
-  .ticket-head {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 10px 16px; background: rgba(240,162,2,0.08);
-    border-bottom: 1px dashed var(--amber-dim);
+  .shutuba-table td { padding: 8px 5px; text-align: center; border-bottom: 1px solid var(--line); }
+  .shutuba-table td.name-cell { text-align: left; font-weight: 700; }
+  .shutuba-table tr:last-child td { border-bottom: none; }
+  .waku {
+    display: inline-block; width: 18px; height: 18px; line-height: 18px;
+    border-radius: 3px; color: #111; font-weight: 800; font-size: 10.5px;
   }
-  .ticket-head .label { font-size: 11px; font-weight: 800; color: var(--amber); letter-spacing: 0.05em; }
-  .ticket-head .type-badge {
-    font-size: 11px; color: var(--bg); background: var(--amber);
-    font-weight: 800; padding: 3px 10px; border-radius: 3px;
-  }
-  .ticket-body { padding: 16px; }
-  .ticket .horses {
-    font-size: 20px; font-weight: 800; margin: 0 0 14px;
-    color: var(--text); line-height: 1.45;
-  }
-  .ticket-stats {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
-    padding: 12px 0; border-top: 1px dashed var(--line); border-bottom: 1px dashed var(--line);
-  }
-  .ticket-stats .stat { text-align: center; }
-  .ticket-stats .stat .label { font-size: 10px; color: var(--text-dim); }
-  .ticket-stats .stat .value { font-size: 16px; font-weight: 800; margin-top: 3px; }
-  .ticket-stats .stat.ev .value { color: var(--amber); }
-
-  .ticket-amount {
-    margin-top: 14px; padding: 12px; background: var(--surface-2);
-    border-radius: 6px; display: flex; justify-content: space-between; align-items: center;
-  }
-  .ticket-amount .label { font-size: 11px; color: var(--text-dim); }
-  .ticket-amount .value { font-size: 22px; font-weight: 800; color: var(--green); }
-  .ticket-amount .value::before { content: "¥"; font-size: 14px; margin-right: 2px; }
-
-  .footnote { font-size: 11px; color: var(--text-dim); margin-top: 12px; line-height: 1.6; padding: 0 16px 14px; }
-
-  /* --- 予算入力 --- */
-  .budget-box {
-    display: flex; align-items: center; gap: 10px;
-    background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
-    padding: 10px 14px; margin-bottom: 14px;
-  }
-  .budget-box label { font-size: 12px; color: var(--text-dim); white-space: nowrap; }
-  .budget-box input {
-    flex: 1; background: var(--surface-2); border: 1px solid var(--line); border-radius: 4px;
-    color: var(--text); font-size: 15px; padding: 7px 10px; font-family: inherit;
-    -moz-appearance: textfield;
-  }
-  .budget-box input::-webkit-outer-spin-button, .budget-box input::-webkit-inner-spin-button { margin: 0; }
-  .budget-box .unit { font-size: 12px; color: var(--text-dim); }
-  .stake-cell { color: var(--green); font-weight: 700; }
-
 
   /* --- 穴馬候補 --- */
   .dark-horse-card { border-left: 3px solid var(--green); }
@@ -136,7 +111,7 @@
   }
   .dh-stats { font-size: 11.5px; color: var(--text-dim); margin-top: 3px; }
 
-  /* --- 出走馬一覧 --- */
+  /* --- 出走馬ごとの評価 --- */
   .horse-item { padding: 12px 0; border-bottom: 1px solid var(--line); }
   .horse-item:last-child { border-bottom: none; }
   .horse-head { display: flex; justify-content: space-between; align-items: baseline; }
@@ -147,59 +122,55 @@
 
   /* --- 買い目一覧（折りたたみ） --- */
   details.bet-group {
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: 6px;
-    margin-bottom: 8px;
-    overflow: hidden;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
+    margin-bottom: 8px; overflow: hidden;
   }
   details.bet-group summary {
-    padding: 12px 14px;
-    cursor: pointer;
-    font-size: 13.5px;
-    font-weight: 700;
-    list-style: none;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    padding: 12px 14px; cursor: pointer; font-size: 13.5px; font-weight: 700;
+    list-style: none; display: flex; justify-content: space-between; align-items: center;
   }
   details.bet-group summary::-webkit-details-marker { display: none; }
   details.bet-group summary .count { font-size: 11px; color: var(--text-dim); font-weight: 500; }
-  details.bet-group summary::after {
-    content: "▾"; color: var(--amber-dim); margin-left: 8px; transition: transform 0.15s;
-  }
+  details.bet-group summary::after { content: "▾"; color: var(--amber-dim); margin-left: 8px; transition: transform 0.15s; }
   details.bet-group[open] summary::after { transform: rotate(180deg); }
 
-  table { width: 100%; border-collapse: collapse; font-size: 12px; }
-  th {
-    background: var(--surface-2);
-    color: var(--text-dim);
-    font-weight: 700;
-    font-size: 11px;
-    padding: 8px 6px;
-    border-top: 1px solid var(--line);
-    border-bottom: 1px solid var(--line);
+  table.ev-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  table.ev-table th {
+    background: var(--surface-2); color: var(--text-dim); font-weight: 700; font-size: 11px;
+    padding: 8px 6px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
   }
-  td {
-    padding: 8px 6px;
-    text-align: center;
-    border-bottom: 1px solid var(--line);
-  }
-  td.horses-cell { text-align: left; }
-  tr:last-child td { border-bottom: none; }
+  table.ev-table td { padding: 8px 6px; text-align: center; border-bottom: 1px solid var(--line); }
+  table.ev-table td.horses-cell { text-align: left; }
+  table.ev-table tr:last-child td { border-bottom: none; }
   td.ev-cell { color: var(--green); font-weight: 700; }
 
+  /* --- 予算入力 --- */
+  .budget-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
+    padding: 10px 14px; margin-bottom: 14px;
+  }
+  .budget-box label { font-size: 12px; color: var(--text-dim); white-space: nowrap; }
+  .budget-box input {
+    flex: 1; background: var(--surface-2); border: 1px solid var(--line); border-radius: 4px;
+    color: var(--text); font-size: 15px; padding: 7px 10px; font-family: inherit;
+  }
+  .budget-box .unit { font-size: 12px; color: var(--text-dim); }
+  .stake-cell { color: var(--green); font-weight: 700; }
+
   /* --- WIN5 --- */
-  .win5-row { font-size: 12.5px; padding: 7px 0; border-bottom: 1px dashed var(--line); }
+  .win5-banner {
+    background: linear-gradient(135deg, #1a1408, var(--surface));
+    border: 1px solid var(--amber-dim); border-radius: 8px; padding: 14px 16px; margin-bottom: 14px;
+  }
+  .win5-banner .label { font-size: 11px; font-weight: 800; color: var(--amber); letter-spacing: 0.05em; }
+  .win5-banner .races { font-size: 12.5px; color: var(--text-dim); margin-top: 6px; }
+  .win5-row { font-size: 13px; padding: 9px 0; border-bottom: 1px dashed var(--line); }
   .win5-row:last-child { border-bottom: none; }
-  .win5-rank { display: inline-block; width: 18px; color: var(--amber-dim); }
+  .win5-rank { display: inline-block; width: 20px; color: var(--amber-dim); font-weight: 800; }
 
   .disclaimer {
-    margin-top: 26px;
-    font-size: 11px;
-    color: var(--text-dim);
-    text-align: center;
-    line-height: 1.7;
+    margin-top: 26px; font-size: 11px; color: var(--text-dim); text-align: center; line-height: 1.7;
   }
 </style>
 </head>
@@ -208,845 +179,1038 @@
   <a class="back" href="../index.html">← 今週のレース一覧</a>
   <h1>札幌 6R　3歳以上1勝クラス</h1>
   <div class="race-meta mono">ダート1700m ／ 馬場:稍重 ／ 天候:晴</div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="shutuba">出走表</button>
+    <button class="tab-btn" data-tab="prediction">予想</button>
+    <button class="tab-btn" data-tab="betting">買い目</button>
+    
+  </div>
 </header>
 
 <main>
-  <div class="card summary-text">明確な逃げ馬が不在で、スローペースになりやすく先行馬が有利になりやすい。馬場状態は「稍重」。</div>
-
-  
-  <div class="section-title"><span class="en">Betting Plan</span>AI推奨 購入プラン</div>
-  <div class="section-hint">実際の投票は複数点に分けるのが基本のため、期待値が高い順に複数の買い目を組み合わせています。予算を入れると自動で配分します。</div>
-  <div class="budget-box">
-    <label for="budgetInput">今回の予算</label>
-    <input type="number" id="budgetInput" inputmode="numeric" placeholder="例: 3000" min="0" step="100">
-    <span class="unit">円</span>
-  </div>
-  <div class="card" style="padding:0; overflow:hidden;">
-    <table id="planTable">
-      <thead><tr><th>券種</th><th>買い目</th><th>オッズ</th><th>期待値</th><th>配分額</th></tr></thead>
-      <tbody>
-        
-        <tr data-ev="2.921708238452007">
-          <td class="mono">馬単</td>
-          <td class="horses-cell">9 ウィンターガーデン → 10 ヴェールミューズ</td>
-          <td class="mono">281.7</td>
-          <td class="ev-cell mono">292%</td>
-          <td class="mono stake-cell">-</td>
-        </tr>
-        
-        <tr data-ev="2.4280319139902318">
-          <td class="mono">馬連</td>
-          <td class="horses-cell">10 ヴェールミューズ - 9 ウィンターガーデン</td>
-          <td class="mono">110.4</td>
-          <td class="ev-cell mono">243%</td>
-          <td class="mono stake-cell">-</td>
-        </tr>
-        
-        <tr data-ev="2.390832064176151">
-          <td class="mono">馬単</td>
-          <td class="horses-cell">10 ヴェールミューズ → 7 タイセイルビー</td>
-          <td class="mono">106.5</td>
-          <td class="ev-cell mono">239%</td>
-          <td class="mono stake-cell">-</td>
-        </tr>
-        
-        <tr data-ev="2.2799037929758046">
-          <td class="mono">馬連</td>
-          <td class="horses-cell">7 タイセイルビー - 10 ヴェールミューズ</td>
-          <td class="mono">52.1</td>
-          <td class="ev-cell mono">228%</td>
-          <td class="mono stake-cell">-</td>
-        </tr>
-        
-        <tr data-ev="2.1319085905239956">
-          <td class="mono">馬単</td>
-          <td class="horses-cell">2 ルージュリヴィエラ → 10 ヴェールミューズ</td>
-          <td class="mono">128.9</td>
-          <td class="ev-cell mono">213%</td>
-          <td class="mono stake-cell">-</td>
-        </tr>
-        
-        <tr id="planTotalRow" style="display:none;">
-          <td colspan="4" style="text-align:right; font-weight:800;">合計</td>
-          <td class="mono" id="planTotal" style="font-weight:800; color:var(--green);">-</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <div class="footnote">配分額は、各買い目の期待値の大きさに比例して予算を振り分けた目安です（期待値が高いものほど多く配分）。1点に集中させず、複数点に分けて購入することでブレを抑える考え方に基づいています。あくまで参考情報であり、的中や利益を保証するものではありません。</div>
-  
-
-  
-  <div class="section-title"><span class="en">Dark Horses</span>穴馬候補</div>
-  <div class="section-hint">人気は低いのに、モデルの評価に対してオッズが割安な馬です。</div>
-  <div class="card dark-horse-card">
-    
-    <div class="dark-horse-item">
-      <span class="dh-name">ウィンターガーデン</span><span class="dh-badge">7番人気</span>
-      <div class="dh-stats mono">オッズ 24.3倍 ／ 勝率目安 6.0% ／ 期待値 147%</div>
+  <!-- ============ 出走表タブ（最初に表示） ============ -->
+  <div class="tab-panel active" id="panel-shutuba">
+    <div class="card summary-text">明確な逃げ馬が不在で、スローペースになりやすく先行馬が有利になりやすい。馬場状態は「稍重」。</div>
+    <div class="card" style="padding:0; overflow-x:auto;">
+      <table class="shutuba-table">
+        <thead>
+          <tr>
+            <th>枠</th><th>馬番</th><th>馬名</th><th>性齢</th><th>斤量</th>
+            <th>騎手</th><th>厩舎</th><th>馬体重</th><th>人気</th><th>オッズ</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+          <tr>
+            <td>1</td>
+            <td class="mono">1</td>
+            <td class="name-cell">クロミ</td>
+            <td class="mono">牝3</td>
+            <td class="mono">53.0</td>
+            <td>藤懸</td>
+            <td>栗東小崎</td>
+            <td class="mono">478(+2)</td>
+            <td class="mono">10</td>
+            <td class="mono">127.1</td>
+          </tr>
+          
+          <tr>
+            <td>2</td>
+            <td class="mono">2</td>
+            <td class="name-cell">ルージュリヴィエラ</td>
+            <td class="mono">牝3</td>
+            <td class="mono">50.0</td>
+            <td>▲佐藤</td>
+            <td>美浦嘉藤</td>
+            <td class="mono">418(+8)</td>
+            <td class="mono">6</td>
+            <td class="mono">11.3</td>
+          </tr>
+          
+          <tr>
+            <td>3</td>
+            <td class="mono">3</td>
+            <td class="name-cell">ライラックデューン</td>
+            <td class="mono">牝4</td>
+            <td class="mono">56.0</td>
+            <td>古川吉</td>
+            <td>栗東緒方</td>
+            <td class="mono">466(+2)</td>
+            <td class="mono">8</td>
+            <td class="mono">25.4</td>
+          </tr>
+          
+          <tr>
+            <td>4</td>
+            <td class="mono">4</td>
+            <td class="name-cell">サイモンイロハニー</td>
+            <td class="mono">牝4</td>
+            <td class="mono">52.0</td>
+            <td>★河原田</td>
+            <td>栗東谷</td>
+            <td class="mono">430(-4)</td>
+            <td class="mono">9</td>
+            <td class="mono">93.4</td>
+          </tr>
+          
+          <tr>
+            <td>5</td>
+            <td class="mono">5</td>
+            <td class="name-cell">サマースプラッシュ</td>
+            <td class="mono">牝3</td>
+            <td class="mono">50.0</td>
+            <td>▲和田陽</td>
+            <td>美浦石栗</td>
+            <td class="mono">508(+6)</td>
+            <td class="mono">12</td>
+            <td class="mono">371.6</td>
+          </tr>
+          
+          <tr>
+            <td>5</td>
+            <td class="mono">6</td>
+            <td class="name-cell">デルマサクラサク</td>
+            <td class="mono">牝4</td>
+            <td class="mono">56.0</td>
+            <td>横山和</td>
+            <td>栗東牧田</td>
+            <td class="mono">496(+10)</td>
+            <td class="mono">4</td>
+            <td class="mono">6.4</td>
+          </tr>
+          
+          <tr>
+            <td>6</td>
+            <td class="mono">7</td>
+            <td class="name-cell">タイセイルビー</td>
+            <td class="mono">牝3</td>
+            <td class="mono">50.0</td>
+            <td>▲小林美</td>
+            <td>美浦千葉</td>
+            <td class="mono">450(-8)</td>
+            <td class="mono">5</td>
+            <td class="mono">9.0</td>
+          </tr>
+          
+          <tr>
+            <td>6</td>
+            <td class="mono">8</td>
+            <td class="name-cell">ヤマヤロード</td>
+            <td class="mono">牝3</td>
+            <td class="mono">51.0</td>
+            <td>◇古川奈</td>
+            <td>栗東小崎</td>
+            <td class="mono">480(+2)</td>
+            <td class="mono">11</td>
+            <td class="mono">298.3</td>
+          </tr>
+          
+          <tr>
+            <td>7</td>
+            <td class="mono">9</td>
+            <td class="name-cell">ウィンターガーデン</td>
+            <td class="mono">牝5</td>
+            <td class="mono">56.0</td>
+            <td>小沢</td>
+            <td>栗東井上</td>
+            <td class="mono">500(+6)</td>
+            <td class="mono">7</td>
+            <td class="mono">24.3</td>
+          </tr>
+          
+          <tr>
+            <td>7</td>
+            <td class="mono">10</td>
+            <td class="name-cell">ヴェールミューズ</td>
+            <td class="mono">牝3</td>
+            <td class="mono">53.0</td>
+            <td>鮫島駿</td>
+            <td>栗東浜田</td>
+            <td class="mono">442(0)</td>
+            <td class="mono">2</td>
+            <td class="mono">6.0</td>
+          </tr>
+          
+          <tr>
+            <td>8</td>
+            <td class="mono">11</td>
+            <td class="name-cell">スリーケイ</td>
+            <td class="mono">牝3</td>
+            <td class="mono">53.0</td>
+            <td>斎藤</td>
+            <td>栗東高橋一</td>
+            <td class="mono">514(+4)</td>
+            <td class="mono">3</td>
+            <td class="mono">6.1</td>
+          </tr>
+          
+          <tr>
+            <td>8</td>
+            <td class="mono">12</td>
+            <td class="name-cell">ルージュボニート</td>
+            <td class="mono">牝3</td>
+            <td class="mono">53.0</td>
+            <td>横山武</td>
+            <td>美浦高柳瑞</td>
+            <td class="mono">448(0)</td>
+            <td class="mono">1</td>
+            <td class="mono">2.1</td>
+          </tr>
+          
+        </tbody>
+      </table>
     </div>
-    
-    <div class="dark-horse-item">
-      <span class="dh-name">ライラックデューン</span><span class="dh-badge">8番人気</span>
-      <div class="dh-stats mono">オッズ 25.4倍 ／ 勝率目安 4.3% ／ 期待値 110%</div>
-    </div>
-    
-    <div class="dark-horse-item">
-      <span class="dh-name">ルージュリヴィエラ</span><span class="dh-badge">6番人気</span>
-      <div class="dh-stats mono">オッズ 11.3倍 ／ 勝率目安 9.3% ／ 期待値 105%</div>
-    </div>
-    
-    <div class="dark-horse-item">
-      <span class="dh-name">タイセイルビー</span><span class="dh-badge">5番人気</span>
-      <div class="dh-stats mono">オッズ 9.0倍 ／ 勝率目安 11.7% ／ 期待値 105%</div>
-    </div>
-    
-  </div>
-  
-
-  <div class="section-title"><span class="en">Entries</span>出走馬ごとの評価</div>
-  <div class="card">
-    
-    <div class="horse-item">
-      <div class="horse-head">
-        <span class="horse-name"><span class="horse-num mono">12</span>ルージュボニート</span>
-        <span class="horse-prob mono">複勝圏内 72%</span>
-      </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約72%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
-    </div>
-    
-    <div class="horse-item">
-      <div class="horse-head">
-        <span class="horse-name"><span class="horse-num mono">10</span>ヴェールミューズ</span>
-        <span class="horse-prob mono">複勝圏内 50%</span>
-      </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約50%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
-    </div>
-    
-    <div class="horse-item">
-      <div class="horse-head">
-        <span class="horse-name"><span class="horse-num mono">6</span>デルマサクラサク</span>
-        <span class="horse-prob mono">複勝圏内 44%</span>
-      </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約44%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
-    </div>
-    
-    <div class="horse-item">
-      <div class="horse-head">
-        <span class="horse-name"><span class="horse-num mono">11</span>スリーケイ</span>
-        <span class="horse-prob mono">複勝圏内 39%</span>
-      </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約39%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
-    </div>
-    
-    <div class="horse-item">
-      <div class="horse-head">
-        <span class="horse-name"><span class="horse-num mono">7</span>タイセイルビー</span>
-        <span class="horse-prob mono">複勝圏内 36%</span>
-      </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約36%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
-    </div>
-    
-    <div class="horse-item">
-      <div class="horse-head">
-        <span class="horse-name"><span class="horse-num mono">2</span>ルージュリヴィエラ</span>
-        <span class="horse-prob mono">複勝圏内 29%</span>
-      </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約29%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。</div>
-    </div>
-    
-    <div class="horse-item">
-      <div class="horse-head">
-        <span class="horse-name"><span class="horse-num mono">9</span>ウィンターガーデン</span>
-        <span class="horse-prob mono">複勝圏内 19%</span>
-      </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約19%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
-    </div>
-    
-    <div class="horse-item">
-      <div class="horse-head">
-        <span class="horse-name"><span class="horse-num mono">3</span>ライラックデューン</span>
-        <span class="horse-prob mono">複勝圏内 13%</span>
-      </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約13%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は9.0着とやや不振。</div>
-    </div>
-    
-    <div class="horse-item">
-      <div class="horse-head">
-        <span class="horse-name"><span class="horse-num mono">4</span>サイモンイロハニー</span>
-        <span class="horse-prob mono">複勝圏内 4%</span>
-      </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約4%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は8.7着とやや不振。</div>
-    </div>
-    
-    <div class="horse-item">
-      <div class="horse-head">
-        <span class="horse-name"><span class="horse-num mono">1</span>クロミ</span>
-        <span class="horse-prob mono">複勝圏内 2%</span>
-      </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約2%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は13.0着とやや不振。</div>
-    </div>
-    
-    <div class="horse-item">
-      <div class="horse-head">
-        <span class="horse-name"><span class="horse-num mono">8</span>ヤマヤロード</span>
-        <span class="horse-prob mono">複勝圏内 1%</span>
-      </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約1%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は13.3着とやや不振。</div>
-    </div>
-    
-    <div class="horse-item">
-      <div class="horse-head">
-        <span class="horse-name"><span class="horse-num mono">5</span>サマースプラッシュ</span>
-        <span class="horse-prob mono">複勝圏内 1%</span>
-      </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約1%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は11.0着とやや不振。</div>
-    </div>
-    
   </div>
 
-  <div class="section-title"><span class="en">All Bets</span>券種ごとの買い目一覧（参考）</div>
-  <div class="section-hint">期待値100%を超えるものを全て表示しています。上の「購入プラン」はこの中から自動選定したものです。</div>
-  
-  <details class="bet-group" open>
-    <summary>単勝 <span class="count">5点</span></summary>
-    <table>
-      <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
-      <tbody>
-        
-        <tr>
-          <td class="horses-cell">9 ウィンターガーデン</td>
-          <td class="mono">24.3</td>
-          <td class="mono">6.0%</td>
-          <td class="ev-cell mono">147%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">4 サイモンイロハニー</td>
-          <td class="mono">93.4</td>
-          <td class="mono">1.4%</td>
-          <td class="ev-cell mono">130%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">3 ライラックデューン</td>
-          <td class="mono">25.4</td>
-          <td class="mono">4.3%</td>
-          <td class="ev-cell mono">110%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">2 ルージュリヴィエラ</td>
-          <td class="mono">11.3</td>
-          <td class="mono">9.3%</td>
-          <td class="ev-cell mono">105%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">7 タイセイルビー</td>
-          <td class="mono">9.0</td>
-          <td class="mono">11.7%</td>
-          <td class="ev-cell mono">105%</td>
-        </tr>
-        
-      </tbody>
-    </table>
-  </details>
-  
-  <details class="bet-group">
-    <summary>馬連 <span class="count">19点</span></summary>
-    <table>
-      <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
-      <tbody>
-        
-        <tr>
-          <td class="horses-cell">10 ヴェールミューズ - 9 ウィンターガーデン</td>
-          <td class="mono">110.4</td>
-          <td class="mono">2.2%</td>
-          <td class="ev-cell mono">243%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">7 タイセイルビー - 10 ヴェールミューズ</td>
-          <td class="mono">52.1</td>
-          <td class="mono">4.4%</td>
-          <td class="ev-cell mono">228%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">1 クロミ - 10 ヴェールミューズ</td>
-          <td class="mono">887.1</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">219%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">4 サイモンイロハニー - 10 ヴェールミューズ</td>
-          <td class="mono">409.1</td>
-          <td class="mono">0.5%</td>
-          <td class="ev-cell mono">203%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">7 タイセイルビー - 3 ライラックデューン</td>
-          <td class="mono">172.9</td>
-          <td class="mono">1.1%</td>
-          <td class="ev-cell mono">191%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">2 ルージュリヴィエラ - 10 ヴェールミューズ</td>
-          <td class="mono">53.9</td>
-          <td class="mono">3.4%</td>
-          <td class="ev-cell mono">186%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">2 ルージュリヴィエラ - 3 ライラックデューン</td>
-          <td class="mono">180.8</td>
-          <td class="mono">0.9%</td>
-          <td class="ev-cell mono">157%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">7 タイセイルビー - 9 ウィンターガーデン</td>
-          <td class="mono">98.0</td>
-          <td class="mono">1.5%</td>
-          <td class="ev-cell mono">152%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">8 ヤマヤロード - 10 ヴェールミューズ</td>
-          <td class="mono">1567.9</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">123%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">2 ルージュリヴィエラ - 9 ウィンターガーデン</td>
-          <td class="mono">98.8</td>
-          <td class="mono">1.2%</td>
-          <td class="ev-cell mono">120%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">3 ライラックデューン - 9 ウィンターガーデン</td>
-          <td class="mono">216.4</td>
-          <td class="mono">0.6%</td>
-          <td class="ev-cell mono">120%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">4 サイモンイロハニー - 3 ライラックデューン</td>
-          <td class="mono">953.9</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">119%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">4 サイモンイロハニー - 9 ウィンターガーデン</td>
-          <td class="mono">676.0</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">118%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">6 デルマサクラサク - 10 ヴェールミューズ</td>
-          <td class="mono">21.3</td>
-          <td class="mono">5.4%</td>
-          <td class="ev-cell mono">114%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">4 サイモンイロハニー - 6 デルマサクラサク</td>
-          <td class="mono">266.5</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">114%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">2 ルージュリヴィエラ - 4 サイモンイロハニー</td>
-          <td class="mono">412.1</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">113%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">2 ルージュリヴィエラ - 7 タイセイルビー</td>
-          <td class="mono">44.2</td>
-          <td class="mono">2.4%</td>
-          <td class="ev-cell mono">107%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">3 ライラックデューン - 6 デルマサクラサク</td>
-          <td class="mono">77.7</td>
-          <td class="mono">1.4%</td>
-          <td class="ev-cell mono">105%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">4 サイモンイロハニー - 12 ルージュボニート</td>
-          <td class="mono">135.2</td>
-          <td class="mono">0.7%</td>
-          <td class="ev-cell mono">101%</td>
-        </tr>
-        
-      </tbody>
-    </table>
-  </details>
-  
-  <details class="bet-group">
-    <summary>馬単 <span class="count">20点</span></summary>
-    <table>
-      <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
-      <tbody>
-        
-        <tr>
-          <td class="horses-cell">9 ウィンターガーデン → 10 ヴェールミューズ</td>
-          <td class="mono">281.7</td>
-          <td class="mono">1.0%</td>
-          <td class="ev-cell mono">292%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">4 サイモンイロハニー → 10 ヴェールミューズ</td>
-          <td class="mono">1126.0</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">257%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">3 ライラックデューン → 7 タイセイルビー</td>
-          <td class="mono">458.1</td>
-          <td class="mono">0.5%</td>
-          <td class="ev-cell mono">243%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">10 ヴェールミューズ → 7 タイセイルビー</td>
-          <td class="mono">106.5</td>
-          <td class="mono">2.2%</td>
-          <td class="ev-cell mono">239%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">1 クロミ → 10 ヴェールミューズ</td>
-          <td class="mono">2108.1</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">239%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">2 ルージュリヴィエラ → 10 ヴェールミューズ</td>
-          <td class="mono">128.9</td>
-          <td class="mono">1.7%</td>
-          <td class="ev-cell mono">213%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">10 ヴェールミューズ → 9 ウィンターガーデン</td>
-          <td class="mono">165.2</td>
-          <td class="mono">1.2%</td>
-          <td class="ev-cell mono">192%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">7 タイセイルビー → 10 ヴェールミューズ</td>
-          <td class="mono">89.1</td>
-          <td class="mono">2.1%</td>
-          <td class="ev-cell mono">190%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">10 ヴェールミューズ → 1 クロミ</td>
-          <td class="mono">1394.9</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">187%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">4 サイモンイロハニー → 6 デルマサクラサク</td>
-          <td class="mono">934.6</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">187%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">9 ウィンターガーデン → 7 タイセイルビー</td>
-          <td class="mono">244.2</td>
-          <td class="mono">0.7%</td>
-          <td class="ev-cell mono">183%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">9 ウィンターガーデン → 2 ルージュリヴィエラ</td>
-          <td class="mono">301.8</td>
-          <td class="mono">0.6%</td>
-          <td class="ev-cell mono">180%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">4 サイモンイロハニー → 2 ルージュリヴィエラ</td>
-          <td class="mono">1292.1</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">170%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">3 ライラックデューン → 2 ルージュリヴィエラ</td>
-          <td class="mono">395.4</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">167%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">3 ライラックデューン → 9 ウィンターガーデン</td>
-          <td class="mono">585.3</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">160%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">9 ウィンターガーデン → 3 ライラックデューン</td>
-          <td class="mono">566.4</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">158%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">4 サイモンイロハニー → 11 スリーケイ</td>
-          <td class="mono">860.0</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">154%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">2 ルージュリヴィエラ → 3 ライラックデューン</td>
-          <td class="mono">343.6</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">153%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">1 クロミ → 9 ウィンターガーデン</td>
-          <td class="mono">3594.7</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">152%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">10 ヴェールミューズ → 4 サイモンイロハニー</td>
-          <td class="mono">556.3</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">149%</td>
-        </tr>
-        
-      </tbody>
-    </table>
-  </details>
-  
-  <details class="bet-group">
-    <summary>3連複 <span class="count">20点</span></summary>
-    <table>
-      <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
-      <tbody>
-        
-        <tr>
-          <td class="horses-cell">7 タイセイルビー - 10 ヴェールミューズ - 9 ウィンターガーデン</td>
-          <td class="mono">249.8</td>
-          <td class="mono">1.0%</td>
-          <td class="ev-cell mono">250%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">2 ルージュリヴィエラ - 10 ヴェールミューズ - 9 ウィンターガーデン</td>
-          <td class="mono">262.2</td>
-          <td class="mono">0.8%</td>
-          <td class="ev-cell mono">203%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">2 ルージュリヴィエラ - 7 タイセイルビー - 10 ヴェールミューズ</td>
-          <td class="mono">119.3</td>
-          <td class="mono">1.6%</td>
-          <td class="ev-cell mono">190%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">7 タイセイルビー - 6 デルマサクラサク - 10 ヴェールミューズ</td>
-          <td class="mono">70.4</td>
-          <td class="mono">2.6%</td>
-          <td class="ev-cell mono">182%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">10 ヴェールミューズ - 6 デルマサクラサク - 9 ウィンターガーデン</td>
-          <td class="mono">135.8</td>
-          <td class="mono">1.2%</td>
-          <td class="ev-cell mono">170%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">7 タイセイルビー - 10 ヴェールミューズ - 11 スリーケイ</td>
-          <td class="mono">74.5</td>
-          <td class="mono">2.3%</td>
-          <td class="ev-cell mono">169%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">7 タイセイルビー - 3 ライラックデューン - 10 ヴェールミューズ</td>
-          <td class="mono">235.2</td>
-          <td class="mono">0.7%</td>
-          <td class="ev-cell mono">166%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">2 ルージュリヴィエラ - 1 クロミ - 10 ヴェールミューズ</td>
-          <td class="mono">1795.3</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">151%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">1 クロミ - 10 ヴェールミューズ - 9 ウィンターガーデン</td>
-          <td class="mono">2734.9</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">144%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">4 サイモンイロハニー - 10 ヴェールミューズ - 9 ウィンターガーデン</td>
-          <td class="mono">1355.8</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">144%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">2 ルージュリヴィエラ - 7 タイセイルビー - 3 ライラックデューン</td>
-          <td class="mono">359.6</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">134%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">7 タイセイルビー - 12 ルージュボニート - 10 ヴェールミューズ</td>
-          <td class="mono">27.7</td>
-          <td class="mono">4.8%</td>
-          <td class="ev-cell mono">134%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">4 サイモンイロハニー - 10 ヴェールミューズ - 7 タイセイルビー</td>
-          <td class="mono">605.9</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">133%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">2 ルージュリヴィエラ - 6 デルマサクラサク - 10 ヴェールミューズ</td>
-          <td class="mono">66.6</td>
-          <td class="mono">2.0%</td>
-          <td class="ev-cell mono">133%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">4 サイモンイロハニー - 6 デルマサクラサク - 10 ヴェールミューズ</td>
-          <td class="mono">470.6</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">129%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">1 クロミ - 6 デルマサクラサク - 10 ヴェールミューズ</td>
-          <td class="mono">933.8</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">127%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">2 ルージュリヴィエラ - 4 サイモンイロハニー - 10 ヴェールミューズ</td>
-          <td class="mono">745.5</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">127%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">3 ライラックデューン - 10 ヴェールミューズ - 9 ウィンターガーデン</td>
-          <td class="mono">369.5</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">126%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">10 ヴェールミューズ - 9 ウィンターガーデン - 11 スリーケイ</td>
-          <td class="mono">112.8</td>
-          <td class="mono">1.1%</td>
-          <td class="ev-cell mono">124%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">7 タイセイルビー - 3 ライラックデューン - 9 ウィンターガーデン</td>
-          <td class="mono">527.2</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">123%</td>
-        </tr>
-        
-      </tbody>
-    </table>
-  </details>
-  
-  <details class="bet-group">
-    <summary>3連単 <span class="count">20点</span></summary>
-    <table>
-      <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
-      <tbody>
-        
-        <tr>
-          <td class="horses-cell">9 ウィンターガーデン → 10 ヴェールミューズ → 7 タイセイルビー</td>
-          <td class="mono">2159.0</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">336%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">1 クロミ → 9 ウィンターガーデン → 10 ヴェールミューズ</td>
-          <td class="mono">43741.2</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">321%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">9 ウィンターガーデン → 7 タイセイルビー → 10 ヴェールミューズ</td>
-          <td class="mono">2108.9</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">310%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">9 ウィンターガーデン → 10 ヴェールミューズ → 2 ルージュリヴィエラ</td>
-          <td class="mono">2502.1</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">310%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">9 ウィンターガーデン → 10 ヴェールミューズ → 12 ルージュボニート</td>
-          <td class="mono">972.8</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">300%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">10 ヴェールミューズ → 9 ウィンターガーデン → 7 タイセイルビー</td>
-          <td class="mono">1711.6</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">298%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">9 ウィンターガーデン → 10 ヴェールミューズ → 6 デルマサクラサク</td>
-          <td class="mono">1502.5</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">283%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">9 ウィンターガーデン → 2 ルージュリヴィエラ → 10 ヴェールミューズ</td>
-          <td class="mono">2481.1</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">282%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">1 クロミ → 10 ヴェールミューズ → 2 ルージュリヴィエラ</td>
-          <td class="mono">22283.2</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">282%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">1 クロミ → 2 ルージュリヴィエラ → 10 ヴェールミューズ</td>
-          <td class="mono">24102.3</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">282%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">1 クロミ → 6 デルマサクラサク → 10 ヴェールミューズ</td>
-          <td class="mono">14949.5</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">281%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">4 サイモンイロハニー → 10 ヴェールミューズ → 7 タイセイルビー</td>
-          <td class="mono">8620.5</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">278%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">3 ライラックデューン → 7 タイセイルビー → 2 ルージュリヴィエラ</td>
-          <td class="mono">4649.6</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">272%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">1 クロミ → 10 ヴェールミューズ → 9 ウィンターガーデン</td>
-          <td class="mono">32805.9</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">270%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">1 クロミ → 10 ヴェールミューズ → 6 デルマサクラサク</td>
-          <td class="mono">13732.7</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">264%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">3 ライラックデューン → 7 タイセイルビー → 10 ヴェールミューズ</td>
-          <td class="mono">2470.7</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">251%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">1 クロミ → 10 ヴェールミューズ → 7 タイセイルビー</td>
-          <td class="mono">15746.8</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">250%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">4 サイモンイロハニー → 6 デルマサクラサク → 10 ヴェールミューズ</td>
-          <td class="mono">6524.9</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">249%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">1 クロミ → 7 タイセイルビー → 10 ヴェールミューズ</td>
-          <td class="mono">16402.9</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">247%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">9 ウィンターガーデン → 6 デルマサクラサク → 10 ヴェールミューズ</td>
-          <td class="mono">1339.0</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">246%</td>
-        </tr>
-        
-      </tbody>
-    </table>
-  </details>
-  
+  <!-- ============ 予想タブ ============ -->
+  <div class="tab-panel" id="panel-prediction">
+    
+    <div class="section-title"><span class="en">Dark Horses</span>穴馬候補</div>
+    <div class="section-hint">人気は低いのに、モデルの評価に対してオッズが割安な馬です。</div>
+    <div class="card dark-horse-card">
+      
+      <div class="dark-horse-item">
+        <span class="dh-name">ウィンターガーデン</span><span class="dh-badge">7番人気</span>
+        <div class="dh-stats mono">オッズ 24.3倍 ／ 勝率目安 5.9% ／ 期待値 143%</div>
+      </div>
+      
+      <div class="dark-horse-item">
+        <span class="dh-name">ライラックデューン</span><span class="dh-badge">8番人気</span>
+        <div class="dh-stats mono">オッズ 25.4倍 ／ 勝率目安 4.8% ／ 期待値 122%</div>
+      </div>
+      
+      <div class="dark-horse-item">
+        <span class="dh-name">ルージュリヴィエラ</span><span class="dh-badge">6番人気</span>
+        <div class="dh-stats mono">オッズ 11.3倍 ／ 勝率目安 9.5% ／ 期待値 107%</div>
+      </div>
+      
+      <div class="dark-horse-item">
+        <span class="dh-name">タイセイルビー</span><span class="dh-badge">5番人気</span>
+        <div class="dh-stats mono">オッズ 9.0倍 ／ 勝率目安 11.6% ／ 期待値 104%</div>
+      </div>
+      
+    </div>
+    
 
+    <div class="section-title"><span class="en">Entries</span>出走馬ごとの評価</div>
+    <div class="card">
+      
+      <div class="horse-item">
+        <div class="horse-head">
+          <span class="horse-name"><span class="horse-num mono">12</span>ルージュボニート</span>
+          <span class="horse-prob mono">複勝圏内 72%</span>
+        </div>
+        <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約72%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
+      </div>
+      
+      <div class="horse-item">
+        <div class="horse-head">
+          <span class="horse-name"><span class="horse-num mono">10</span>ヴェールミューズ</span>
+          <span class="horse-prob mono">複勝圏内 50%</span>
+        </div>
+        <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約50%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
+      </div>
+      
+      <div class="horse-item">
+        <div class="horse-head">
+          <span class="horse-name"><span class="horse-num mono">6</span>デルマサクラサク</span>
+          <span class="horse-prob mono">複勝圏内 43%</span>
+        </div>
+        <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約43%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
+      </div>
+      
+      <div class="horse-item">
+        <div class="horse-head">
+          <span class="horse-name"><span class="horse-num mono">11</span>スリーケイ</span>
+          <span class="horse-prob mono">複勝圏内 41%</span>
+        </div>
+        <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約41%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
+      </div>
+      
+      <div class="horse-item">
+        <div class="horse-head">
+          <span class="horse-name"><span class="horse-num mono">7</span>タイセイルビー</span>
+          <span class="horse-prob mono">複勝圏内 36%</span>
+        </div>
+        <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約36%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
+      </div>
+      
+      <div class="horse-item">
+        <div class="horse-head">
+          <span class="horse-name"><span class="horse-num mono">2</span>ルージュリヴィエラ</span>
+          <span class="horse-prob mono">複勝圏内 30%</span>
+        </div>
+        <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約30%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。</div>
+      </div>
+      
+      <div class="horse-item">
+        <div class="horse-head">
+          <span class="horse-name"><span class="horse-num mono">9</span>ウィンターガーデン</span>
+          <span class="horse-prob mono">複勝圏内 18%</span>
+        </div>
+        <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約18%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
+      </div>
+      
+      <div class="horse-item">
+        <div class="horse-head">
+          <span class="horse-name"><span class="horse-num mono">3</span>ライラックデューン</span>
+          <span class="horse-prob mono">複勝圏内 15%</span>
+        </div>
+        <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約15%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は9.0着とやや不振。</div>
+      </div>
+      
+      <div class="horse-item">
+        <div class="horse-head">
+          <span class="horse-name"><span class="horse-num mono">4</span>サイモンイロハニー</span>
+          <span class="horse-prob mono">複勝圏内 5%</span>
+        </div>
+        <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約5%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は8.7着とやや不振。</div>
+      </div>
+      
+      <div class="horse-item">
+        <div class="horse-head">
+          <span class="horse-name"><span class="horse-num mono">1</span>クロミ</span>
+          <span class="horse-prob mono">複勝圏内 2%</span>
+        </div>
+        <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約2%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は13.0着とやや不振。</div>
+      </div>
+      
+      <div class="horse-item">
+        <div class="horse-head">
+          <span class="horse-name"><span class="horse-num mono">8</span>ヤマヤロード</span>
+          <span class="horse-prob mono">複勝圏内 1%</span>
+        </div>
+        <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約1%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は13.3着とやや不振。</div>
+      </div>
+      
+      <div class="horse-item">
+        <div class="horse-head">
+          <span class="horse-name"><span class="horse-num mono">5</span>サマースプラッシュ</span>
+          <span class="horse-prob mono">複勝圏内 1%</span>
+        </div>
+        <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約1%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は11.0着とやや不振。</div>
+      </div>
+      
+    </div>
+  </div>
+
+  <!-- ============ 買い目タブ ============ -->
+  <div class="tab-panel" id="panel-betting">
+    
+    <div class="section-title"><span class="en">Betting Plan</span>AI推奨 購入プラン</div>
+    <div class="section-hint">実際の投票は複数点に分けるのが基本のため、期待値が高い順に複数の買い目を組み合わせています。予算を入れると自動で配分します。</div>
+    <div class="budget-box">
+      <label for="budgetInput">今回の予算</label>
+      <input type="number" id="budgetInput" inputmode="numeric" placeholder="例: 3000" min="0" step="100">
+      <span class="unit">円</span>
+    </div>
+    <div class="card" style="padding:0; overflow:hidden;">
+      <table class="ev-table" id="planTable">
+        <thead><tr><th>券種</th><th>買い目</th><th>オッズ</th><th>期待値</th><th>配分額</th></tr></thead>
+        <tbody>
+          
+          <tr data-ev="2.332733445873255">
+            <td class="mono">馬単</td>
+            <td class="horses-cell">10 ヴェールミューズ → 7 タイセイルビー</td>
+            <td class="mono">106.5</td>
+            <td class="ev-cell mono">233%</td>
+            <td class="mono stake-cell">-</td>
+          </tr>
+          
+          <tr data-ev="2.32505095303836">
+            <td class="mono">馬連</td>
+            <td class="horses-cell">9 ウィンターガーデン - 10 ヴェールミューズ</td>
+            <td class="mono">110.4</td>
+            <td class="ev-cell mono">233%</td>
+            <td class="mono stake-cell">-</td>
+          </tr>
+          
+          <tr data-ev="2.2269609297505535">
+            <td class="mono">馬連</td>
+            <td class="horses-cell">10 ヴェールミューズ - 7 タイセイルビー</td>
+            <td class="mono">52.1</td>
+            <td class="ev-cell mono">223%</td>
+            <td class="mono stake-cell">-</td>
+          </tr>
+          
+          <tr data-ev="2.138044122279212">
+            <td class="mono">馬単</td>
+            <td class="horses-cell">2 ルージュリヴィエラ → 10 ヴェールミューズ</td>
+            <td class="mono">128.9</td>
+            <td class="ev-cell mono">214%</td>
+            <td class="mono stake-cell">-</td>
+          </tr>
+          
+          <tr data-ev="2.0959070550570256">
+            <td class="mono">馬連</td>
+            <td class="horses-cell">3 ライラックデューン - 7 タイセイルビー</td>
+            <td class="mono">172.9</td>
+            <td class="ev-cell mono">210%</td>
+            <td class="mono stake-cell">-</td>
+          </tr>
+          
+          <tr id="planTotalRow" style="display:none;">
+            <td colspan="4" style="text-align:right; font-weight:800;">合計</td>
+            <td class="mono" id="planTotal" style="font-weight:800; color:var(--green);">-</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="footnote" style="font-size:11px; color:var(--text-dim); margin-bottom:16px; line-height:1.6;">配分額は、各買い目の期待値の大きさに比例して予算を振り分けた目安です。1点に集中させず複数点に分けることでブレを抑える考え方に基づきます。的中や利益を保証するものではありません。</div>
+    
+
+    <div class="section-title"><span class="en">All Bets</span>券種ごとの買い目一覧（参考）</div>
+    <div class="section-hint">期待値100%を超えるものを全て表示しています。上の「購入プラン」はこの中から自動選定したものです。</div>
+    
+    <details class="bet-group">
+      <summary>単勝 <span class="count">5点</span></summary>
+      <table class="ev-table">
+        <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
+        <tbody>
+          
+          <tr>
+            <td class="horses-cell">9 ウィンターガーデン</td>
+            <td class="mono">24.3</td>
+            <td class="mono">5.9%</td>
+            <td class="ev-cell mono">143%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">4 サイモンイロハニー</td>
+            <td class="mono">93.4</td>
+            <td class="mono">1.5%</td>
+            <td class="ev-cell mono">141%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">3 ライラックデューン</td>
+            <td class="mono">25.4</td>
+            <td class="mono">4.8%</td>
+            <td class="ev-cell mono">122%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">2 ルージュリヴィエラ</td>
+            <td class="mono">11.3</td>
+            <td class="mono">9.5%</td>
+            <td class="ev-cell mono">107%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">7 タイセイルビー</td>
+            <td class="mono">9.0</td>
+            <td class="mono">11.6%</td>
+            <td class="ev-cell mono">104%</td>
+          </tr>
+          
+        </tbody>
+      </table>
+    </details>
+    
+    <details class="bet-group">
+      <summary>馬連 <span class="count">20点</span></summary>
+      <table class="ev-table">
+        <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
+        <tbody>
+          
+          <tr>
+            <td class="horses-cell">9 ウィンターガーデン - 10 ヴェールミューズ</td>
+            <td class="mono">110.4</td>
+            <td class="mono">2.1%</td>
+            <td class="ev-cell mono">233%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">10 ヴェールミューズ - 7 タイセイルビー</td>
+            <td class="mono">52.1</td>
+            <td class="mono">4.3%</td>
+            <td class="ev-cell mono">223%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">4 サイモンイロハニー - 10 ヴェールミューズ</td>
+            <td class="mono">409.1</td>
+            <td class="mono">0.5%</td>
+            <td class="ev-cell mono">216%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">3 ライラックデューン - 7 タイセイルビー</td>
+            <td class="mono">172.9</td>
+            <td class="mono">1.2%</td>
+            <td class="ev-cell mono">210%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">10 ヴェールミューズ - 2 ルージュリヴィエラ</td>
+            <td class="mono">53.9</td>
+            <td class="mono">3.4%</td>
+            <td class="ev-cell mono">186%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">3 ライラックデューン - 2 ルージュリヴィエラ</td>
+            <td class="mono">180.8</td>
+            <td class="mono">1.0%</td>
+            <td class="ev-cell mono">176%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">1 クロミ - 10 ヴェールミューズ</td>
+            <td class="mono">887.1</td>
+            <td class="mono">0.2%</td>
+            <td class="ev-cell mono">163%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">9 ウィンターガーデン - 7 タイセイルビー</td>
+            <td class="mono">98.0</td>
+            <td class="mono">1.5%</td>
+            <td class="ev-cell mono">147%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">3 ライラックデューン - 4 サイモンイロハニー</td>
+            <td class="mono">953.9</td>
+            <td class="mono">0.1%</td>
+            <td class="ev-cell mono">142%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">3 ライラックデューン - 9 ウィンターガーデン</td>
+            <td class="mono">216.4</td>
+            <td class="mono">0.6%</td>
+            <td class="ev-cell mono">129%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">8 ヤマヤロード - 10 ヴェールミューズ</td>
+            <td class="mono">1567.9</td>
+            <td class="mono">0.1%</td>
+            <td class="ev-cell mono">126%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">4 サイモンイロハニー - 9 ウィンターガーデン</td>
+            <td class="mono">676.0</td>
+            <td class="mono">0.2%</td>
+            <td class="ev-cell mono">125%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">4 サイモンイロハニー - 2 ルージュリヴィエラ</td>
+            <td class="mono">412.1</td>
+            <td class="mono">0.3%</td>
+            <td class="ev-cell mono">124%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">6 デルマサクラサク - 4 サイモンイロハニー</td>
+            <td class="mono">266.5</td>
+            <td class="mono">0.4%</td>
+            <td class="ev-cell mono">120%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">9 ウィンターガーデン - 2 ルージュリヴィエラ</td>
+            <td class="mono">98.8</td>
+            <td class="mono">1.2%</td>
+            <td class="ev-cell mono">119%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">3 ライラックデューン - 6 デルマサクラサク</td>
+            <td class="mono">77.7</td>
+            <td class="mono">1.5%</td>
+            <td class="ev-cell mono">113%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">4 サイモンイロハニー - 11 スリーケイ</td>
+            <td class="mono">261.3</td>
+            <td class="mono">0.4%</td>
+            <td class="ev-cell mono">112%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">6 デルマサクラサク - 10 ヴェールミューズ</td>
+            <td class="mono">21.3</td>
+            <td class="mono">5.1%</td>
+            <td class="ev-cell mono">109%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">4 サイモンイロハニー - 12 ルージュボニート</td>
+            <td class="mono">135.2</td>
+            <td class="mono">0.8%</td>
+            <td class="ev-cell mono">109%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">2 ルージュリヴィエラ - 7 タイセイルビー</td>
+            <td class="mono">44.2</td>
+            <td class="mono">2.5%</td>
+            <td class="ev-cell mono">108%</td>
+          </tr>
+          
+        </tbody>
+      </table>
+    </details>
+    
+    <details class="bet-group">
+      <summary>馬単 <span class="count">20点</span></summary>
+      <table class="ev-table">
+        <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
+        <tbody>
+          
+          <tr>
+            <td class="horses-cell">9 ウィンターガーデン → 10 ヴェールミューズ</td>
+            <td class="mono">281.7</td>
+            <td class="mono">1.0%</td>
+            <td class="ev-cell mono">280%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">4 サイモンイロハニー → 10 ヴェールミューズ</td>
+            <td class="mono">1126.0</td>
+            <td class="mono">0.2%</td>
+            <td class="ev-cell mono">274%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">3 ライラックデューン → 7 タイセイルビー</td>
+            <td class="mono">458.1</td>
+            <td class="mono">0.6%</td>
+            <td class="ev-cell mono">267%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">10 ヴェールミューズ → 7 タイセイルビー</td>
+            <td class="mono">106.5</td>
+            <td class="mono">2.2%</td>
+            <td class="ev-cell mono">233%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">2 ルージュリヴィエラ → 10 ヴェールミューズ</td>
+            <td class="mono">128.9</td>
+            <td class="mono">1.7%</td>
+            <td class="ev-cell mono">214%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">4 サイモンイロハニー → 6 デルマサクラサク</td>
+            <td class="mono">934.6</td>
+            <td class="mono">0.2%</td>
+            <td class="ev-cell mono">196%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">3 ライラックデューン → 2 ルージュリヴィエラ</td>
+            <td class="mono">395.4</td>
+            <td class="mono">0.5%</td>
+            <td class="ev-cell mono">188%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">4 サイモンイロハニー → 2 ルージュリヴィエラ</td>
+            <td class="mono">1292.1</td>
+            <td class="mono">0.1%</td>
+            <td class="ev-cell mono">187%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">7 タイセイルビー → 10 ヴェールミューズ</td>
+            <td class="mono">89.1</td>
+            <td class="mono">2.1%</td>
+            <td class="ev-cell mono">186%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">10 ヴェールミューズ → 9 ウィンターガーデン</td>
+            <td class="mono">165.2</td>
+            <td class="mono">1.1%</td>
+            <td class="ev-cell mono">184%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">9 ウィンターガーデン → 2 ルージュリヴィエラ</td>
+            <td class="mono">301.8</td>
+            <td class="mono">0.6%</td>
+            <td class="ev-cell mono">178%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">1 クロミ → 10 ヴェールミューズ</td>
+            <td class="mono">2108.1</td>
+            <td class="mono">0.1%</td>
+            <td class="ev-cell mono">178%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">9 ウィンターガーデン → 7 タイセイルビー</td>
+            <td class="mono">244.2</td>
+            <td class="mono">0.7%</td>
+            <td class="ev-cell mono">177%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">3 ライラックデューン → 9 ウィンターガーデン</td>
+            <td class="mono">585.3</td>
+            <td class="mono">0.3%</td>
+            <td class="ev-cell mono">173%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">4 サイモンイロハニー → 11 スリーケイ</td>
+            <td class="mono">860.0</td>
+            <td class="mono">0.2%</td>
+            <td class="ev-cell mono">173%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">2 ルージュリヴィエラ → 3 ライラックデューン</td>
+            <td class="mono">343.6</td>
+            <td class="mono">0.5%</td>
+            <td class="ev-cell mono">172%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">9 ウィンターガーデン → 3 ライラックデューン</td>
+            <td class="mono">566.4</td>
+            <td class="mono">0.3%</td>
+            <td class="ev-cell mono">170%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">4 サイモンイロハニー → 3 ライラックデューン</td>
+            <td class="mono">2207.7</td>
+            <td class="mono">0.1%</td>
+            <td class="ev-cell mono">162%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">4 サイモンイロハニー → 12 ルージュボニート</td>
+            <td class="mono">453.7</td>
+            <td class="mono">0.4%</td>
+            <td class="ev-cell mono">160%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">10 ヴェールミューズ → 4 サイモンイロハニー</td>
+            <td class="mono">556.3</td>
+            <td class="mono">0.3%</td>
+            <td class="ev-cell mono">158%</td>
+          </tr>
+          
+        </tbody>
+      </table>
+    </details>
+    
+    <details class="bet-group">
+      <summary>3連複 <span class="count">20点</span></summary>
+      <table class="ev-table">
+        <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
+        <tbody>
+          
+          <tr>
+            <td class="horses-cell">9 ウィンターガーデン - 10 ヴェールミューズ - 7 タイセイルビー</td>
+            <td class="mono">249.8</td>
+            <td class="mono">0.9%</td>
+            <td class="ev-cell mono">237%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">10 ヴェールミューズ - 9 ウィンターガーデン - 2 ルージュリヴィエラ</td>
+            <td class="mono">262.2</td>
+            <td class="mono">0.8%</td>
+            <td class="ev-cell mono">197%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">10 ヴェールミューズ - 2 ルージュリヴィエラ - 7 タイセイルビー</td>
+            <td class="mono">119.3</td>
+            <td class="mono">1.6%</td>
+            <td class="ev-cell mono">189%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">3 ライラックデューン - 10 ヴェールミューズ - 7 タイセイルビー</td>
+            <td class="mono">235.2</td>
+            <td class="mono">0.8%</td>
+            <td class="ev-cell mono">179%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">10 ヴェールミューズ - 7 タイセイルビー - 11 スリーケイ</td>
+            <td class="mono">74.5</td>
+            <td class="mono">2.3%</td>
+            <td class="ev-cell mono">172%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">6 デルマサクラサク - 10 ヴェールミューズ - 7 タイセイルビー</td>
+            <td class="mono">70.4</td>
+            <td class="mono">2.4%</td>
+            <td class="ev-cell mono">171%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">6 デルマサクラサク - 9 ウィンターガーデン - 10 ヴェールミューズ</td>
+            <td class="mono">135.8</td>
+            <td class="mono">1.2%</td>
+            <td class="ev-cell mono">156%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">3 ライラックデューン - 2 ルージュリヴィエラ - 7 タイセイルビー</td>
+            <td class="mono">359.6</td>
+            <td class="mono">0.4%</td>
+            <td class="ev-cell mono">150%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">4 サイモンイロハニー - 10 ヴェールミューズ - 9 ウィンターガーデン</td>
+            <td class="mono">1355.8</td>
+            <td class="mono">0.1%</td>
+            <td class="ev-cell mono">149%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">4 サイモンイロハニー - 10 ヴェールミューズ - 7 タイセイルビー</td>
+            <td class="mono">605.9</td>
+            <td class="mono">0.2%</td>
+            <td class="ev-cell mono">140%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">10 ヴェールミューズ - 4 サイモンイロハニー - 2 ルージュリヴィエラ</td>
+            <td class="mono">745.5</td>
+            <td class="mono">0.2%</td>
+            <td class="ev-cell mono">137%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">3 ライラックデューン - 9 ウィンターガーデン - 10 ヴェールミューズ</td>
+            <td class="mono">369.5</td>
+            <td class="mono">0.4%</td>
+            <td class="ev-cell mono">134%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">6 デルマサクラサク - 4 サイモンイロハニー - 10 ヴェールミューズ</td>
+            <td class="mono">470.6</td>
+            <td class="mono">0.3%</td>
+            <td class="ev-cell mono">132%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">3 ライラックデューン - 9 ウィンターガーデン - 7 タイセイルビー</td>
+            <td class="mono">527.2</td>
+            <td class="mono">0.2%</td>
+            <td class="ev-cell mono">132%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">3 ライラックデューン - 7 タイセイルビー - 11 スリーケイ</td>
+            <td class="mono">212.4</td>
+            <td class="mono">0.6%</td>
+            <td class="ev-cell mono">129%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">10 ヴェールミューズ - 7 タイセイルビー - 12 ルージュボニート</td>
+            <td class="mono">27.7</td>
+            <td class="mono">4.7%</td>
+            <td class="ev-cell mono">129%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">6 デルマサクラサク - 10 ヴェールミューズ - 2 ルージュリヴィエラ</td>
+            <td class="mono">66.6</td>
+            <td class="mono">1.9%</td>
+            <td class="ev-cell mono">128%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">10 ヴェールミューズ - 2 ルージュリヴィエラ - 11 スリーケイ</td>
+            <td class="mono">69.2</td>
+            <td class="mono">1.8%</td>
+            <td class="ev-cell mono">127%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">3 ライラックデューン - 6 デルマサクラサク - 7 タイセイルビー</td>
+            <td class="mono">197.7</td>
+            <td class="mono">0.6%</td>
+            <td class="ev-cell mono">126%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">9 ウィンターガーデン - 10 ヴェールミューズ - 11 スリーケイ</td>
+            <td class="mono">112.8</td>
+            <td class="mono">1.1%</td>
+            <td class="ev-cell mono">124%</td>
+          </tr>
+          
+        </tbody>
+      </table>
+    </details>
+    
+    <details class="bet-group">
+      <summary>3連単 <span class="count">20点</span></summary>
+      <table class="ev-table">
+        <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
+        <tbody>
+          
+          <tr>
+            <td class="horses-cell">9 ウィンターガーデン → 10 ヴェールミューズ → 7 タイセイルビー</td>
+            <td class="mono">2159.0</td>
+            <td class="mono">0.1%</td>
+            <td class="ev-cell mono">318%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">3 ライラックデューン → 7 タイセイルビー → 2 ルージュリヴィエラ</td>
+            <td class="mono">4649.6</td>
+            <td class="mono">0.1%</td>
+            <td class="ev-cell mono">307%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">9 ウィンターガーデン → 10 ヴェールミューズ → 2 ルージュリヴィエラ</td>
+            <td class="mono">2502.1</td>
+            <td class="mono">0.1%</td>
+            <td class="ev-cell mono">301%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">9 ウィンターガーデン → 7 タイセイルビー → 10 ヴェールミューズ</td>
+            <td class="mono">2108.9</td>
+            <td class="mono">0.1%</td>
+            <td class="ev-cell mono">295%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">4 サイモンイロハニー → 10 ヴェールミューズ → 7 タイセイルビー</td>
+            <td class="mono">8620.5</td>
+            <td class="mono">0.0%</td>
+            <td class="ev-cell mono">294%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">9 ウィンターガーデン → 10 ヴェールミューズ → 12 ルージュボニート</td>
+            <td class="mono">972.8</td>
+            <td class="mono">0.3%</td>
+            <td class="ev-cell mono">285%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">10 ヴェールミューズ → 9 ウィンターガーデン → 7 タイセイルビー</td>
+            <td class="mono">1711.6</td>
+            <td class="mono">0.2%</td>
+            <td class="ev-cell mono">282%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">3 ライラックデューン → 2 ルージュリヴィエラ → 7 タイセイルビー</td>
+            <td class="mono">4294.5</td>
+            <td class="mono">0.1%</td>
+            <td class="ev-cell mono">276%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">9 ウィンターガーデン → 2 ルージュリヴィエラ → 10 ヴェールミューズ</td>
+            <td class="mono">2481.1</td>
+            <td class="mono">0.1%</td>
+            <td class="ev-cell mono">275%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">3 ライラックデューン → 7 タイセイルビー → 10 ヴェールミューズ</td>
+            <td class="mono">2470.7</td>
+            <td class="mono">0.1%</td>
+            <td class="ev-cell mono">274%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">3 ライラックデューン → 7 タイセイルビー → 12 ルージュボニート</td>
+            <td class="mono">1663.4</td>
+            <td class="mono">0.2%</td>
+            <td class="ev-cell mono">267%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">9 ウィンターガーデン → 10 ヴェールミューズ → 6 デルマサクラサク</td>
+            <td class="mono">1502.5</td>
+            <td class="mono">0.2%</td>
+            <td class="ev-cell mono">262%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">4 サイモンイロハニー → 7 タイセイルビー → 10 ヴェールミューズ</td>
+            <td class="mono">7979.8</td>
+            <td class="mono">0.0%</td>
+            <td class="ev-cell mono">259%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">4 サイモンイロハニー → 6 デルマサクラサク → 10 ヴェールミューズ</td>
+            <td class="mono">6524.9</td>
+            <td class="mono">0.0%</td>
+            <td class="ev-cell mono">256%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">7 タイセイルビー → 3 ライラックデューン → 10 ヴェールミューズ</td>
+            <td class="mono">2116.5</td>
+            <td class="mono">0.1%</td>
+            <td class="ev-cell mono">253%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">4 サイモンイロハニー → 10 ヴェールミューズ → 6 デルマサクラサク</td>
+            <td class="mono">6215.8</td>
+            <td class="mono">0.0%</td>
+            <td class="ev-cell mono">251%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">4 サイモンイロハニー → 10 ヴェールミューズ → 12 ルージュボニート</td>
+            <td class="mono">3690.6</td>
+            <td class="mono">0.1%</td>
+            <td class="ev-cell mono">250%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">2 ルージュリヴィエラ → 9 ウィンターガーデン → 10 ヴェールミューズ</td>
+            <td class="mono">2082.9</td>
+            <td class="mono">0.1%</td>
+            <td class="ev-cell mono">240%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">3 ライラックデューン → 7 タイセイルビー → 6 デルマサクラサク</td>
+            <td class="mono">2502.1</td>
+            <td class="mono">0.1%</td>
+            <td class="ev-cell mono">239%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">2 ルージュリヴィエラ → 10 ヴェールミューズ → 7 タイセイルビー</td>
+            <td class="mono">925.5</td>
+            <td class="mono">0.3%</td>
+            <td class="ev-cell mono">238%</td>
+          </tr>
+          
+        </tbody>
+      </table>
+    </details>
+    
+  </div>
+
+  <!-- ============ WIN5タブ ============ -->
   
 
   <div class="disclaimer">本ページの予想は参考情報です。的中・利益を保証しません。<br>馬券の購入は必ずご自身でIPAT等の公式ルートから行ってください。</div>
@@ -1054,14 +1218,25 @@
 
 <script>
 (function () {
-  const UNIT = 100;  // JRAの購入単位（100円）に丸める
+  // --- タブ切り替え ---
+  document.querySelectorAll('.tab-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      document.querySelectorAll('.tab-btn').forEach(function (b) { b.classList.remove('active'); });
+      document.querySelectorAll('.tab-panel').forEach(function (p) { p.classList.remove('active'); });
+      btn.classList.add('active');
+      document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+    });
+  });
 
+  // --- 購入プランの予算按分計算 ---
+  const UNIT = 100;
   function recalc() {
-    const budget = parseFloat(document.getElementById('budgetInput').value) || 0;
+    const budgetInput = document.getElementById('budgetInput');
+    if (!budgetInput) return;
+    const budget = parseFloat(budgetInput.value) || 0;
     const rows = Array.from(document.querySelectorAll('#planTable tbody tr[data-ev]'));
     const totalRow = document.getElementById('planTotalRow');
     const totalCell = document.getElementById('planTotal');
-
     if (!rows.length) return;
 
     if (budget <= 0) {
@@ -1070,15 +1245,13 @@
       return;
     }
 
-    // 期待値(EV)が高いものほど多く配分する（EVの合計に対する比率で按分）
-    const evs = rows.map(function (tr) { return Math.max(0, parseFloat(tr.dataset.ev) - 1); }); // 100%超過分だけを重みにする
+    const evs = rows.map(function (tr) { return Math.max(0, parseFloat(tr.dataset.ev) - 1); });
     const totalWeight = evs.reduce(function (a, b) { return a + b; }, 0);
 
     let allocated = 0;
     rows.forEach(function (tr, i) {
       const weight = totalWeight > 0 ? evs[i] / totalWeight : 1 / rows.length;
-      const raw = budget * weight;
-      const amount = Math.floor(raw / UNIT) * UNIT;
+      const amount = Math.floor((budget * weight) / UNIT) * UNIT;
       allocated += amount;
       tr.querySelector('.stake-cell').textContent = amount > 0 ? amount.toLocaleString('ja-JP') + '円' : '見送り';
     });
@@ -1088,11 +1261,8 @@
       totalCell.textContent = allocated.toLocaleString('ja-JP') + '円 / ' + budget.toLocaleString('ja-JP') + '円中';
     }
   }
-
-  const input = document.getElementById('budgetInput');
-  if (input) {
-    input.addEventListener('input', recalc);
-  }
+  const budgetInput = document.getElementById('budgetInput');
+  if (budgetInput) budgetInput.addEventListener('input', recalc);
 })();
 </script>
 </body>

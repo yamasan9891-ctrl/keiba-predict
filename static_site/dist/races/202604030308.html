@@ -30,23 +30,45 @@
   a { color: inherit; }
 
   header {
-    padding: 16px 16px 18px;
+    padding: 16px 16px 0;
     border-bottom: 1px solid var(--line);
   }
   .back { font-size: 12px; color: var(--text-dim); text-decoration: none; }
   .back:active { color: var(--amber); }
   h1 { font-size: 18px; margin: 10px 0 4px; font-weight: 800; }
-  .race-meta { font-size: 11.5px; color: var(--text-dim); }
+  .race-meta { font-size: 11.5px; color: var(--text-dim); padding-bottom: 12px; }
 
-  main { max-width: 760px; margin: 0 auto; padding: 0 14px; }
+  /* --- タブ --- */
+  .tabs {
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .tab-btn {
+    flex: 0 0 auto;
+    padding: 11px 16px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-dim);
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    font-family: inherit;
+  }
+  .tab-btn.active { color: var(--amber); border-bottom-color: var(--amber); }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  main { max-width: 760px; margin: 0 auto; padding: 14px 14px 0; }
 
   .section-title {
     font-size: 13.5px;
     font-weight: 800;
     color: var(--text);
-    margin: 28px 0 10px;
+    margin: 20px 0 10px;
     display: flex; align-items: baseline; gap: 8px;
   }
+  .section-title:first-child { margin-top: 4px; }
   .section-title .en {
     font-size: 9.5px; font-weight: 700; letter-spacing: 0.1em; color: var(--amber-dim);
     text-transform: uppercase;
@@ -63,66 +85,19 @@
   }
   .summary-text { font-size: 13px; line-height: 1.75; color: var(--text-dim); }
 
-  /* --- 結論：馬券風デザイン --- */
-  .ticket {
-    position: relative;
-    background: linear-gradient(180deg, #1a1408 0%, var(--surface) 70%);
-    border: 1px solid var(--amber-dim);
-    border-radius: 10px;
-    box-shadow: 0 0 0 1px rgba(240,162,2,0.08), 0 8px 24px -12px var(--amber-glow);
-    padding: 0;
-    overflow: hidden;
+  /* --- 出走表 --- */
+  .shutuba-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .shutuba-table th {
+    background: var(--surface-2); color: var(--text-dim); font-weight: 700; font-size: 10.5px;
+    padding: 8px 5px; border-bottom: 1px solid var(--line); white-space: nowrap;
   }
-  .ticket-head {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 10px 16px; background: rgba(240,162,2,0.08);
-    border-bottom: 1px dashed var(--amber-dim);
+  .shutuba-table td { padding: 8px 5px; text-align: center; border-bottom: 1px solid var(--line); }
+  .shutuba-table td.name-cell { text-align: left; font-weight: 700; }
+  .shutuba-table tr:last-child td { border-bottom: none; }
+  .waku {
+    display: inline-block; width: 18px; height: 18px; line-height: 18px;
+    border-radius: 3px; color: #111; font-weight: 800; font-size: 10.5px;
   }
-  .ticket-head .label { font-size: 11px; font-weight: 800; color: var(--amber); letter-spacing: 0.05em; }
-  .ticket-head .type-badge {
-    font-size: 11px; color: var(--bg); background: var(--amber);
-    font-weight: 800; padding: 3px 10px; border-radius: 3px;
-  }
-  .ticket-body { padding: 16px; }
-  .ticket .horses {
-    font-size: 20px; font-weight: 800; margin: 0 0 14px;
-    color: var(--text); line-height: 1.45;
-  }
-  .ticket-stats {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
-    padding: 12px 0; border-top: 1px dashed var(--line); border-bottom: 1px dashed var(--line);
-  }
-  .ticket-stats .stat { text-align: center; }
-  .ticket-stats .stat .label { font-size: 10px; color: var(--text-dim); }
-  .ticket-stats .stat .value { font-size: 16px; font-weight: 800; margin-top: 3px; }
-  .ticket-stats .stat.ev .value { color: var(--amber); }
-
-  .ticket-amount {
-    margin-top: 14px; padding: 12px; background: var(--surface-2);
-    border-radius: 6px; display: flex; justify-content: space-between; align-items: center;
-  }
-  .ticket-amount .label { font-size: 11px; color: var(--text-dim); }
-  .ticket-amount .value { font-size: 22px; font-weight: 800; color: var(--green); }
-  .ticket-amount .value::before { content: "¥"; font-size: 14px; margin-right: 2px; }
-
-  .footnote { font-size: 11px; color: var(--text-dim); margin-top: 12px; line-height: 1.6; padding: 0 16px 14px; }
-
-  /* --- 予算入力 --- */
-  .budget-box {
-    display: flex; align-items: center; gap: 10px;
-    background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
-    padding: 10px 14px; margin-bottom: 14px;
-  }
-  .budget-box label { font-size: 12px; color: var(--text-dim); white-space: nowrap; }
-  .budget-box input {
-    flex: 1; background: var(--surface-2); border: 1px solid var(--line); border-radius: 4px;
-    color: var(--text); font-size: 15px; padding: 7px 10px; font-family: inherit;
-    -moz-appearance: textfield;
-  }
-  .budget-box input::-webkit-outer-spin-button, .budget-box input::-webkit-inner-spin-button { margin: 0; }
-  .budget-box .unit { font-size: 12px; color: var(--text-dim); }
-  .stake-cell { color: var(--green); font-weight: 700; }
-
 
   /* --- 穴馬候補 --- */
   .dark-horse-card { border-left: 3px solid var(--green); }
@@ -136,7 +111,7 @@
   }
   .dh-stats { font-size: 11.5px; color: var(--text-dim); margin-top: 3px; }
 
-  /* --- 出走馬一覧 --- */
+  /* --- 出走馬ごとの評価 --- */
   .horse-item { padding: 12px 0; border-bottom: 1px solid var(--line); }
   .horse-item:last-child { border-bottom: none; }
   .horse-head { display: flex; justify-content: space-between; align-items: baseline; }
@@ -147,59 +122,55 @@
 
   /* --- 買い目一覧（折りたたみ） --- */
   details.bet-group {
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: 6px;
-    margin-bottom: 8px;
-    overflow: hidden;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
+    margin-bottom: 8px; overflow: hidden;
   }
   details.bet-group summary {
-    padding: 12px 14px;
-    cursor: pointer;
-    font-size: 13.5px;
-    font-weight: 700;
-    list-style: none;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    padding: 12px 14px; cursor: pointer; font-size: 13.5px; font-weight: 700;
+    list-style: none; display: flex; justify-content: space-between; align-items: center;
   }
   details.bet-group summary::-webkit-details-marker { display: none; }
   details.bet-group summary .count { font-size: 11px; color: var(--text-dim); font-weight: 500; }
-  details.bet-group summary::after {
-    content: "▾"; color: var(--amber-dim); margin-left: 8px; transition: transform 0.15s;
-  }
+  details.bet-group summary::after { content: "▾"; color: var(--amber-dim); margin-left: 8px; transition: transform 0.15s; }
   details.bet-group[open] summary::after { transform: rotate(180deg); }
 
-  table { width: 100%; border-collapse: collapse; font-size: 12px; }
-  th {
-    background: var(--surface-2);
-    color: var(--text-dim);
-    font-weight: 700;
-    font-size: 11px;
-    padding: 8px 6px;
-    border-top: 1px solid var(--line);
-    border-bottom: 1px solid var(--line);
+  table.ev-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  table.ev-table th {
+    background: var(--surface-2); color: var(--text-dim); font-weight: 700; font-size: 11px;
+    padding: 8px 6px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
   }
-  td {
-    padding: 8px 6px;
-    text-align: center;
-    border-bottom: 1px solid var(--line);
-  }
-  td.horses-cell { text-align: left; }
-  tr:last-child td { border-bottom: none; }
+  table.ev-table td { padding: 8px 6px; text-align: center; border-bottom: 1px solid var(--line); }
+  table.ev-table td.horses-cell { text-align: left; }
+  table.ev-table tr:last-child td { border-bottom: none; }
   td.ev-cell { color: var(--green); font-weight: 700; }
 
+  /* --- 予算入力 --- */
+  .budget-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
+    padding: 10px 14px; margin-bottom: 14px;
+  }
+  .budget-box label { font-size: 12px; color: var(--text-dim); white-space: nowrap; }
+  .budget-box input {
+    flex: 1; background: var(--surface-2); border: 1px solid var(--line); border-radius: 4px;
+    color: var(--text); font-size: 15px; padding: 7px 10px; font-family: inherit;
+  }
+  .budget-box .unit { font-size: 12px; color: var(--text-dim); }
+  .stake-cell { color: var(--green); font-weight: 700; }
+
   /* --- WIN5 --- */
-  .win5-row { font-size: 12.5px; padding: 7px 0; border-bottom: 1px dashed var(--line); }
+  .win5-banner {
+    background: linear-gradient(135deg, #1a1408, var(--surface));
+    border: 1px solid var(--amber-dim); border-radius: 8px; padding: 14px 16px; margin-bottom: 14px;
+  }
+  .win5-banner .label { font-size: 11px; font-weight: 800; color: var(--amber); letter-spacing: 0.05em; }
+  .win5-banner .races { font-size: 12.5px; color: var(--text-dim); margin-top: 6px; }
+  .win5-row { font-size: 13px; padding: 9px 0; border-bottom: 1px dashed var(--line); }
   .win5-row:last-child { border-bottom: none; }
-  .win5-rank { display: inline-block; width: 18px; color: var(--amber-dim); }
+  .win5-rank { display: inline-block; width: 20px; color: var(--amber-dim); font-weight: 800; }
 
   .disclaimer {
-    margin-top: 26px;
-    font-size: 11px;
-    color: var(--text-dim);
-    text-align: center;
-    line-height: 1.7;
+    margin-top: 26px; font-size: 11px; color: var(--text-dim); text-align: center; line-height: 1.7;
   }
 </style>
 </head>
@@ -208,864 +179,1042 @@
   <a class="back" href="../index.html">← 今週のレース一覧</a>
   <h1>新潟 8R　BSN賞</h1>
   <div class="race-meta mono">ダート1800m ／ 馬場:稍重 ／ 天候:曇</div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="shutuba">出走表</button>
+    <button class="tab-btn" data-tab="prediction">予想</button>
+    <button class="tab-btn" data-tab="betting">買い目</button>
+    <button class="tab-btn" data-tab="win5">WIN5</button>
+  </div>
 </header>
 
 <main>
-  <div class="card summary-text">明確な逃げ馬が不在で、スローペースになりやすく先行馬が有利になりやすい。馬場状態は「稍重」。</div>
-
-  
-  <div class="section-title"><span class="en">Betting Plan</span>AI推奨 購入プラン</div>
-  <div class="section-hint">実際の投票は複数点に分けるのが基本のため、期待値が高い順に複数の買い目を組み合わせています。予算を入れると自動で配分します。</div>
-  <div class="budget-box">
-    <label for="budgetInput">今回の予算</label>
-    <input type="number" id="budgetInput" inputmode="numeric" placeholder="例: 3000" min="0" step="100">
-    <span class="unit">円</span>
-  </div>
-  <div class="card" style="padding:0; overflow:hidden;">
-    <table id="planTable">
-      <thead><tr><th>券種</th><th>買い目</th><th>オッズ</th><th>期待値</th><th>配分額</th></tr></thead>
-      <tbody>
-        
-        <tr data-ev="2.9980283862919577">
-          <td class="mono">馬連</td>
-          <td class="horses-cell">7 メイショウズイウン - 11 ベルイストワール</td>
-          <td class="mono">290.4</td>
-          <td class="ev-cell mono">300%</td>
-          <td class="mono stake-cell">-</td>
-        </tr>
-        
-        <tr data-ev="1.8829076026098528">
-          <td class="mono">馬連</td>
-          <td class="horses-cell">6 カズタンジャー - 11 ベルイストワール</td>
-          <td class="mono">155.2</td>
-          <td class="ev-cell mono">188%</td>
-          <td class="mono stake-cell">-</td>
-        </tr>
-        
-        <tr data-ev="1.8658572430681437">
-          <td class="mono">3連複</td>
-          <td class="horses-cell">1 ピカピカサンダー - 6 カズタンジャー - 7 メイショウズイウン</td>
-          <td class="mono">81.2</td>
-          <td class="ev-cell mono">187%</td>
-          <td class="mono stake-cell">-</td>
-        </tr>
-        
-        <tr data-ev="1.7350738112165014">
-          <td class="mono">馬連</td>
-          <td class="horses-cell">7 メイショウズイウン - 6 カズタンジャー</td>
-          <td class="mono">30.6</td>
-          <td class="ev-cell mono">174%</td>
-          <td class="mono stake-cell">-</td>
-        </tr>
-        
-        <tr data-ev="1.7219567003398968">
-          <td class="mono">単勝</td>
-          <td class="horses-cell">11 ベルイストワール</td>
-          <td class="mono">52.8</td>
-          <td class="ev-cell mono">172%</td>
-          <td class="mono stake-cell">-</td>
-        </tr>
-        
-        <tr id="planTotalRow" style="display:none;">
-          <td colspan="4" style="text-align:right; font-weight:800;">合計</td>
-          <td class="mono" id="planTotal" style="font-weight:800; color:var(--green);">-</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <div class="footnote">配分額は、各買い目の期待値の大きさに比例して予算を振り分けた目安です（期待値が高いものほど多く配分）。1点に集中させず、複数点に分けて購入することでブレを抑える考え方に基づいています。あくまで参考情報であり、的中や利益を保証するものではありません。</div>
-  
-
-  
-  <div class="section-title"><span class="en">Dark Horses</span>穴馬候補</div>
-  <div class="section-hint">人気は低いのに、モデルの評価に対してオッズが割安な馬です。</div>
-  <div class="card dark-horse-card">
-    
-    <div class="dark-horse-item">
-      <span class="dh-name">ベルイストワール</span><span class="dh-badge">8番人気</span>
-      <div class="dh-stats mono">オッズ 52.8倍 ／ 勝率目安 3.3% ／ 期待値 172%</div>
+  <!-- ============ 出走表タブ（最初に表示） ============ -->
+  <div class="tab-panel active" id="panel-shutuba">
+    <div class="card summary-text">明確な逃げ馬が不在で、スローペースになりやすく先行馬が有利になりやすい。馬場状態は「稍重」。</div>
+    <div class="card" style="padding:0; overflow-x:auto;">
+      <table class="shutuba-table">
+        <thead>
+          <tr>
+            <th>枠</th><th>馬番</th><th>馬名</th><th>性齢</th><th>斤量</th>
+            <th>騎手</th><th>厩舎</th><th>馬体重</th><th>人気</th><th>オッズ</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+          <tr>
+            <td>1</td>
+            <td class="mono">1</td>
+            <td class="name-cell">ピカピカサンダー</td>
+            <td class="mono">牡4</td>
+            <td class="mono">57.0</td>
+            <td>三浦</td>
+            <td>美浦鹿戸</td>
+            <td class="mono">500(-6)</td>
+            <td class="mono">3</td>
+            <td class="mono">7.3</td>
+          </tr>
+          
+          <tr>
+            <td>2</td>
+            <td class="mono">2</td>
+            <td class="name-cell">アムールドパリ</td>
+            <td class="mono">牝5</td>
+            <td class="mono">55.0</td>
+            <td>田辺</td>
+            <td>美浦稲垣</td>
+            <td class="mono">452(-2)</td>
+            <td class="mono">5</td>
+            <td class="mono">8.0</td>
+          </tr>
+          
+          <tr>
+            <td>3</td>
+            <td class="mono">3</td>
+            <td class="name-cell">タガノバビロン</td>
+            <td class="mono">牡4</td>
+            <td class="mono">57.0</td>
+            <td>松山</td>
+            <td>栗東西園翔</td>
+            <td class="mono">522(+2)</td>
+            <td class="mono">1</td>
+            <td class="mono">2.0</td>
+          </tr>
+          
+          <tr>
+            <td>4</td>
+            <td class="mono">4</td>
+            <td class="name-cell">フタイテンロック</td>
+            <td class="mono">牡7</td>
+            <td class="mono">57.0</td>
+            <td>小崎</td>
+            <td>美浦佐藤吉</td>
+            <td class="mono">504(0)</td>
+            <td class="mono">9</td>
+            <td class="mono">53.0</td>
+          </tr>
+          
+          <tr>
+            <td>5</td>
+            <td class="mono">5</td>
+            <td class="name-cell">ショウナンライシン</td>
+            <td class="mono">牡6</td>
+            <td class="mono">58.0</td>
+            <td>原</td>
+            <td>美浦大竹</td>
+            <td class="mono">504(+4)</td>
+            <td class="mono">7</td>
+            <td class="mono">33.3</td>
+          </tr>
+          
+          <tr>
+            <td>6</td>
+            <td class="mono">6</td>
+            <td class="name-cell">カズタンジャー</td>
+            <td class="mono">牡5</td>
+            <td class="mono">59.0</td>
+            <td>ルメール</td>
+            <td>栗東新谷</td>
+            <td class="mono">508(+6)</td>
+            <td class="mono">2</td>
+            <td class="mono">5.8</td>
+          </tr>
+          
+          <tr>
+            <td>6</td>
+            <td class="mono">7</td>
+            <td class="name-cell">メイショウズイウン</td>
+            <td class="mono">牡4</td>
+            <td class="mono">57.0</td>
+            <td>石橋脩</td>
+            <td>栗東本田</td>
+            <td class="mono">490(-6)</td>
+            <td class="mono">4</td>
+            <td class="mono">7.8</td>
+          </tr>
+          
+          <tr>
+            <td>7</td>
+            <td class="mono">8</td>
+            <td class="name-cell">ピースオブザライフ</td>
+            <td class="mono">牝6</td>
+            <td class="mono">55.0</td>
+            <td>武藤</td>
+            <td>栗東野中</td>
+            <td class="mono">476(+12)</td>
+            <td class="mono">11</td>
+            <td class="mono">179.3</td>
+          </tr>
+          
+          <tr>
+            <td>7</td>
+            <td class="mono">9</td>
+            <td class="name-cell">ハセドン</td>
+            <td class="mono">牡7</td>
+            <td class="mono">58.0</td>
+            <td>菊沢</td>
+            <td>美浦大和田</td>
+            <td class="mono">486(+4)</td>
+            <td class="mono">10</td>
+            <td class="mono">65.2</td>
+          </tr>
+          
+          <tr>
+            <td>8</td>
+            <td class="mono">10</td>
+            <td class="name-cell">ハビレ</td>
+            <td class="mono">牡5</td>
+            <td class="mono">57.0</td>
+            <td>岩田康</td>
+            <td>美浦武井</td>
+            <td class="mono">510(+2)</td>
+            <td class="mono">6</td>
+            <td class="mono">8.4</td>
+          </tr>
+          
+          <tr>
+            <td>8</td>
+            <td class="mono">11</td>
+            <td class="name-cell">ベルイストワール</td>
+            <td class="mono">牝5</td>
+            <td class="mono">55.0</td>
+            <td>杉原</td>
+            <td>美浦松尾</td>
+            <td class="mono">554(0)</td>
+            <td class="mono">8</td>
+            <td class="mono">52.8</td>
+          </tr>
+          
+        </tbody>
+      </table>
     </div>
-    
-    <div class="dark-horse-item">
-      <span class="dh-name">ショウナンライシン</span><span class="dh-badge">7番人気</span>
-      <div class="dh-stats mono">オッズ 33.3倍 ／ 勝率目安 4.5% ／ 期待値 150%</div>
-    </div>
-    
-    <div class="dark-horse-item">
-      <span class="dh-name">フタイテンロック</span><span class="dh-badge">9番人気</span>
-      <div class="dh-stats mono">オッズ 53.0倍 ／ 勝率目安 2.2% ／ 期待値 115%</div>
-    </div>
-    
-  </div>
-  
-
-  <div class="section-title"><span class="en">Entries</span>出走馬ごとの評価</div>
-  <div class="card">
-    
-    <div class="horse-item">
-      <div class="horse-head">
-        <span class="horse-name"><span class="horse-num mono">3</span>タガノバビロン</span>
-        <span class="horse-prob mono">複勝圏内 76%</span>
-      </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約76%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
-    </div>
-    
-    <div class="horse-item">
-      <div class="horse-head">
-        <span class="horse-name"><span class="horse-num mono">6</span>カズタンジャー</span>
-        <span class="horse-prob mono">複勝圏内 51%</span>
-      </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約51%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は2.0着と好調を維持。</div>
-    </div>
-    
-    <div class="horse-item">
-      <div class="horse-head">
-        <span class="horse-name"><span class="horse-num mono">7</span>メイショウズイウン</span>
-        <span class="horse-prob mono">複勝圏内 44%</span>
-      </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約44%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は9.3着とやや不振。</div>
-    </div>
-    
-    <div class="horse-item">
-      <div class="horse-head">
-        <span class="horse-name"><span class="horse-num mono">10</span>ハビレ</span>
-        <span class="horse-prob mono">複勝圏内 36%</span>
-      </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約36%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
-    </div>
-    
-    <div class="horse-item">
-      <div class="horse-head">
-        <span class="horse-name"><span class="horse-num mono">1</span>ピカピカサンダー</span>
-        <span class="horse-prob mono">複勝圏内 30%</span>
-      </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約30%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は13.7着とやや不振。</div>
-    </div>
-    
-    <div class="horse-item">
-      <div class="horse-head">
-        <span class="horse-name"><span class="horse-num mono">2</span>アムールドパリ</span>
-        <span class="horse-prob mono">複勝圏内 30%</span>
-      </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約30%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は8.3着とやや不振。</div>
-    </div>
-    
-    <div class="horse-item">
-      <div class="horse-head">
-        <span class="horse-name"><span class="horse-num mono">5</span>ショウナンライシン</span>
-        <span class="horse-prob mono">複勝圏内 14%</span>
-      </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約14%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は10.0着とやや不振。</div>
-    </div>
-    
-    <div class="horse-item">
-      <div class="horse-head">
-        <span class="horse-name"><span class="horse-num mono">11</span>ベルイストワール</span>
-        <span class="horse-prob mono">複勝圏内 10%</span>
-      </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約10%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は8.0着とやや不振。</div>
-    </div>
-    
-    <div class="horse-item">
-      <div class="horse-head">
-        <span class="horse-name"><span class="horse-num mono">4</span>フタイテンロック</span>
-        <span class="horse-prob mono">複勝圏内 7%</span>
-      </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約7%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は12.7着とやや不振。</div>
-    </div>
-    
-    <div class="horse-item">
-      <div class="horse-head">
-        <span class="horse-name"><span class="horse-num mono">9</span>ハセドン</span>
-        <span class="horse-prob mono">複勝圏内 5%</span>
-      </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約5%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は10.0着とやや不振。</div>
-    </div>
-    
-    <div class="horse-item">
-      <div class="horse-head">
-        <span class="horse-name"><span class="horse-num mono">8</span>ピースオブザライフ</span>
-        <span class="horse-prob mono">複勝圏内 2%</span>
-      </div>
-      <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約2%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は12.0着とやや不振。</div>
-    </div>
-    
   </div>
 
-  <div class="section-title"><span class="en">All Bets</span>券種ごとの買い目一覧（参考）</div>
-  <div class="section-hint">期待値100%を超えるものを全て表示しています。上の「購入プラン」はこの中から自動選定したものです。</div>
-  
-  <details class="bet-group" open>
-    <summary>単勝 <span class="count">5点</span></summary>
-    <table>
-      <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
-      <tbody>
-        
-        <tr>
-          <td class="horses-cell">11 ベルイストワール</td>
-          <td class="mono">52.8</td>
-          <td class="mono">3.3%</td>
-          <td class="ev-cell mono">172%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">5 ショウナンライシン</td>
-          <td class="mono">33.3</td>
-          <td class="mono">4.5%</td>
-          <td class="ev-cell mono">150%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">8 ピースオブザライフ</td>
-          <td class="mono">179.3</td>
-          <td class="mono">0.7%</td>
-          <td class="ev-cell mono">127%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">4 フタイテンロック</td>
-          <td class="mono">53.0</td>
-          <td class="mono">2.2%</td>
-          <td class="ev-cell mono">115%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">7 メイショウズイウン</td>
-          <td class="mono">7.8</td>
-          <td class="mono">14.4%</td>
-          <td class="ev-cell mono">112%</td>
-        </tr>
-        
-      </tbody>
-    </table>
-  </details>
-  
-  <details class="bet-group">
-    <summary>馬連 <span class="count">20点</span></summary>
-    <table>
-      <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
-      <tbody>
-        
-        <tr>
-          <td class="horses-cell">7 メイショウズイウン - 11 ベルイストワール</td>
-          <td class="mono">290.4</td>
-          <td class="mono">1.0%</td>
-          <td class="ev-cell mono">300%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">6 カズタンジャー - 11 ベルイストワール</td>
-          <td class="mono">155.2</td>
-          <td class="mono">1.2%</td>
-          <td class="ev-cell mono">188%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">7 メイショウズイウン - 6 カズタンジャー</td>
-          <td class="mono">30.6</td>
-          <td class="mono">5.7%</td>
-          <td class="ev-cell mono">174%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">8 ピースオブザライフ - 7 メイショウズイウン</td>
-          <td class="mono">731.9</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">162%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">7 メイショウズイウン - 5 ショウナンライシン</td>
-          <td class="mono">106.9</td>
-          <td class="mono">1.4%</td>
-          <td class="ev-cell mono">153%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">6 カズタンジャー - 5 ショウナンライシン</td>
-          <td class="mono">89.6</td>
-          <td class="mono">1.7%</td>
-          <td class="ev-cell mono">151%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">1 ピカピカサンダー - 11 ベルイストワール</td>
-          <td class="mono">190.4</td>
-          <td class="mono">0.7%</td>
-          <td class="ev-cell mono">133%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">2 アムールドパリ - 11 ベルイストワール</td>
-          <td class="mono">179.4</td>
-          <td class="mono">0.7%</td>
-          <td class="ev-cell mono">125%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">1 ピカピカサンダー - 6 カズタンジャー</td>
-          <td class="mono">31.2</td>
-          <td class="mono">3.8%</td>
-          <td class="ev-cell mono">120%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">5 ショウナンライシン - 11 ベルイストワール</td>
-          <td class="mono">393.3</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">120%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">6 カズタンジャー - 10 ハビレ</td>
-          <td class="mono">25.6</td>
-          <td class="mono">4.6%</td>
-          <td class="ev-cell mono">118%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">2 アムールドパリ - 7 メイショウズイウン</td>
-          <td class="mono">33.7</td>
-          <td class="mono">3.3%</td>
-          <td class="ev-cell mono">110%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">4 フタイテンロック - 7 メイショウズイウン</td>
-          <td class="mono">160.7</td>
-          <td class="mono">0.7%</td>
-          <td class="ev-cell mono">110%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">7 メイショウズイウン - 9 ハセドン</td>
-          <td class="mono">225.1</td>
-          <td class="mono">0.5%</td>
-          <td class="ev-cell mono">108%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">1 ピカピカサンダー - 7 メイショウズイウン</td>
-          <td class="mono">32.8</td>
-          <td class="mono">3.3%</td>
-          <td class="ev-cell mono">107%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">4 フタイテンロック - 6 カズタンジャー</td>
-          <td class="mono">133.6</td>
-          <td class="mono">0.8%</td>
-          <td class="ev-cell mono">107%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">2 アムールドパリ - 6 カズタンジャー</td>
-          <td class="mono">27.6</td>
-          <td class="mono">3.8%</td>
-          <td class="ev-cell mono">106%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">10 ハビレ - 11 ベルイストワール</td>
-          <td class="mono">126.2</td>
-          <td class="mono">0.8%</td>
-          <td class="ev-cell mono">106%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">6 カズタンジャー - 9 ハセドン</td>
-          <td class="mono">184.3</td>
-          <td class="mono">0.6%</td>
-          <td class="ev-cell mono">104%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">8 ピースオブザライフ - 6 カズタンジャー</td>
-          <td class="mono">394.5</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">103%</td>
-        </tr>
-        
-      </tbody>
-    </table>
-  </details>
-  
-  <details class="bet-group">
-    <summary>馬単 <span class="count">20点</span></summary>
-    <table>
-      <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
-      <tbody>
-        
-        <tr>
-          <td class="horses-cell">11 ベルイストワール → 7 メイショウズイウン</td>
-          <td class="mono">735.2</td>
-          <td class="mono">0.5%</td>
-          <td class="ev-cell mono">356%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">7 メイショウズイウン → 11 ベルイストワール</td>
-          <td class="mono">551.7</td>
-          <td class="mono">0.5%</td>
-          <td class="ev-cell mono">302%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">11 ベルイストワール → 6 カズタンジャー</td>
-          <td class="mono">444.0</td>
-          <td class="mono">0.6%</td>
-          <td class="ev-cell mono">249%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">11 ベルイストワール → 1 ピカピカサンダー</td>
-          <td class="mono">555.1</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">187%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">5 ショウナンライシン → 6 カズタンジャー</td>
-          <td class="mono">226.7</td>
-          <td class="mono">0.8%</td>
-          <td class="ev-cell mono">178%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">11 ベルイストワール → 2 アムールドパリ</td>
-          <td class="mono">521.8</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">176%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">8 ピースオブザライフ → 7 メイショウズイウン</td>
-          <td class="mono">1710.3</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">176%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">6 カズタンジャー → 7 メイショウズイウン</td>
-          <td class="mono">58.5</td>
-          <td class="mono">2.9%</td>
-          <td class="ev-cell mono">168%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">7 メイショウズイウン → 6 カズタンジャー</td>
-          <td class="mono">56.6</td>
-          <td class="mono">2.8%</td>
-          <td class="ev-cell mono">158%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">11 ベルイストワール → 3 タガノバビロン</td>
-          <td class="mono">185.3</td>
-          <td class="mono">0.8%</td>
-          <td class="ev-cell mono">156%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">5 ショウナンライシン → 7 メイショウズイウン</td>
-          <td class="mono">219.7</td>
-          <td class="mono">0.7%</td>
-          <td class="ev-cell mono">149%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">9 ハセドン → 7 メイショウズイウン</td>
-          <td class="mono">662.3</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">148%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">11 ベルイストワール → 5 ショウナンライシン</td>
-          <td class="mono">965.8</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">146%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">4 フタイテンロック → 7 メイショウズイウン</td>
-          <td class="mono">448.7</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">143%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">6 カズタンジャー → 11 ベルイストワール</td>
-          <td class="mono">210.9</td>
-          <td class="mono">0.7%</td>
-          <td class="ev-cell mono">137%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">11 ベルイストワール → 10 ハビレ</td>
-          <td class="mono">339.3</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">136%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">7 メイショウズイウン → 8 ピースオブザライフ</td>
-          <td class="mono">1139.2</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">136%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">4 フタイテンロック → 6 カズタンジャー</td>
-          <td class="mono">367.0</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">135%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">7 メイショウズイウン → 5 ショウナンライシン</td>
-          <td class="mono">176.3</td>
-          <td class="mono">0.8%</td>
-          <td class="ev-cell mono">133%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">5 ショウナンライシン → 11 ベルイストワール</td>
-          <td class="mono">866.8</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">133%</td>
-        </tr>
-        
-      </tbody>
-    </table>
-  </details>
-  
-  <details class="bet-group">
-    <summary>3連複 <span class="count">20点</span></summary>
-    <table>
-      <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
-      <tbody>
-        
-        <tr>
-          <td class="horses-cell">7 メイショウズイウン - 6 カズタンジャー - 11 ベルイストワール</td>
-          <td class="mono">566.0</td>
-          <td class="mono">0.7%</td>
-          <td class="ev-cell mono">393%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">2 アムールドパリ - 7 メイショウズイウン - 11 ベルイストワール</td>
-          <td class="mono">566.3</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">217%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">7 メイショウズイウン - 5 ショウナンライシン - 11 ベルイストワール</td>
-          <td class="mono">1182.2</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">191%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">7 メイショウズイウン - 6 カズタンジャー - 5 ショウナンライシン</td>
-          <td class="mono">196.3</td>
-          <td class="mono">1.0%</td>
-          <td class="ev-cell mono">190%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">1 ピカピカサンダー - 11 ベルイストワール - 7 メイショウズイウン</td>
-          <td class="mono">495.7</td>
-          <td class="mono">0.4%</td>
-          <td class="ev-cell mono">190%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">8 ピースオブザライフ - 7 メイショウズイウン - 6 カズタンジャー</td>
-          <td class="mono">1285.2</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">189%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">1 ピカピカサンダー - 6 カズタンジャー - 7 メイショウズイウン</td>
-          <td class="mono">81.2</td>
-          <td class="mono">2.3%</td>
-          <td class="ev-cell mono">187%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">2 アムールドパリ - 7 メイショウズイウン - 6 カズタンジャー</td>
-          <td class="mono">72.5</td>
-          <td class="mono">2.3%</td>
-          <td class="ev-cell mono">167%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">7 メイショウズイウン - 10 ハビレ - 11 ベルイストワール</td>
-          <td class="mono">341.5</td>
-          <td class="mono">0.5%</td>
-          <td class="ev-cell mono">159%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">7 メイショウズイウン - 3 タガノバビロン - 11 ベルイストワール</td>
-          <td class="mono">132.9</td>
-          <td class="mono">1.2%</td>
-          <td class="ev-cell mono">157%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">1 ピカピカサンダー - 6 カズタンジャー - 11 ベルイストワール</td>
-          <td class="mono">338.5</td>
-          <td class="mono">0.5%</td>
-          <td class="ev-cell mono">155%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">7 メイショウズイウン - 6 カズタンジャー - 10 ハビレ</td>
-          <td class="mono">52.1</td>
-          <td class="mono">2.8%</td>
-          <td class="ev-cell mono">145%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">4 フタイテンロック - 11 ベルイストワール - 7 メイショウズイウン</td>
-          <td class="mono">1875.2</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">142%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">6 カズタンジャー - 5 ショウナンライシン - 11 ベルイストワール</td>
-          <td class="mono">706.5</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">136%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">7 メイショウズイウン - 6 カズタンジャー - 9 ハセドン</td>
-          <td class="mono">410.6</td>
-          <td class="mono">0.3%</td>
-          <td class="ev-cell mono">131%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">1 ピカピカサンダー - 6 カズタンジャー - 5 ショウナンライシン</td>
-          <td class="mono">205.8</td>
-          <td class="mono">0.6%</td>
-          <td class="ev-cell mono">131%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">2 アムールドパリ - 6 カズタンジャー - 11 ベルイストワール</td>
-          <td class="mono">284.0</td>
-          <td class="mono">0.5%</td>
-          <td class="ev-cell mono">130%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">6 カズタンジャー - 10 ハビレ - 11 ベルイストワール</td>
-          <td class="mono">230.4</td>
-          <td class="mono">0.6%</td>
-          <td class="ev-cell mono">128%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">7 メイショウズイウン - 9 ハセドン - 11 ベルイストワール</td>
-          <td class="mono">2396.6</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">128%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">4 フタイテンロック - 6 カズタンジャー - 7 メイショウズイウン</td>
-          <td class="mono">278.7</td>
-          <td class="mono">0.5%</td>
-          <td class="ev-cell mono">127%</td>
-        </tr>
-        
-      </tbody>
-    </table>
-  </details>
-  
-  <details class="bet-group">
-    <summary>3連単 <span class="count">20点</span></summary>
-    <table>
-      <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
-      <tbody>
-        
-        <tr>
-          <td class="horses-cell">11 ベルイストワール → 7 メイショウズイウン → 6 カズタンジャー</td>
-          <td class="mono">8076.3</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">792%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">11 ベルイストワール → 6 カズタンジャー → 7 メイショウズイウン</td>
-          <td class="mono">7220.6</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">728%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">7 メイショウズイウン → 11 ベルイストワール → 6 カズタンジャー</td>
-          <td class="mono">4672.7</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">518%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">6 カズタンジャー → 11 ベルイストワール → 7 メイショウズイウン</td>
-          <td class="mono">3650.5</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">427%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">11 ベルイストワール → 7 メイショウズイウン → 2 アムールドパリ</td>
-          <td class="mono">6541.8</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">385%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">8 ピースオブザライフ → 7 メイショウズイウン → 6 カズタンジャー</td>
-          <td class="mono">17036.1</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">343%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">7 メイショウズイウン → 11 ベルイストワール → 2 アムールドパリ</td>
-          <td class="mono">5134.9</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">341%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">11 ベルイストワール → 7 メイショウズイウン → 1 ピカピカサンダー</td>
-          <td class="mono">5789.2</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">341%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">8 ピースオブザライフ → 6 カズタンジャー → 7 メイショウズイウン</td>
-          <td class="mono">16273.3</td>
-          <td class="mono">0.0%</td>
-          <td class="ev-cell mono">337%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">11 ベルイストワール → 2 アムールドパリ → 7 メイショウズイウン</td>
-          <td class="mono">5990.7</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">335%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">11 ベルイストワール → 7 メイショウズイウン → 3 タガノバビロン</td>
-          <td class="mono">2263.6</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">332%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">5 ショウナンライシン → 7 メイショウズイウン → 6 カズタンジャー</td>
-          <td class="mono">2368.5</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">329%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">7 メイショウズイウン → 11 ベルイストワール → 3 タガノバビロン</td>
-          <td class="mono">1956.3</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">324%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">5 ショウナンライシン → 6 カズタンジャー → 7 メイショウズイウン</td>
-          <td class="mono">2201.1</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">315%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">6 カズタンジャー → 7 メイショウズイウン → 11 ベルイストワール</td>
-          <td class="mono">2277.8</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">309%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">7 メイショウズイウン → 6 カズタンジャー → 11 ベルイストワール</td>
-          <td class="mono">2277.8</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">301%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">11 ベルイストワール → 1 ピカピカサンダー → 7 メイショウズイウン</td>
-          <td class="mono">5379.8</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">301%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">11 ベルイストワール → 7 メイショウズイウン → 10 ハビレ</td>
-          <td class="mono">4292.5</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">300%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">11 ベルイストワール → 3 タガノバビロン → 7 メイショウズイウン</td>
-          <td class="mono">1775.7</td>
-          <td class="mono">0.2%</td>
-          <td class="ev-cell mono">299%</td>
-        </tr>
-        
-        <tr>
-          <td class="horses-cell">7 メイショウズイウン → 11 ベルイストワール → 1 ピカピカサンダー</td>
-          <td class="mono">4320.9</td>
-          <td class="mono">0.1%</td>
-          <td class="ev-cell mono">287%</td>
-        </tr>
-        
-      </tbody>
-    </table>
-  </details>
-  
+  <!-- ============ 予想タブ ============ -->
+  <div class="tab-panel" id="panel-prediction">
+    
+    <div class="section-title"><span class="en">Dark Horses</span>穴馬候補</div>
+    <div class="section-hint">人気は低いのに、モデルの評価に対してオッズが割安な馬です。</div>
+    <div class="card dark-horse-card">
+      
+      <div class="dark-horse-item">
+        <span class="dh-name">ベルイストワール</span><span class="dh-badge">8番人気</span>
+        <div class="dh-stats mono">オッズ 52.8倍 ／ 勝率目安 3.5% ／ 期待値 184%</div>
+      </div>
+      
+      <div class="dark-horse-item">
+        <span class="dh-name">ショウナンライシン</span><span class="dh-badge">7番人気</span>
+        <div class="dh-stats mono">オッズ 33.3倍 ／ 勝率目安 5.5% ／ 期待値 183%</div>
+      </div>
+      
+      <div class="dark-horse-item">
+        <span class="dh-name">フタイテンロック</span><span class="dh-badge">9番人気</span>
+        <div class="dh-stats mono">オッズ 53.0倍 ／ 勝率目安 2.1% ／ 期待値 109%</div>
+      </div>
+      
+    </div>
+    
 
+    <div class="section-title"><span class="en">Entries</span>出走馬ごとの評価</div>
+    <div class="card">
+      
+      <div class="horse-item">
+        <div class="horse-head">
+          <span class="horse-name"><span class="horse-num mono">3</span>タガノバビロン</span>
+          <span class="horse-prob mono">複勝圏内 72%</span>
+        </div>
+        <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約72%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
+      </div>
+      
+      <div class="horse-item">
+        <div class="horse-head">
+          <span class="horse-name"><span class="horse-num mono">6</span>カズタンジャー</span>
+          <span class="horse-prob mono">複勝圏内 52%</span>
+        </div>
+        <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約52%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は2.0着と好調を維持。</div>
+      </div>
+      
+      <div class="horse-item">
+        <div class="horse-head">
+          <span class="horse-name"><span class="horse-num mono">7</span>メイショウズイウン</span>
+          <span class="horse-prob mono">複勝圏内 45%</span>
+        </div>
+        <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約45%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は9.3着とやや不振。</div>
+      </div>
+      
+      <div class="horse-item">
+        <div class="horse-head">
+          <span class="horse-name"><span class="horse-num mono">10</span>ハビレ</span>
+          <span class="horse-prob mono">複勝圏内 36%</span>
+        </div>
+        <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約36%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
+      </div>
+      
+      <div class="horse-item">
+        <div class="horse-head">
+          <span class="horse-name"><span class="horse-num mono">1</span>ピカピカサンダー</span>
+          <span class="horse-prob mono">複勝圏内 36%</span>
+        </div>
+        <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約36%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は13.7着とやや不振。</div>
+      </div>
+      
+      <div class="horse-item">
+        <div class="horse-head">
+          <span class="horse-name"><span class="horse-num mono">2</span>アムールドパリ</span>
+          <span class="horse-prob mono">複勝圏内 30%</span>
+        </div>
+        <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約30%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は8.3着とやや不振。</div>
+      </div>
+      
+      <div class="horse-item">
+        <div class="horse-head">
+          <span class="horse-name"><span class="horse-num mono">5</span>ショウナンライシン</span>
+          <span class="horse-prob mono">複勝圏内 17%</span>
+        </div>
+        <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約17%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は10.0着とやや不振。</div>
+      </div>
+      
+      <div class="horse-item">
+        <div class="horse-head">
+          <span class="horse-name"><span class="horse-num mono">11</span>ベルイストワール</span>
+          <span class="horse-prob mono">複勝圏内 11%</span>
+        </div>
+        <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約11%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は8.0着とやや不振。</div>
+      </div>
+      
+      <div class="horse-item">
+        <div class="horse-head">
+          <span class="horse-name"><span class="horse-num mono">4</span>フタイテンロック</span>
+          <span class="horse-prob mono">複勝圏内 6%</span>
+        </div>
+        <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約6%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は12.7着とやや不振。</div>
+      </div>
+      
+      <div class="horse-item">
+        <div class="horse-head">
+          <span class="horse-name"><span class="horse-num mono">9</span>ハセドン</span>
+          <span class="horse-prob mono">複勝圏内 6%</span>
+        </div>
+        <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約6%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は10.0着とやや不振。</div>
+      </div>
+      
+      <div class="horse-item">
+        <div class="horse-head">
+          <span class="horse-name"><span class="horse-num mono">8</span>ピースオブザライフ</span>
+          <span class="horse-prob mono">複勝圏内 2%</span>
+        </div>
+        <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約2%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は12.0着とやや不振。</div>
+      </div>
+      
+    </div>
+  </div>
+
+  <!-- ============ 買い目タブ ============ -->
+  <div class="tab-panel" id="panel-betting">
+    
+    <div class="section-title"><span class="en">Betting Plan</span>AI推奨 購入プラン</div>
+    <div class="section-hint">実際の投票は複数点に分けるのが基本のため、期待値が高い順に複数の買い目を組み合わせています。予算を入れると自動で配分します。</div>
+    <div class="budget-box">
+      <label for="budgetInput">今回の予算</label>
+      <input type="number" id="budgetInput" inputmode="numeric" placeholder="例: 3000" min="0" step="100">
+      <span class="unit">円</span>
+    </div>
+    <div class="card" style="padding:0; overflow:hidden;">
+      <table class="ev-table" id="planTable">
+        <thead><tr><th>券種</th><th>買い目</th><th>オッズ</th><th>期待値</th><th>配分額</th></tr></thead>
+        <tbody>
+          
+          <tr data-ev="3.207265385730053">
+            <td class="mono">馬連</td>
+            <td class="horses-cell">7 メイショウズイウン - 11 ベルイストワール</td>
+            <td class="mono">290.4</td>
+            <td class="ev-cell mono">321%</td>
+            <td class="mono stake-cell">-</td>
+          </tr>
+          
+          <tr data-ev="2.346363643882338">
+            <td class="mono">3連複</td>
+            <td class="horses-cell">6 カズタンジャー - 5 ショウナンライシン - 7 メイショウズイウン</td>
+            <td class="mono">196.3</td>
+            <td class="ev-cell mono">235%</td>
+            <td class="mono stake-cell">-</td>
+          </tr>
+          
+          <tr data-ev="2.197653249430259">
+            <td class="mono">3連複</td>
+            <td class="horses-cell">6 カズタンジャー - 1 ピカピカサンダー - 7 メイショウズイウン</td>
+            <td class="mono">81.2</td>
+            <td class="ev-cell mono">220%</td>
+            <td class="mono stake-cell">-</td>
+          </tr>
+          
+          <tr data-ev="2.0162663961237355">
+            <td class="mono">馬連</td>
+            <td class="horses-cell">6 カズタンジャー - 11 ベルイストワール</td>
+            <td class="mono">155.2</td>
+            <td class="ev-cell mono">202%</td>
+            <td class="mono stake-cell">-</td>
+          </tr>
+          
+          <tr data-ev="1.8771571633788957">
+            <td class="mono">馬連</td>
+            <td class="horses-cell">5 ショウナンライシン - 7 メイショウズイウン</td>
+            <td class="mono">106.9</td>
+            <td class="ev-cell mono">188%</td>
+            <td class="mono stake-cell">-</td>
+          </tr>
+          
+          <tr id="planTotalRow" style="display:none;">
+            <td colspan="4" style="text-align:right; font-weight:800;">合計</td>
+            <td class="mono" id="planTotal" style="font-weight:800; color:var(--green);">-</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="footnote" style="font-size:11px; color:var(--text-dim); margin-bottom:16px; line-height:1.6;">配分額は、各買い目の期待値の大きさに比例して予算を振り分けた目安です。1点に集中させず複数点に分けることでブレを抑える考え方に基づきます。的中や利益を保証するものではありません。</div>
+    
+
+    <div class="section-title"><span class="en">All Bets</span>券種ごとの買い目一覧（参考）</div>
+    <div class="section-hint">期待値100%を超えるものを全て表示しています。上の「購入プラン」はこの中から自動選定したものです。</div>
+    
+    <details class="bet-group">
+      <summary>単勝 <span class="count">5点</span></summary>
+      <table class="ev-table">
+        <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
+        <tbody>
+          
+          <tr>
+            <td class="horses-cell">11 ベルイストワール</td>
+            <td class="mono">52.8</td>
+            <td class="mono">3.5%</td>
+            <td class="ev-cell mono">184%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">5 ショウナンライシン</td>
+            <td class="mono">33.3</td>
+            <td class="mono">5.5%</td>
+            <td class="ev-cell mono">183%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">9 ハセドン</td>
+            <td class="mono">65.2</td>
+            <td class="mono">1.8%</td>
+            <td class="ev-cell mono">117%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">7 メイショウズイウン</td>
+            <td class="mono">7.8</td>
+            <td class="mono">14.3%</td>
+            <td class="ev-cell mono">112%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">4 フタイテンロック</td>
+            <td class="mono">53.0</td>
+            <td class="mono">2.1%</td>
+            <td class="ev-cell mono">109%</td>
+          </tr>
+          
+        </tbody>
+      </table>
+    </details>
+    
+    <details class="bet-group">
+      <summary>馬連 <span class="count">20点</span></summary>
+      <table class="ev-table">
+        <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
+        <tbody>
+          
+          <tr>
+            <td class="horses-cell">7 メイショウズイウン - 11 ベルイストワール</td>
+            <td class="mono">290.4</td>
+            <td class="mono">1.1%</td>
+            <td class="ev-cell mono">321%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">6 カズタンジャー - 11 ベルイストワール</td>
+            <td class="mono">155.2</td>
+            <td class="mono">1.3%</td>
+            <td class="ev-cell mono">202%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">5 ショウナンライシン - 7 メイショウズイウン</td>
+            <td class="mono">106.9</td>
+            <td class="mono">1.8%</td>
+            <td class="ev-cell mono">188%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">6 カズタンジャー - 5 ショウナンライシン</td>
+            <td class="mono">89.6</td>
+            <td class="mono">2.1%</td>
+            <td class="ev-cell mono">185%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">6 カズタンジャー - 7 メイショウズイウン</td>
+            <td class="mono">30.6</td>
+            <td class="mono">5.7%</td>
+            <td class="ev-cell mono">173%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">1 ピカピカサンダー - 11 ベルイストワール</td>
+            <td class="mono">190.4</td>
+            <td class="mono">0.9%</td>
+            <td class="ev-cell mono">167%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">5 ショウナンライシン - 11 ベルイストワール</td>
+            <td class="mono">393.3</td>
+            <td class="mono">0.4%</td>
+            <td class="ev-cell mono">158%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">6 カズタンジャー - 1 ピカピカサンダー</td>
+            <td class="mono">31.2</td>
+            <td class="mono">4.5%</td>
+            <td class="ev-cell mono">140%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">1 ピカピカサンダー - 5 ショウナンライシン</td>
+            <td class="mono">95.0</td>
+            <td class="mono">1.4%</td>
+            <td class="ev-cell mono">133%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">9 ハセドン - 7 メイショウズイウン</td>
+            <td class="mono">225.1</td>
+            <td class="mono">0.6%</td>
+            <td class="ev-cell mono">127%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">2 アムールドパリ - 11 ベルイストワール</td>
+            <td class="mono">179.4</td>
+            <td class="mono">0.7%</td>
+            <td class="ev-cell mono">127%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">1 ピカピカサンダー - 7 メイショウズイウン</td>
+            <td class="mono">32.8</td>
+            <td class="mono">3.8%</td>
+            <td class="ev-cell mono">125%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">6 カズタンジャー - 9 ハセドン</td>
+            <td class="mono">184.3</td>
+            <td class="mono">0.7%</td>
+            <td class="ev-cell mono">123%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">8 ピースオブザライフ - 7 メイショウズイウン</td>
+            <td class="mono">731.9</td>
+            <td class="mono">0.2%</td>
+            <td class="ev-cell mono">120%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">6 カズタンジャー - 10 ハビレ</td>
+            <td class="mono">25.6</td>
+            <td class="mono">4.5%</td>
+            <td class="ev-cell mono">115%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">10 ハビレ - 11 ベルイストワール</td>
+            <td class="mono">126.2</td>
+            <td class="mono">0.9%</td>
+            <td class="ev-cell mono">111%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">1 ピカピカサンダー - 9 ハセドン</td>
+            <td class="mono">232.4</td>
+            <td class="mono">0.4%</td>
+            <td class="ev-cell mono">104%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">2 アムールドパリ - 7 メイショウズイウン</td>
+            <td class="mono">33.7</td>
+            <td class="mono">3.1%</td>
+            <td class="ev-cell mono">104%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">4 フタイテンロック - 7 メイショウズイウン</td>
+            <td class="mono">160.7</td>
+            <td class="mono">0.6%</td>
+            <td class="ev-cell mono">103%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">10 ハビレ - 5 ショウナンライシン</td>
+            <td class="mono">74.0</td>
+            <td class="mono">1.4%</td>
+            <td class="ev-cell mono">103%</td>
+          </tr>
+          
+        </tbody>
+      </table>
+    </details>
+    
+    <details class="bet-group">
+      <summary>馬単 <span class="count">20点</span></summary>
+      <table class="ev-table">
+        <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
+        <tbody>
+          
+          <tr>
+            <td class="horses-cell">11 ベルイストワール → 7 メイショウズイウン</td>
+            <td class="mono">735.2</td>
+            <td class="mono">0.5%</td>
+            <td class="ev-cell mono">382%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">7 メイショウズイウン → 11 ベルイストワール</td>
+            <td class="mono">551.7</td>
+            <td class="mono">0.6%</td>
+            <td class="ev-cell mono">323%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">11 ベルイストワール → 6 カズタンジャー</td>
+            <td class="mono">444.0</td>
+            <td class="mono">0.6%</td>
+            <td class="ev-cell mono">267%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">11 ベルイストワール → 1 ピカピカサンダー</td>
+            <td class="mono">555.1</td>
+            <td class="mono">0.4%</td>
+            <td class="ev-cell mono">233%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">5 ショウナンライシン → 6 カズタンジャー</td>
+            <td class="mono">226.7</td>
+            <td class="mono">1.0%</td>
+            <td class="ev-cell mono">219%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">11 ベルイストワール → 5 ショウナンライシン</td>
+            <td class="mono">965.8</td>
+            <td class="mono">0.2%</td>
+            <td class="ev-cell mono">192%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">5 ショウナンライシン → 7 メイショウズイウン</td>
+            <td class="mono">219.7</td>
+            <td class="mono">0.8%</td>
+            <td class="ev-cell mono">183%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">11 ベルイストワール → 2 アムールドパリ</td>
+            <td class="mono">521.8</td>
+            <td class="mono">0.3%</td>
+            <td class="ev-cell mono">178%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">5 ショウナンライシン → 11 ベルイストワール</td>
+            <td class="mono">866.8</td>
+            <td class="mono">0.2%</td>
+            <td class="ev-cell mono">176%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">9 ハセドン → 7 メイショウズイウン</td>
+            <td class="mono">662.3</td>
+            <td class="mono">0.3%</td>
+            <td class="ev-cell mono">174%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">6 カズタンジャー → 7 メイショウズイウン</td>
+            <td class="mono">58.5</td>
+            <td class="mono">2.9%</td>
+            <td class="ev-cell mono">168%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">7 メイショウズイウン → 5 ショウナンライシン</td>
+            <td class="mono">176.3</td>
+            <td class="mono">0.9%</td>
+            <td class="ev-cell mono">162%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">7 メイショウズイウン → 6 カズタンジャー</td>
+            <td class="mono">56.6</td>
+            <td class="mono">2.8%</td>
+            <td class="ev-cell mono">158%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">1 ピカピカサンダー → 11 ベルイストワール</td>
+            <td class="mono">342.0</td>
+            <td class="mono">0.5%</td>
+            <td class="ev-cell mono">157%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">11 ベルイストワール → 3 タガノバビロン</td>
+            <td class="mono">185.3</td>
+            <td class="mono">0.8%</td>
+            <td class="ev-cell mono">154%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">6 カズタンジャー → 5 ショウナンライシン</td>
+            <td class="mono">137.4</td>
+            <td class="mono">1.1%</td>
+            <td class="ev-cell mono">151%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">9 ハセドン → 6 カズタンジャー</td>
+            <td class="mono">492.6</td>
+            <td class="mono">0.3%</td>
+            <td class="ev-cell mono">150%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">6 カズタンジャー → 11 ベルイストワール</td>
+            <td class="mono">210.9</td>
+            <td class="mono">0.7%</td>
+            <td class="ev-cell mono">147%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">11 ベルイストワール → 10 ハビレ</td>
+            <td class="mono">339.3</td>
+            <td class="mono">0.4%</td>
+            <td class="ev-cell mono">142%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">4 フタイテンロック → 7 メイショウズイウン</td>
+            <td class="mono">448.7</td>
+            <td class="mono">0.3%</td>
+            <td class="ev-cell mono">135%</td>
+          </tr>
+          
+        </tbody>
+      </table>
+    </details>
+    
+    <details class="bet-group">
+      <summary>3連複 <span class="count">20点</span></summary>
+      <table class="ev-table">
+        <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
+        <tbody>
+          
+          <tr>
+            <td class="horses-cell">6 カズタンジャー - 7 メイショウズイウン - 11 ベルイストワール</td>
+            <td class="mono">566.0</td>
+            <td class="mono">0.7%</td>
+            <td class="ev-cell mono">421%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">5 ショウナンライシン - 7 メイショウズイウン - 11 ベルイストワール</td>
+            <td class="mono">1182.2</td>
+            <td class="mono">0.2%</td>
+            <td class="ev-cell mono">253%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">1 ピカピカサンダー - 7 メイショウズイウン - 11 ベルイストワール</td>
+            <td class="mono">495.7</td>
+            <td class="mono">0.5%</td>
+            <td class="ev-cell mono">240%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">6 カズタンジャー - 5 ショウナンライシン - 7 メイショウズイウン</td>
+            <td class="mono">196.3</td>
+            <td class="mono">1.2%</td>
+            <td class="ev-cell mono">235%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">6 カズタンジャー - 1 ピカピカサンダー - 7 メイショウズイウン</td>
+            <td class="mono">81.2</td>
+            <td class="mono">2.7%</td>
+            <td class="ev-cell mono">220%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">2 アムールドパリ - 7 メイショウズイウン - 11 ベルイストワール</td>
+            <td class="mono">566.3</td>
+            <td class="mono">0.4%</td>
+            <td class="ev-cell mono">218%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">6 カズタンジャー - 1 ピカピカサンダー - 11 ベルイストワール</td>
+            <td class="mono">338.5</td>
+            <td class="mono">0.6%</td>
+            <td class="ev-cell mono">196%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">6 カズタンジャー - 1 ピカピカサンダー - 5 ショウナンライシン</td>
+            <td class="mono">205.8</td>
+            <td class="mono">0.9%</td>
+            <td class="ev-cell mono">192%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">6 カズタンジャー - 5 ショウナンライシン - 11 ベルイストワール</td>
+            <td class="mono">706.5</td>
+            <td class="mono">0.3%</td>
+            <td class="ev-cell mono">181%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">1 ピカピカサンダー - 5 ショウナンライシン - 7 メイショウズイウン</td>
+            <td class="mono">229.0</td>
+            <td class="mono">0.8%</td>
+            <td class="ev-cell mono">178%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">10 ハビレ - 7 メイショウズイウン - 11 ベルイストワール</td>
+            <td class="mono">341.5</td>
+            <td class="mono">0.5%</td>
+            <td class="ev-cell mono">165%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">9 ハセドン - 7 メイショウズイウン - 11 ベルイストワール</td>
+            <td class="mono">2396.6</td>
+            <td class="mono">0.1%</td>
+            <td class="ev-cell mono">161%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">6 カズタンジャー - 2 アムールドパリ - 7 メイショウズイウン</td>
+            <td class="mono">72.5</td>
+            <td class="mono">2.1%</td>
+            <td class="ev-cell mono">156%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">6 カズタンジャー - 9 ハセドン - 7 メイショウズイウン</td>
+            <td class="mono">410.6</td>
+            <td class="mono">0.4%</td>
+            <td class="ev-cell mono">155%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">1 ピカピカサンダー - 5 ショウナンライシン - 11 ベルイストワール</td>
+            <td class="mono">909.7</td>
+            <td class="mono">0.2%</td>
+            <td class="ev-cell mono">152%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">3 タガノバビロン - 7 メイショウズイウン - 11 ベルイストワール</td>
+            <td class="mono">132.9</td>
+            <td class="mono">1.1%</td>
+            <td class="ev-cell mono">150%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">6 カズタンジャー - 10 ハビレ - 5 ショウナンライシン</td>
+            <td class="mono">157.2</td>
+            <td class="mono">0.9%</td>
+            <td class="ev-cell mono">146%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">4 フタイテンロック - 7 メイショウズイウン - 11 ベルイストワール</td>
+            <td class="mono">1875.2</td>
+            <td class="mono">0.1%</td>
+            <td class="ev-cell mono">144%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">6 カズタンジャー - 10 ハビレ - 7 メイショウズイウン</td>
+            <td class="mono">52.1</td>
+            <td class="mono">2.7%</td>
+            <td class="ev-cell mono">141%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">8 ピースオブザライフ - 6 カズタンジャー - 7 メイショウズイウン</td>
+            <td class="mono">1285.2</td>
+            <td class="mono">0.1%</td>
+            <td class="ev-cell mono">140%</td>
+          </tr>
+          
+        </tbody>
+      </table>
+    </details>
+    
+    <details class="bet-group">
+      <summary>3連単 <span class="count">20点</span></summary>
+      <table class="ev-table">
+        <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
+        <tbody>
+          
+          <tr>
+            <td class="horses-cell">11 ベルイストワール → 7 メイショウズイウン → 6 カズタンジャー</td>
+            <td class="mono">8076.3</td>
+            <td class="mono">0.1%</td>
+            <td class="ev-cell mono">849%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">11 ベルイストワール → 6 カズタンジャー → 7 メイショウズイウン</td>
+            <td class="mono">7220.6</td>
+            <td class="mono">0.1%</td>
+            <td class="ev-cell mono">781%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">7 メイショウズイウン → 11 ベルイストワール → 6 カズタンジャー</td>
+            <td class="mono">4672.7</td>
+            <td class="mono">0.1%</td>
+            <td class="ev-cell mono">554%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">6 カズタンジャー → 11 ベルイストワール → 7 メイショウズイウン</td>
+            <td class="mono">3650.5</td>
+            <td class="mono">0.1%</td>
+            <td class="ev-cell mono">457%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">11 ベルイストワール → 7 メイショウズイウン → 1 ピカピカサンダー</td>
+            <td class="mono">5789.2</td>
+            <td class="mono">0.1%</td>
+            <td class="ev-cell mono">424%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">5 ショウナンライシン → 7 メイショウズイウン → 6 カズタンジャー</td>
+            <td class="mono">2368.5</td>
+            <td class="mono">0.2%</td>
+            <td class="ev-cell mono">410%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">5 ショウナンライシン → 7 メイショウズイウン → 1 ピカピカサンダー</td>
+            <td class="mono">3361.6</td>
+            <td class="mono">0.1%</td>
+            <td class="ev-cell mono">406%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">5 ショウナンライシン → 6 カズタンジャー → 7 メイショウズイウン</td>
+            <td class="mono">2201.1</td>
+            <td class="mono">0.2%</td>
+            <td class="ev-cell mono">393%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">11 ベルイストワール → 7 メイショウズイウン → 2 アムールドパリ</td>
+            <td class="mono">6541.8</td>
+            <td class="mono">0.1%</td>
+            <td class="ev-cell mono">391%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">11 ベルイストワール → 1 ピカピカサンダー → 7 メイショウズイウン</td>
+            <td class="mono">5379.8</td>
+            <td class="mono">0.1%</td>
+            <td class="ev-cell mono">381%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">5 ショウナンライシン → 1 ピカピカサンダー → 7 メイショウズイウン</td>
+            <td class="mono">3074.1</td>
+            <td class="mono">0.1%</td>
+            <td class="ev-cell mono">359%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">7 メイショウズイウン → 11 ベルイストワール → 1 ピカピカサンダー</td>
+            <td class="mono">4320.9</td>
+            <td class="mono">0.1%</td>
+            <td class="ev-cell mono">357%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">11 ベルイストワール → 6 カズタンジャー → 1 ピカピカサンダー</td>
+            <td class="mono">4043.1</td>
+            <td class="mono">0.1%</td>
+            <td class="ev-cell mono">353%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">7 メイショウズイウン → 11 ベルイストワール → 2 アムールドパリ</td>
+            <td class="mono">5134.9</td>
+            <td class="mono">0.1%</td>
+            <td class="ev-cell mono">346%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">11 ベルイストワール → 2 アムールドパリ → 7 メイショウズイウン</td>
+            <td class="mono">5990.7</td>
+            <td class="mono">0.1%</td>
+            <td class="ev-cell mono">338%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">11 ベルイストワール → 1 ピカピカサンダー → 6 カズタンジャー</td>
+            <td class="mono">4093.7</td>
+            <td class="mono">0.1%</td>
+            <td class="ev-cell mono">336%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">6 カズタンジャー → 7 メイショウズイウン → 11 ベルイストワール</td>
+            <td class="mono">2277.8</td>
+            <td class="mono">0.1%</td>
+            <td class="ev-cell mono">330%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">11 ベルイストワール → 7 メイショウズイウン → 3 タガノバビロン</td>
+            <td class="mono">2263.6</td>
+            <td class="mono">0.1%</td>
+            <td class="ev-cell mono">329%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">5 ショウナンライシン → 6 カズタンジャー → 1 ピカピカサンダー</td>
+            <td class="mono">2276.2</td>
+            <td class="mono">0.1%</td>
+            <td class="ev-cell mono">328%</td>
+          </tr>
+          
+          <tr>
+            <td class="horses-cell">7 メイショウズイウン → 6 カズタンジャー → 11 ベルイストワール</td>
+            <td class="mono">2277.8</td>
+            <td class="mono">0.1%</td>
+            <td class="ev-cell mono">321%</td>
+          </tr>
+          
+        </tbody>
+      </table>
+    </details>
+    
+  </div>
+
+  <!-- ============ WIN5タブ ============ -->
   
-  <div class="section-title"><span class="en">WIN5</span>WIN5 買い目候補</div>
-  <div class="card">
-    <div class="race-meta mono" style="margin-bottom:8px;">札幌 11R / 新潟 7R / 新潟 8R / 中京 6R / 中京 7R</div>
-    
-    <div class="win5-row mono"><span class="win5-rank">1</span>6 - 2 - 3 - 5 - 10　的中確率 0.035%</div>
-    
-    <div class="win5-row mono"><span class="win5-rank">2</span>6 - 2 - 3 - 4 - 10　的中確率 0.035%</div>
-    
-    <div class="win5-row mono"><span class="win5-rank">3</span>6 - 2 - 3 - 1 - 10　的中確率 0.031%</div>
-    
-    <div class="win5-row mono"><span class="win5-rank">4</span>12 - 2 - 3 - 5 - 10　的中確率 0.024%</div>
-    
-    <div class="win5-row mono"><span class="win5-rank">5</span>6 - 2 - 3 - 5 - 5　的中確率 0.024%</div>
-    
-    <div class="win5-row mono"><span class="win5-rank">6</span>6 - 2 - 6 - 5 - 10　的中確率 0.024%</div>
-    
-    <div class="win5-row mono"><span class="win5-rank">7</span>12 - 2 - 3 - 4 - 10　的中確率 0.023%</div>
-    
-    <div class="win5-row mono"><span class="win5-rank">8</span>6 - 2 - 3 - 4 - 5　的中確率 0.023%</div>
-    
-    <div class="win5-row mono"><span class="win5-rank">9</span>6 - 2 - 6 - 4 - 10　的中確率 0.023%</div>
-    
-    <div class="win5-row mono"><span class="win5-rank">10</span>6 - 16 - 3 - 5 - 10　的中確率 0.022%</div>
-    
+  <div class="tab-panel" id="panel-win5">
+    <div class="win5-banner">
+      <div class="label">🎯 WIN5対象レース</div>
+      <div class="races mono">札幌 11R / 新潟 7R / 新潟 8R / 中京 6R / 中京 7R</div>
+    </div>
+    <div class="section-title"><span class="en">WIN5</span>買い目候補</div>
+    <div class="card">
+      
+      <div class="win5-row mono"><span class="win5-rank">1</span>6 - 2 - 3 - 5 - 10　的中確率 0.032%</div>
+      
+      <div class="win5-row mono"><span class="win5-rank">2</span>6 - 2 - 3 - 4 - 10　的中確率 0.028%</div>
+      
+      <div class="win5-row mono"><span class="win5-rank">3</span>6 - 2 - 3 - 1 - 10　的中確率 0.027%</div>
+      
+      <div class="win5-row mono"><span class="win5-rank">4</span>6 - 2 - 6 - 5 - 10　的中確率 0.023%</div>
+      
+      <div class="win5-row mono"><span class="win5-rank">5</span>12 - 2 - 3 - 5 - 10　的中確率 0.023%</div>
+      
+      <div class="win5-row mono"><span class="win5-rank">6</span>6 - 2 - 3 - 5 - 1　的中確率 0.022%</div>
+      
+      <div class="win5-row mono"><span class="win5-rank">7</span>6 - 2 - 3 - 5 - 5　的中確率 0.021%</div>
+      
+      <div class="win5-row mono"><span class="win5-rank">8</span>6 - 2 - 6 - 4 - 10　的中確率 0.020%</div>
+      
+      <div class="win5-row mono"><span class="win5-rank">9</span>6 - 2 - 7 - 5 - 10　的中確率 0.020%</div>
+      
+      <div class="win5-row mono"><span class="win5-rank">10</span>6 - 16 - 3 - 5 - 10　的中確率 0.020%</div>
+      
+    </div>
   </div>
   
 
@@ -1074,14 +1223,25 @@
 
 <script>
 (function () {
-  const UNIT = 100;  // JRAの購入単位（100円）に丸める
+  // --- タブ切り替え ---
+  document.querySelectorAll('.tab-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      document.querySelectorAll('.tab-btn').forEach(function (b) { b.classList.remove('active'); });
+      document.querySelectorAll('.tab-panel').forEach(function (p) { p.classList.remove('active'); });
+      btn.classList.add('active');
+      document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+    });
+  });
 
+  // --- 購入プランの予算按分計算 ---
+  const UNIT = 100;
   function recalc() {
-    const budget = parseFloat(document.getElementById('budgetInput').value) || 0;
+    const budgetInput = document.getElementById('budgetInput');
+    if (!budgetInput) return;
+    const budget = parseFloat(budgetInput.value) || 0;
     const rows = Array.from(document.querySelectorAll('#planTable tbody tr[data-ev]'));
     const totalRow = document.getElementById('planTotalRow');
     const totalCell = document.getElementById('planTotal');
-
     if (!rows.length) return;
 
     if (budget <= 0) {
@@ -1090,15 +1250,13 @@
       return;
     }
 
-    // 期待値(EV)が高いものほど多く配分する（EVの合計に対する比率で按分）
-    const evs = rows.map(function (tr) { return Math.max(0, parseFloat(tr.dataset.ev) - 1); }); // 100%超過分だけを重みにする
+    const evs = rows.map(function (tr) { return Math.max(0, parseFloat(tr.dataset.ev) - 1); });
     const totalWeight = evs.reduce(function (a, b) { return a + b; }, 0);
 
     let allocated = 0;
     rows.forEach(function (tr, i) {
       const weight = totalWeight > 0 ? evs[i] / totalWeight : 1 / rows.length;
-      const raw = budget * weight;
-      const amount = Math.floor(raw / UNIT) * UNIT;
+      const amount = Math.floor((budget * weight) / UNIT) * UNIT;
       allocated += amount;
       tr.querySelector('.stake-cell').textContent = amount > 0 ? amount.toLocaleString('ja-JP') + '円' : '見送り';
     });
@@ -1108,11 +1266,8 @@
       totalCell.textContent = allocated.toLocaleString('ja-JP') + '円 / ' + budget.toLocaleString('ja-JP') + '円中';
     }
   }
-
-  const input = document.getElementById('budgetInput');
-  if (input) {
-    input.addEventListener('input', recalc);
-  }
+  const budgetInput = document.getElementById('budgetInput');
+  if (budgetInput) budgetInput.addEventListener('input', recalc);
 })();
 </script>
 </body>
