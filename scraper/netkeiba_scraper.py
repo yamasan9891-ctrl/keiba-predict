@@ -237,9 +237,12 @@ def fetch_shutuba(race_id: str) -> pd.DataFrame:
 def fetch_race_ids_for_date(date_str: str) -> list:
     """
     指定日（YYYYMMDD形式）に開催される全レースのrace_idを取得する。
-    race.netkeiba.com/top/race_list.html?kaisai_date=YYYYMMDD を利用。
+    race.netkeiba.com/top/race_list.html は表示中にJavaScriptでレース一覧を
+    後から読み込む形式のため、そのページが内部で呼び出している
+    race_list_sub.html（静的HTMLを返す）を直接使う
+    （実ブラウザでのネットワーク調査により確認済み）。
     """
-    url = f"https://race.netkeiba.com/top/race_list.html?kaisai_date={date_str}"
+    url = f"https://race.netkeiba.com/top/race_list_sub.html?kaisai_date={date_str}"
     html = _polite_get(url)
     soup = BeautifulSoup(html, "html.parser")
 
