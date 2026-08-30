@@ -256,14 +256,22 @@ def fetch_race_ids_for_date(date_str: str) -> list:
 def get_upcoming_weekend_dates(reference_date=None) -> list:
     """
     基準日から見て、直近の土曜・日曜の日付（YYYYMMDD形式）を返す。
+    基準日自体が既に土曜・日曜の場合は、その日（今週末）を対象にする
+    （来週末までスキップしてしまわないようにするため）。
     JRAは基本的に土日開催（一部金曜ナイター等の例外はここでは考慮しない）。
-    reference_date省略時は実行時点の日付を使う。
     """
     import datetime as _dt
     ref = reference_date or _dt.date.today()
-    # 月曜=0 ... 土曜=5, 日曜=6
-    days_until_saturday = (5 - ref.weekday()) % 7
-    saturday = ref + _dt.timedelta(days=days_until_saturday)
+    weekday = ref.weekday()  # 月曜=0 ... 土曜=5, 日曜=6
+
+    if weekday == 5:  # 今日が土曜日 → 今日と明日（日曜）
+        saturday = ref
+    elif weekday == 6:  # 今日が日曜日 → 今日の土日（土曜は昨日）
+        saturday = ref - _dt.timedelta(days=1)
+    else:  # 平日 → 次の土曜日を探す
+        days_until_saturday = (5 - weekday) % 7
+        saturday = ref + _dt.timedelta(days=days_until_saturday)
+
     sunday = saturday + _dt.timedelta(days=1)
     return [saturday.strftime("%Y%m%d"), sunday.strftime("%Y%m%d")]
 
