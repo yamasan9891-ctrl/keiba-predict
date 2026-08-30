@@ -69,6 +69,15 @@ def precompute_current_stats(historical: pd.DataFrame) -> dict:
     jockey_stats = jgrp.agg(jockey_n_races=("finish_pos", "count")).reset_index()
     jockey_stats["jockey_place_rate"] = jgrp["finish_pos"].apply(lambda s: (s <= 3).mean()).values
 
+    # --- 調教師ごとの累積成績 ---
+    if "trainer_name" in df.columns:
+        t = df.sort_values(["trainer_name", "race_id"])
+        tgrp = t.groupby("trainer_name")
+        trainer_stats = tgrp.agg(trainer_n_races=("finish_pos", "count")).reset_index()
+        trainer_stats["trainer_place_rate"] = tgrp["finish_pos"].apply(lambda s: (s <= 3).mean()).values
+    else:
+        trainer_stats = pd.DataFrame(columns=["trainer_name", "trainer_n_races", "trainer_place_rate"])
+
     # --- 枠順バイアス（距離×芝ダート×枠番） ---
     if "post_position" in df.columns:
         pos_stats = df.groupby(["distance", "surface", "post_position"])["is_placed"].agg(["mean", "count"]).reset_index()
@@ -83,6 +92,7 @@ def precompute_current_stats(historical: pd.DataFrame) -> dict:
     return {
         "horse": horse_stats.set_index("horse_id"),
         "jockey": jockey_stats.set_index("jockey_id"),
+        "trainer": trainer_stats.set_index("trainer_name") if not trainer_stats.empty else trainer_stats,
         "post_bias": pos_stats,
         "horse_strength": horse_strength,
     }
@@ -141,6 +151,7 @@ def build_prediction_row(shutuba_df: pd.DataFrame, race_meta: dict, conn, stats:
     race_id = race_meta.get("race_id")
     horse_df = stats["horse"]
     jockey_df = stats["jockey"]
+    trainer_df = stats.get("trainer")
     post_bias = stats["post_bias"]
     horse_strength = stats["horse_strength"]
 
@@ -170,6 +181,8 @@ def build_prediction_row(shutuba_df: pd.DataFrame, race_meta: dict, conn, stats:
         h = horse_df.loc[horse_id] if horse_id in horse_df.index else None
         jockey_id = r.get("jockey_id")
         j = jockey_df.loc[jockey_id] if jockey_id in jockey_df.index else None
+        trainer_name = r.get("trainer_name")
+        t = (trainer_df.loc[trainer_name] if trainer_df is not None and not trainer_df.empty and trainer_name in trainer_df.index else None)
 
         ped = {"father": None, "mother_father": None}
         if horse_id:
@@ -226,6 +239,8 @@ def build_prediction_row(shutuba_df: pd.DataFrame, race_meta: dict, conn, stats:
             "avg_opponent_strength": opp_strength,
             "jockey_place_rate": j["jockey_place_rate"] if j is not None else np.nan,
             "jockey_n_races": j["jockey_n_races"] if j is not None else 0,
+            "trainer_place_rate": t["trainer_place_rate"] if t is not None else np.nan,
+            "trainer_n_races": t["trainer_n_races"] if t is not None else 0,
             "prior_running_style": h["prior_running_style"] if h is not None else None,
             "predicted_pace": predicted_pace,
             "pace_advantage": _pace_advantage(h["prior_running_style"] if h is not None else None, predicted_pace, front_styles, closer_styles),
@@ -248,6 +263,7 @@ def predict(race_id: str, stats: dict = None, historical: pd.DataFrame = None) -
 
     bundle = joblib.load(model_path)
     model, feature_cols = bundle["model"], bundle["features"]
+    calibrator = bundle.get("calibrator")  # 古いモデルファイルには無い場合があるので安全に取得
 
     init_db()
 
@@ -281,7 +297,8 @@ def predict(race_id: str, stats: dict = None, historical: pd.DataFrame = None) -
             features[col] = features[col].astype("category")
 
     X = features[feature_cols]
-    features["place_probability"] = model.predict_proba(X)[:, 1]
+    raw_proba = model.predict_proba(X)[:, 1]
+    features["place_probability"] = calibrator.predict(raw_proba) if calibrator is not None else raw_proba
     features = features.sort_values("place_probability", ascending=False)
 
     display_cols = [c for c in ["horse_number", "horse_name", "popularity", "win_odds", "place_probability"] if c in features.columns]

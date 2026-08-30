@@ -16,6 +16,7 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import roc_auc_score, log_loss
 from sklearn.model_selection import GroupKFold
+from sklearn.isotonic import IsotonicRegression
 
 import sys
 sys.path.append(str(Path(__file__).resolve().parent.parent))
@@ -64,6 +65,7 @@ def train():
 
     aucs, loglosses = [], []
     models = []
+    oof_pred, oof_true = [], []  # 確率キャリブレーション用に、各foldの「学習に使っていないデータ」への予測を集める
     for fold, (tr_idx, va_idx) in enumerate(gkf.split(X, y, groups)):
         X_tr, X_va = X.iloc[tr_idx], X.iloc[va_idx]
         y_tr, y_va = y.iloc[tr_idx], y.iloc[va_idx]
@@ -89,9 +91,20 @@ def train():
         aucs.append(auc)
         loglosses.append(ll)
         models.append(model)
+        oof_pred.extend(pred)
+        oof_true.extend(y_va)
         print(f"fold {fold}: AUC={auc:.3f} logloss={ll:.3f}")
 
     print(f"平均 AUC={np.mean(aucs):.3f} / logloss={np.mean(loglosses):.3f}")
+
+    # 確率キャリブレーション: 「学習に使っていないデータへの予測」と「実際の結果」を使って、
+    # モデルが出す生の確率を、実際の的中率に忠実になるよう補正する。
+    # 特に極端に低い確率（人気薄）で誤差が大きくなりやすく、EV計算（確率×オッズ）で
+    # その誤差が何倍にも増幅されてしまう問題を根本から緩和する。
+    calibrator = IsotonicRegression(out_of_bounds="clip")
+    calibrator.fit(np.array(oof_pred), np.array(oof_true))
+    calibrated_check = calibrator.predict(np.array(oof_pred))
+    print(f"キャリブレーション後のlogloss={log_loss(oof_true, calibrated_check):.3f}（補正前と比較して改善していれば効果あり）")
 
     # 最終モデルは全データで再学習
     final_model = lgb.LGBMClassifier(
@@ -105,7 +118,7 @@ def train():
     )
     final_model.fit(X, y, categorical_feature=cat_features)
 
-    joblib.dump({"model": final_model, "features": cols}, MODEL_DIR / "model.pkl")
+    joblib.dump({"model": final_model, "features": cols, "calibrator": calibrator}, MODEL_DIR / "model.pkl")
     print(f"モデルを保存しました: {MODEL_DIR / 'model.pkl'}")
 
     importance = pd.Series(

@@ -196,21 +196,48 @@ def _add_jockey_history_features(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+def _add_trainer_history_features(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    調教師（厩舎）の過去成績を計算する。「仕上げが上手い厩舎」かどうかは
+    市場のオッズにはあまり反映されにくい、独立した情報源として期待できる。
+    """
+    if "trainer_name" not in df.columns:
+        df["trainer_place_rate"] = np.nan
+        df["trainer_n_races"] = 0
+        return df
+
+    df = df.sort_values(["trainer_name", "race_id"]).reset_index(drop=True)
+    trainer_names = df["trainer_name"]
+
+    def _expanding_stats(group: pd.DataFrame) -> pd.DataFrame:
+        finish = group["finish_pos"].astype(float)
+        prior = finish.shift(1)
+        group["trainer_place_rate"] = prior.expanding().apply(lambda s: (s <= 3).mean() if len(s) else np.nan)
+        group["trainer_n_races"] = prior.expanding().count()
+        return group
+
+    df = df.groupby("trainer_name", group_keys=False, dropna=False).apply(_expanding_stats)
+    df["trainer_name"] = trainer_names.values
+    return df
+
+
 CATEGORICAL_COLS = ["prior_running_style", "surface", "track_condition", "father", "mother_father", "predicted_pace"]
 
 FEATURE_COLS = [
-    # 注意: win_odds（単勝オッズ）と popularity（人気）はあえて特徴量から除外している。
-    # これらをモデルの入力に含めると、オッズが高い馬に予想確率も引きずられて
-    # 高くなりがちになり、「予想確率×オッズ」で計算する期待値(EV)が
-    # 市場そのものを再評価しているだけの意味のない数字になってしまうため。
-    # オッズ・人気はあくまで「表示」と「EV計算時の比較対象」としてのみ使う。
-    "post_position", "horse_number", "weight_carried",
+    # win_odds（単勝オッズ）とpopularity（人気）はモデルの入力に含める。
+    # 完全に除外するとバックテストの回収率が全条件で悪化することを確認済み
+    # （オッズには市場参加者の集合知という本物の情報価値があるため）。
+    # ただし「オッズだけで予想している」わけではなく、他の約20個の特徴量と
+    # 組み合わせた上で、オッズが示す評価とズレている馬を見つけるのが狙い。
+    # 見せかけの穴馬（薄商いで異常に高いだけのオッズ）は
+    # betting/ev_engine.py 側の信頼度ガード（最低確率・最大オッズ制限）で別途弾く。
+    "post_position", "horse_number", "weight_carried", "win_odds", "popularity",
     "horse_weight", "horse_weight_diff",
     "distance", "is_handicap",
     "avg_finish_pos", "n_races", "best_finish_pos", "place_rate", "recent3_avg_finish_pos",
     "avg_last_3f", "avg_speed_figure", "best_speed_figure", "avg_opponent_strength",
     "jockey_place_rate", "jockey_n_races", "pace_advantage",
-    "days_since_last_race", "post_position_bias",
+    "days_since_last_race", "post_position_bias", "trainer_place_rate", "trainer_n_races",
 ] + CATEGORICAL_COLS
 
 
@@ -229,6 +256,9 @@ def build_features(df: pd.DataFrame) -> pd.DataFrame:
 
     # 騎手の成績は馬とは独立に計算できる
     df = _add_jockey_history_features(df)
+
+    # 調教師の成績も馬・騎手とは独立に計算できる
+    df = _add_trainer_history_features(df)
 
     # 休み明け間隔・枠順バイアスは開催日ベースで計算する
     df = _add_layoff_and_post_bias(df)
