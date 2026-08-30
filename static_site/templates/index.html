@@ -30,9 +30,6 @@
   header {
     padding: 28px 18px 20px;
     border-bottom: 1px solid var(--line);
-    background:
-      repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(240,162,2,0.02) 3px, rgba(240,162,2,0.02) 4px),
-      var(--bg);
   }
   .eyebrow {
     font-size: 11px;
@@ -40,10 +37,10 @@
     color: var(--amber-dim);
     text-transform: uppercase;
     margin: 0 0 8px;
+    font-weight: 700;
   }
   h1 {
     font-size: 22px;
-    letter-spacing: 0.02em;
     margin: 0 0 6px;
     font-weight: 800;
   }
@@ -62,17 +59,16 @@
     background: var(--surface);
     border: 1px solid var(--line);
     border-left: 3px solid var(--amber-dim);
-    border-radius: 4px;
+    border-radius: 6px;
     padding: 11px 14px;
     line-height: 1.6;
   }
 
   .day-block { margin-top: 26px; }
   .day-title {
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    color: var(--amber);
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--text);
     margin: 0 0 10px;
     display: flex;
     align-items: baseline;
@@ -89,12 +85,11 @@
     display: block;
     background: var(--surface);
     border: 1px solid var(--line);
-    border-radius: 6px;
+    border-radius: 8px;
     padding: 14px 16px;
     margin-bottom: 8px;
     text-decoration: none;
     color: var(--text);
-    transition: border-color 0.15s ease, background 0.15s ease;
   }
   .race-card:active { background: var(--surface-2); }
   .race-card .row1 {
@@ -103,22 +98,22 @@
     align-items: baseline;
   }
   .race-card .name { font-weight: 700; font-size: 14.5px; }
-  .race-card .rnum { color: var(--amber); font-weight: 800; margin-right: 6px; }
+  .race-card .rnum {
+    display: inline-block; color: var(--bg); background: var(--amber-dim);
+    font-weight: 800; font-size: 11px; padding: 1px 6px; border-radius: 4px; margin-right: 8px;
+  }
   .race-card .meta {
     font-size: 11.5px;
     color: var(--text-dim);
-    margin-top: 5px;
-    letter-spacing: 0.02em;
+    margin-top: 6px;
   }
   .badge {
     display: inline-block;
     font-size: 10px;
     font-weight: 700;
-    letter-spacing: 0.04em;
     padding: 2px 7px;
     border-radius: 3px;
     margin-left: 6px;
-    vertical-align: middle;
   }
   .badge.win5 { background: rgba(240,162,2,0.15); color: var(--amber); border: 1px solid var(--amber-dim); }
   .badge.handicap { background: rgba(76,175,110,0.12); color: var(--green); border: 1px solid #2e5c3e; }
@@ -135,6 +130,7 @@
     letter-spacing: 0.08em;
     color: var(--amber-dim);
     margin-bottom: 10px;
+    font-weight: 700;
   }
   .empty-state .board::before { content: "◆ "; }
   .empty-state p {
@@ -159,7 +155,7 @@
 <header>
   <p class="eyebrow">JRA Prediction Engine</p>
   <h1>今週のレース予想</h1>
-  <p class="updated mono"><span class="dot">●</span> LAST SYNC {{ generated_at }}</p>
+  <p class="updated mono"><span class="dot">●</span> 最終更新 {{ generated_at }}</p>
 </header>
 
 <main>
@@ -176,7 +172,7 @@
         </div>
         <div class="meta mono">{{ race.surface }}{{ race.distance }}m ／ {{ race.track_condition or "-" }} ／ {{ race.n_horses }}頭
           {% if race.is_win5_race %}<span class="badge win5">WIN5</span>{% endif %}
-          {% if race.is_handicap %}<span class="badge handicap">HANDICAP</span>{% endif %}
+          {% if race.is_handicap %}<span class="badge handicap">ハンデ</span>{% endif %}
         </div>
       </a>
       {% endfor %}
