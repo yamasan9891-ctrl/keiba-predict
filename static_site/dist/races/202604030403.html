@@ -37,20 +37,22 @@
   .back:active { color: var(--amber); }
   h1 { font-size: 18px; margin: 10px 0 4px; font-weight: 800; }
   .race-meta { font-size: 11.5px; color: var(--text-dim); }
-  .race-meta .mono { color: var(--text-dim); }
 
   main { max-width: 760px; margin: 0 auto; padding: 0 14px; }
 
   .section-title {
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--amber-dim);
+    font-size: 13.5px;
+    font-weight: 800;
+    color: var(--text);
     margin: 28px 0 10px;
     display: flex; align-items: baseline; gap: 8px;
   }
+  .section-title .en {
+    font-size: 9.5px; font-weight: 700; letter-spacing: 0.1em; color: var(--amber-dim);
+    text-transform: uppercase;
+  }
   .section-title::after { content:""; flex:1; height:1px; background:var(--line); }
+  .section-hint { font-size: 11.5px; color: var(--text-dim); margin: -6px 0 10px; line-height: 1.6; }
 
   .card {
     background: var(--surface);
@@ -61,7 +63,7 @@
   }
   .summary-text { font-size: 13px; line-height: 1.75; color: var(--text-dim); }
 
-  /* --- 最も期待値が高い買い目：signature element --- */
+  /* --- 結論：一番のおすすめ --- */
   .best-bet {
     position: relative;
     background: linear-gradient(180deg, #1a1408 0%, var(--surface) 70%);
@@ -69,19 +71,22 @@
     box-shadow: 0 0 0 1px rgba(240,162,2,0.08), 0 8px 24px -12px var(--amber-glow);
   }
   .best-bet .tag {
-    font-size: 10.5px; font-weight: 800; letter-spacing: 0.1em;
-    color: var(--amber); text-transform: uppercase;
+    font-size: 12px; font-weight: 800; color: var(--amber);
   }
-  .best-bet .type { font-size: 11px; color: var(--text-dim); margin-top: 6px; }
+  .best-bet .type {
+    display: inline-block; font-size: 11px; color: var(--bg); background: var(--amber);
+    font-weight: 700; padding: 2px 8px; border-radius: 3px; margin-top: 8px;
+  }
   .best-bet .horses {
-    font-size: 20px; font-weight: 800; margin: 6px 0 10px;
-    color: var(--text);
+    font-size: 21px; font-weight: 800; margin: 8px 0 12px;
+    color: var(--text); line-height: 1.4;
   }
   .best-bet .stat-row { display: flex; }
-  .best-bet .stat { margin-right: 22px; }
-  .best-bet .stat .label { font-size: 10px; color: var(--text-dim); letter-spacing: 0.05em; }
-  .best-bet .stat .value { font-size: 17px; font-weight: 800; margin-top: 2px; }
+  .best-bet .stat { margin-right: 24px; }
+  .best-bet .stat .label { font-size: 10.5px; color: var(--text-dim); }
+  .best-bet .stat .value { font-size: 18px; font-weight: 800; margin-top: 2px; }
   .best-bet .stat.ev .value { color: var(--amber); }
+  .best-bet .footnote { font-size: 11px; color: var(--text-dim); margin-top: 12px; line-height: 1.6; border-top: 1px solid var(--line); padding-top: 10px; }
 
   /* --- 穴馬候補 --- */
   .dark-horse-card { border-left: 3px solid var(--green); }
@@ -104,16 +109,39 @@
   .horse-prob { font-size: 13px; font-weight: 700; color: var(--green); }
   .horse-reason { font-size: 12px; color: var(--text-dim); margin-top: 5px; line-height: 1.65; }
 
-  /* --- EVテーブル --- */
+  /* --- 買い目一覧（折りたたみ） --- */
+  details.bet-group {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    margin-bottom: 8px;
+    overflow: hidden;
+  }
+  details.bet-group summary {
+    padding: 12px 14px;
+    cursor: pointer;
+    font-size: 13.5px;
+    font-weight: 700;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  details.bet-group summary::-webkit-details-marker { display: none; }
+  details.bet-group summary .count { font-size: 11px; color: var(--text-dim); font-weight: 500; }
+  details.bet-group summary::after {
+    content: "▾"; color: var(--amber-dim); margin-left: 8px; transition: transform 0.15s;
+  }
+  details.bet-group[open] summary::after { transform: rotate(180deg); }
+
   table { width: 100%; border-collapse: collapse; font-size: 12px; }
   th {
     background: var(--surface-2);
     color: var(--text-dim);
     font-weight: 700;
-    font-size: 10.5px;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
+    font-size: 11px;
     padding: 8px 6px;
+    border-top: 1px solid var(--line);
     border-bottom: 1px solid var(--line);
   }
   td {
@@ -142,7 +170,7 @@
 <body>
 <header>
   <a class="back" href="../index.html">← 今週のレース一覧</a>
-  <h1>None R　2歳未勝利</h1>
+  <h1>新潟 3R　2歳未勝利</h1>
   <div class="race-meta mono">芝2000m ／ 馬場:良 ／ 天候:曇</div>
 </header>
 
@@ -150,53 +178,55 @@
   <div class="card summary-text">明確な逃げ馬が不在で、スローペースになりやすく先行馬が有利になりやすい。馬場状態は「良」。</div>
 
   
-  <div class="section-title">Best Value</div>
+  <div class="section-title"><span class="en">Conclusion</span>結論：一番のおすすめ</div>
   <div class="card best-bet">
-    <div class="tag">最も期待値が高い買い目</div>
+    <div class="tag">🏆 このレースで最も期待値が高い買い目</div>
     <div class="type">3連単</div>
     <div class="horses">ニシノリリックス → ウイニングレイ → エクスマキナ</div>
     <div class="stat-row mono">
-      <div class="stat"><div class="label">ODDS</div><div class="value">1459.5</div></div>
-      <div class="stat"><div class="label">WIN%</div><div class="value">0.2%</div></div>
-      <div class="stat ev"><div class="label">EV</div><div class="value">306%</div></div>
+      <div class="stat"><div class="label">オッズ</div><div class="value">1459.5倍</div></div>
+      <div class="stat"><div class="label">的中確率</div><div class="value">0.2%</div></div>
+      <div class="stat ev"><div class="label">期待値</div><div class="value">306%</div></div>
     </div>
+    <div class="footnote">期待値とは「100円賭けた時に理論上いくら戻ってくるか」の目安です。100%を超えるほど、賭け金に対して見込まれる払戻が大きいことを意味します（的中を保証するものではありません）。</div>
   </div>
   
 
   
-  <div class="section-title">Dark Horses</div>
+  <div class="section-title"><span class="en">Dark Horses</span>穴馬候補</div>
+  <div class="section-hint">人気は低いのに、モデルの評価に対してオッズが割安な馬です。</div>
   <div class="card dark-horse-card">
     
     <div class="dark-horse-item">
       <span class="dh-name">ニシノリリックス</span><span class="dh-badge">6番人気</span>
-      <div class="dh-stats mono">ODDS 61.7 ／ WIN% 3.7% ／ EV 230%</div>
+      <div class="dh-stats mono">オッズ 61.7倍 ／ 勝率目安 3.7% ／ 期待値 230%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">ケイジャーダ</span><span class="dh-badge">7番人気</span>
-      <div class="dh-stats mono">ODDS 99.3 ／ WIN% 2.2% ／ EV 216%</div>
+      <div class="dh-stats mono">オッズ 99.3倍 ／ 勝率目安 2.2% ／ 期待値 216%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">ハンデンブレイズ</span><span class="dh-badge">5番人気</span>
-      <div class="dh-stats mono">ODDS 14.9 ／ WIN% 8.7% ／ EV 130%</div>
+      <div class="dh-stats mono">オッズ 14.9倍 ／ 勝率目安 8.7% ／ 期待値 130%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">ルークスイテルム</span><span class="dh-badge">8番人気</span>
-      <div class="dh-stats mono">ODDS 191.7 ／ WIN% 0.6% ／ EV 112%</div>
+      <div class="dh-stats mono">オッズ 191.7倍 ／ 勝率目安 0.6% ／ 期待値 112%</div>
     </div>
     
   </div>
   
 
-  <div class="section-title">出走馬</div>
+  <div class="section-title"><span class="en">Entries</span>出走馬ごとの評価</div>
   <div class="card">
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">5</span>エクスマキナ</span>
-        <span class="horse-prob mono">71%</span>
+        <span class="horse-prob mono">複勝圏内 71%</span>
       </div>
       <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約71%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
     </div>
@@ -204,7 +234,7 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">3</span>イカルステソーロ</span>
-        <span class="horse-prob mono">54%</span>
+        <span class="horse-prob mono">複勝圏内 54%</span>
       </div>
       <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約54%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
     </div>
@@ -212,7 +242,7 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">4</span>タイセイソアリング</span>
-        <span class="horse-prob mono">46%</span>
+        <span class="horse-prob mono">複勝圏内 46%</span>
       </div>
       <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約46%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
     </div>
@@ -220,7 +250,7 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">6</span>ウイニングレイ</span>
-        <span class="horse-prob mono">38%</span>
+        <span class="horse-prob mono">複勝圏内 38%</span>
       </div>
       <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約38%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は8.0着とやや不振。</div>
     </div>
@@ -228,7 +258,7 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">7</span>ハンデンブレイズ</span>
-        <span class="horse-prob mono">21%</span>
+        <span class="horse-prob mono">複勝圏内 21%</span>
       </div>
       <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約21%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。</div>
     </div>
@@ -236,7 +266,7 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">2</span>ニシノリリックス</span>
-        <span class="horse-prob mono">9%</span>
+        <span class="horse-prob mono">複勝圏内 9%</span>
       </div>
       <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約9%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は8.0着とやや不振。</div>
     </div>
@@ -244,7 +274,7 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">1</span>ケイジャーダ</span>
-        <span class="horse-prob mono">5%</span>
+        <span class="horse-prob mono">複勝圏内 5%</span>
       </div>
       <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約5%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は9.0着とやや不振。</div>
     </div>
@@ -252,19 +282,20 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">8</span>ルークスイテルム</span>
-        <span class="horse-prob mono">1%</span>
+        <span class="horse-prob mono">複勝圏内 1%</span>
       </div>
       <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約1%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は11.0着とやや不振。</div>
     </div>
     
   </div>
 
-  <div class="section-title">買い目一覧（EV100%超）</div>
+  <div class="section-title"><span class="en">All Bets</span>券種ごとの買い目候補</div>
+  <div class="section-hint">期待値100%を超えるものだけを表示しています。券種名をタップすると開きます。</div>
   
-  <div class="card" style="padding:0; overflow:hidden;">
+  <details class="bet-group" open>
+    <summary>単勝 <span class="count">4点</span></summary>
     <table>
-      <thead><tr><th colspan="4" style="text-align:left; padding-left:12px;">単勝</th></tr>
-      <tr><th>買い目</th><th>ODDS</th><th>WIN%</th><th>EV</th></tr></thead>
+      <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
       <tbody>
         
         <tr>
@@ -297,37 +328,37 @@
         
       </tbody>
     </table>
-  </div>
+  </details>
   
-  <div class="card" style="padding:0; overflow:hidden;">
+  <details class="bet-group">
+    <summary>馬連 <span class="count">9点</span></summary>
     <table>
-      <thead><tr><th colspan="4" style="text-align:left; padding-left:12px;">馬連</th></tr>
-      <tr><th>買い目</th><th>ODDS</th><th>WIN%</th><th>EV</th></tr></thead>
+      <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
       <tbody>
         
         <tr>
-          <td class="horses-cell">ニシノリリックス - ウイニングレイ</td>
+          <td class="horses-cell">ウイニングレイ - ニシノリリックス</td>
           <td class="mono">144.8</td>
           <td class="mono">1.3%</td>
           <td class="ev-cell mono">183%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">エクスマキナ - ニシノリリックス</td>
+          <td class="horses-cell">ニシノリリックス - エクスマキナ</td>
           <td class="mono">65.1</td>
           <td class="mono">2.6%</td>
           <td class="ev-cell mono">169%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ウイニングレイ - ケイジャーダ</td>
+          <td class="horses-cell">ケイジャーダ - ウイニングレイ</td>
           <td class="mono">224.0</td>
           <td class="mono">0.7%</td>
           <td class="ev-cell mono">165%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">エクスマキナ - ケイジャーダ</td>
+          <td class="horses-cell">ケイジャーダ - エクスマキナ</td>
           <td class="mono">91.0</td>
           <td class="mono">1.5%</td>
           <td class="ev-cell mono">138%</td>
@@ -341,14 +372,14 @@
         </tr>
         
         <tr>
-          <td class="horses-cell">ニシノリリックス - タイセイソアリング</td>
+          <td class="horses-cell">タイセイソアリング - ニシノリリックス</td>
           <td class="mono">75.5</td>
           <td class="mono">1.6%</td>
           <td class="ev-cell mono">120%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ハンデンブレイズ - ニシノリリックス</td>
+          <td class="horses-cell">ニシノリリックス - ハンデンブレイズ</td>
           <td class="mono">173.0</td>
           <td class="mono">0.7%</td>
           <td class="ev-cell mono">120%</td>
@@ -362,7 +393,7 @@
         </tr>
         
         <tr>
-          <td class="horses-cell">ハンデンブレイズ - イカルステソーロ</td>
+          <td class="horses-cell">イカルステソーロ - ハンデンブレイズ</td>
           <td class="mono">23.0</td>
           <td class="mono">4.6%</td>
           <td class="ev-cell mono">105%</td>
@@ -370,12 +401,12 @@
         
       </tbody>
     </table>
-  </div>
+  </details>
   
-  <div class="card" style="padding:0; overflow:hidden;">
+  <details class="bet-group">
+    <summary>馬単 <span class="count">20点</span></summary>
     <table>
-      <thead><tr><th colspan="4" style="text-align:left; padding-left:12px;">馬単</th></tr>
-      <tr><th>買い目</th><th>ODDS</th><th>WIN%</th><th>EV</th></tr></thead>
+      <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
       <tbody>
         
         <tr>
@@ -520,30 +551,30 @@
         
       </tbody>
     </table>
-  </div>
+  </details>
   
-  <div class="card" style="padding:0; overflow:hidden;">
+  <details class="bet-group">
+    <summary>3連複 <span class="count">9点</span></summary>
     <table>
-      <thead><tr><th colspan="4" style="text-align:left; padding-left:12px;">3連複</th></tr>
-      <tr><th>買い目</th><th>ODDS</th><th>WIN%</th><th>EV</th></tr></thead>
+      <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
       <tbody>
         
         <tr>
-          <td class="horses-cell">エクスマキナ - ニシノリリックス - ウイニングレイ</td>
+          <td class="horses-cell">ウイニングレイ - ニシノリリックス - エクスマキナ</td>
           <td class="mono">76.9</td>
           <td class="mono">1.8%</td>
           <td class="ev-cell mono">138%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ハンデンブレイズ - イカルステソーロ - ウイニングレイ</td>
+          <td class="horses-cell">イカルステソーロ - ウイニングレイ - ハンデンブレイズ</td>
           <td class="mono">40.4</td>
           <td class="mono">3.0%</td>
           <td class="ev-cell mono">123%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">エクスマキナ - ウイニングレイ - ケイジャーダ</td>
+          <td class="horses-cell">ケイジャーダ - エクスマキナ - ウイニングレイ</td>
           <td class="mono">114.2</td>
           <td class="mono">1.0%</td>
           <td class="ev-cell mono">118%</td>
@@ -557,35 +588,35 @@
         </tr>
         
         <tr>
-          <td class="horses-cell">エクスマキナ - ニシノリリックス - タイセイソアリング</td>
+          <td class="horses-cell">タイセイソアリング - ニシノリリックス - エクスマキナ</td>
           <td class="mono">49.5</td>
           <td class="mono">2.3%</td>
           <td class="ev-cell mono">115%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ウイニングレイ - ニシノリリックス - タイセイソアリング</td>
+          <td class="horses-cell">タイセイソアリング - ニシノリリックス - ウイニングレイ</td>
           <td class="mono">114.5</td>
           <td class="mono">1.0%</td>
           <td class="ev-cell mono">115%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ハンデンブレイズ - ニシノリリックス - ウイニングレイ</td>
+          <td class="horses-cell">ウイニングレイ - ニシノリリックス - ハンデンブレイズ</td>
           <td class="mono">267.8</td>
           <td class="mono">0.4%</td>
           <td class="ev-cell mono">109%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">エクスマキナ - イカルステソーロ - ウイニングレイ</td>
+          <td class="horses-cell">イカルステソーロ - エクスマキナ - ウイニングレイ</td>
           <td class="mono">7.7</td>
           <td class="mono">13.5%</td>
           <td class="ev-cell mono">104%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">エクスマキナ - イカルステソーロ - ニシノリリックス</td>
+          <td class="horses-cell">イカルステソーロ - ニシノリリックス - エクスマキナ</td>
           <td class="mono">36.2</td>
           <td class="mono">2.8%</td>
           <td class="ev-cell mono">103%</td>
@@ -593,12 +624,12 @@
         
       </tbody>
     </table>
-  </div>
+  </details>
   
-  <div class="card" style="padding:0; overflow:hidden;">
+  <details class="bet-group">
+    <summary>3連単 <span class="count">20点</span></summary>
     <table>
-      <thead><tr><th colspan="4" style="text-align:left; padding-left:12px;">3連単</th></tr>
-      <tr><th>買い目</th><th>ODDS</th><th>WIN%</th><th>EV</th></tr></thead>
+      <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
       <tbody>
         
         <tr>
@@ -743,7 +774,7 @@
         
       </tbody>
     </table>
-  </div>
+  </details>
   
 
   

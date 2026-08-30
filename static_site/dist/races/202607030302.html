@@ -37,20 +37,22 @@
   .back:active { color: var(--amber); }
   h1 { font-size: 18px; margin: 10px 0 4px; font-weight: 800; }
   .race-meta { font-size: 11.5px; color: var(--text-dim); }
-  .race-meta .mono { color: var(--text-dim); }
 
   main { max-width: 760px; margin: 0 auto; padding: 0 14px; }
 
   .section-title {
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--amber-dim);
+    font-size: 13.5px;
+    font-weight: 800;
+    color: var(--text);
     margin: 28px 0 10px;
     display: flex; align-items: baseline; gap: 8px;
   }
+  .section-title .en {
+    font-size: 9.5px; font-weight: 700; letter-spacing: 0.1em; color: var(--amber-dim);
+    text-transform: uppercase;
+  }
   .section-title::after { content:""; flex:1; height:1px; background:var(--line); }
+  .section-hint { font-size: 11.5px; color: var(--text-dim); margin: -6px 0 10px; line-height: 1.6; }
 
   .card {
     background: var(--surface);
@@ -61,7 +63,7 @@
   }
   .summary-text { font-size: 13px; line-height: 1.75; color: var(--text-dim); }
 
-  /* --- 最も期待値が高い買い目：signature element --- */
+  /* --- 結論：一番のおすすめ --- */
   .best-bet {
     position: relative;
     background: linear-gradient(180deg, #1a1408 0%, var(--surface) 70%);
@@ -69,19 +71,22 @@
     box-shadow: 0 0 0 1px rgba(240,162,2,0.08), 0 8px 24px -12px var(--amber-glow);
   }
   .best-bet .tag {
-    font-size: 10.5px; font-weight: 800; letter-spacing: 0.1em;
-    color: var(--amber); text-transform: uppercase;
+    font-size: 12px; font-weight: 800; color: var(--amber);
   }
-  .best-bet .type { font-size: 11px; color: var(--text-dim); margin-top: 6px; }
+  .best-bet .type {
+    display: inline-block; font-size: 11px; color: var(--bg); background: var(--amber);
+    font-weight: 700; padding: 2px 8px; border-radius: 3px; margin-top: 8px;
+  }
   .best-bet .horses {
-    font-size: 20px; font-weight: 800; margin: 6px 0 10px;
-    color: var(--text);
+    font-size: 21px; font-weight: 800; margin: 8px 0 12px;
+    color: var(--text); line-height: 1.4;
   }
   .best-bet .stat-row { display: flex; }
-  .best-bet .stat { margin-right: 22px; }
-  .best-bet .stat .label { font-size: 10px; color: var(--text-dim); letter-spacing: 0.05em; }
-  .best-bet .stat .value { font-size: 17px; font-weight: 800; margin-top: 2px; }
+  .best-bet .stat { margin-right: 24px; }
+  .best-bet .stat .label { font-size: 10.5px; color: var(--text-dim); }
+  .best-bet .stat .value { font-size: 18px; font-weight: 800; margin-top: 2px; }
   .best-bet .stat.ev .value { color: var(--amber); }
+  .best-bet .footnote { font-size: 11px; color: var(--text-dim); margin-top: 12px; line-height: 1.6; border-top: 1px solid var(--line); padding-top: 10px; }
 
   /* --- 穴馬候補 --- */
   .dark-horse-card { border-left: 3px solid var(--green); }
@@ -104,16 +109,39 @@
   .horse-prob { font-size: 13px; font-weight: 700; color: var(--green); }
   .horse-reason { font-size: 12px; color: var(--text-dim); margin-top: 5px; line-height: 1.65; }
 
-  /* --- EVテーブル --- */
+  /* --- 買い目一覧（折りたたみ） --- */
+  details.bet-group {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    margin-bottom: 8px;
+    overflow: hidden;
+  }
+  details.bet-group summary {
+    padding: 12px 14px;
+    cursor: pointer;
+    font-size: 13.5px;
+    font-weight: 700;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  details.bet-group summary::-webkit-details-marker { display: none; }
+  details.bet-group summary .count { font-size: 11px; color: var(--text-dim); font-weight: 500; }
+  details.bet-group summary::after {
+    content: "▾"; color: var(--amber-dim); margin-left: 8px; transition: transform 0.15s;
+  }
+  details.bet-group[open] summary::after { transform: rotate(180deg); }
+
   table { width: 100%; border-collapse: collapse; font-size: 12px; }
   th {
     background: var(--surface-2);
     color: var(--text-dim);
     font-weight: 700;
-    font-size: 10.5px;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
+    font-size: 11px;
     padding: 8px 6px;
+    border-top: 1px solid var(--line);
     border-bottom: 1px solid var(--line);
   }
   td {
@@ -142,76 +170,78 @@
 <body>
 <header>
   <a class="back" href="../index.html">← 今週のレース一覧</a>
-  <h1>None R　2歳未勝利</h1>
-  <div class="race-meta mono">None1800m ／ 馬場:- ／ 天候:曇</div>
+  <h1>中京 2R　2歳未勝利</h1>
+  <div class="race-meta mono">ダート1800m ／ 馬場:稍重 ／ 天候:曇</div>
 </header>
 
 <main>
-  <div class="card summary-text">明確な逃げ馬が不在で、スローペースになりやすく先行馬が有利になりやすい。</div>
+  <div class="card summary-text">明確な逃げ馬が不在で、スローペースになりやすく先行馬が有利になりやすい。馬場状態は「稍重」。</div>
 
   
-  <div class="section-title">Best Value</div>
+  <div class="section-title"><span class="en">Conclusion</span>結論：一番のおすすめ</div>
   <div class="card best-bet">
-    <div class="tag">最も期待値が高い買い目</div>
+    <div class="tag">🏆 このレースで最も期待値が高い買い目</div>
     <div class="type">3連単</div>
     <div class="horses">ジュンヴァグネル → ドリームオブコージ → ダノンアズール</div>
     <div class="stat-row mono">
-      <div class="stat"><div class="label">ODDS</div><div class="value">36721.4</div></div>
-      <div class="stat"><div class="label">WIN%</div><div class="value">0.0%</div></div>
-      <div class="stat ev"><div class="label">EV</div><div class="value">607%</div></div>
+      <div class="stat"><div class="label">オッズ</div><div class="value">36721.4倍</div></div>
+      <div class="stat"><div class="label">的中確率</div><div class="value">0.0%</div></div>
+      <div class="stat ev"><div class="label">期待値</div><div class="value">607%</div></div>
     </div>
+    <div class="footnote">期待値とは「100円賭けた時に理論上いくら戻ってくるか」の目安です。100%を超えるほど、賭け金に対して見込まれる払戻が大きいことを意味します（的中を保証するものではありません）。</div>
   </div>
   
 
   
-  <div class="section-title">Dark Horses</div>
+  <div class="section-title"><span class="en">Dark Horses</span>穴馬候補</div>
+  <div class="section-hint">人気は低いのに、モデルの評価に対してオッズが割安な馬です。</div>
   <div class="card dark-horse-card">
     
     <div class="dark-horse-item">
       <span class="dh-name">ドリームオブコージ</span><span class="dh-badge">10番人気</span>
-      <div class="dh-stats mono">ODDS 121.2 ／ WIN% 1.8% ／ EV 214%</div>
+      <div class="dh-stats mono">オッズ 121.2倍 ／ 勝率目安 1.8% ／ 期待値 214%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">ミリオンカラー</span><span class="dh-badge">8番人気</span>
-      <div class="dh-stats mono">ODDS 36.5 ／ WIN% 4.9% ／ EV 178%</div>
+      <div class="dh-stats mono">オッズ 36.5倍 ／ 勝率目安 4.9% ／ 期待値 178%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">ルガルデ</span><span class="dh-badge">9番人気</span>
-      <div class="dh-stats mono">ODDS 105.6 ／ WIN% 1.5% ／ EV 162%</div>
+      <div class="dh-stats mono">オッズ 105.6倍 ／ 勝率目安 1.5% ／ 期待値 162%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">ボビーザグレート</span><span class="dh-badge">5番人気</span>
-      <div class="dh-stats mono">ODDS 17.6 ／ WIN% 8.5% ／ EV 149%</div>
+      <div class="dh-stats mono">オッズ 17.6倍 ／ 勝率目安 8.5% ／ 期待値 149%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">バミューダブーケ</span><span class="dh-badge">7番人気</span>
-      <div class="dh-stats mono">ODDS 29.9 ／ WIN% 4.8% ／ EV 145%</div>
+      <div class="dh-stats mono">オッズ 29.9倍 ／ 勝率目安 4.8% ／ 期待値 145%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">ジュンヴァグネル</span><span class="dh-badge">6番人気</span>
-      <div class="dh-stats mono">ODDS 26.2 ／ WIN% 5.2% ／ EV 136%</div>
+      <div class="dh-stats mono">オッズ 26.2倍 ／ 勝率目安 5.2% ／ 期待値 136%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">ゴールドシューター</span><span class="dh-badge">11番人気</span>
-      <div class="dh-stats mono">ODDS 136.3 ／ WIN% 0.9% ／ EV 129%</div>
+      <div class="dh-stats mono">オッズ 136.3倍 ／ 勝率目安 0.9% ／ 期待値 129%</div>
     </div>
     
   </div>
   
 
-  <div class="section-title">出走馬</div>
+  <div class="section-title"><span class="en">Entries</span>出走馬ごとの評価</div>
   <div class="card">
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">7</span>オーリエイト</span>
-        <span class="horse-prob mono">86%</span>
+        <span class="horse-prob mono">複勝圏内 86%</span>
       </div>
       <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約86%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は2.0着と好調を維持。</div>
     </div>
@@ -219,7 +249,7 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">3</span>ダノンアズール</span>
-        <span class="horse-prob mono">40%</span>
+        <span class="horse-prob mono">複勝圏内 40%</span>
       </div>
       <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約40%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
     </div>
@@ -227,7 +257,7 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">11</span>ソリドゥス</span>
-        <span class="horse-prob mono">30%</span>
+        <span class="horse-prob mono">複勝圏内 30%</span>
       </div>
       <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約30%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。</div>
     </div>
@@ -235,7 +265,7 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">6</span>ダヌラーサナ</span>
-        <span class="horse-prob mono">26%</span>
+        <span class="horse-prob mono">複勝圏内 26%</span>
       </div>
       <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約26%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は10.0着とやや不振。</div>
     </div>
@@ -243,7 +273,7 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">2</span>ボビーザグレート</span>
-        <span class="horse-prob mono">21%</span>
+        <span class="horse-prob mono">複勝圏内 21%</span>
       </div>
       <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約21%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
     </div>
@@ -251,7 +281,7 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">12</span>ジュンヴァグネル</span>
-        <span class="horse-prob mono">13%</span>
+        <span class="horse-prob mono">複勝圏内 13%</span>
       </div>
       <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約13%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は8.0着とやや不振。</div>
     </div>
@@ -259,7 +289,7 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">10</span>ミリオンカラー</span>
-        <span class="horse-prob mono">12%</span>
+        <span class="horse-prob mono">複勝圏内 12%</span>
       </div>
       <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約12%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
     </div>
@@ -267,7 +297,7 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">5</span>バミューダブーケ</span>
-        <span class="horse-prob mono">12%</span>
+        <span class="horse-prob mono">複勝圏内 12%</span>
       </div>
       <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約12%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
     </div>
@@ -275,7 +305,7 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">1</span>ドリームオブコージ</span>
-        <span class="horse-prob mono">4%</span>
+        <span class="horse-prob mono">複勝圏内 4%</span>
       </div>
       <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約4%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は8.0着とやや不振。</div>
     </div>
@@ -283,7 +313,7 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">9</span>ルガルデ</span>
-        <span class="horse-prob mono">4%</span>
+        <span class="horse-prob mono">複勝圏内 4%</span>
       </div>
       <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約4%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は8.5着とやや不振。</div>
     </div>
@@ -291,7 +321,7 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">4</span>ゴールドシューター</span>
-        <span class="horse-prob mono">2%</span>
+        <span class="horse-prob mono">複勝圏内 2%</span>
       </div>
       <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約2%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は8.0着とやや不振。</div>
     </div>
@@ -299,19 +329,20 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">8</span>アンナモエ</span>
-        <span class="horse-prob mono">1%</span>
+        <span class="horse-prob mono">複勝圏内 1%</span>
       </div>
       <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約1%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は15.0着とやや不振。</div>
     </div>
     
   </div>
 
-  <div class="section-title">買い目一覧（EV100%超）</div>
+  <div class="section-title"><span class="en">All Bets</span>券種ごとの買い目候補</div>
+  <div class="section-hint">期待値100%を超えるものだけを表示しています。券種名をタップすると開きます。</div>
   
-  <div class="card" style="padding:0; overflow:hidden;">
+  <details class="bet-group" open>
+    <summary>単勝 <span class="count">8点</span></summary>
     <table>
-      <thead><tr><th colspan="4" style="text-align:left; padding-left:12px;">単勝</th></tr>
-      <tr><th>買い目</th><th>ODDS</th><th>WIN%</th><th>EV</th></tr></thead>
+      <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
       <tbody>
         
         <tr>
@@ -372,37 +403,37 @@
         
       </tbody>
     </table>
-  </div>
+  </details>
   
-  <div class="card" style="padding:0; overflow:hidden;">
+  <details class="bet-group">
+    <summary>馬連 <span class="count">20点</span></summary>
     <table>
-      <thead><tr><th colspan="4" style="text-align:left; padding-left:12px;">馬連</th></tr>
-      <tr><th>買い目</th><th>ODDS</th><th>WIN%</th><th>EV</th></tr></thead>
+      <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
       <tbody>
         
         <tr>
-          <td class="horses-cell">ダノンアズール - ドリームオブコージ</td>
+          <td class="horses-cell">ドリームオブコージ - ダノンアズール</td>
           <td class="mono">410.6</td>
           <td class="mono">0.6%</td>
           <td class="ev-cell mono">254%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ダヌラーサナ - ドリームオブコージ</td>
+          <td class="horses-cell">ドリームオブコージ - ダヌラーサナ</td>
           <td class="mono">573.3</td>
           <td class="mono">0.4%</td>
           <td class="ev-cell mono">222%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ボビーザグレート - ドリームオブコージ</td>
+          <td class="horses-cell">ドリームオブコージ - ボビーザグレート</td>
           <td class="mono">641.8</td>
           <td class="mono">0.3%</td>
           <td class="ev-cell mono">203%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ミリオンカラー - ドリームオブコージ</td>
+          <td class="horses-cell">ドリームオブコージ - ミリオンカラー</td>
           <td class="mono">1023.8</td>
           <td class="mono">0.2%</td>
           <td class="ev-cell mono">183%</td>
@@ -416,28 +447,28 @@
         </tr>
         
         <tr>
-          <td class="horses-cell">バミューダブーケ - ミリオンカラー</td>
+          <td class="horses-cell">ミリオンカラー - バミューダブーケ</td>
           <td class="mono">340.9</td>
           <td class="mono">0.5%</td>
           <td class="ev-cell mono">169%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バミューダブーケ - ドリームオブコージ</td>
+          <td class="horses-cell">ドリームオブコージ - バミューダブーケ</td>
           <td class="mono">909.4</td>
           <td class="mono">0.2%</td>
           <td class="ev-cell mono">161%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ソリドゥス - ドリームオブコージ</td>
+          <td class="horses-cell">ドリームオブコージ - ソリドゥス</td>
           <td class="mono">335.5</td>
           <td class="mono">0.5%</td>
           <td class="ev-cell mono">151%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バミューダブーケ - ダノンアズール</td>
+          <td class="horses-cell">ダノンアズール - バミューダブーケ</td>
           <td class="mono">88.0</td>
           <td class="mono">1.7%</td>
           <td class="ev-cell mono">151%</td>
@@ -479,35 +510,35 @@
         </tr>
         
         <tr>
-          <td class="horses-cell">ボビーザグレート - ミリオンカラー</td>
+          <td class="horses-cell">ミリオンカラー - ボビーザグレート</td>
           <td class="mono">147.2</td>
           <td class="mono">0.9%</td>
           <td class="ev-cell mono">131%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">オーリエイト - ドリームオブコージ</td>
+          <td class="horses-cell">ドリームオブコージ - オーリエイト</td>
           <td class="mono">82.0</td>
           <td class="mono">1.5%</td>
           <td class="ev-cell mono">125%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ミリオンカラー - ダヌラーサナ</td>
+          <td class="horses-cell">ダヌラーサナ - ミリオンカラー</td>
           <td class="mono">114.9</td>
           <td class="mono">1.1%</td>
           <td class="ev-cell mono">125%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バミューダブーケ - ボビーザグレート</td>
+          <td class="horses-cell">ボビーザグレート - バミューダブーケ</td>
           <td class="mono">139.2</td>
           <td class="mono">0.9%</td>
           <td class="ev-cell mono">122%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ジュンヴァグネル - ドリームオブコージ</td>
+          <td class="horses-cell">ドリームオブコージ - ジュンヴァグネル</td>
           <td class="mono">621.9</td>
           <td class="mono">0.2%</td>
           <td class="ev-cell mono">119%</td>
@@ -522,12 +553,12 @@
         
       </tbody>
     </table>
-  </div>
+  </details>
   
-  <div class="card" style="padding:0; overflow:hidden;">
+  <details class="bet-group">
+    <summary>馬単 <span class="count">20点</span></summary>
     <table>
-      <thead><tr><th colspan="4" style="text-align:left; padding-left:12px;">馬単</th></tr>
-      <tr><th>買い目</th><th>ODDS</th><th>WIN%</th><th>EV</th></tr></thead>
+      <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
       <tbody>
         
         <tr>
@@ -672,16 +703,16 @@
         
       </tbody>
     </table>
-  </div>
+  </details>
   
-  <div class="card" style="padding:0; overflow:hidden;">
+  <details class="bet-group">
+    <summary>3連複 <span class="count">20点</span></summary>
     <table>
-      <thead><tr><th colspan="4" style="text-align:left; padding-left:12px;">3連複</th></tr>
-      <tr><th>買い目</th><th>ODDS</th><th>WIN%</th><th>EV</th></tr></thead>
+      <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
       <tbody>
         
         <tr>
-          <td class="horses-cell">ダノンアズール - ダヌラーサナ - ドリームオブコージ</td>
+          <td class="horses-cell">ドリームオブコージ - ダヌラーサナ - ダノンアズール</td>
           <td class="mono">924.3</td>
           <td class="mono">0.2%</td>
           <td class="ev-cell mono">219%</td>
@@ -702,119 +733,119 @@
         </tr>
         
         <tr>
-          <td class="horses-cell">ダノンアズール - ジュンヴァグネル - ドリームオブコージ</td>
+          <td class="horses-cell">ドリームオブコージ - ジュンヴァグネル - ダノンアズール</td>
           <td class="mono">1417.0</td>
           <td class="mono">0.1%</td>
           <td class="ev-cell mono">160%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ダヌラーサナ - ジュンヴァグネル - ドリームオブコージ</td>
+          <td class="horses-cell">ドリームオブコージ - ジュンヴァグネル - ダヌラーサナ</td>
           <td class="mono">2332.7</td>
           <td class="mono">0.1%</td>
           <td class="ev-cell mono">160%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ボビーザグレート - ダヌラーサナ - ドリームオブコージ</td>
+          <td class="horses-cell">ドリームオブコージ - ボビーザグレート - ダヌラーサナ</td>
           <td class="mono">1322.3</td>
           <td class="mono">0.1%</td>
           <td class="ev-cell mono">153%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ダノンアズール - ダヌラーサナ - ジュンヴァグネル</td>
+          <td class="horses-cell">ダノンアズール - ジュンヴァグネル - ダヌラーサナ</td>
           <td class="mono">205.4</td>
           <td class="mono">0.7%</td>
           <td class="ev-cell mono">148%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バミューダブーケ - ダヌラーサナ - ドリームオブコージ</td>
+          <td class="horses-cell">ドリームオブコージ - バミューダブーケ - ダヌラーサナ</td>
           <td class="mono">2343.8</td>
           <td class="mono">0.1%</td>
           <td class="ev-cell mono">148%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ミリオンカラー - ダヌラーサナ - ドリームオブコージ</td>
+          <td class="horses-cell">ドリームオブコージ - ミリオンカラー - ダヌラーサナ</td>
           <td class="mono">2258.1</td>
           <td class="mono">0.1%</td>
           <td class="ev-cell mono">144%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ボビーザグレート - ジュンヴァグネル - ドリームオブコージ</td>
+          <td class="horses-cell">ドリームオブコージ - ボビーザグレート - ジュンヴァグネル</td>
           <td class="mono">2589.2</td>
           <td class="mono">0.1%</td>
           <td class="ev-cell mono">143%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バミューダブーケ - ソリドゥス - ドリームオブコージ</td>
+          <td class="horses-cell">ドリームオブコージ - ソリドゥス - バミューダブーケ</td>
           <td class="mono">1902.0</td>
           <td class="mono">0.1%</td>
           <td class="ev-cell mono">141%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ダノンアズール - ボビーザグレート - ドリームオブコージ</td>
+          <td class="horses-cell">ドリームオブコージ - ボビーザグレート - ダノンアズール</td>
           <td class="mono">735.9</td>
           <td class="mono">0.2%</td>
           <td class="ev-cell mono">141%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ダノンアズール - ジュンヴァグネル - ソリドゥス</td>
+          <td class="horses-cell">ダノンアズール - ソリドゥス - ジュンヴァグネル</td>
           <td class="mono">165.1</td>
           <td class="mono">0.8%</td>
           <td class="ev-cell mono">140%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ダノンアズール - ダヌラーサナ - ソリドゥス</td>
+          <td class="horses-cell">ダノンアズール - ソリドゥス - ダヌラーサナ</td>
           <td class="mono">78.1</td>
           <td class="mono">1.8%</td>
           <td class="ev-cell mono">139%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ソリドゥス - ジュンヴァグネル - ドリームオブコージ</td>
+          <td class="horses-cell">ドリームオブコージ - ソリドゥス - ジュンヴァグネル</td>
           <td class="mono">1729.1</td>
           <td class="mono">0.1%</td>
           <td class="ev-cell mono">139%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バミューダブーケ - ダノンアズール - ダヌラーサナ</td>
+          <td class="horses-cell">ダノンアズール - バミューダブーケ - ダヌラーサナ</td>
           <td class="mono">205.6</td>
           <td class="mono">0.7%</td>
           <td class="ev-cell mono">137%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バミューダブーケ - ダノンアズール - ボビーザグレート</td>
+          <td class="horses-cell">ダノンアズール - ボビーザグレート - バミューダブーケ</td>
           <td class="mono">254.6</td>
           <td class="mono">0.5%</td>
           <td class="ev-cell mono">137%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バミューダブーケ - ダノンアズール - ドリームオブコージ</td>
+          <td class="horses-cell">ドリームオブコージ - バミューダブーケ - ダノンアズール</td>
           <td class="mono">1301.4</td>
           <td class="mono">0.1%</td>
           <td class="ev-cell mono">136%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">バミューダブーケ - ダノンアズール - ソリドゥス</td>
+          <td class="horses-cell">ダノンアズール - ソリドゥス - バミューダブーケ</td>
           <td class="mono">168.5</td>
           <td class="mono">0.8%</td>
           <td class="ev-cell mono">132%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ミリオンカラー - ダノンアズール - ドリームオブコージ</td>
+          <td class="horses-cell">ドリームオブコージ - ミリオンカラー - ダノンアズール</td>
           <td class="mono">1248.8</td>
           <td class="mono">0.1%</td>
           <td class="ev-cell mono">131%</td>
@@ -822,12 +853,12 @@
         
       </tbody>
     </table>
-  </div>
+  </details>
   
-  <div class="card" style="padding:0; overflow:hidden;">
+  <details class="bet-group">
+    <summary>3連単 <span class="count">20点</span></summary>
     <table>
-      <thead><tr><th colspan="4" style="text-align:left; padding-left:12px;">3連単</th></tr>
-      <tr><th>買い目</th><th>ODDS</th><th>WIN%</th><th>EV</th></tr></thead>
+      <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
       <tbody>
         
         <tr>
@@ -972,7 +1003,7 @@
         
       </tbody>
     </table>
-  </div>
+  </details>
   
 
   

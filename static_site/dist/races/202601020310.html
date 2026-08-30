@@ -37,20 +37,22 @@
   .back:active { color: var(--amber); }
   h1 { font-size: 18px; margin: 10px 0 4px; font-weight: 800; }
   .race-meta { font-size: 11.5px; color: var(--text-dim); }
-  .race-meta .mono { color: var(--text-dim); }
 
   main { max-width: 760px; margin: 0 auto; padding: 0 14px; }
 
   .section-title {
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--amber-dim);
+    font-size: 13.5px;
+    font-weight: 800;
+    color: var(--text);
     margin: 28px 0 10px;
     display: flex; align-items: baseline; gap: 8px;
   }
+  .section-title .en {
+    font-size: 9.5px; font-weight: 700; letter-spacing: 0.1em; color: var(--amber-dim);
+    text-transform: uppercase;
+  }
   .section-title::after { content:""; flex:1; height:1px; background:var(--line); }
+  .section-hint { font-size: 11.5px; color: var(--text-dim); margin: -6px 0 10px; line-height: 1.6; }
 
   .card {
     background: var(--surface);
@@ -61,7 +63,7 @@
   }
   .summary-text { font-size: 13px; line-height: 1.75; color: var(--text-dim); }
 
-  /* --- 最も期待値が高い買い目：signature element --- */
+  /* --- 結論：一番のおすすめ --- */
   .best-bet {
     position: relative;
     background: linear-gradient(180deg, #1a1408 0%, var(--surface) 70%);
@@ -69,19 +71,22 @@
     box-shadow: 0 0 0 1px rgba(240,162,2,0.08), 0 8px 24px -12px var(--amber-glow);
   }
   .best-bet .tag {
-    font-size: 10.5px; font-weight: 800; letter-spacing: 0.1em;
-    color: var(--amber); text-transform: uppercase;
+    font-size: 12px; font-weight: 800; color: var(--amber);
   }
-  .best-bet .type { font-size: 11px; color: var(--text-dim); margin-top: 6px; }
+  .best-bet .type {
+    display: inline-block; font-size: 11px; color: var(--bg); background: var(--amber);
+    font-weight: 700; padding: 2px 8px; border-radius: 3px; margin-top: 8px;
+  }
   .best-bet .horses {
-    font-size: 20px; font-weight: 800; margin: 6px 0 10px;
-    color: var(--text);
+    font-size: 21px; font-weight: 800; margin: 8px 0 12px;
+    color: var(--text); line-height: 1.4;
   }
   .best-bet .stat-row { display: flex; }
-  .best-bet .stat { margin-right: 22px; }
-  .best-bet .stat .label { font-size: 10px; color: var(--text-dim); letter-spacing: 0.05em; }
-  .best-bet .stat .value { font-size: 17px; font-weight: 800; margin-top: 2px; }
+  .best-bet .stat { margin-right: 24px; }
+  .best-bet .stat .label { font-size: 10.5px; color: var(--text-dim); }
+  .best-bet .stat .value { font-size: 18px; font-weight: 800; margin-top: 2px; }
   .best-bet .stat.ev .value { color: var(--amber); }
+  .best-bet .footnote { font-size: 11px; color: var(--text-dim); margin-top: 12px; line-height: 1.6; border-top: 1px solid var(--line); padding-top: 10px; }
 
   /* --- 穴馬候補 --- */
   .dark-horse-card { border-left: 3px solid var(--green); }
@@ -104,16 +109,39 @@
   .horse-prob { font-size: 13px; font-weight: 700; color: var(--green); }
   .horse-reason { font-size: 12px; color: var(--text-dim); margin-top: 5px; line-height: 1.65; }
 
-  /* --- EVテーブル --- */
+  /* --- 買い目一覧（折りたたみ） --- */
+  details.bet-group {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    margin-bottom: 8px;
+    overflow: hidden;
+  }
+  details.bet-group summary {
+    padding: 12px 14px;
+    cursor: pointer;
+    font-size: 13.5px;
+    font-weight: 700;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  details.bet-group summary::-webkit-details-marker { display: none; }
+  details.bet-group summary .count { font-size: 11px; color: var(--text-dim); font-weight: 500; }
+  details.bet-group summary::after {
+    content: "▾"; color: var(--amber-dim); margin-left: 8px; transition: transform 0.15s;
+  }
+  details.bet-group[open] summary::after { transform: rotate(180deg); }
+
   table { width: 100%; border-collapse: collapse; font-size: 12px; }
   th {
     background: var(--surface-2);
     color: var(--text-dim);
     font-weight: 700;
-    font-size: 10.5px;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
+    font-size: 11px;
     padding: 8px 6px;
+    border-top: 1px solid var(--line);
     border-bottom: 1px solid var(--line);
   }
   td {
@@ -142,76 +170,78 @@
 <body>
 <header>
   <a class="back" href="../index.html">← 今週のレース一覧</a>
-  <h1>None R　すずらん賞</h1>
-  <div class="race-meta mono">芝1200m ／ 馬場:- ／ 天候:晴</div>
+  <h1>札幌 10R　すずらん賞</h1>
+  <div class="race-meta mono">芝1200m ／ 馬場:稍重 ／ 天候:晴</div>
 </header>
 
 <main>
-  <div class="card summary-text">逃げ馬が3頭おり、先行争いが激化しやすくハイペース濃厚。差し・追込馬にも展開の恩恵が期待できる。</div>
+  <div class="card summary-text">逃げ馬が3頭おり、先行争いが激化しやすくハイペース濃厚。差し・追込馬にも展開の恩恵が期待できる。馬場状態は「稍重」。</div>
 
   
-  <div class="section-title">Best Value</div>
+  <div class="section-title"><span class="en">Conclusion</span>結論：一番のおすすめ</div>
   <div class="card best-bet">
-    <div class="tag">最も期待値が高い買い目</div>
+    <div class="tag">🏆 このレースで最も期待値が高い買い目</div>
     <div class="type">3連単</div>
     <div class="horses">ピクニックマーチ → トラデスカンティア → ワールドエンジェル</div>
     <div class="stat-row mono">
-      <div class="stat"><div class="label">ODDS</div><div class="value">3953.2</div></div>
-      <div class="stat"><div class="label">WIN%</div><div class="value">0.1%</div></div>
-      <div class="stat ev"><div class="label">EV</div><div class="value">306%</div></div>
+      <div class="stat"><div class="label">オッズ</div><div class="value">3953.2倍</div></div>
+      <div class="stat"><div class="label">的中確率</div><div class="value">0.1%</div></div>
+      <div class="stat ev"><div class="label">期待値</div><div class="value">306%</div></div>
     </div>
+    <div class="footnote">期待値とは「100円賭けた時に理論上いくら戻ってくるか」の目安です。100%を超えるほど、賭け金に対して見込まれる払戻が大きいことを意味します（的中を保証するものではありません）。</div>
   </div>
   
 
   
-  <div class="section-title">Dark Horses</div>
+  <div class="section-title"><span class="en">Dark Horses</span>穴馬候補</div>
+  <div class="section-hint">人気は低いのに、モデルの評価に対してオッズが割安な馬です。</div>
   <div class="card dark-horse-card">
     
     <div class="dark-horse-item">
       <span class="dh-name">ピンクゴールド</span><span class="dh-badge">11番人気</span>
-      <div class="dh-stats mono">ODDS 99.8 ／ WIN% 1.5% ／ EV 153%</div>
+      <div class="dh-stats mono">オッズ 99.8倍 ／ 勝率目安 1.5% ／ 期待値 153%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">トラデスカンティア</span><span class="dh-badge">9番人気</span>
-      <div class="dh-stats mono">ODDS 33.2 ／ WIN% 4.4% ／ EV 147%</div>
+      <div class="dh-stats mono">オッズ 33.2倍 ／ 勝率目安 4.4% ／ 期待値 147%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">ピクニックマーチ</span><span class="dh-badge">6番人気</span>
-      <div class="dh-stats mono">ODDS 14.6 ／ WIN% 8.9% ／ EV 129%</div>
+      <div class="dh-stats mono">オッズ 14.6倍 ／ 勝率目安 8.9% ／ 期待値 129%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">ルベルグラン</span><span class="dh-badge">10番人気</span>
-      <div class="dh-stats mono">ODDS 82.1 ／ WIN% 1.5% ／ EV 120%</div>
+      <div class="dh-stats mono">オッズ 82.1倍 ／ 勝率目安 1.5% ／ 期待値 120%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">ラビリンスティアラ</span><span class="dh-badge">7番人気</span>
-      <div class="dh-stats mono">ODDS 15.6 ／ WIN% 7.0% ／ EV 109%</div>
+      <div class="dh-stats mono">オッズ 15.6倍 ／ 勝率目安 7.0% ／ 期待値 109%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">スハッチェ</span><span class="dh-badge">12番人気</span>
-      <div class="dh-stats mono">ODDS 151.3 ／ WIN% 0.7% ／ EV 105%</div>
+      <div class="dh-stats mono">オッズ 151.3倍 ／ 勝率目安 0.7% ／ 期待値 105%</div>
     </div>
     
     <div class="dark-horse-item">
       <span class="dh-name">ルアシュエル</span><span class="dh-badge">8番人気</span>
-      <div class="dh-stats mono">ODDS 19.8 ／ WIN% 5.2% ／ EV 102%</div>
+      <div class="dh-stats mono">オッズ 19.8倍 ／ 勝率目安 5.2% ／ 期待値 102%</div>
     </div>
     
   </div>
   
 
-  <div class="section-title">出走馬</div>
+  <div class="section-title"><span class="en">Entries</span>出走馬ごとの評価</div>
   <div class="card">
     
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">12</span>ウインガラハッド</span>
-        <span class="horse-prob mono">69%</span>
+        <span class="horse-prob mono">複勝圏内 69%</span>
       </div>
       <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約69%。逃げ脚質だが、このレースは逃げ馬が3頭おり先行争いが激しくなりペースが速まる可能性があるため、スタミナ面がやや不安要素。直近3走の平均着順は1.0着と好調を維持。</div>
     </div>
@@ -219,7 +249,7 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">3</span>ワールドエンジェル</span>
-        <span class="horse-prob mono">52%</span>
+        <span class="horse-prob mono">複勝圏内 52%</span>
       </div>
       <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約52%。逃げ脚質だが、このレースは逃げ馬が3頭おり先行争いが激しくなりペースが速まる可能性があるため、スタミナ面がやや不安要素。直近3走の平均着順は1.0着と好調を維持。</div>
     </div>
@@ -227,7 +257,7 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">8</span>タイフーンナイン</span>
-        <span class="horse-prob mono">47%</span>
+        <span class="horse-prob mono">複勝圏内 47%</span>
       </div>
       <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約47%。逃げ脚質だが、このレースは逃げ馬が3頭おり先行争いが激しくなりペースが速まる可能性があるため、スタミナ面がやや不安要素。直近3走の平均着順は1.7着と好調を維持。</div>
     </div>
@@ -235,7 +265,7 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">9</span>ムーンベリル</span>
-        <span class="horse-prob mono">37%</span>
+        <span class="horse-prob mono">複勝圏内 37%</span>
       </div>
       <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約37%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は1.5着と好調を維持。</div>
     </div>
@@ -243,7 +273,7 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">10</span>ヌーンベルク</span>
-        <span class="horse-prob mono">33%</span>
+        <span class="horse-prob mono">複勝圏内 33%</span>
       </div>
       <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約33%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は2.7着と好調を維持。</div>
     </div>
@@ -251,7 +281,7 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">7</span>ピクニックマーチ</span>
-        <span class="horse-prob mono">30%</span>
+        <span class="horse-prob mono">複勝圏内 30%</span>
       </div>
       <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約30%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は1.0着と好調を維持。</div>
     </div>
@@ -259,7 +289,7 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">11</span>ラビリンスティアラ</span>
-        <span class="horse-prob mono">24%</span>
+        <span class="horse-prob mono">複勝圏内 24%</span>
       </div>
       <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約24%。</div>
     </div>
@@ -267,7 +297,7 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">1</span>ルアシュエル</span>
-        <span class="horse-prob mono">17%</span>
+        <span class="horse-prob mono">複勝圏内 17%</span>
       </div>
       <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約17%。</div>
     </div>
@@ -275,7 +305,7 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">6</span>トラデスカンティア</span>
-        <span class="horse-prob mono">15%</span>
+        <span class="horse-prob mono">複勝圏内 15%</span>
       </div>
       <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約15%。</div>
     </div>
@@ -283,7 +313,7 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">5</span>ピンクゴールド</span>
-        <span class="horse-prob mono">5%</span>
+        <span class="horse-prob mono">複勝圏内 5%</span>
       </div>
       <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約5%。</div>
     </div>
@@ -291,7 +321,7 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">2</span>ルベルグラン</span>
-        <span class="horse-prob mono">5%</span>
+        <span class="horse-prob mono">複勝圏内 5%</span>
       </div>
       <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約5%。</div>
     </div>
@@ -299,19 +329,20 @@
     <div class="horse-item">
       <div class="horse-head">
         <span class="horse-name"><span class="horse-num mono">4</span>スハッチェ</span>
-        <span class="horse-prob mono">2%</span>
+        <span class="horse-prob mono">複勝圏内 2%</span>
       </div>
       <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約2%。</div>
     </div>
     
   </div>
 
-  <div class="section-title">買い目一覧（EV100%超）</div>
+  <div class="section-title"><span class="en">All Bets</span>券種ごとの買い目候補</div>
+  <div class="section-hint">期待値100%を超えるものだけを表示しています。券種名をタップすると開きます。</div>
   
-  <div class="card" style="padding:0; overflow:hidden;">
+  <details class="bet-group" open>
+    <summary>単勝 <span class="count">7点</span></summary>
     <table>
-      <thead><tr><th colspan="4" style="text-align:left; padding-left:12px;">単勝</th></tr>
-      <tr><th>買い目</th><th>ODDS</th><th>WIN%</th><th>EV</th></tr></thead>
+      <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
       <tbody>
         
         <tr>
@@ -365,23 +396,23 @@
         
       </tbody>
     </table>
-  </div>
+  </details>
   
-  <div class="card" style="padding:0; overflow:hidden;">
+  <details class="bet-group">
+    <summary>馬連 <span class="count">20点</span></summary>
     <table>
-      <thead><tr><th colspan="4" style="text-align:left; padding-left:12px;">馬連</th></tr>
-      <tr><th>買い目</th><th>ODDS</th><th>WIN%</th><th>EV</th></tr></thead>
+      <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
       <tbody>
         
         <tr>
-          <td class="horses-cell">ピクニックマーチ - トラデスカンティア</td>
+          <td class="horses-cell">トラデスカンティア - ピクニックマーチ</td>
           <td class="mono">214.0</td>
           <td class="mono">0.8%</td>
           <td class="ev-cell mono">180%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ヌーンベルク - トラデスカンティア</td>
+          <td class="horses-cell">トラデスカンティア - ヌーンベルク</td>
           <td class="mono">177.0</td>
           <td class="mono">0.9%</td>
           <td class="ev-cell mono">168%</td>
@@ -402,28 +433,28 @@
         </tr>
         
         <tr>
-          <td class="horses-cell">ラビリンスティアラ - トラデスカンティア</td>
+          <td class="horses-cell">トラデスカンティア - ラビリンスティアラ</td>
           <td class="mono">212.8</td>
           <td class="mono">0.7%</td>
           <td class="ev-cell mono">139%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ピンクゴールド - ヌーンベルク</td>
+          <td class="horses-cell">ヌーンベルク - ピンクゴールド</td>
           <td class="mono">413.5</td>
           <td class="mono">0.3%</td>
           <td class="ev-cell mono">133%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ピクニックマーチ - ラビリンスティアラ</td>
+          <td class="horses-cell">ラビリンスティアラ - ピクニックマーチ</td>
           <td class="mono">98.7</td>
           <td class="mono">1.3%</td>
           <td class="ev-cell mono">132%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">タイフーンナイン - ラビリンスティアラ</td>
+          <td class="horses-cell">ラビリンスティアラ - タイフーンナイン</td>
           <td class="mono">60.7</td>
           <td class="mono">2.2%</td>
           <td class="ev-cell mono">131%</td>
@@ -437,7 +468,7 @@
         </tr>
         
         <tr>
-          <td class="horses-cell">タイフーンナイン - トラデスカンティア</td>
+          <td class="horses-cell">トラデスカンティア - タイフーンナイン</td>
           <td class="mono">95.3</td>
           <td class="mono">1.4%</td>
           <td class="ev-cell mono">129%</td>
@@ -451,7 +482,7 @@
         </tr>
         
         <tr>
-          <td class="horses-cell">ピクニックマーチ - ルアシュエル</td>
+          <td class="horses-cell">ルアシュエル - ピクニックマーチ</td>
           <td class="mono">127.0</td>
           <td class="mono">1.0%</td>
           <td class="ev-cell mono">125%</td>
@@ -472,21 +503,21 @@
         </tr>
         
         <tr>
-          <td class="horses-cell">ピクニックマーチ - ワールドエンジェル</td>
+          <td class="horses-cell">ワールドエンジェル - ピクニックマーチ</td>
           <td class="mono">36.9</td>
           <td class="mono">3.1%</td>
           <td class="ev-cell mono">116%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ムーンベリル - トラデスカンティア</td>
+          <td class="horses-cell">トラデスカンティア - ムーンベリル</td>
           <td class="mono">108.4</td>
           <td class="mono">1.1%</td>
           <td class="ev-cell mono">115%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ヌーンベルク - ルアシュエル</td>
+          <td class="horses-cell">ルアシュエル - ヌーンベルク</td>
           <td class="mono">101.5</td>
           <td class="mono">1.1%</td>
           <td class="ev-cell mono">113%</td>
@@ -500,14 +531,14 @@
         </tr>
         
         <tr>
-          <td class="horses-cell">ピクニックマーチ - ルベルグラン</td>
+          <td class="horses-cell">ルベルグラン - ピクニックマーチ</td>
           <td class="mono">402.2</td>
           <td class="mono">0.3%</td>
           <td class="ev-cell mono">110%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ピンクゴールド - ワールドエンジェル</td>
+          <td class="horses-cell">ワールドエンジェル - ピンクゴールド</td>
           <td class="mono">210.0</td>
           <td class="mono">0.5%</td>
           <td class="ev-cell mono">110%</td>
@@ -515,12 +546,12 @@
         
       </tbody>
     </table>
-  </div>
+  </details>
   
-  <div class="card" style="padding:0; overflow:hidden;">
+  <details class="bet-group">
+    <summary>馬単 <span class="count">20点</span></summary>
     <table>
-      <thead><tr><th colspan="4" style="text-align:left; padding-left:12px;">馬単</th></tr>
-      <tr><th>買い目</th><th>ODDS</th><th>WIN%</th><th>EV</th></tr></thead>
+      <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
       <tbody>
         
         <tr>
@@ -665,149 +696,149 @@
         
       </tbody>
     </table>
-  </div>
+  </details>
   
-  <div class="card" style="padding:0; overflow:hidden;">
+  <details class="bet-group">
+    <summary>3連複 <span class="count">20点</span></summary>
     <table>
-      <thead><tr><th colspan="4" style="text-align:left; padding-left:12px;">3連複</th></tr>
-      <tr><th>買い目</th><th>ODDS</th><th>WIN%</th><th>EV</th></tr></thead>
+      <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
       <tbody>
         
         <tr>
-          <td class="horses-cell">ピクニックマーチ - ワールドエンジェル - トラデスカンティア</td>
+          <td class="horses-cell">ワールドエンジェル - トラデスカンティア - ピクニックマーチ</td>
           <td class="mono">336.5</td>
           <td class="mono">0.5%</td>
           <td class="ev-cell mono">170%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ワールドエンジェル - トラデスカンティア - ラビリンスティアラ</td>
+          <td class="horses-cell">ワールドエンジェル - ラビリンスティアラ - トラデスカンティア</td>
           <td class="mono">423.5</td>
           <td class="mono">0.4%</td>
           <td class="ev-cell mono">165%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ピクニックマーチ - ワールドエンジェル - ラビリンスティアラ</td>
+          <td class="horses-cell">ワールドエンジェル - ラビリンスティアラ - ピクニックマーチ</td>
           <td class="mono">197.2</td>
           <td class="mono">0.8%</td>
           <td class="ev-cell mono">161%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ラビリンスティアラ - ワールドエンジェル - ヌーンベルク</td>
+          <td class="horses-cell">ワールドエンジェル - ヌーンベルク - ラビリンスティアラ</td>
           <td class="mono">166.0</td>
           <td class="mono">0.9%</td>
           <td class="ev-cell mono">154%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ムーンベリル - ワールドエンジェル - トラデスカンティア</td>
+          <td class="horses-cell">ワールドエンジェル - トラデスカンティア - ムーンベリル</td>
           <td class="mono">238.3</td>
           <td class="mono">0.6%</td>
           <td class="ev-cell mono">153%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ワールドエンジェル - トラデスカンティア - ヌーンベルク</td>
+          <td class="horses-cell">ワールドエンジェル - ヌーンベルク - トラデスカンティア</td>
           <td class="mono">267.3</td>
           <td class="mono">0.6%</td>
           <td class="ev-cell mono">153%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ピクニックマーチ - ヌーンベルク - ラビリンスティアラ</td>
+          <td class="horses-cell">ヌーンベルク - ラビリンスティアラ - ピクニックマーチ</td>
           <td class="mono">314.0</td>
           <td class="mono">0.5%</td>
           <td class="ev-cell mono">152%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ワールドエンジェル - ムーンベリル - ラビリンスティアラ</td>
+          <td class="horses-cell">ワールドエンジェル - ラビリンスティアラ - ムーンベリル</td>
           <td class="mono">143.8</td>
           <td class="mono">1.0%</td>
           <td class="ev-cell mono">150%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ピクニックマーチ - トラデスカンティア - ムーンベリル</td>
+          <td class="horses-cell">トラデスカンティア - ピクニックマーチ - ムーンベリル</td>
           <td class="mono">437.1</td>
           <td class="mono">0.3%</td>
           <td class="ev-cell mono">147%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">タイフーンナイン - ワールドエンジェル - トラデスカンティア</td>
+          <td class="horses-cell">ワールドエンジェル - トラデスカンティア - タイフーンナイン</td>
           <td class="mono">174.8</td>
           <td class="mono">0.8%</td>
           <td class="ev-cell mono">147%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ヌーンベルク - トラデスカンティア - ラビリンスティアラ</td>
+          <td class="horses-cell">トラデスカンティア - ヌーンベルク - ラビリンスティアラ</td>
           <td class="mono">627.2</td>
           <td class="mono">0.2%</td>
           <td class="ev-cell mono">145%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ピクニックマーチ - タイフーンナイン - ラビリンスティアラ</td>
+          <td class="horses-cell">ラビリンスティアラ - タイフーンナイン - ピクニックマーチ</td>
           <td class="mono">202.3</td>
           <td class="mono">0.7%</td>
           <td class="ev-cell mono">144%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">タイフーンナイン - ワールドエンジェル - ラビリンスティアラ</td>
+          <td class="horses-cell">ワールドエンジェル - ラビリンスティアラ - タイフーンナイン</td>
           <td class="mono">101.3</td>
           <td class="mono">1.4%</td>
           <td class="ev-cell mono">138%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ピクニックマーチ - ヌーンベルク - トラデスカンティア</td>
+          <td class="horses-cell">トラデスカンティア - ヌーンベルク - ピクニックマーチ</td>
           <td class="mono">454.7</td>
           <td class="mono">0.3%</td>
           <td class="ev-cell mono">136%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ピクニックマーチ - ラビリンスティアラ - トラデスカンティア</td>
+          <td class="horses-cell">トラデスカンティア - ラビリンスティアラ - ピクニックマーチ</td>
           <td class="mono">665.1</td>
           <td class="mono">0.2%</td>
           <td class="ev-cell mono">135%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ピクニックマーチ - ラビリンスティアラ - ムーンベリル</td>
+          <td class="horses-cell">ラビリンスティアラ - ピクニックマーチ - ムーンベリル</td>
           <td class="mono">248.7</td>
           <td class="mono">0.5%</td>
           <td class="ev-cell mono">135%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ムーンベリル - ヌーンベルク - トラデスカンティア</td>
+          <td class="horses-cell">トラデスカンティア - ヌーンベルク - ムーンベリル</td>
           <td class="mono">335.3</td>
           <td class="mono">0.4%</td>
           <td class="ev-cell mono">128%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ピクニックマーチ - ワールドエンジェル - ムーンベリル</td>
+          <td class="horses-cell">ワールドエンジェル - ピクニックマーチ - ムーンベリル</td>
           <td class="mono">91.8</td>
           <td class="mono">1.4%</td>
           <td class="ev-cell mono">124%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ピクニックマーチ - トラデスカンティア - ウインガラハッド</td>
+          <td class="horses-cell">トラデスカンティア - ウインガラハッド - ピクニックマーチ</td>
           <td class="mono">171.9</td>
           <td class="mono">0.7%</td>
           <td class="ev-cell mono">123%</td>
         </tr>
         
         <tr>
-          <td class="horses-cell">ピクニックマーチ - タイフーンナイン - トラデスカンティア</td>
+          <td class="horses-cell">トラデスカンティア - タイフーンナイン - ピクニックマーチ</td>
           <td class="mono">279.4</td>
           <td class="mono">0.4%</td>
           <td class="ev-cell mono">123%</td>
@@ -815,12 +846,12 @@
         
       </tbody>
     </table>
-  </div>
+  </details>
   
-  <div class="card" style="padding:0; overflow:hidden;">
+  <details class="bet-group">
+    <summary>3連単 <span class="count">20点</span></summary>
     <table>
-      <thead><tr><th colspan="4" style="text-align:left; padding-left:12px;">3連単</th></tr>
-      <tr><th>買い目</th><th>ODDS</th><th>WIN%</th><th>EV</th></tr></thead>
+      <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
       <tbody>
         
         <tr>
@@ -965,7 +996,7 @@
         
       </tbody>
     </table>
-  </div>
+  </details>
   
 
   
