@@ -74,3 +74,16 @@ def generate_race_page(
     out_path = races_dir / f"{race['race_id']}.html"
     out_path.write_text(html, encoding="utf-8")
     return out_path
+
+
+def generate_win5_page(win5: dict, races: list) -> Path:
+    """
+    WIN5専用の独立ページを生成する（static_site/dist/win5.html）。
+    win5: {"race_labels":[...], "combos":[...]}
+    races: WIN5対象5レースの簡易情報 [{race_id, course, race_number, race_name}, ...]
+    """
+    template = _env.get_template("win5.html")
+    html = template.render(win5=win5, races=races, generated_at=dt.datetime.now().strftime("%Y-%m-%d %H:%M"))
+    out_path = DIST_DIR / "win5.html"
+    out_path.write_text(html, encoding="utf-8")
+    return out_path

@@ -20,7 +20,7 @@ from features.feature_engineering import load_race_entries
 from betting.ev_engine import normalize_strengths, build_ev_table, best_bet, positive_ev_rows, identify_value_horses, build_betting_plan
 from betting.reasoning import generate_reason, summarize_race
 from betting.win5 import race_win_candidates, build_win5_combinations
-from static_site.generate_site import generate_index, generate_race_page
+from static_site.generate_site import generate_index, generate_race_page, generate_win5_page
 
 
 def build_race_page_data(race_id: str, race_meta: dict, stats, is_win5: bool = False) -> tuple:
@@ -69,7 +69,15 @@ def build_race_page_data(race_id: str, race_meta: dict, stats, is_win5: bool = F
         reason = generate_reason(h_features, race_context)
         horses.append({
             "horse_number": r.get("horse_number"),
+            "post_position": r.get("post_position"),
             "name": r.get("horse_name", r.get("horse_number")),
+            "sex_age": r.get("sex_age"),
+            "weight_carried": r.get("weight_carried"),
+            "jockey_name": r.get("jockey_name_disp"),
+            "trainer_name": r.get("trainer_name_disp"),
+            "horse_weight": r.get("horse_weight_disp"),
+            "win_odds": r.get("win_odds"),
+            "popularity": r.get("popularity"),
             "place_probability": r["place_probability"],
             "reason": reason,
         })
@@ -166,6 +174,19 @@ def run_weekly(dry_run: bool = False):
             page_data["win5"] = win5_result
             generate_race_page(**page_data)
         print(f"WIN5買い目を{len(ordered_ids)}レースのページに反映しました")
+
+        # WIN5専用の独立ページも生成する
+        win5_race_summaries = [
+            {
+                "race_id": rid,
+                "course": win5_page_data[rid]["race"].get("course"),
+                "race_number": win5_page_data[rid]["race"].get("race_number"),
+                "race_name": win5_page_data[rid]["race"].get("race_name"),
+            }
+            for rid in ordered_ids
+        ]
+        generate_win5_page(win5_result, win5_race_summaries)
+        print("WIN5専用ページを生成しました")
 
     days = [{"date": d, "weekday": "", "races": races} for d, races in sorted(days_index.items())]
     generate_index(days)

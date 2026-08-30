@@ -142,6 +142,8 @@ def build_prediction_row(shutuba_df: pd.DataFrame, race_meta: dict, conn, stats:
         ("horse_number", ("馬番",)), ("post_position", ("枠",)),
         ("weight_carried", ("斤量",)), ("win_odds", ("オッズ",)),
         ("popularity", ("人気",)), ("horse_name", ("馬名",)),
+        ("jockey_name_disp", ("騎手",)), ("sex_age", ("性齢",)),
+        ("horse_weight_disp", ("馬体重",)), ("trainer_name_disp", ("厩舎",)),
     ]:
         found = _match_col(cols, *keywords)
         if found is not None:
@@ -221,6 +223,10 @@ def build_prediction_row(shutuba_df: pd.DataFrame, race_meta: dict, conn, stats:
             "horse_name": r.get("horse_name"),
             "win_odds": win_odds,
             "popularity": popularity,
+            "jockey_name_disp": r.get("jockey_name_disp"),
+            "sex_age": r.get("sex_age"),
+            "horse_weight_disp": r.get("horse_weight_disp"),
+            "trainer_name_disp": r.get("trainer_name_disp"),
             "weight_carried": pd.to_numeric(r.get("weight_carried"), errors="coerce"),
             "horse_weight": np.nan,
             "horse_weight_diff": np.nan,

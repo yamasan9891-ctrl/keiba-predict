@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>今週のWIN5 | keiba-predict</title>
+<style>
+  :root {
+    --bg: #0b0f0d; --surface: #131a16; --surface-2: #1a2420; --line: #26332c;
+    --amber: #f0a202; --amber-dim: #8a6417; --green: #4caf6e; --text: #ece7da; --text-dim: #8d9690;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: "Hiragino Sans", "Yu Gothic", -apple-system, sans-serif;
+    padding: 0 0 64px;
+  }
+  .mono { font-family: "SFMono-Regular", "Menlo", "Consolas", monospace; font-variant-numeric: tabular-nums; }
+  a { color: inherit; text-decoration: none; }
+
+  header { padding: 20px 14px 14px; border-bottom: 1px solid var(--line); }
+  .back { font-size: 12px; color: var(--text-dim); }
+  .eyebrow { font-size: 11px; letter-spacing: 0.14em; color: var(--amber-dim); text-transform: uppercase; margin: 10px 0 6px; font-weight: 700; }
+  h1 { font-size: 22px; margin: 0 0 6px; font-weight: 800; }
+  .updated { color: var(--text-dim); font-size: 11.5px; }
+
+  main { max-width: 720px; margin: 0 auto; padding: 16px 14px 0; }
+
+  .section-title {
+    font-size: 13.5px; font-weight: 800; margin: 24px 0 10px;
+    display: flex; align-items: baseline; gap: 8px;
+  }
+  .section-title::after { content:""; flex:1; height:1px; background:var(--line); }
+
+  .race-chip-list { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+  .race-chip {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 20px;
+    padding: 8px 14px; font-size: 12.5px; font-weight: 700;
+  }
+  .race-chip .rn { color: var(--amber); margin-right: 4px; }
+
+  .combo-card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 8px;
+    padding: 14px 16px; margin-bottom: 8px;
+  }
+  .combo-card.top { border-color: var(--amber-dim); background: linear-gradient(135deg, #1a1408, var(--surface)); }
+  .combo-rank { font-size: 11px; font-weight: 800; color: var(--amber-dim); }
+  .combo-card.top .combo-rank { color: var(--amber); }
+  .combo-horses { font-size: 16px; font-weight: 800; margin: 6px 0; }
+  .combo-stats { font-size: 12px; color: var(--text-dim); }
+  .combo-stats .ev { color: var(--green); font-weight: 700; }
+
+  .empty-state {
+    margin-top: 40px; text-align: center; padding: 40px 20px;
+    border: 1px dashed var(--line); border-radius: 8px;
+  }
+  .empty-state p { color: var(--text-dim); font-size: 13px; line-height: 1.7; margin: 0; }
+
+  .disclaimer { margin-top: 26px; font-size: 11px; color: var(--text-dim); text-align: center; line-height: 1.7; }
+</style>
+</head>
+<body>
+<header>
+  <a class="back" href="index.html">← 今週のレース一覧</a>
+  <p class="eyebrow">WIN5</p>
+  <h1>今週のWIN5</h1>
+  <p class="updated mono">最終更新 {{ generated_at }}</p>
+</header>
+
+<main>
+  {% if races %}
+  <div class="section-title">対象レース</div>
+  <div class="race-chip-list">
+    {% for r in races %}
+    <a class="race-chip" href="races/{{ r.race_id }}.html"><span class="rn">{{ r.race_number }}R</span>{{ r.course }} {{ r.race_name }}</a>
+    {% endfor %}
+  </div>
+
+  <div class="section-title">買い目候補</div>
+  {% for c in win5.combos %}
+  <div class="combo-card{% if loop.index == 1 %} top{% endif %}">
+    <div class="combo-rank">{{ loop.index }}位</div>
+    <div class="combo-horses mono">{{ c.horses|join(' - ') }}</div>
+    <div class="combo-stats mono">的中確率 {{ "%.3f"|format(c.probability * 100) }}%{% if c.ev %} ／ <span class="ev">期待値 {{ "%.0f"|format(c.ev * 100) }}%</span>{% endif %}</div>
+  </div>
+  {% endfor %}
+  {% else %}
+  <div class="empty-state">
+    <p>今週のWIN5対象レースはまだ確定していません。<br>対象レースの出馬表が公開され次第、自動で反映します。</p>
+  </div>
+  {% endif %}
+
+  <div class="disclaimer">本ページの予想は参考情報です。的中・利益を保証しません。<br>馬券の購入は必ずご自身でIPAT等の公式ルートから行ってください。</div>
+</main>
+</body>
+</html>
