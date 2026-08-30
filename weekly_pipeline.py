@@ -15,7 +15,7 @@ import datetime as dt
 from db.database import init_db, get_conn
 from scraper.netkeiba_scraper import fetch_shutuba, fetch_this_week_race_ids, save_to_db
 from scraper.odds_scraper import fetch_all_odds
-from model.predict import predict as predict_race
+from model.predict import predict as predict_race, precompute_current_stats
 from features.feature_engineering import load_race_entries
 from betting.ev_engine import normalize_strengths, build_ev_table, best_bet, positive_ev_rows, identify_value_horses
 from betting.reasoning import generate_reason, summarize_race
@@ -23,9 +23,9 @@ from betting.win5 import race_win_candidates, build_win5_combinations
 from static_site.generate_site import generate_index, generate_race_page
 
 
-def build_race_page_data(race_id: str, race_meta: dict, historical) -> dict:
+def build_race_page_data(race_id: str, race_meta: dict, stats) -> dict:
     """1レース分の予想・EV・理由をまとめて計算する"""
-    pred_df = predict_race(race_id, historical=historical)
+    pred_df = predict_race(race_id, stats=stats)
 
     strengths_raw = dict(zip(pred_df["horse_number"].astype(str), pred_df["place_probability"]))
     strengths = normalize_strengths(strengths_raw)
@@ -85,13 +85,15 @@ def run_weekly(dry_run: bool = False):
     race_ids = [] if dry_run else fetch_this_week_race_ids()
     print(f"対象レース数: {len(race_ids)}")
 
-    # 過去データは1回だけ読み込んで全レースで使い回す（毎回8万件超を読み直す非効率を回避）
-    historical = None
+    # 各馬・各騎手の「現時点での」実力値を1回だけ事前計算し、全レースで使い回す
+    # （以前はレースごとに全過去データを再計算しており、1レース2分以上かかっていた）
+    stats = None
     if race_ids:
-        print("過去データを読み込み中（1回だけ）...")
+        print("過去データを読み込み・実力値を事前計算中（1回だけ）...")
         with get_conn() as conn:
             historical = load_race_entries(conn)
-        print(f"過去データ読み込み完了: {len(historical)}行")
+        stats = precompute_current_stats(historical)
+        print(f"事前計算完了: 対象馬{len(stats['horse'])}頭 / 対象騎手{len(stats['jockey'])}人")
 
     days_index = {}
     for rid in race_ids:
@@ -106,7 +108,7 @@ def run_weekly(dry_run: bool = False):
         meta["race_id"] = rid
 
         try:
-            page_data = build_race_page_data(rid, meta, historical)
+            page_data = build_race_page_data(rid, meta, stats)
             generate_race_page(**page_data)
         except Exception as e:
             print(f"  [警告] {rid} の予想生成に失敗: {e}")

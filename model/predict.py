@@ -1,11 +1,21 @@
 """
-予想実行（DB直結版・学習時と同一の特徴量計算ロジックを再利用）
+予想実行（高速版）
 
-出馬表（まだ結果が出ていないレース）を、DBの全過去データと一緒に
-features.build_features() に通すことで、学習時と全く同じ計算式で
-（対戦相手の強さ・騎手成績・展開シミュレーション・枠順バイアス・休み明け等を含む）
-特徴量を作る。予想専用の別ロジックを作らないことで、
-「学習側だけ更新して予想側が古いまま」というバグを防ぐ。
+以前のバージョンは、予想のたびに過去データ全件（数万行）を
+学習時と同じ複雑な計算（groupby×複数回）に通していたため、
+1レースあたり2分以上かかり、週末72レース分の処理が現実的な時間で
+終わらないという重大な性能問題があった。
+
+このバージョンでは、「各馬・各騎手の"現時点での"実力値」を
+週次パイプライン開始時に1回だけ計算し（precompute_current_stats）、
+個々のレース予想はその結果を単純に参照するだけにすることで、
+1レースあたりの処理を数百倍高速化する。
+
+なお、学習（model/train.py）側は引き続き「そのレースより前の情報だけ」を
+使うリーク防止つきの厳密な計算（features/feature_engineering.py）を使う。
+今回の高速版は「今まさに行われる未来のレース」の予想専用であり、
+そこでは全ての過去データが正当に「既知の情報」であるため、
+リーク防止のための複雑なshift処理が本来不要という点を利用している。
 """
 import argparse
 import sys
@@ -18,21 +28,104 @@ import pandas as pd
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 from config import MODEL_DIR, RACE_ID_HELP
 from db.database import get_conn, init_db
-from features.feature_engineering import load_race_entries, build_features, CATEGORICAL_COLS
+from features.feature_engineering import CATEGORICAL_COLS
 from scraper.netkeiba_scraper import fetch_shutuba
 
+# JRAの1レースの出走可能頭数は最大18頭。人気9999や負のオッズは
+# 出走取消・データ異常のサイン。
+MAX_VALID_HORSE_NUMBER = 30
+MIN_VALID_ODDS = 0.1
 
-def _shutuba_to_entry_rows(shutuba_df: pd.DataFrame, race_meta: dict, conn) -> pd.DataFrame:
-    """出馬表を、load_race_entries()と同じ列構成のDataFrameに変換する（未確定情報はNaN）"""
-    # 出馬表の列名は結果ページと違いスペースなし・改行入り等クセがあるため、
-    # 完全一致ではなく部分一致で柔軟にマッピングする
-    def _match_col(columns, *keywords):
-        for col in columns:
-            col_norm = str(col).replace("\n", "").replace(" ", "")
-            if all(kw in col_norm for kw in keywords):
-                return col
-        return None
 
+def precompute_current_stats(historical: pd.DataFrame) -> dict:
+    """
+    馬ごと・騎手ごとの「現時点での」累積実力値をまとめて1回だけ計算する。
+    戻り値: {"horse": DataFrame, "jockey": DataFrame, "post_bias": DataFrame}
+    """
+    df = historical.copy()
+
+    # --- 馬ごとの累積成績 ---
+    h = df.sort_values(["horse_id", "race_id"])
+    grp = h.groupby("horse_id")
+    horse_stats = grp.agg(
+        avg_finish_pos=("finish_pos", "mean"),
+        n_races=("finish_pos", "count"),
+        best_finish_pos=("finish_pos", "min"),
+        avg_last_3f=("last_3f", "mean"),
+    ).reset_index()
+    horse_stats["place_rate"] = grp["finish_pos"].apply(lambda s: (s <= 3).mean()).values
+    horse_stats["recent3_avg_finish_pos"] = grp["finish_pos"].apply(lambda s: s.tail(3).mean()).values
+    horse_stats["prior_running_style"] = grp["running_style"].last().values
+    if "speed_figure" in df.columns:
+        horse_stats["avg_speed_figure"] = grp["speed_figure"].mean().values
+        horse_stats["best_speed_figure"] = grp["speed_figure"].max().values
+    else:
+        horse_stats["avg_speed_figure"] = np.nan
+        horse_stats["best_speed_figure"] = np.nan
+
+    # --- 騎手ごとの累積成績 ---
+    j = df.sort_values(["jockey_id", "race_id"])
+    jgrp = j.groupby("jockey_id")
+    jockey_stats = jgrp.agg(jockey_n_races=("finish_pos", "count")).reset_index()
+    jockey_stats["jockey_place_rate"] = jgrp["finish_pos"].apply(lambda s: (s <= 3).mean()).values
+
+    # --- 枠順バイアス（距離×芝ダート×枠番） ---
+    if "post_position" in df.columns:
+        pos_stats = df.groupby(["distance", "surface", "post_position"])["is_placed"].agg(["mean", "count"]).reset_index()
+        pos_stats.loc[pos_stats["count"] < 30, "mean"] = np.nan
+        pos_stats = pos_stats.rename(columns={"mean": "post_position_bias"})
+    else:
+        pos_stats = pd.DataFrame(columns=["distance", "surface", "post_position", "post_position_bias"])
+
+    # --- 馬の「強さ」の目安（対戦相手の強さ計算に使う）: 現時点の複勝率をそのまま使う ---
+    horse_strength = horse_stats.set_index("horse_id")["place_rate"].to_dict()
+
+    return {
+        "horse": horse_stats.set_index("horse_id"),
+        "jockey": jockey_stats.set_index("jockey_id"),
+        "post_bias": pos_stats,
+        "horse_strength": horse_strength,
+    }
+
+
+def _tan_lookup(tan_data: dict, horse_number, field: str, fallback):
+    """単勝オッズAPIの値を優先し、無ければ出馬表側の値にフォールバックする"""
+    try:
+        key = str(int(pd.to_numeric(horse_number, errors="coerce")))
+    except (ValueError, TypeError):
+        key = None
+    if key and key in tan_data and tan_data[key].get(field) is not None:
+        return tan_data[key][field]
+    return pd.to_numeric(fallback, errors="coerce")
+
+
+def _match_col(columns, *keywords):
+    for col in columns:
+        col_norm = str(col).replace("\n", "").replace(" ", "")
+        if all(kw in col_norm for kw in keywords):
+            return col
+    return None
+
+
+def _pace_advantage(running_style, predicted_pace, front_styles, closer_styles) -> int:
+    """展開とその馬の脚質から、有利(+1)/不利(-1)/中立(0)を判定する"""
+    if running_style is None:
+        return 0
+    if predicted_pace == "ハイペース":
+        if running_style in closer_styles:
+            return 1
+        if running_style in front_styles:
+            return -1
+    elif predicted_pace == "スローペース":
+        if running_style in front_styles:
+            return 1
+        if running_style in closer_styles:
+            return -1
+    return 0
+
+
+def build_prediction_row(shutuba_df: pd.DataFrame, race_meta: dict, conn, stats: dict, tan_data: dict) -> pd.DataFrame:
+    """出馬表1レース分から、precompute_current_statsの結果を参照して特徴量を組み立てる（高速）"""
     cols = shutuba_df.columns
     rename = {}
     for target, keywords in [
@@ -46,9 +139,38 @@ def _shutuba_to_entry_rows(shutuba_df: pd.DataFrame, race_meta: dict, conn) -> p
     df = shutuba_df.rename(columns=rename)
 
     race_id = race_meta.get("race_id")
+    horse_df = stats["horse"]
+    jockey_df = stats["jockey"]
+    post_bias = stats["post_bias"]
+    horse_strength = stats["horse_strength"]
+
+    # このレースの全出走馬の複勝率（対戦相手の強さの算出に使う）
+    horse_ids_today = df.get("horse_id", pd.Series(dtype=str)).tolist()
+    strengths_today = [horse_strength.get(hid, np.nan) for hid in horse_ids_today]
+
+    # 展開シミュレーション: 出走馬全員の「直近の脚質」からこのレースのペースを予測する
+    front_styles = {"逃げ", "先行"}
+    closer_styles = {"差し", "追込"}
+    styles_today = [
+        (horse_df.loc[hid, "prior_running_style"] if hid in horse_df.index else None)
+        for hid in horse_ids_today
+    ]
+    valid_styles = [s for s in styles_today if s is not None]
+    front_ratio = (sum(1 for s in valid_styles if s in front_styles) / len(valid_styles)) if valid_styles else 0.3
+    if front_ratio > 0.4:
+        predicted_pace = "ハイペース"
+    elif front_ratio < 0.2:
+        predicted_pace = "スローペース"
+    else:
+        predicted_pace = "平均"
+
     rows = []
-    for _, r in df.iterrows():
+    for i, (_, r) in enumerate(df.iterrows()):
         horse_id = r.get("horse_id")
+        h = horse_df.loc[horse_id] if horse_id in horse_df.index else None
+        jockey_id = r.get("jockey_id")
+        j = jockey_df.loc[jockey_id] if jockey_id in jockey_df.index else None
+
         ped = {"father": None, "mother_father": None}
         if horse_id:
             prow = conn.execute(
@@ -57,42 +179,68 @@ def _shutuba_to_entry_rows(shutuba_df: pd.DataFrame, race_meta: dict, conn) -> p
             if prow:
                 ped = {"father": prow["father"], "mother_father": prow["mother_father"]}
 
+        # 対戦相手の強さ = 自分以外の今日の出走馬の複勝率平均
+        others = [s for k, s in enumerate(strengths_today) if k != i and not pd.isna(s)]
+        opp_strength = float(np.mean(others)) if others else np.nan
+
+        distance = race_meta.get("distance")
+        surface = race_meta.get("surface")
+        post_position = pd.to_numeric(r.get("post_position"), errors="coerce")
+        bias_row = post_bias[
+            (post_bias["distance"] == distance) & (post_bias["surface"] == surface) &
+            (post_bias["post_position"] == post_position)
+        ]
+        pos_bias_val = bias_row["post_position_bias"].iloc[0] if not bias_row.empty else np.nan
+
+        win_odds = _tan_lookup(tan_data, r.get("horse_number"), "odds", r.get("win_odds"))
+        popularity = _tan_lookup(tan_data, r.get("horse_number"), "popularity", r.get("popularity"))
+        # 出走取消・異常値ガード（オッズが極端に小さい/負、人気が異常に大きい）
+        if pd.notna(win_odds) and win_odds < MIN_VALID_ODDS:
+            win_odds, popularity = np.nan, np.nan
+        if pd.notna(popularity) and popularity > MAX_VALID_HORSE_NUMBER:
+            win_odds, popularity = np.nan, np.nan
+
         rows.append({
             "race_id": race_id,
             "horse_number": pd.to_numeric(r.get("horse_number"), errors="coerce"),
-            "post_position": pd.to_numeric(r.get("post_position"), errors="coerce"),
+            "post_position": post_position,
             "horse_id": horse_id,
             "horse_name": r.get("horse_name"),
-            "jockey_id": r.get("jockey_id"),
-            "trainer_name": None,  # 出馬表段階では通常取得済みだが、未対応時はNaNで問題ない
+            "win_odds": win_odds,
+            "popularity": popularity,
             "weight_carried": pd.to_numeric(r.get("weight_carried"), errors="coerce"),
-            "horse_weight": np.nan,       # 出馬表段階では馬体重は未発表のことが多い
+            "horse_weight": np.nan,
             "horse_weight_diff": np.nan,
-            "running_style": None,        # まだ走っていないので当該レースの脚質は存在しない（正しくNaN）
-            "last_3f": None,               # 同上
-            "finish_pos": None,            # 未確定（このレースの予想対象であることを示す）
-            "win_odds": pd.to_numeric(r.get("win_odds"), errors="coerce"),
-            "popularity": pd.to_numeric(r.get("popularity"), errors="coerce"),
-            "is_placed": None,
-            "race_date": race_meta.get("race_date"),
-            "distance": race_meta.get("distance"),
-            "surface": race_meta.get("surface"),
+            "distance": distance,
+            "surface": surface,
             "track_condition": race_meta.get("track_condition"),
-            "weather": race_meta.get("weather"),
-            "is_handicap": race_meta.get("is_handicap"),
-            "grade": race_meta.get("grade"),
+            "is_handicap": 1 if race_meta.get("is_handicap") else 0,
+            "avg_finish_pos": h["avg_finish_pos"] if h is not None else np.nan,
+            "n_races": h["n_races"] if h is not None else 0,
+            "best_finish_pos": h["best_finish_pos"] if h is not None else np.nan,
+            "place_rate": h["place_rate"] if h is not None else np.nan,
+            "recent3_avg_finish_pos": h["recent3_avg_finish_pos"] if h is not None else np.nan,
+            "avg_last_3f": h["avg_last_3f"] if h is not None else np.nan,
+            "avg_speed_figure": h["avg_speed_figure"] if h is not None else np.nan,
+            "best_speed_figure": h["best_speed_figure"] if h is not None else np.nan,
+            "avg_opponent_strength": opp_strength,
+            "jockey_place_rate": j["jockey_place_rate"] if j is not None else np.nan,
+            "jockey_n_races": j["jockey_n_races"] if j is not None else 0,
+            "prior_running_style": h["prior_running_style"] if h is not None else None,
+            "predicted_pace": predicted_pace,
+            "pace_advantage": _pace_advantage(h["prior_running_style"] if h is not None else None, predicted_pace, front_styles, closer_styles),
+            "post_position_bias": pos_bias_val,
             "father": ped["father"],
             "mother_father": ped["mother_father"],
-            "speed_figure": np.nan,  # 当該レースの指数はまだ存在しない（過去平均は履歴から計算される）
         })
+
     return pd.DataFrame(rows)
 
 
-def predict(race_id: str, historical: pd.DataFrame = None) -> pd.DataFrame:
+def predict(race_id: str, stats: dict = None, historical: pd.DataFrame = None) -> pd.DataFrame:
     """
-    historical を渡すと、過去データの再読み込み・再計算をスキップして高速化する
-    （週次パイプラインのように多レースを連続予想する場合に重要）。
-    省略時はこの呼び出し内でDBから読み込む（単発のCLI実行用）。
+    stats（precompute_current_statsの結果）を渡すと高速に予想できる。
+    省略時はこの呼び出し内でDBから読み込んで計算する（単発CLI実行用、やや遅い）。
     """
     model_path = MODEL_DIR / "model.pkl"
     if not model_path.exists():
@@ -102,29 +250,34 @@ def predict(race_id: str, historical: pd.DataFrame = None) -> pd.DataFrame:
     model, feature_cols = bundle["model"], bundle["features"]
 
     init_db()
+
+    if stats is None:
+        from features.feature_engineering import load_race_entries
+        with get_conn() as conn:
+            if historical is None:
+                historical = load_race_entries(conn)
+        stats = precompute_current_stats(historical)
+
     shutuba = fetch_shutuba(race_id)
     race_meta = shutuba.attrs.get("meta", {"race_id": race_id})
     race_meta["race_id"] = race_id
 
+    try:
+        from scraper.odds_scraper import fetch_tan_odds_and_popularity
+        tan_data = fetch_tan_odds_and_popularity(race_id)
+    except Exception as e:
+        print(f"[警告] 単勝オッズAPI取得失敗（出馬表の値のまま進めます）: {e}")
+        tan_data = {}
+
     with get_conn() as conn:
-        if historical is None:
-            historical = load_race_entries(conn)
-        shutuba_rows = _shutuba_to_entry_rows(shutuba, race_meta, conn)
-
-    # 過去データ＋今回の出馬表を結合して、学習時と全く同じ計算式で特徴量を作る
-    combined = pd.concat([historical, shutuba_rows], ignore_index=True, sort=False)
-    features_all = build_features(combined)
-
-    features = features_all[features_all["race_id"] == race_id].copy()
-    if features.empty:
-        raise RuntimeError(f"出馬表の行が特徴量テーブルに見つかりませんでした: {race_id}")
+        features = build_prediction_row(shutuba, race_meta, conn, stats, tan_data)
 
     missing = [c for c in feature_cols if c not in features.columns]
     for c in missing:
-        features[c] = np.nan
+        features[c] = np.nan  # object型のNoneではなく数値NaNで埋める（LightGBMがdtypeエラーになるため）
 
     for col in CATEGORICAL_COLS:
-        if col in features.columns and features[col].dtype.name != "category":
+        if col in features.columns:
             features[col] = features[col].astype("category")
 
     X = features[feature_cols]

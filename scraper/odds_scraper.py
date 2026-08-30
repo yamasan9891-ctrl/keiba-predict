@@ -26,6 +26,7 @@ _session.headers.update(REQUEST_HEADERS)
 _last = 0.0
 
 ODDS_TYPES = {
+    "tan": 1,
     "umaren": 4,
     "umatan": 6,
     "sanrenpuku": 7,
@@ -54,8 +55,9 @@ def _parse_odds_value(raw) -> float:
 
 def fetch_odds(race_id: str, bet_type: str) -> dict:
     """
-    bet_type: 'umaren' | 'umatan' | 'sanrenpuku' | 'sanrentan'
+    bet_type: 'tan' | 'umaren' | 'umatan' | 'sanrenpuku' | 'sanrentan'
     戻り値の例:
+      tan        -> {'1': 3.5, ...}           # 単勝オッズ（馬番→オッズ）
       umaren     -> {frozenset({'1','5'}): 6.2, ...}
       umatan     -> {('1','5'): 12.3, ...}   # 1着→2着の順
       sanrenpuku -> {frozenset({'1','5','8'}): 25.4, ...}
@@ -74,10 +76,8 @@ def fetch_odds(race_id: str, bet_type: str) -> dict:
         print(f"[警告] {bet_type} のオッズが空でした（発売前 or race_id不正の可能性）: {race_id}")
         return {}
 
-    # typeキー直下、または数字キーの入れ子になっている場合の両方に対応
     inner = odds_root.get(str(type_num)) or odds_root.get(type_num)
     if inner is None:
-        # 想定外の構造の場合、最初に見つかった辞書値を使う
         for v in odds_root.values():
             if isinstance(v, dict):
                 inner = v
@@ -87,13 +87,19 @@ def fetch_odds(race_id: str, bet_type: str) -> dict:
 
     result = {}
     for key, value in inner.items():
-        # keyは2桁ごとの馬番連結（例: "0102" = 1番→2番, "010203" = 1番→2番→3番）
-        digits = [key[i:i+2] for i in range(0, len(key), 2)]
-        horse_nums = [str(int(d)) for d in digits]  # 先頭ゼロを除去
-
         odds_val = _parse_odds_value(value[0] if isinstance(value, list) else value)
         if odds_val is None:
             continue
+
+        if bet_type == "tan":
+            # keyは2桁の馬番そのもの（例: "01" = 1番）
+            horse_num = str(int(key))
+            result[horse_num] = odds_val
+            continue
+
+        # 2桁ごとの馬番連結（例: "0102" = 1番→2番, "010203" = 1番→2番→3番）
+        digits = [key[i:i+2] for i in range(0, len(key), 2)]
+        horse_nums = [str(int(d)) for d in digits]
 
         if bet_type == "umaren":
             result[frozenset(horse_nums[:2])] = odds_val
@@ -107,5 +113,30 @@ def fetch_odds(race_id: str, bet_type: str) -> dict:
     return result
 
 
+def fetch_tan_odds_and_popularity(race_id: str) -> dict:
+    """
+    単勝オッズと人気順位を同時に取得する（type=1のレスポンスは
+    [オッズ, 複勝下限（未使用）, 人気順位] という並びのため）。
+    戻り値: {horse_number_str: {"odds": float, "popularity": int}}
+    """
+    url = "https://race.netkeiba.com/api/api_get_jra_odds.html"
+    data = _get(url, {"race_id": race_id, "type": ODDS_TYPES["tan"]})
+    odds_root = data.get("data", {}).get("odds", {})
+    inner = odds_root.get(str(ODDS_TYPES["tan"])) or odds_root.get(ODDS_TYPES["tan"]) or {}
+
+    result = {}
+    for key, value in inner.items():
+        if not isinstance(value, list) or len(value) < 3:
+            continue
+        horse_num = str(int(key))
+        odds_val = _parse_odds_value(value[0])
+        try:
+            popularity = int(value[2])
+        except (ValueError, TypeError):
+            popularity = None
+        result[horse_num] = {"odds": odds_val, "popularity": popularity}
+    return result
+
+
 def fetch_all_odds(race_id: str) -> dict:
-    return {bt: fetch_odds(race_id, bt) for bt in ODDS_TYPES}
+    return {bt: fetch_odds(race_id, bt) for bt in ODDS_TYPES if bt != "tan"}
