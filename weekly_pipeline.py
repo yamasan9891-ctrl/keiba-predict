@@ -13,7 +13,7 @@ import argparse
 import datetime as dt
 
 from db.database import init_db, get_conn
-from scraper.netkeiba_scraper import fetch_shutuba, fetch_this_week_race_ids, save_to_db
+from scraper.netkeiba_scraper import fetch_shutuba, fetch_this_week_race_ids, fetch_win5_race_ids, save_to_db
 from scraper.odds_scraper import fetch_all_odds
 from model.predict import predict as predict_race, precompute_current_stats
 from features.feature_engineering import load_race_entries
@@ -23,11 +23,12 @@ from betting.win5 import race_win_candidates, build_win5_combinations
 from static_site.generate_site import generate_index, generate_race_page
 
 
-def build_race_page_data(race_id: str, race_meta: dict, stats) -> dict:
-    """1レース分の予想・EV・理由をまとめて計算する"""
+def build_race_page_data(race_id: str, race_meta: dict, stats, is_win5: bool = False) -> tuple:
+    """1レース分の予想・EV・理由をまとめて計算する。戻り値は (page_data辞書, 単勝確率dict)"""
     race_meta = dict(race_meta)
     if not race_meta.get("race_number"):
         race_meta["race_number"] = str(int(race_id[-2:]))  # race_id末尾2桁がR番号
+    race_meta["is_win5_race"] = is_win5
 
     pred_df = predict_race(race_id, stats=stats)
 
@@ -79,7 +80,7 @@ def build_race_page_data(race_id: str, race_meta: dict, stats) -> dict:
         "best_bet": bb,
         "race_summary_text": summary_text,
         "dark_horses": dark_horses,
-    }
+    }, strengths
 
 
 def run_weekly(dry_run: bool = False):
@@ -88,6 +89,10 @@ def run_weekly(dry_run: bool = False):
     print("=== 今週のレースを取得・予想 ===")
     race_ids = [] if dry_run else fetch_this_week_race_ids()
     print(f"対象レース数: {len(race_ids)}")
+
+    win5_ids = set() if dry_run else fetch_win5_race_ids()
+    if win5_ids:
+        print(f"WIN5対象レース: {len(win5_ids)}件")
 
     # 各馬・各騎手の「現時点での」実力値を1回だけ事前計算し、全レースで使い回す
     # （以前はレースごとに全過去データを再計算しており、1レース2分以上かかっていた）
@@ -100,6 +105,10 @@ def run_weekly(dry_run: bool = False):
         print(f"事前計算完了: 対象馬{len(stats['horse'])}頭 / 対象騎手{len(stats['jockey'])}人")
 
     days_index = {}
+    win5_page_data = {}       # race_id -> page_data（WIN5対象レースのみ）
+    win5_strengths = {}       # race_id -> {horse: 強さ}（WIN5対象レースのみ）
+    win5_race_labels = {}     # race_id -> "○○ 11R" のような表示ラベル
+
     for rid in race_ids:
         try:
             df = fetch_shutuba(rid)
@@ -110,29 +119,51 @@ def run_weekly(dry_run: bool = False):
         save_to_db(df)
         meta = df.attrs.get("meta", {"race_id": rid})
         meta["race_id"] = rid
+        is_win5 = rid in win5_ids
 
         try:
-            page_data = build_race_page_data(rid, meta, stats)
+            page_data, strengths = build_race_page_data(rid, meta, stats, is_win5=is_win5)
             generate_race_page(**page_data)
         except Exception as e:
             print(f"  [警告] {rid} の予想生成に失敗: {e}")
             continue
+
+        if is_win5:
+            win5_page_data[rid] = page_data
+            win5_strengths[rid] = strengths
+            win5_race_labels[rid] = f"{meta.get('course')} {page_data['race']['race_number']}R"
 
         # race_dateが未取得のため、race_id先頭の年+今週末の日付を仮のグルーピングキーにする
         date_key = meta.get("race_date") or rid[:4]
         days_index.setdefault(date_key, []).append({
             "race_id": rid,
             "course": meta.get("course"),
-            "race_number": rid[-2:],
+            "race_number": page_data["race"]["race_number"],
             "race_name": meta.get("race_name") or rid,
             "surface": meta.get("surface"),
             "distance": meta.get("distance"),
             "track_condition": meta.get("track_condition"),
             "n_horses": len(df),
-            "is_win5_race": bool(meta.get("is_win5_race")),
+            "is_win5_race": is_win5,
             "is_handicap": bool(meta.get("is_handicap")),
         })
         print(f"  ✓ {rid} の予想ページを生成しました")
+
+    # WIN5対象5レース全部の予想が揃っていれば、組み合わせを計算して該当ページに反映する
+    if len(win5_strengths) == len(win5_ids) and win5_ids:
+        print("=== WIN5買い目を計算中 ===")
+        ordered_ids = sorted(win5_strengths.keys())
+        candidates = [race_win_candidates(win5_strengths[rid], top_n=3) for rid in ordered_ids]
+        combos = build_win5_combinations(candidates, max_combos=10)
+        win5_result = {
+            "race_labels": [win5_race_labels[rid] for rid in ordered_ids],
+            "combos": combos,
+        }
+        for rid in ordered_ids:
+            page_data = dict(win5_page_data[rid])
+            page_data["win5"] = win5_result
+            generate_race_page(**page_data)
+        print(f"WIN5買い目を{len(ordered_ids)}レースのページに反映しました")
 
     days = [{"date": d, "weekday": "", "races": races} for d, races in sorted(days_index.items())]
     generate_index(days)

@@ -318,6 +318,25 @@ def fetch_this_week_race_ids() -> list:
         except Exception as e:
             print(f"  [警告] {date_str} の取得に失敗: {e}")
     return all_ids
+
+
+def fetch_win5_race_ids() -> set:
+    """
+    今週のWIN5対象レース（5レース）のrace_idを取得する。
+    race.netkeiba.com/top/win5.html は常に「今週」のWIN5対象を返す。
+    """
+    try:
+        url = "https://race.netkeiba.com/top/win5.html"
+        html = _polite_get(url)
+        ids = set(re.findall(r"race_id=(\d{12})", html))
+        return ids
+    except Exception as e:
+        print(f"[警告] WIN5対象レースの取得に失敗: {e}")
+        return set()
+
+
+def fetch_horse_past_results(horse_id: str, n_races: int = 10) -> pd.DataFrame:
+    """指定した馬の直近 n_races 走分の成績を取得する"""
     url = f"https://db.netkeiba.com/horse/{horse_id}/"
     html = _polite_get(url)
     soup = BeautifulSoup(html, "lxml")

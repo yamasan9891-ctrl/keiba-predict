@@ -154,16 +154,25 @@ def build_ev_table(strengths: dict, odds: dict, horse_names: dict = None, top_n:
     return tables
 
 
-def best_bet(tables: dict) -> dict | None:
-    """全馬券種を横断して、最もEVが高い1点を返す"""
+def best_bet(tables: dict, min_probability: float = 0.01) -> dict | None:
+    """
+    全馬券種を横断して、最もEVが高い1点を返す。
+    ただし的中確率がmin_probability未満の買い目は対象外にする
+    （的中確率が極端に低い組み合わせは、オッズが巨大なだけでEVが
+    見かけ上大きくなりやすく、実際にはただのノイズであることが
+    バックテストで確認されているため。「一番のおすすめ」として
+    見せるには不適切）。
+    """
     best = None
     for bet_type, rows in tables.items():
-        if not rows:
-            continue
-        candidate = dict(rows[0])
-        candidate["bet_type"] = bet_type
-        if best is None or candidate["ev"] > best["ev"]:
-            best = candidate
+        for row in rows:
+            if row["probability"] < min_probability:
+                continue
+            candidate = dict(row)
+            candidate["bet_type"] = bet_type
+            if best is None or candidate["ev"] > best["ev"]:
+                best = candidate
+            break  # 各券種、確率条件を満たす最初の行（EV最大のもの）だけ見れば十分
     return best
 
 

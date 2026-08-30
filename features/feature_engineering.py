@@ -199,7 +199,12 @@ def _add_jockey_history_features(df: pd.DataFrame) -> pd.DataFrame:
 CATEGORICAL_COLS = ["prior_running_style", "surface", "track_condition", "father", "mother_father", "predicted_pace"]
 
 FEATURE_COLS = [
-    "post_position", "horse_number", "weight_carried", "win_odds", "popularity",
+    # 注意: win_odds（単勝オッズ）と popularity（人気）はあえて特徴量から除外している。
+    # これらをモデルの入力に含めると、オッズが高い馬に予想確率も引きずられて
+    # 高くなりがちになり、「予想確率×オッズ」で計算する期待値(EV)が
+    # 市場そのものを再評価しているだけの意味のない数字になってしまうため。
+    # オッズ・人気はあくまで「表示」と「EV計算時の比較対象」としてのみ使う。
+    "post_position", "horse_number", "weight_carried",
     "horse_weight", "horse_weight_diff",
     "distance", "is_handicap",
     "avg_finish_pos", "n_races", "best_finish_pos", "place_rate", "recent3_avg_finish_pos",
