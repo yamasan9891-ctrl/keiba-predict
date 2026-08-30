@@ -191,11 +191,18 @@ def identify_value_horses(
     horse_names: dict = None,
     popularity_threshold: int = 5,
     ev_threshold: float = 1.0,
+    min_probability: float = 0.02,
+    max_odds: float = 150.0,
 ) -> list:
     """
     「穴馬」抽出: 人気が低い（popularity_threshold番人気以下）のに、
     単勝の期待値がev_threshold（デフォルト100%）を超えている馬を探す。
     「みんなが思いつく人気馬」ではなく、データ上は妙味があるのに見過ごされがちな馬を目立たせる。
+
+    ただし以下は除外する（見せかけの穴馬を弾くため）:
+      - 予想勝率がmin_probability未満（極端に低い確率×高オッズはただのノイズになりやすい）
+      - オッズがmax_odds超（あまりに高いオッズは、まだ票が集まっておらず
+        市場評価として成立していないだけの可能性が高い）
 
     戻り値: [{horse, name, popularity, odds, probability, ev}, ...]  EV降順
     """
@@ -206,9 +213,11 @@ def identify_value_horses(
         if pop is None or pop < popularity_threshold:
             continue
         odds = tan_odds.get(h)
-        if odds is None:
+        if odds is None or odds > max_odds:
             continue
         p = win_p.get(h, 0.0)
+        if p < min_probability:
+            continue
         ev = p * odds
         if ev > ev_threshold:
             results.append({
