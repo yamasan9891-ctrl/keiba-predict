@@ -100,6 +100,7 @@ def _migrate_schema(conn):
     """
     migrations = {
         "entries": [("finish_time", "REAL"), ("trainer_name", "TEXT")],
+        "races": [("race_number", "TEXT")],
     }
     for table, columns in migrations.items():
         existing = {row["name"] for row in conn.execute(f"PRAGMA table_info({table})").fetchall()}
