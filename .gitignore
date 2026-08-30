@@ -5,6 +5,4 @@ data/raw/*.csv
 data/processed/*.csv
 output/*.html
 model/artifacts/*.pkl
-static_site/dist/index.html
-static_site/dist/races/
 result_log.txt
