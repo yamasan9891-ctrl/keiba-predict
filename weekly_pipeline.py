@@ -17,7 +17,7 @@ from scraper.netkeiba_scraper import fetch_shutuba, fetch_this_week_race_ids, fe
 from scraper.odds_scraper import fetch_all_odds
 from model.predict import predict as predict_race, precompute_current_stats
 from features.feature_engineering import load_race_entries
-from betting.ev_engine import normalize_strengths, build_ev_table, best_bet, positive_ev_rows, identify_value_horses
+from betting.ev_engine import normalize_strengths, build_ev_table, best_bet, positive_ev_rows, identify_value_horses, build_betting_plan
 from betting.reasoning import generate_reason, summarize_race
 from betting.win5 import race_win_candidates, build_win5_combinations
 from static_site.generate_site import generate_index, generate_race_page
@@ -45,6 +45,7 @@ def build_race_page_data(race_id: str, race_meta: dict, stats, is_win5: bool = F
     ev_tables_all = build_ev_table(strengths, odds, names)
     ev_tables_positive = positive_ev_rows(ev_tables_all)
     bb = best_bet(ev_tables_all)
+    betting_plan = build_betting_plan(ev_tables_all, max_picks=5)
 
     popularity = dict(zip(pred_df["horse_number"].astype(str), pred_df.get("popularity", [])))
     dark_horses = identify_value_horses(
@@ -80,6 +81,7 @@ def build_race_page_data(race_id: str, race_meta: dict, stats, is_win5: bool = F
         "best_bet": bb,
         "race_summary_text": summary_text,
         "dark_horses": dark_horses,
+        "betting_plan": betting_plan,
     }, strengths
 
 

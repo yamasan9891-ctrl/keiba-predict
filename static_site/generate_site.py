@@ -52,6 +52,7 @@ def generate_race_page(
     race_summary_text: str,
     win5: dict | None = None,
     dark_horses: list | None = None,
+    betting_plan: list | None = None,
 ) -> Path:
     """
     race: {race_id, course, race_number, race_name, surface, distance, track_condition, weather, is_handicap}
@@ -60,6 +61,7 @@ def generate_race_page(
     best_bet: betting.ev_engine.best_bet() の戻り値
     win5: {"race_labels":[...], "combos":[...]} または None
     dark_horses: betting.ev_engine.identify_value_horses() の戻り値 または None
+    betting_plan: betting.ev_engine.build_betting_plan() の戻り値（複数点の購入プラン） または None
     """
     races_dir = DIST_DIR / "races"
     races_dir.mkdir(parents=True, exist_ok=True)
@@ -67,7 +69,7 @@ def generate_race_page(
     html = template.render(
         race=race, horses=horses, ev_tables=ev_tables,
         best_bet=best_bet, race_summary_text=race_summary_text, win5=win5,
-        dark_horses=dark_horses,
+        dark_horses=dark_horses, betting_plan=betting_plan,
     )
     out_path = races_dir / f"{race['race_id']}.html"
     out_path.write_text(html, encoding="utf-8")

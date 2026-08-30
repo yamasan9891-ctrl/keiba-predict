@@ -104,7 +104,8 @@ def build_ev_table(strengths: dict, odds: dict, horse_names: dict = None, top_n:
     horse_names = horse_names or {}
 
     def label(h):
-        return horse_names.get(h, str(h))
+        name = horse_names.get(h, str(h))
+        return f"{h} {name}"  # 「馬番 馬名」の形式（実際の投票時に馬番で識別するため）
 
     def label_set(hs):
         return " - ".join(label(h) for h in hs)
@@ -182,6 +183,27 @@ def positive_ev_rows(tables: dict, threshold: float = 1.0) -> dict:
         bet_type: [r for r in rows if r["ev"] > threshold]
         for bet_type, rows in tables.items()
     }
+
+
+def build_betting_plan(tables: dict, min_probability: float = 0.01, max_picks: int = 5) -> list:
+    """
+    全馬券種を横断して、実際に「複数点に分けて買う」ことを前提にした
+    購入プラン（候補リスト）を作る。1点だけを勧めるのは現実の買い方と
+    合わないため、信頼できる範囲でEVが高い順に複数点をまとめて返す。
+
+    戻り値: [{bet_type, horses, odds, probability, ev}, ...]  EV降順、最大max_picks件
+    """
+    candidates = []
+    for bet_type, rows in tables.items():
+        for row in rows:
+            if row["probability"] < min_probability:
+                continue
+            candidate = dict(row)
+            candidate["bet_type"] = bet_type
+            candidates.append(candidate)
+
+    candidates.sort(key=lambda r: -r["ev"])
+    return candidates[:max_picks]
 
 
 def identify_value_horses(
