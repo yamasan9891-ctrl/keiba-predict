@@ -90,13 +90,29 @@ def _extract_meta_from_soup(race_id: str, soup: BeautifulSoup) -> dict:
         month, day = int(date_match.group(2)), int(date_match.group(3))
         race_date = f"{year_str}-{month:02d}-{day:02d}"
 
-    course_match = re.search(r"\d+回(東京|中山|阪神|京都|中京|新潟|福島|小倉|札幌|函館)\d+日", full_text_for_date)
+    course_match = re.search(r"\d+回\s*(東京|中山|阪神|京都|中京|新潟|福島|小倉|札幌|函館)\s*\d+日", full_text_for_date)
     course = course_match.group(1) if course_match else None
+    race_number = None
+
+    # <title>タグに「2026年8月29日 新潟1R」のような、日付・開催場・R番号が
+    # 揃った信頼できる表記があるため、これを最優先で使う（RaceData01/02の
+    # 改行・省略表記のばらつきに影響されないため）
+    title_text = soup.title.get_text() if soup.title else ""
+    title_match = re.search(
+        r"(\d{4})年(\d{1,2})月(\d{1,2})日\s*(東京|中山|阪神|京都|中京|新潟|福島|小倉|札幌|函館)(\d{1,2})R",
+        title_text,
+    )
+    if title_match:
+        y, mo, d, c, rn = title_match.groups()
+        race_date = f"{y}-{int(mo):02d}-{int(d):02d}"
+        course = c
+        race_number = rn
 
     return {
         "race_id": race_id,
         "race_date": race_date,
         "course": course,
+        "race_number": race_number,
         "distance": int(distance_match.group(1)) if distance_match else None,
         "surface": surface_match_value,
         "track_condition": condition_value,
