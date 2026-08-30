@@ -25,6 +25,10 @@ from static_site.generate_site import generate_index, generate_race_page
 
 def build_race_page_data(race_id: str, race_meta: dict, stats) -> dict:
     """1レース分の予想・EV・理由をまとめて計算する"""
+    race_meta = dict(race_meta)
+    if not race_meta.get("race_number"):
+        race_meta["race_number"] = str(int(race_id[-2:]))  # race_id末尾2桁がR番号
+
     pred_df = predict_race(race_id, stats=stats)
 
     strengths_raw = dict(zip(pred_df["horse_number"].astype(str), pred_df["place_probability"]))
