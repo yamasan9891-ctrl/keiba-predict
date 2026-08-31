@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ race.race_name }} 出走予定 | keiba-predict</title>
+<style>
+  :root {
+    --bg: #0b0f0d; --surface: #131a16; --surface-2: #1a2420; --line: #26332c;
+    --amber: #f0a202; --amber-dim: #8a6417; --text: #ece7da; --text-dim: #8d9690;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: "Hiragino Sans", "Yu Gothic", -apple-system, sans-serif;
+    padding: 0 0 60px;
+  }
+  .mono { font-family: "SFMono-Regular", "Menlo", "Consolas", monospace; font-variant-numeric: tabular-nums; }
+  a { color: inherit; }
+
+  header { padding: 16px 16px 14px; border-bottom: 1px solid var(--line); }
+  .back { font-size: 12px; color: var(--text-dim); text-decoration: none; }
+  h1 { font-size: 18px; margin: 10px 0 4px; font-weight: 800; }
+
+  .notice {
+    margin: 14px 14px 0; font-size: 12px; color: var(--amber);
+    background: rgba(240,162,2,0.08); border: 1px solid var(--amber-dim);
+    border-radius: 6px; padding: 11px 14px; line-height: 1.6;
+  }
+
+  main { max-width: 760px; margin: 0 auto; padding: 0 14px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-top: 16px; }
+  th {
+    background: var(--surface-2); color: var(--text-dim); font-weight: 700; font-size: 10.5px;
+    padding: 8px 6px; border-bottom: 1px solid var(--line);
+  }
+  td { padding: 9px 6px; text-align: center; border-bottom: 1px solid var(--line); }
+  td.name-cell { text-align: left; font-weight: 700; }
+  tr:last-child td { border-bottom: none; }
+
+  .disclaimer { margin-top: 26px; font-size: 11px; color: var(--text-dim); text-align: center; line-height: 1.7; }
+</style>
+</head>
+<body>
+<header>
+  <a class="back" href="../index.html">← 今週のレース一覧</a>
+  <h1>{{ race.course }} {{ race.race_number }}R　{{ race.race_name }}</h1>
+</header>
+
+<div class="notice">⚠ このレースはまだ正式な枠順が発表されていません。出走予定馬・予想オッズなど分かっている範囲のみの表示です（正式な馬番が決まり次第、通常の予想ページに切り替わります）。</div>
+
+<main>
+  <table>
+    <thead><tr><th>暫定順</th><th>馬名</th><th>性齢</th><th>騎手</th><th>厩舎</th><th>人気</th><th>予想オッズ</th></tr></thead>
+    <tbody>
+      {% for h in horses %}
+      <tr>
+        <td class="mono">{{ h.provisional_number }}</td>
+        <td class="name-cell">{{ h.name }}</td>
+        <td class="mono">{{ h.sex_age or "-" }}</td>
+        <td>{{ h.jockey_name or "未定" }}</td>
+        <td>{{ h.trainer_name or "-" }}</td>
+        <td class="mono">{{ h.popularity|int if h.popularity == h.popularity else "-" }}</td>
+        <td class="mono">{{ "%.1f"|format(h.win_odds) if h.win_odds == h.win_odds else "-" }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div class="disclaimer">本ページの情報は参考情報です。正式な出走・枠順は必ずJRA公式発表でご確認ください。</div>
+</main>
+</body>
+</html>
