@@ -6,15 +6,17 @@
 <title>今週のレース予想 | keiba-predict</title>
 <style>
   :root {
-    --bg: #0b0f0d;
-    --surface: #131a16;
-    --surface-2: #1a2420;
-    --line: #26332c;
-    --amber: #f0a202;
-    --amber-dim: #8a6417;
-    --green: #4caf6e;
-    --text: #ece7da;
-    --text-dim: #8d9690;
+    --bg: #f2f3f5;
+    --surface: #ffffff;
+    --surface-2: #f7f8fa;
+    --line: #e1e4e8;
+    --navy: #1a3c66;
+    --blue: #2f6fb5;
+    --red: #d0392b;
+    --green: #2e8b57;
+    --amber: #e8960c;
+    --text: #24292e;
+    --text-dim: #6a737d;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; }
@@ -22,136 +24,121 @@
     background: var(--bg);
     color: var(--text);
     font-family: "Hiragino Sans", "Yu Gothic", -apple-system, sans-serif;
-    padding: 0 0 64px;
+    padding: 0 0 60px;
   }
   .mono { font-family: "SFMono-Regular", "Menlo", "Consolas", monospace; font-variant-numeric: tabular-nums; }
+  a { color: inherit; }
 
-  header { padding: 20px 14px 14px; border-bottom: 1px solid var(--line); }
-  .eyebrow { font-size: 11px; letter-spacing: 0.14em; color: var(--amber-dim); text-transform: uppercase; margin: 0 0 6px; font-weight: 700; }
-  h1 { font-size: 20px; margin: 0 0 6px; font-weight: 800; }
+  header {
+    background: var(--surface);
+    padding: 16px 14px 14px;
+    border-bottom: 3px solid var(--navy);
+  }
+  .eyebrow { font-size: 11px; letter-spacing: 0.12em; color: var(--blue); text-transform: uppercase; margin: 0 0 4px; font-weight: 800; }
+  h1 { font-size: 20px; margin: 0 0 6px; font-weight: 800; color: var(--navy); }
   .updated { color: var(--text-dim); font-size: 11.5px; }
   .updated .dot { color: var(--green); }
 
+  .quicklinks { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .quicklinks a {
+    text-decoration: none; font-size: 12px; font-weight: 700; padding: 7px 13px;
+    border-radius: 5px; border: 1px solid var(--line);
+  }
+  .quicklinks a.primary { background: var(--amber); color: #fff; border-color: var(--amber); }
+  .quicklinks a.secondary { background: var(--surface); color: var(--navy); }
+
+  main { max-width: 760px; margin: 0 auto; padding: 14px 14px 0; }
+
   .notice {
-    margin: 14px 14px 0;
-    font-size: 12px;
-    color: var(--text-dim);
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-left: 3px solid var(--amber-dim);
-    border-radius: 6px;
-    padding: 10px 12px;
-    line-height: 1.6;
+    font-size: 12px; color: var(--text-dim);
+    background: #fff8e6; border: 1px solid #f0d998;
+    border-radius: 6px; padding: 10px 12px; line-height: 1.6; margin-bottom: 16px;
   }
 
-  .day-block { margin-top: 20px; }
-  .day-title {
-    font-size: 14px; font-weight: 800; color: var(--text);
-    margin: 0 14px 10px; display: flex; align-items: baseline; gap: 8px;
+  .section-block { margin-bottom: 22px; }
+  .section-head {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
+    border-left: 4px solid var(--navy); padding-left: 8px;
   }
-  .day-title::after { content:""; flex:1; height:1px; background: var(--line); }
+  .section-head h2 { font-size: 15px; margin: 0; font-weight: 800; color: var(--navy); }
+  .section-head .en { font-size: 10px; color: var(--text-dim); letter-spacing: 0.08em; }
 
-  /* --- netkeiba風：開催場を列で横並び、横スクロール --- */
-  .venue-scroll {
-    display: flex;
-    gap: 10px;
-    overflow-x: auto;
-    padding: 0 14px 6px;
-    -webkit-overflow-scrolling: touch;
-    scroll-snap-type: x mandatory;
+  .date-tabs { display: flex; gap: 6px; overflow-x: auto; margin-bottom: 12px; padding-bottom: 2px; }
+  .date-tab {
+    flex: 0 0 auto; background: var(--surface); border: 1px solid var(--line);
+    border-radius: 6px; padding: 8px 14px; font-size: 12.5px; font-weight: 700; color: var(--text-dim);
   }
+  .date-tab.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+
+  .venue-grid { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 4px; -webkit-overflow-scrolling: touch; scroll-snap-type: x mandatory; }
   .venue-col {
-    flex: 0 0 auto;
-    width: 78vw;
-    max-width: 260px;
-    scroll-snap-align: start;
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    overflow: hidden;
+    flex: 0 0 auto; width: 76vw; max-width: 260px; scroll-snap-align: start;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 8px; overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
   }
   .venue-col-head {
-    background: var(--surface-2);
-    padding: 9px 12px;
-    font-weight: 800;
-    font-size: 13.5px;
-    border-bottom: 1px solid var(--line);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    background: var(--navy); color: #fff; padding: 9px 12px; font-weight: 800; font-size: 13.5px;
+    display: flex; justify-content: space-between; align-items: center;
   }
-  .venue-col-head .n {
-    font-size: 10.5px; color: var(--text-dim); font-weight: 500;
-  }
+  .venue-col-head .n { font-size: 10.5px; opacity: 0.75; font-weight: 500; }
+
   .race-row {
-    display: block;
-    padding: 9px 12px;
-    border-bottom: 1px solid var(--line);
-    text-decoration: none;
-    color: var(--text);
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 12px; border-bottom: 1px solid var(--line); text-decoration: none; color: var(--text);
   }
   .race-row:last-child { border-bottom: none; }
   .race-row:active { background: var(--surface-2); }
   .race-row .rnum {
-    display: inline-block; color: var(--bg); background: var(--amber-dim);
-    font-weight: 800; font-size: 10.5px; padding: 1px 6px; border-radius: 4px; margin-right: 7px;
+    flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center;
+    width: 30px; height: 22px; background: var(--blue); color: #fff;
+    font-weight: 800; font-size: 11.5px; border-radius: 4px;
   }
-  .race-row .rname { font-size: 12.5px; font-weight: 600; }
-  .race-row .rmeta { font-size: 10.5px; color: var(--text-dim); margin-top: 3px; }
+  .race-row .info { flex: 1; min-width: 0; }
+  .race-row .rname { font-size: 12.5px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .race-row .rmeta { font-size: 10.5px; color: var(--text-dim); margin-top: 2px; }
   .badge {
-    display: inline-block; font-size: 9px; font-weight: 700;
-    padding: 1px 5px; border-radius: 3px; margin-left: 5px;
+    display: inline-block; font-size: 9px; font-weight: 800; padding: 1px 5px; border-radius: 3px; margin-left: 5px;
   }
-  .badge.win5 { background: rgba(240,162,2,0.15); color: var(--amber); border: 1px solid var(--amber-dim); }
-  .badge.handicap { background: rgba(76,175,110,0.12); color: var(--green); border: 1px solid #2e5c3e; }
+  .badge.win5 { background: #fff3d6; color: var(--amber); border: 1px solid var(--amber); }
+  .badge.handicap { background: #e5f3ea; color: var(--green); border: 1px solid var(--green); }
+  .badge.grade { background: #fde8e6; color: var(--red); border: 1px solid var(--red); }
 
-  .scroll-hint { font-size: 10.5px; color: var(--text-dim); padding: 0 14px; margin-top: 4px; }
+  .scroll-hint { font-size: 10.5px; color: var(--text-dim); margin-top: 4px; }
 
   .empty-state {
-    margin: 40px 14px 0; text-align: center; padding: 40px 20px;
-    border: 1px dashed var(--line); border-radius: 8px;
+    text-align: center; padding: 36px 20px;
+    background: var(--surface); border: 1px dashed var(--line); border-radius: 8px;
   }
-  .empty-state .board { font-size: 13px; letter-spacing: 0.08em; color: var(--amber-dim); margin-bottom: 10px; font-weight: 700; }
-  .empty-state .board::before { content: "◆ "; }
+  .empty-state .board { font-size: 12.5px; letter-spacing: 0.06em; color: var(--blue); margin-bottom: 8px; font-weight: 800; }
   .empty-state p { color: var(--text-dim); font-size: 13px; line-height: 1.7; margin: 0; }
 
-  .next-week-box {
-    margin-top: 22px; background: var(--surface); border: 1px solid var(--line);
+  .preview-box, .next-week-box {
+    background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--amber);
     border-radius: 8px; padding: 14px 16px;
   }
-  .next-week-box .label {
-    font-size: 11px; font-weight: 800; color: var(--text-dim); letter-spacing: 0.05em;
-    text-transform: uppercase; margin-bottom: 8px;
+  .preview-box .label, .next-week-box .label {
+    font-size: 11px; font-weight: 800; color: var(--amber); letter-spacing: 0.04em; margin-bottom: 6px;
   }
-  .next-week-box .dates { font-size: 13px; font-weight: 700; margin-bottom: 6px; }
-  .next-week-box .courses { font-size: 12.5px; color: var(--text-dim); }
-  .next-week-box .courses .badge {
-    display: inline-block; background: var(--surface-2); border: 1px solid var(--amber-dim);
-    color: var(--amber); font-weight: 700; font-size: 11px; padding: 2px 9px;
-    border-radius: 12px; margin: 2px 4px 2px 0;
-  }
-
-  .preview-box {
-    margin-top: 20px; background: var(--surface); border: 1px solid var(--amber-dim);
-    border-radius: 8px; padding: 14px 16px;
-  }
-  .preview-box .label {
-    font-size: 11px; font-weight: 800; color: var(--amber); letter-spacing: 0.05em;
-    text-transform: uppercase; margin-bottom: 4px;
-  }
-  .preview-box .hint { font-size: 11.5px; color: var(--text-dim); margin-bottom: 10px; line-height: 1.6; }
+  .preview-box .hint { font-size: 11.5px; color: var(--text-dim); margin-bottom: 8px; line-height: 1.6; }
   .preview-box .race-link {
-    display: block; padding: 8px 0; border-bottom: 1px dashed var(--line);
+    display: block; padding: 7px 0; border-bottom: 1px dashed var(--line);
     font-size: 12.5px; text-decoration: none; color: var(--text);
   }
   .preview-box .race-link:last-child { border-bottom: none; }
   .preview-box .race-link .rn {
-    display: inline-block; background: var(--surface-2); color: var(--amber-dim);
+    display: inline-block; background: var(--surface-2); color: var(--amber);
     font-weight: 800; font-size: 10.5px; padding: 1px 6px; border-radius: 4px; margin-right: 8px;
+    border: 1px solid var(--amber);
+  }
+  .next-week-box .dates { font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+  .next-week-box .courses .badge2 {
+    display: inline-block; background: var(--surface-2); border: 1px solid var(--blue);
+    color: var(--blue); font-weight: 700; font-size: 11px; padding: 2px 9px;
+    border-radius: 12px; margin: 2px 4px 2px 0;
   }
 
   footer {
-    max-width: 720px; margin: 40px auto 0; padding: 16px 14px 0;
+    max-width: 760px; margin: 24px auto 0; padding: 16px 14px 0;
     border-top: 1px solid var(--line); font-size: 11px; color: var(--text-dim); text-align: center;
   }
 </style>
@@ -160,80 +147,88 @@
 <header>
   <p class="eyebrow">JRA Prediction Engine</p>
   <h1>今週のレース予想</h1>
-  <p class="updated mono"><span class="dot">●</span> 最終更新 2026-08-31 10:55</p>
-  <a href="win5.html" style="display:inline-block; margin-top:10px; background:var(--amber); color:var(--bg); font-weight:800; font-size:12.5px; padding:8px 14px; border-radius:20px; text-decoration:none;">🎯 今週のWIN5を見る →</a>
-  <a href="performance.html" style="display:inline-block; margin-top:10px; margin-left:8px; background:var(--surface); border:1px solid var(--amber-dim); color:var(--amber); font-weight:800; font-size:12.5px; padding:8px 14px; border-radius:20px; text-decoration:none;">📊 AI収支実績を見る →</a>
-  <a href="archive.html" style="display:inline-block; margin-top:10px; margin-left:8px; background:var(--surface); border:1px solid var(--line); color:var(--text-dim); font-weight:800; font-size:12.5px; padding:8px 14px; border-radius:20px; text-decoration:none;">🗂️ 過去の予想を見る →</a>
+  <p class="updated mono"><span class="dot">●</span> 最終更新 2026-08-31 11:03</p>
+  <div class="quicklinks">
+    <a class="primary" href="win5.html">🎯 今週のWIN5を見る →</a>
+    <a class="secondary" href="performance.html">📊 AI収支実績を見る →</a>
+    <a class="secondary" href="archive.html">🗂️ 過去の予想を見る →</a>
+  </div>
 </header>
 
-<div class="notice">予想は参考情報です。的中・利益を保証しません。購入は必ずご自身の判断でIPAT等の公式ルートから行ってください。</div>
+<main>
+  <div class="notice">予想は参考情報です。的中・利益を保証しません。購入は必ずご自身の判断でIPAT等の公式ルートから行ってください。</div>
 
-
+  
   <div class="empty-state">
     <div class="board mono">BOARD STANDING BY</div>
     <p>今週開催レースの出馬表はまだ公開されていません。<br>公開され次第、自動で予想を反映します（木曜更新）。</p>
   </div>
+  
 
-
-
-<div class="preview-box">
-  <div class="label">出走予定（枠順発表待ち）</div>
-  <div class="hint">正式な枠順がまだ発表されていないレースです。馬名・騎手・予想オッズなど分かっている範囲だけ先に見られます。</div>
   
-  <a class="race-link" href="races/202601020509.html"><span class="rn mono">9R</span>札幌 Fビレッジ特別</a>
-  
-  <a class="race-link" href="races/202601020510.html"><span class="rn mono">10R</span>札幌 札幌スポニチ賞</a>
-  
-  <a class="race-link" href="races/202601020511.html"><span class="rn mono">11R</span>札幌 札幌2歳ステークス</a>
-  
-  <a class="race-link" href="races/202606040109.html"><span class="rn mono">9R</span>中山 古作特別</a>
-  
-  <a class="race-link" href="races/202606040110.html"><span class="rn mono">10R</span>中山 白井特別</a>
-  
-  <a class="race-link" href="races/202606040111.html"><span class="rn mono">11R</span>中山 京成杯AH</a>
-  
-  <a class="race-link" href="races/202609040109.html"><span class="rn mono">9R</span>阪神 出石特別</a>
-  
-  <a class="race-link" href="races/202609040110.html"><span class="rn mono">10R</span>阪神 西宮ステークス</a>
-  
-  <a class="race-link" href="races/202609040111.html"><span class="rn mono">11R</span>阪神 エニフステークス</a>
-  
-  <a class="race-link" href="races/202601020609.html"><span class="rn mono">9R</span>札幌 旭川特別</a>
-  
-  <a class="race-link" href="races/202601020610.html"><span class="rn mono">10R</span>札幌 HTB賞</a>
-  
-  <a class="race-link" href="races/202601020611.html"><span class="rn mono">11R</span>札幌 丹頂S</a>
-  
-  <a class="race-link" href="races/202606040209.html"><span class="rn mono">9R</span>中山 浦安特別</a>
-  
-  <a class="race-link" href="races/202606040210.html"><span class="rn mono">10R</span>中山 セプテンバーS</a>
-  
-  <a class="race-link" href="races/202606040211.html"><span class="rn mono">11R</span>中山 紫苑S</a>
-  
-  <a class="race-link" href="races/202609040209.html"><span class="rn mono">9R</span>阪神 武田尾特別</a>
-  
-  <a class="race-link" href="races/202609040210.html"><span class="rn mono">10R</span>阪神 オークランドTRT</a>
-  
-  <a class="race-link" href="races/202609040211.html"><span class="rn mono">11R</span>阪神 セントウルS</a>
-  
-</div>
-
-
-
-<div class="next-week-box">
-  <div class="label">来週の開催予定（先出し）</div>
-  <div class="dates mono">20260912 〜 20260913</div>
-  <div class="courses">
-    
-    
+  <div class="section-block">
+    <div class="preview-box">
+      <div class="label">⚠ 出走予定（枠順発表待ち）</div>
+      <div class="hint">正式な枠順がまだ発表されていないレースです。馬名・騎手・予想オッズなど分かっている範囲だけ先に見られます。</div>
       
-    
+      <a class="race-link" href="races/202601020509.html"><span class="rn mono">9R</span>札幌 Fビレッジ特別</a>
       
-    
-    
+      <a class="race-link" href="races/202601020510.html"><span class="rn mono">10R</span>札幌 札幌スポニチ賞</a>
+      
+      <a class="race-link" href="races/202601020511.html"><span class="rn mono">11R</span>札幌 札幌2歳ステークス</a>
+      
+      <a class="race-link" href="races/202606040109.html"><span class="rn mono">9R</span>中山 古作特別</a>
+      
+      <a class="race-link" href="races/202606040110.html"><span class="rn mono">10R</span>中山 白井特別</a>
+      
+      <a class="race-link" href="races/202606040111.html"><span class="rn mono">11R</span>中山 京成杯AH</a>
+      
+      <a class="race-link" href="races/202609040109.html"><span class="rn mono">9R</span>阪神 出石特別</a>
+      
+      <a class="race-link" href="races/202609040110.html"><span class="rn mono">10R</span>阪神 西宮ステークス</a>
+      
+      <a class="race-link" href="races/202609040111.html"><span class="rn mono">11R</span>阪神 エニフステークス</a>
+      
+      <a class="race-link" href="races/202601020609.html"><span class="rn mono">9R</span>札幌 旭川特別</a>
+      
+      <a class="race-link" href="races/202601020610.html"><span class="rn mono">10R</span>札幌 HTB賞</a>
+      
+      <a class="race-link" href="races/202601020611.html"><span class="rn mono">11R</span>札幌 丹頂S</a>
+      
+      <a class="race-link" href="races/202606040209.html"><span class="rn mono">9R</span>中山 浦安特別</a>
+      
+      <a class="race-link" href="races/202606040210.html"><span class="rn mono">10R</span>中山 セプテンバーS</a>
+      
+      <a class="race-link" href="races/202606040211.html"><span class="rn mono">11R</span>中山 紫苑S</a>
+      
+      <a class="race-link" href="races/202609040209.html"><span class="rn mono">9R</span>阪神 武田尾特別</a>
+      
+      <a class="race-link" href="races/202609040210.html"><span class="rn mono">10R</span>阪神 オークランドTRT</a>
+      
+      <a class="race-link" href="races/202609040211.html"><span class="rn mono">11R</span>阪神 セントウルS</a>
+      
+    </div>
   </div>
-</div>
+  
 
+  
+  <div class="section-block">
+    <div class="next-week-box">
+      <div class="label">来週の開催予定（先出し）</div>
+      <div class="dates mono">20260912 〜 20260913</div>
+      <div class="courses">
+        
+        
+          
+        
+          
+        
+        
+      </div>
+    </div>
+  </div>
+  
+</main>
 
 <footer>keiba-predict — 自動購入は行いません。すべての投票判断はご自身で。</footer>
 </body>
