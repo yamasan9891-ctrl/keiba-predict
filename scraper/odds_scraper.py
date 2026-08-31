@@ -42,7 +42,12 @@ def _get(url: str, params: dict) -> dict:
     r = _session.get(url, params=params, timeout=15)
     _last = time.time()
     r.raise_for_status()
-    return json.loads(r.text)
+    parsed = json.loads(r.text)
+    if not isinstance(parsed, dict):
+        # 想定外の応答（エラー文字列がJSON文字列として返る等）の場合は
+        # 空の結果として扱う（呼び出し側のfallbackに任せる）
+        return {}
+    return parsed
 
 
 def _parse_odds_value(raw) -> float:
