@@ -20,6 +20,7 @@ from features.feature_engineering import load_race_entries
 from betting.ev_engine import normalize_strengths, build_ev_table, best_bet, positive_ev_rows, identify_value_horses, build_betting_plan, allocate_budget
 from betting.reasoning import generate_reason, summarize_race
 from betting.win5 import select_win5_box, build_win5_box_plan
+from static_site.pace_diagram import build_pace_diagram_svg
 from static_site.generate_site import generate_index, generate_race_page, generate_win5_page
 
 
@@ -104,6 +105,13 @@ def build_race_page_data(race_id: str, race_meta: dict, stats, is_win5: bool = F
             "reason": reason,
         })
 
+    pace_svg_horses = [
+        {"horse_number": r.get("horse_number"), "running_style": r.get("prior_running_style")}
+        for _, r in pred_df.iterrows()
+    ]
+    predicted_pace_label = pred_df["predicted_pace"].iloc[0] if "predicted_pace" in pred_df.columns and len(pred_df) else None
+    pace_diagram_svg = build_pace_diagram_svg(pace_svg_horses, predicted_pace=predicted_pace_label)
+
     return {
         "race": race_meta,
         "horses": horses,
@@ -112,6 +120,7 @@ def build_race_page_data(race_id: str, race_meta: dict, stats, is_win5: bool = F
         "race_summary_text": summary_text,
         "dark_horses": dark_horses,
         "betting_plan": betting_plan,
+        "pace_diagram_svg": pace_diagram_svg,
     }, strengths
 
 

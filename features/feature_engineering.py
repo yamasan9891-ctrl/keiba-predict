@@ -37,7 +37,7 @@ def load_race_entries(conn) -> pd.DataFrame:
             e.race_id, e.horse_number, e.post_position, e.horse_id, e.horse_name,
             e.jockey_id, e.trainer_name, e.weight_carried, e.horse_weight, e.horse_weight_diff,
             e.running_style, e.last_3f, e.finish_pos, e.win_odds, e.popularity, e.is_placed,
-            r.race_date, r.distance, r.surface, r.track_condition, r.weather, r.is_handicap, r.grade,
+            r.race_date, r.course, r.distance, r.surface, r.track_condition, r.weather, r.is_handicap, r.grade,
             h.father, h.mother_father
         FROM entries e
         LEFT JOIN races r ON e.race_id = r.race_id
@@ -196,6 +196,36 @@ def _add_jockey_history_features(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+def _add_jockey_course_history_features(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    「この騎手はこの競馬場が得意か」を表す、騎手×開催場ごとの過去成績を計算する。
+    （例: 川田騎手は東京がどうか、を通算成績とは別に見る）
+    サンプル数が少ない場合は信頼できないため、5走未満は無効(NaN)にする。
+    """
+    if "course" not in df.columns:
+        df["jockey_course_place_rate"] = np.nan
+        df["jockey_course_n_races"] = 0
+        return df
+
+    df = df.sort_values(["jockey_id", "course", "race_id"]).reset_index(drop=True)
+    keys = df[["jockey_id", "course"]].copy()
+
+    def _expanding_stats(group: pd.DataFrame) -> pd.DataFrame:
+        finish = group["finish_pos"].astype(float)
+        prior = finish.shift(1)
+        n = prior.expanding().count()
+        rate = prior.expanding().apply(lambda s: (s <= 3).mean() if len(s) else np.nan)
+        rate[n < 5] = np.nan  # サンプル数が少なすぎる場合は信頼できないため無効化
+        group["jockey_course_place_rate"] = rate
+        group["jockey_course_n_races"] = n
+        return group
+
+    df = df.groupby(["jockey_id", "course"], group_keys=False, dropna=False).apply(_expanding_stats)
+    df["jockey_id"] = keys["jockey_id"].values
+    df["course"] = keys["course"].values
+    return df
+
+
 def _add_trainer_history_features(df: pd.DataFrame) -> pd.DataFrame:
     """
     調教師（厩舎）の過去成績を計算する。「仕上げが上手い厩舎」かどうかは
@@ -236,7 +266,7 @@ FEATURE_COLS = [
     "distance", "is_handicap",
     "avg_finish_pos", "n_races", "best_finish_pos", "place_rate", "recent3_avg_finish_pos",
     "avg_last_3f", "avg_speed_figure", "best_speed_figure", "avg_opponent_strength",
-    "jockey_place_rate", "jockey_n_races", "pace_advantage",
+    "jockey_place_rate", "jockey_n_races", "jockey_course_place_rate", "pace_advantage",
     "days_since_last_race", "post_position_bias", "trainer_place_rate", "trainer_n_races",
 ] + CATEGORICAL_COLS
 
@@ -256,6 +286,9 @@ def build_features(df: pd.DataFrame) -> pd.DataFrame:
 
     # 騎手の成績は馬とは独立に計算できる
     df = _add_jockey_history_features(df)
+
+    # 「この騎手はこの競馬場が得意か」も、通算成績とは別に計算する
+    df = _add_jockey_course_history_features(df)
 
     # 調教師の成績も馬・騎手とは独立に計算できる
     df = _add_trainer_history_features(df)

@@ -53,6 +53,7 @@ def generate_race_page(
     win5: dict | None = None,
     dark_horses: list | None = None,
     betting_plan: list | None = None,
+    pace_diagram_svg: str | None = None,
 ) -> Path:
     """
     race: {race_id, course, race_number, race_name, surface, distance, track_condition, weather, is_handicap}
@@ -69,7 +70,7 @@ def generate_race_page(
     html = template.render(
         race=race, horses=horses, ev_tables=ev_tables,
         best_bet=best_bet, race_summary_text=race_summary_text, win5=win5,
-        dark_horses=dark_horses, betting_plan=betting_plan,
+        dark_horses=dark_horses, betting_plan=betting_plan, pace_diagram_svg=pace_diagram_svg,
     )
     out_path = races_dir / f"{race['race_id']}.html"
     out_path.write_text(html, encoding="utf-8")

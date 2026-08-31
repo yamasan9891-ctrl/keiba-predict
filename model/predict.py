@@ -69,6 +69,16 @@ def precompute_current_stats(historical: pd.DataFrame) -> dict:
     jockey_stats = jgrp.agg(jockey_n_races=("finish_pos", "count")).reset_index()
     jockey_stats["jockey_place_rate"] = jgrp["finish_pos"].apply(lambda s: (s <= 3).mean()).values
 
+    # --- 騎手×開催場ごとの成績（「この騎手はこの競馬場が得意か」） ---
+    if "course" in df.columns:
+        jc = df.sort_values(["jockey_id", "course", "race_id"])
+        jcgrp = jc.groupby(["jockey_id", "course"])
+        jockey_course_stats = jcgrp.agg(jockey_course_n_races=("finish_pos", "count")).reset_index()
+        jockey_course_stats["jockey_course_place_rate"] = jcgrp["finish_pos"].apply(lambda s: (s <= 3).mean()).values
+        jockey_course_stats.loc[jockey_course_stats["jockey_course_n_races"] < 5, "jockey_course_place_rate"] = np.nan
+    else:
+        jockey_course_stats = pd.DataFrame(columns=["jockey_id", "course", "jockey_course_n_races", "jockey_course_place_rate"])
+
     # --- 調教師ごとの累積成績 ---
     if "trainer_name" in df.columns:
         t = df.sort_values(["trainer_name", "race_id"])
@@ -92,6 +102,7 @@ def precompute_current_stats(historical: pd.DataFrame) -> dict:
     return {
         "horse": horse_stats.set_index("horse_id"),
         "jockey": jockey_stats.set_index("jockey_id"),
+        "jockey_course": jockey_course_stats.set_index(["jockey_id", "course"]) if not jockey_course_stats.empty else jockey_course_stats,
         "trainer": trainer_stats.set_index("trainer_name") if not trainer_stats.empty else trainer_stats,
         "post_bias": pos_stats,
         "horse_strength": horse_strength,
@@ -153,6 +164,7 @@ def build_prediction_row(shutuba_df: pd.DataFrame, race_meta: dict, conn, stats:
     race_id = race_meta.get("race_id")
     horse_df = stats["horse"]
     jockey_df = stats["jockey"]
+    jockey_course_df = stats.get("jockey_course")
     trainer_df = stats.get("trainer")
     post_bias = stats["post_bias"]
     horse_strength = stats["horse_strength"]
@@ -183,6 +195,8 @@ def build_prediction_row(shutuba_df: pd.DataFrame, race_meta: dict, conn, stats:
         h = horse_df.loc[horse_id] if horse_id in horse_df.index else None
         jockey_id = r.get("jockey_id")
         j = jockey_df.loc[jockey_id] if jockey_id in jockey_df.index else None
+        jc_key = (jockey_id, race_meta.get("course"))
+        jc = (jockey_course_df.loc[jc_key] if jockey_course_df is not None and not jockey_course_df.empty and jc_key in jockey_course_df.index else None)
         trainer_name = r.get("trainer_name")
         t = (trainer_df.loc[trainer_name] if trainer_df is not None and not trainer_df.empty and trainer_name in trainer_df.index else None)
 
@@ -244,6 +258,7 @@ def build_prediction_row(shutuba_df: pd.DataFrame, race_meta: dict, conn, stats:
             "best_speed_figure": h["best_speed_figure"] if h is not None else np.nan,
             "avg_opponent_strength": opp_strength,
             "jockey_place_rate": j["jockey_place_rate"] if j is not None else np.nan,
+            "jockey_course_place_rate": jc["jockey_course_place_rate"] if jc is not None else np.nan,
             "jockey_n_races": j["jockey_n_races"] if j is not None else 0,
             "trainer_place_rate": t["trainer_place_rate"] if t is not None else np.nan,
             "trainer_n_races": t["trainer_n_races"] if t is not None else 0,

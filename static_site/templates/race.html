@@ -222,6 +222,11 @@
 
   <!-- ============ 予想タブ ============ -->
   <div class="tab-panel" id="panel-prediction">
+    {% if pace_diagram_svg %}
+    <div class="section-title"><span class="en">Pace</span>展開予想</div>
+    <div class="card" style="overflow-x:auto;">{{ pace_diagram_svg | safe }}</div>
+    {% endif %}
+
     {% if dark_horses %}
     <div class="section-title"><span class="en">Dark Horses</span>穴馬候補</div>
     <div class="section-hint">人気は低いのに、モデルの評価に対してオッズが割安な馬です。</div>
