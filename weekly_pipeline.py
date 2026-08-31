@@ -12,7 +12,7 @@
 import argparse
 import datetime as dt
 
-from db.database import init_db, get_conn, replace_tracked_bets_for_race, mark_prediction_page_generated
+from db.database import init_db, get_conn, replace_tracked_bets_for_race, mark_prediction_page_generated, save_predictions
 from scraper.netkeiba_scraper import fetch_shutuba, fetch_this_week_race_ids, fetch_win5_race_ids, save_to_db
 from scraper.odds_scraper import fetch_all_odds
 from model.predict import predict as predict_race, precompute_current_stats
@@ -104,6 +104,18 @@ def build_race_page_data(race_id: str, race_meta: dict, stats, is_win5: bool = F
             "place_probability": r["place_probability"],
             "reason": reason,
         })
+
+    # 後日「予想と実際の結果」を比較できるよう、各馬の予想確率・予想順位を保存しておく
+    with get_conn() as conn:
+        save_predictions(conn, race_id, [
+            {
+                "horse_number": h["horse_number"],
+                "horse_name": h["name"],
+                "predicted_probability": h["place_probability"],
+                "predicted_rank": i + 1,
+            }
+            for i, h in enumerate(sorted(horses, key=lambda x: -x["place_probability"]))
+        ])
 
     pace_svg_horses = [
         {"horse_number": r.get("horse_number"), "running_style": r.get("prior_running_style")}

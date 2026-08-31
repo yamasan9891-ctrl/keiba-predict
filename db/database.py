@@ -57,6 +57,16 @@ CREATE TABLE IF NOT EXISTS entries (
     FOREIGN KEY (race_id) REFERENCES races(race_id)
 );
 
+CREATE TABLE IF NOT EXISTS predictions (
+    race_id TEXT,
+    horse_number TEXT,
+    horse_name TEXT,
+    predicted_probability REAL,
+    predicted_rank INTEGER,     -- そのレース内での予想順位（1位が最も確率高い）
+    created_at TEXT DEFAULT (datetime('now')),
+    PRIMARY KEY (race_id, horse_number)
+);
+
 CREATE TABLE IF NOT EXISTS tracked_bets (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     race_id TEXT,
@@ -256,6 +266,58 @@ def list_archived_races(conn, limit: int = 300) -> list:
         "FROM races WHERE has_prediction_page = 1 ORDER BY race_id DESC LIMIT ?",
         (limit,),
     ).fetchall()
+    return [dict(r) for r in rows]
+
+
+def save_predictions(conn, race_id: str, predictions: list):
+    """
+    そのレースの各馬の予想確率・予想順位を保存する（後で実際の結果と比較するため）。
+    predictions: [{"horse_number":..., "horse_name":..., "predicted_probability":..., "predicted_rank":...}, ...]
+    """
+    conn.execute("DELETE FROM predictions WHERE race_id = ?", (race_id,))
+    for p in predictions:
+        conn.execute(
+            "INSERT INTO predictions (race_id, horse_number, horse_name, predicted_probability, predicted_rank) "
+            "VALUES (?, ?, ?, ?, ?)",
+            (race_id, str(p["horse_number"]), p.get("horse_name"), p.get("predicted_probability"), p.get("predicted_rank")),
+        )
+
+
+def get_predictions(conn, race_id: str) -> list:
+    rows = conn.execute(
+        "SELECT * FROM predictions WHERE race_id = ? ORDER BY predicted_rank", (race_id,)
+    ).fetchall()
+    return [dict(r) for r in rows]
+
+
+def races_needing_result_check(conn) -> list:
+    """
+    予想ページを生成済み(has_prediction_page=1)だが、まだ結果(finish_pos)が
+    entriesに入っていないレースのIDを返す（結果チェック対象）。
+    """
+    rows = conn.execute("""
+        SELECT DISTINCT r.race_id
+        FROM races r
+        WHERE r.has_prediction_page = 1
+          AND EXISTS (SELECT 1 FROM entries e WHERE e.race_id = r.race_id AND e.finish_pos IS NULL)
+    """).fetchall()
+    return [row["race_id"] for row in rows]
+
+
+def get_race_result_with_predictions(conn, race_id: str) -> list:
+    """
+    予想と実際の結果を突き合わせた一覧を返す（結果比較ページ用）。
+    戻り値: [{horse_number, horse_name, predicted_rank, predicted_probability, finish_pos}, ...]
+    """
+    rows = conn.execute("""
+        SELECT
+            p.horse_number, p.horse_name, p.predicted_rank, p.predicted_probability,
+            e.finish_pos
+        FROM predictions p
+        LEFT JOIN entries e ON e.race_id = p.race_id AND e.horse_number = p.horse_number
+        WHERE p.race_id = ?
+        ORDER BY p.predicted_rank
+    """, (race_id,)).fetchall()
     return [dict(r) for r in rows]
 
 

@@ -169,6 +169,22 @@
   .win5-row:last-child { border-bottom: none; }
   .win5-rank { display: inline-block; width: 20px; color: var(--amber-dim); font-weight: 800; }
 
+  .result-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .result-table th {
+    background: var(--surface-2); color: var(--text-dim); font-weight: 700; font-size: 10.5px;
+    padding: 8px 6px; border-bottom: 1px solid var(--line);
+  }
+  .result-table td { padding: 9px 6px; text-align: center; border-bottom: 1px solid var(--line); }
+  .result-table td.name-cell { text-align: left; font-weight: 700; }
+  .result-table tr:last-child td { border-bottom: none; }
+  .result-table tr.hit-row { background: rgba(76,175,110,0.08); }
+  .finish-badge {
+    display: inline-block; min-width: 22px; padding: 2px 6px; border-radius: 4px;
+    font-weight: 800; font-size: 12px;
+  }
+  .finish-badge.top3 { background: var(--amber); color: #0b0f0d; }
+  .finish-badge.other { background: var(--surface-2); color: var(--text-dim); }
+
   .disclaimer {
     margin-top: 26px; font-size: 11px; color: var(--text-dim); text-align: center; line-height: 1.7;
   }
@@ -185,6 +201,7 @@
     <button class="tab-btn" data-tab="prediction">予想</button>
     <button class="tab-btn" data-tab="betting">買い目</button>
     {% if win5 %}<button class="tab-btn" data-tab="win5">WIN5</button>{% endif %}
+    <button class="tab-btn" data-tab="result">結果</button>
   </div>
 </header>
 
@@ -338,6 +355,15 @@
     <div style="font-size:11px; color:var(--text-dim); margin-top:10px; line-height:1.7;">濃い色の馬番は各レースで最も評価が高い1頭（◎）です。複数頭を組み合わせたボックス買いを想定しています。</div>
   </div>
   {% endif %}
+
+  <div class="tab-panel" id="panel-result">
+    <div class="section-title"><span class="en">Result</span>予想 vs 実際の結果</div>
+    <!-- RESULT_CONTENT_START -->
+    <div class="card" style="color:var(--text-dim); font-size:13px; text-align:center; padding:30px 16px;">
+      レースがまだ終わっていないか、結果が反映されていません。<br>レース終了後、自動で反映されます。
+    </div>
+    <!-- RESULT_CONTENT_END -->
+  </div>
 
   <div class="disclaimer">本ページの予想は参考情報です。的中・利益を保証しません。<br>馬券の購入は必ずご自身でIPAT等の公式ルートから行ってください。</div>
 </main>

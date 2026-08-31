@@ -1,0 +1,57 @@
+name: Check Race Results (Frequent)
+
+on:
+  schedule:
+    # 土日 10:00〜17:00 JST（=UTC 1:00〜8:00）の間、1時間おきにチェック
+    # JRAのレースはこの時間帯に集中しているため
+    - cron: "0 1-8 * * 6,0"
+  workflow_dispatch: {}
+
+jobs:
+  check-results:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Configure git
+        run: |
+          git config user.name "keiba-bot"
+          git config user.email "keiba-bot@users.noreply.github.com"
+
+      - name: Check and update results
+        run: python -u scraper/check_results.py
+
+      - name: Commit any remaining changes
+        if: always()
+        run: |
+          git add -f data/keiba.db static_site/dist
+          git diff --cached --quiet || git commit -m "result check safety commit"
+          git push || echo "push対象なし、または失敗"
+
+  deploy-pages:
+    needs: check-results
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: static_site/dist
+      - uses: actions/deploy-pages@v4

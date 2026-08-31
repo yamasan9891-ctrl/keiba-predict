@@ -124,6 +124,68 @@ def generate_performance_page(resolved_bets: list, pending_count: int) -> Path:
     return out_path
 
 
+def update_race_result_section(race_id: str, comparison: list) -> bool:
+    """
+    既に生成済みのレースページ(races/<race_id>.html)を直接読み込み、
+    「結果」タブの中身だけをHTML文字列操作で書き換える
+    （モデルの再読み込みなど重い処理をせずに済ませるため）。
+
+    comparison: db.database.get_race_result_with_predictions() の戻り値
+    戻り値: 更新できればTrue、対象ファイルが無ければFalse
+    """
+    out_path = DIST_DIR / "races" / f"{race_id}.html"
+    if not out_path.exists():
+        return False
+
+    # finish_posが全頭分揃っていなければ「まだ結果未確定」として何もしない
+    if not comparison or any(c.get("finish_pos") is None for c in comparison):
+        return False
+
+    rows_html = []
+    for c in sorted(comparison, key=lambda x: (x["finish_pos"] is None, x["finish_pos"])):
+        finish = c.get("finish_pos")
+        is_top3 = finish is not None and finish <= 3
+        hit_class = " hit-row" if (is_top3 and c.get("predicted_rank", 99) <= 3) else ""
+        badge_class = "top3" if is_top3 else "other"
+        finish_display = f"{finish}着" if finish is not None else "-"
+        prob = c.get("predicted_probability")
+        prob_display = f"{prob*100:.0f}%" if prob is not None else "-"
+        rows_html.append(
+            f'<tr class="{hit_class.strip()}">'
+            f'<td class="mono">{c.get("predicted_rank", "-")}</td>'
+            f'<td class="name-cell">{c.get("horse_number")} {c.get("horse_name") or ""}</td>'
+            f'<td class="mono">{prob_display}</td>'
+            f'<td><span class="finish-badge {badge_class} mono">{finish_display}</span></td>'
+            f'</tr>'
+        )
+
+    hit_count = sum(1 for c in comparison if c.get("predicted_rank", 99) <= 3 and (c.get("finish_pos") or 99) <= 3)
+    summary = f"AIが上位3位に予想した馬のうち、{hit_count}頭が実際に複勝圏内（3着以内）でした。"
+
+    new_content = (
+        '<!-- RESULT_CONTENT_START -->\n'
+        f'<div class="card" style="font-size:12.5px; color:var(--text-dim); margin-bottom:10px;">{summary}</div>\n'
+        '<div class="card" style="padding:0; overflow:hidden;">\n'
+        '<table class="result-table">\n'
+        '<thead><tr><th>AI予想順位</th><th>馬名</th><th>予想確率</th><th>実際の着順</th></tr></thead>\n'
+        f'<tbody>{"".join(rows_html)}</tbody>\n'
+        '</table>\n'
+        '</div>\n'
+        '<!-- RESULT_CONTENT_END -->'
+    )
+
+    html = out_path.read_text(encoding="utf-8")
+    start_marker = "<!-- RESULT_CONTENT_START -->"
+    end_marker = "<!-- RESULT_CONTENT_END -->"
+    start_idx = html.find(start_marker)
+    end_idx = html.find(end_marker)
+    if start_idx == -1 or end_idx == -1:
+        return False
+    html = html[:start_idx] + new_content + html[end_idx + len(end_marker):]
+    out_path.write_text(html, encoding="utf-8")
+    return True
+
+
 def generate_win5_page(win5: dict, races: list) -> Path:
     """
     WIN5専用の独立ページを生成する（static_site/dist/win5.html）。
