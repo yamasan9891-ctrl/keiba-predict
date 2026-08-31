@@ -93,6 +93,11 @@
   }
   .shutuba-table td { padding: 8px 5px; text-align: center; border-bottom: 1px solid var(--line); }
   .shutuba-table td.name-cell { text-align: left; font-weight: 700; }
+  .horse-photo {
+    width: 40px; height: 40px; border-radius: 6px; object-fit: cover;
+    vertical-align: middle; margin-right: 8px; background: var(--surface-2);
+  }
+  .name-with-photo { display: flex; align-items: center; }
   .shutuba-table tr:last-child td { border-bottom: none; }
   .waku {
     display: inline-block; width: 18px; height: 18px; line-height: 18px;
@@ -222,7 +227,12 @@
           <tr>
             <td>{{ h.post_position }}</td>
             <td class="mono">{{ h.horse_number }}</td>
-            <td class="name-cell">{{ h.name }}</td>
+            <td class="name-cell">
+              <div class="name-with-photo">
+                {% if h.photo_url %}<img class="horse-photo" src="{{ h.photo_url }}" loading="lazy" alt="">{% endif %}
+                <span>{{ h.name }}</span>
+              </div>
+            </td>
             <td class="mono">{{ h.sex_age or "-" }}</td>
             <td class="mono">{{ h.weight_carried or "-" }}</td>
             <td>{{ h.jockey_name or "-" }}</td>
@@ -262,7 +272,10 @@
       {% for h in horses %}
       <div class="horse-item">
         <div class="horse-head">
-          <span class="horse-name"><span class="horse-num mono">{{ h.horse_number }}</span>{{ h.name }}</span>
+          <span class="horse-name" style="display:flex; align-items:center;">
+            {% if h.photo_url %}<img class="horse-photo" src="{{ h.photo_url }}" loading="lazy" alt="">{% endif %}
+            <span><span class="horse-num mono">{{ h.horse_number }}</span>{{ h.name }}</span>
+          </span>
           <span class="horse-prob mono">複勝圏内 {{ "%.0f"|format(h.place_probability * 100) }}%</span>
         </div>
         <div class="horse-reason">{{ h.reason }}</div>

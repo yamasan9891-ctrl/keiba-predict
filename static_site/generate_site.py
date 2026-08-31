@@ -24,7 +24,7 @@ DIST_DIR = Path(__file__).parent / "dist"
 _env = Environment(loader=FileSystemLoader(str(TEMPLATE_DIR)))
 
 
-def generate_index(days: list[dict]) -> Path:
+def generate_index(days: list[dict], next_week: dict = None) -> Path:
     """
     days: [
       {"date": "2026-08-15", "weekday": "土", "races": [
@@ -35,10 +35,11 @@ def generate_index(days: list[dict]) -> Path:
       ]},
       ...
     ]
+    next_week: scraper.netkeiba_scraper.fetch_next_week_preview() の戻り値
     """
     DIST_DIR.mkdir(parents=True, exist_ok=True)
     template = _env.get_template("index.html")
-    html = template.render(days=days, generated_at=dt.datetime.now().strftime("%Y-%m-%d %H:%M"))
+    html = template.render(days=days, next_week=next_week, generated_at=dt.datetime.now().strftime("%Y-%m-%d %H:%M"))
     out_path = DIST_DIR / "index.html"
     out_path.write_text(html, encoding="utf-8")
     return out_path

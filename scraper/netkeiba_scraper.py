@@ -320,6 +320,39 @@ def fetch_this_week_race_ids() -> list:
     return all_ids
 
 
+JRA_COURSE_CODES = {
+    "01": "札幌", "02": "函館", "03": "福島", "04": "新潟", "05": "東京",
+    "06": "中山", "07": "中京", "08": "京都", "09": "阪神", "10": "小倉",
+}
+
+
+def fetch_next_week_preview() -> dict:
+    """
+    来週末（今週末の7日後）の開催予定を軽量に取得する。
+    個々のレース情報は取得せず、race_idに埋め込まれた競馬場コードから
+    開催場名だけを割り出す（予想はまだ行わない、日程の先出し表示専用）。
+    """
+    import datetime as _dt
+    this_weekend = get_upcoming_weekend_dates()
+    next_dates = [
+        (_dt.datetime.strptime(d, "%Y%m%d").date() + _dt.timedelta(days=7)).strftime("%Y%m%d")
+        for d in this_weekend
+    ]
+
+    courses_by_date = {}
+    for date_str in next_dates:
+        try:
+            ids = fetch_race_ids_for_date(date_str)
+        except Exception as e:
+            print(f"[警告] 来週プレビュー取得失敗 {date_str}: {e}")
+            ids = []
+        codes = {rid[4:6] for rid in ids}
+        names = sorted({JRA_COURSE_CODES.get(c, c) for c in codes})
+        courses_by_date[date_str] = names
+
+    return {"dates": next_dates, "courses_by_date": courses_by_date}
+
+
 def fetch_win5_race_ids() -> set:
     """
     今週のWIN5対象レース（5レース）のrace_idを取得する。

@@ -13,7 +13,7 @@ import argparse
 import datetime as dt
 
 from db.database import init_db, get_conn, replace_tracked_bets_for_race, mark_prediction_page_generated, save_predictions, get_strategy_config
-from scraper.netkeiba_scraper import fetch_shutuba, fetch_this_week_race_ids, fetch_win5_race_ids, save_to_db
+from scraper.netkeiba_scraper import fetch_shutuba, fetch_this_week_race_ids, fetch_win5_race_ids, fetch_next_week_preview, save_to_db
 from scraper.odds_scraper import fetch_all_odds
 from model.predict import predict as predict_race, precompute_current_stats
 from features.feature_engineering import load_race_entries
@@ -98,6 +98,10 @@ def build_race_page_data(race_id: str, race_meta: dict, stats, is_win5: bool = F
             "horse_number": r.get("horse_number"),
             "post_position": r.get("post_position"),
             "name": r.get("horse_name", r.get("horse_number")),
+            "photo_url": (
+                f"https://cdnv2.netkeiba.com/img.db.sp/show_photo.php?horse_id={r.get('horse_id')}"
+                f"&no=spdb&tn=&tmp=no&default_image=netkeiba"
+            ) if r.get("horse_id") else None,
             "sex_age": r.get("sex_age"),
             "weight_carried": r.get("weight_carried"),
             "jockey_name": r.get("jockey_name_disp"),
@@ -248,7 +252,15 @@ def run_weekly(dry_run: bool = False):
         print("WIN5専用ページを生成しました")
 
     days = [{"date": d, "weekday": "", "races": races} for d, races in sorted(days_index.items())]
-    generate_index(days)
+
+    print("=== 来週の開催予定を取得中（軽量） ===")
+    try:
+        next_week = fetch_next_week_preview()
+    except Exception as e:
+        print(f"[警告] 来週プレビュー取得に失敗: {e}")
+        next_week = None
+
+    generate_index(days, next_week=next_week)
     print("=== 完了 ===")
 
 
