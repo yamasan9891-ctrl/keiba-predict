@@ -48,27 +48,41 @@ jobs:
       - name: Regenerate performance page
         run: |
           python -u -c "
+          import datetime
           from db.database import init_db, get_conn, all_resolved_bets, unresolved_bets
           from static_site.generate_site import generate_performance_page
           init_db()
+          this_year = datetime.date.today().year
           with get_conn() as conn:
-              resolved = all_resolved_bets(conn)
+              summary_bets = all_resolved_bets(conn, year=this_year)
+              display_bets = all_resolved_bets(conn, year=this_year, limit=100)
               pending = len(unresolved_bets(conn))
-          generate_performance_page(resolved, pending)
-          print(f'収支ページ生成: 確定{len(resolved)}件 / 未確定{pending}件')
+          generate_performance_page(summary_bets, display_bets, pending)
+          print(f'収支ページ生成: {this_year}年 集計{len(summary_bets)}件 / 表示{len(display_bets)}件 / 未確定{pending}件')
           "
 
-      - name: Regenerate archive page
+      - name: Regenerate archive page (last 7 days only)
         run: |
           python -u -c "
           from db.database import init_db, get_conn, list_archived_races
           from static_site.generate_site import generate_archive_page
           init_db()
           with get_conn() as conn:
-              races = list_archived_races(conn)
+              races = list_archived_races(conn, days=7)
           generate_archive_page(races)
-          print(f'アーカイブページ生成: {len(races)}件')
+          print(f'アーカイブページ生成: 直近7日分 {len(races)}件')
           "
+
+      - name: Clean up old race pages (older than 14 days)
+        run: |
+          python -u -c "
+          from db.database import init_db, get_conn, cleanup_old_race_pages
+          init_db()
+          with get_conn() as conn:
+              deleted = cleanup_old_race_pages('static_site/dist/races', conn, days=14)
+          print(f'古いレースページを削除: {deleted}件')
+          "
+
 
       - name: Commit updated data & site
         if: always()

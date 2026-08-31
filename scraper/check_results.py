@@ -68,10 +68,12 @@ def check_and_update_results():
     resolve_all()
 
     print("=== 収支ページを更新 ===")
+    this_year = __import__("datetime").date.today().year
     with get_conn() as conn:
-        resolved = all_resolved_bets(conn)
+        summary_bets = all_resolved_bets(conn, year=this_year)
+        display_bets = all_resolved_bets(conn, year=this_year, limit=100)
         pending = len(unresolved_bets(conn))
-    generate_performance_page(resolved, pending)
+    generate_performance_page(summary_bets, display_bets, pending)
 
     _git_commit_and_push(f"result check: {updated}件のレース結果を反映")
     print(f"完了: {updated}件のレース結果を反映しました")

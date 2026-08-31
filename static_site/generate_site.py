@@ -96,26 +96,27 @@ def generate_archive_page(races: list) -> Path:
     return out_path
 
 
-def generate_performance_page(resolved_bets: list, pending_count: int) -> Path:
+def generate_performance_page(bets_for_summary: list, bets_for_display: list, pending_count: int) -> Path:
     """
     収支ページ（static_site/dist/performance.html）を生成する。
-    resolved_bets: db.database.all_resolved_bets() の戻り値
+    bets_for_summary: 集計（累計収支・回収率）に使う全件（例: 今年1年分）
+    bets_for_display: 一覧表示に使う直近分のみ（ページが重くならないよう件数を絞ったもの）
     """
-    total_staked = sum(b["stake"] for b in resolved_bets)
-    total_returned = sum(b["payout"] or 0 for b in resolved_bets)
+    total_staked = sum(b["stake"] for b in bets_for_summary)
+    total_returned = sum(b["payout"] or 0 for b in bets_for_summary)
     total_profit = total_returned - total_staked
     roi = (total_returned / total_staked * 100) if total_staked > 0 else None
-    win_count = sum(1 for b in resolved_bets if b["won"])
+    win_count = sum(1 for b in bets_for_summary if b["won"])
 
     template = _env.get_template("performance.html")
     html = template.render(
-        bets=resolved_bets,
+        bets=bets_for_display,
         total_staked=total_staked,
         total_returned=total_returned,
         total_profit=total_profit,
         roi=roi,
         win_count=win_count,
-        total_count=len(resolved_bets),
+        total_count=len(bets_for_summary),
         pending_count=pending_count,
         generated_at=dt.datetime.now().strftime("%Y-%m-%d %H:%M"),
     )

@@ -57,6 +57,13 @@ CREATE TABLE IF NOT EXISTS entries (
     FOREIGN KEY (race_id) REFERENCES races(race_id)
 );
 
+CREATE TABLE IF NOT EXISTS strategy_config (
+    key TEXT PRIMARY KEY,
+    value REAL,
+    updated_at TEXT DEFAULT (datetime('now')),
+    note TEXT
+);
+
 CREATE TABLE IF NOT EXISTS predictions (
     race_id TEXT,
     horse_number TEXT,
@@ -249,8 +256,23 @@ def resolve_bet(conn, bet_id: int, won: bool, payout: float):
     )
 
 
-def all_resolved_bets(conn) -> list:
-    rows = conn.execute("SELECT * FROM tracked_bets WHERE resolved = 1 ORDER BY resolved_at DESC").fetchall()
+def all_resolved_bets(conn, year: int = None, limit: int = None) -> list:
+    """
+    確定済みの買い目履歴を返す。
+    year を指定すると、その年の1/1〜12/31（resolved_atベース）に絞る。
+    limit を指定すると、新しい順に最大limit件までに絞る（一覧表示の軽量化用。
+    集計自体はこの絞り込みの外、呼び出し側で全件を別途取得すること）。
+    """
+    query = "SELECT * FROM tracked_bets WHERE resolved = 1"
+    params = []
+    if year is not None:
+        query += " AND resolved_at >= ? AND resolved_at < ?"
+        params.extend([f"{year}-01-01", f"{year + 1}-01-01"])
+    query += " ORDER BY resolved_at DESC"
+    if limit is not None:
+        query += " LIMIT ?"
+        params.append(limit)
+    rows = conn.execute(query, params).fetchall()
     return [dict(r) for r in rows]
 
 
@@ -259,14 +281,43 @@ def mark_prediction_page_generated(conn, race_id: str):
     conn.execute("UPDATE races SET has_prediction_page = 1 WHERE race_id = ?", (race_id,))
 
 
-def list_archived_races(conn, limit: int = 300) -> list:
-    """予想ページを生成したことがある全レースを、新しい順（race_id降順）で返す"""
+def list_archived_races(conn, days: int = 7) -> list:
+    """予想ページを生成したことがある、直近days日分のレースを新しい順で返す"""
     rows = conn.execute(
         "SELECT race_id, race_date, course, race_number, race_name, surface, distance "
-        "FROM races WHERE has_prediction_page = 1 ORDER BY race_id DESC LIMIT ?",
-        (limit,),
+        "FROM races WHERE has_prediction_page = 1 "
+        "AND race_date >= date('now', ?) "
+        "ORDER BY race_id DESC",
+        (f"-{days} days",),
     ).fetchall()
     return [dict(r) for r in rows]
+
+
+def cleanup_old_race_pages(dist_races_dir, conn, days: int = 14) -> int:
+    """
+    生成済みのレース詳細HTMLのうち、開催日からdays日を過ぎたものを削除する。
+    サイト全体が際限なく肥大化しないようにするための定期クリーンアップ用。
+    戻り値: 削除した件数
+    """
+    from pathlib import Path
+    dist_races_dir = Path(dist_races_dir)
+    if not dist_races_dir.exists():
+        return 0
+
+    old_race_ids = {
+        row["race_id"]
+        for row in conn.execute(
+            "SELECT race_id FROM races WHERE race_date IS NOT NULL AND race_date < date('now', ?)",
+            (f"-{days} days",),
+        ).fetchall()
+    }
+
+    deleted = 0
+    for html_file in dist_races_dir.glob("*.html"):
+        if html_file.stem in old_race_ids:
+            html_file.unlink()
+            deleted += 1
+    return deleted
 
 
 def save_predictions(conn, race_id: str, predictions: list):
@@ -319,6 +370,31 @@ def get_race_result_with_predictions(conn, race_id: str) -> list:
         ORDER BY p.predicted_rank
     """, (race_id,)).fetchall()
     return [dict(r) for r in rows]
+
+
+DEFAULT_STRATEGY_CONFIG = {
+    "ev_threshold": 1.0,          # この期待値を超えた買い目だけを候補にする
+    "min_probability": 0.02,      # 穴馬候補の最低信頼できる確率
+    "max_odds_dark_horse": 150.0,  # 穴馬候補として扱う最大オッズ（薄商い対策）
+    "betting_plan_max_picks": 5,   # 購入プランに含める点数の上限
+}
+
+
+def get_strategy_config(conn) -> dict:
+    """現在の戦略設定を取得する。DBに無いキーはデフォルト値を使う"""
+    rows = conn.execute("SELECT key, value FROM strategy_config").fetchall()
+    config = dict(DEFAULT_STRATEGY_CONFIG)
+    for r in rows:
+        config[r["key"]] = r["value"]
+    return config
+
+
+def update_strategy_config(conn, key: str, value: float, note: str = None):
+    conn.execute(
+        "INSERT INTO strategy_config (key, value, updated_at, note) VALUES (?, ?, datetime('now'), ?) "
+        "ON CONFLICT(key) DO UPDATE SET value=excluded.value, updated_at=excluded.updated_at, note=excluded.note",
+        (key, value, note),
+    )
 
 
 if __name__ == "__main__":

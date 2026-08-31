@@ -12,7 +12,7 @@
 import argparse
 import datetime as dt
 
-from db.database import init_db, get_conn, replace_tracked_bets_for_race, mark_prediction_page_generated, save_predictions
+from db.database import init_db, get_conn, replace_tracked_bets_for_race, mark_prediction_page_generated, save_predictions, get_strategy_config
 from scraper.netkeiba_scraper import fetch_shutuba, fetch_this_week_race_ids, fetch_win5_race_ids, save_to_db
 from scraper.odds_scraper import fetch_all_odds
 from model.predict import predict as predict_race, precompute_current_stats
@@ -24,7 +24,7 @@ from static_site.pace_diagram import build_pace_diagram_svg
 from static_site.generate_site import generate_index, generate_race_page, generate_win5_page
 
 
-def build_race_page_data(race_id: str, race_meta: dict, stats, is_win5: bool = False) -> tuple:
+def build_race_page_data(race_id: str, race_meta: dict, stats, is_win5: bool = False, strategy_config: dict = None) -> tuple:
     """1レース分の予想・EV・理由をまとめて計算する。戻り値は (page_data辞書, 単勝確率dict)"""
     race_meta = dict(race_meta)
     if not race_meta.get("race_number"):
@@ -44,9 +44,11 @@ def build_race_page_data(race_id: str, race_meta: dict, stats, is_win5: bool = F
         print(f"オッズ取得失敗（単勝以外はEV計算をスキップ）: {e}")
 
     ev_tables_all = build_ev_table(strengths, odds, names)
-    ev_tables_positive = positive_ev_rows(ev_tables_all)
+    ev_threshold = (strategy_config or {}).get("ev_threshold", 1.0)
+    ev_tables_positive = positive_ev_rows(ev_tables_all, threshold=ev_threshold)
     bb = best_bet(ev_tables_all)
-    betting_plan = build_betting_plan(ev_tables_all, max_picks=5)
+    max_picks = int((strategy_config or {}).get("betting_plan_max_picks", 5))
+    betting_plan = build_betting_plan(ev_tables_positive, max_picks=max_picks)
 
     # 「一番期待値の高い買い目に全額」ではなく、購入プラン（複数点）に5000円を
     # 按分したものを、実際に賭けたと仮定して記録する（後日の収支追跡用）
@@ -73,7 +75,9 @@ def build_race_page_data(race_id: str, race_meta: dict, stats, is_win5: bool = F
     popularity = dict(zip(pred_df["horse_number"].astype(str), pred_df.get("popularity", [])))
     dark_horses = identify_value_horses(
         strengths, odds.get("tan", {}), popularity, names,
-        popularity_threshold=5, ev_threshold=1.0,
+        popularity_threshold=5, ev_threshold=ev_threshold,
+        min_probability=(strategy_config or {}).get("min_probability", 0.02),
+        max_odds=(strategy_config or {}).get("max_odds_dark_horse", 150.0),
     )
 
     n_nige = int((pred_df.get("prior_running_style") == "逃げ").sum()) if "prior_running_style" in pred_df.columns else None
@@ -150,12 +154,15 @@ def run_weekly(dry_run: bool = False):
     # 各馬・各騎手の「現時点での」実力値を1回だけ事前計算し、全レースで使い回す
     # （以前はレースごとに全過去データを再計算しており、1レース2分以上かかっていた）
     stats = None
+    strategy_config = None
     if race_ids:
         print("過去データを読み込み・実力値を事前計算中（1回だけ）...")
         with get_conn() as conn:
             historical = load_race_entries(conn)
+            strategy_config = get_strategy_config(conn)
         stats = precompute_current_stats(historical)
         print(f"事前計算完了: 対象馬{len(stats['horse'])}頭 / 対象騎手{len(stats['jockey'])}人")
+        print(f"現在の戦略設定: EV閾値={strategy_config['ev_threshold']}")
 
     days_index = {}
     win5_page_data = {}       # race_id -> page_data（WIN5対象レースのみ）
@@ -179,7 +186,7 @@ def run_weekly(dry_run: bool = False):
         is_win5 = rid in win5_ids
 
         try:
-            page_data, strengths = build_race_page_data(rid, meta, stats, is_win5=is_win5)
+            page_data, strengths = build_race_page_data(rid, meta, stats, is_win5=is_win5, strategy_config=strategy_config)
             generate_race_page(**page_data)
             with get_conn() as conn:
                 mark_prediction_page_generated(conn, rid)
