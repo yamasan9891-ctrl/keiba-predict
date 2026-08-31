@@ -3,560 +3,173 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>紫苑S 予想 | keiba-predict</title>
+<title>紫苑S 出走予定 | keiba-predict</title>
 <style>
   :root {
-    --bg: #0b0f0d;
-    --surface: #131a16;
-    --surface-2: #1a2420;
-    --line: #26332c;
-    --amber: #f0a202;
-    --amber-dim: #8a6417;
-    --amber-glow: rgba(240,162,2,0.35);
-    --green: #4caf6e;
-    --red: #d64550;
-    --text: #ece7da;
-    --text-dim: #8d9690;
+    --bg: #0b0f0d; --surface: #131a16; --surface-2: #1a2420; --line: #26332c;
+    --amber: #f0a202; --amber-dim: #8a6417; --text: #ece7da; --text-dim: #8d9690;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; }
   body {
-    background: var(--bg);
-    color: var(--text);
+    background: var(--bg); color: var(--text);
     font-family: "Hiragino Sans", "Yu Gothic", -apple-system, sans-serif;
     padding: 0 0 60px;
   }
   .mono { font-family: "SFMono-Regular", "Menlo", "Consolas", monospace; font-variant-numeric: tabular-nums; }
   a { color: inherit; }
 
-  header {
-    padding: 16px 16px 0;
-    border-bottom: 1px solid var(--line);
-  }
+  header { padding: 16px 16px 14px; border-bottom: 1px solid var(--line); }
   .back { font-size: 12px; color: var(--text-dim); text-decoration: none; }
-  .back:active { color: var(--amber); }
   h1 { font-size: 18px; margin: 10px 0 4px; font-weight: 800; }
-  .race-meta { font-size: 11.5px; color: var(--text-dim); padding-bottom: 12px; }
 
-  /* --- タブ --- */
-  .tabs {
-    display: flex;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+  .notice {
+    margin: 14px 14px 0; font-size: 12px; color: var(--amber);
+    background: rgba(240,162,2,0.08); border: 1px solid var(--amber-dim);
+    border-radius: 6px; padding: 11px 14px; line-height: 1.6;
   }
-  .tab-btn {
-    flex: 0 0 auto;
-    padding: 11px 16px;
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--text-dim);
-    background: none;
-    border: none;
-    border-bottom: 2px solid transparent;
-    font-family: inherit;
-  }
-  .tab-btn.active { color: var(--amber); border-bottom-color: var(--amber); }
-  .tab-panel { display: none; }
-  .tab-panel.active { display: block; }
 
-  main { max-width: 760px; margin: 0 auto; padding: 14px 14px 0; }
+  main { max-width: 760px; margin: 0 auto; padding: 0 14px; }
 
-  .section-title {
-    font-size: 13.5px;
-    font-weight: 800;
-    color: var(--text);
-    margin: 20px 0 10px;
-    display: flex; align-items: baseline; gap: 8px;
-  }
-  .section-title:first-child { margin-top: 4px; }
-  .section-title .en {
-    font-size: 9.5px; font-weight: 700; letter-spacing: 0.1em; color: var(--amber-dim);
-    text-transform: uppercase;
-  }
-  .section-title::after { content:""; flex:1; height:1px; background:var(--line); }
-  .section-hint { font-size: 11.5px; color: var(--text-dim); margin: -6px 0 10px; line-height: 1.6; }
-
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: 6px;
-    padding: 14px 16px;
-    margin-bottom: 10px;
-  }
-  .summary-text { font-size: 13px; line-height: 1.75; color: var(--text-dim); }
-
-  /* --- 出走表 --- */
-  .shutuba-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-  .shutuba-table th {
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-top: 16px; }
+  th {
     background: var(--surface-2); color: var(--text-dim); font-weight: 700; font-size: 10.5px;
-    padding: 8px 5px; border-bottom: 1px solid var(--line); white-space: nowrap;
+    padding: 8px 6px; border-bottom: 1px solid var(--line);
   }
-  .shutuba-table td { padding: 8px 5px; text-align: center; border-bottom: 1px solid var(--line); }
-  .shutuba-table td.name-cell { text-align: left; font-weight: 700; }
-  .shutuba-table tr:last-child td { border-bottom: none; }
-  .waku {
-    display: inline-block; width: 18px; height: 18px; line-height: 18px;
-    border-radius: 3px; color: #111; font-weight: 800; font-size: 10.5px;
-  }
+  td { padding: 9px 6px; text-align: center; border-bottom: 1px solid var(--line); }
+  td.name-cell { text-align: left; font-weight: 700; }
+  tr:last-child td { border-bottom: none; }
 
-  /* --- 穴馬候補 --- */
-  .dark-horse-card { border-left: 3px solid var(--green); }
-  .dark-horse-item { padding: 9px 0; border-bottom: 1px solid var(--line); }
-  .dark-horse-item:last-child { border-bottom: none; }
-  .dh-name { font-weight: 700; font-size: 14px; }
-  .dh-badge {
-    display: inline-block; font-size: 10px; font-weight: 700;
-    background: rgba(76,175,110,0.14); color: var(--green);
-    border: 1px solid #2e5c3e; border-radius: 3px; padding: 1px 7px; margin-left: 7px;
-  }
-  .dh-stats { font-size: 11.5px; color: var(--text-dim); margin-top: 3px; }
-
-  /* --- 出走馬ごとの評価 --- */
-  .horse-item { padding: 12px 0; border-bottom: 1px solid var(--line); }
-  .horse-item:last-child { border-bottom: none; }
-  .horse-head { display: flex; justify-content: space-between; align-items: baseline; }
-  .horse-name { font-weight: 700; font-size: 14px; }
-  .horse-num { color: var(--amber-dim); margin-right: 4px; }
-  .horse-prob { font-size: 13px; font-weight: 700; color: var(--green); }
-  .horse-reason { font-size: 12px; color: var(--text-dim); margin-top: 5px; line-height: 1.65; }
-
-  /* --- 買い目一覧（折りたたみ） --- */
-  details.bet-group {
-    background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
-    margin-bottom: 8px; overflow: hidden;
-  }
-  details.bet-group summary {
-    padding: 12px 14px; cursor: pointer; font-size: 13.5px; font-weight: 700;
-    list-style: none; display: flex; justify-content: space-between; align-items: center;
-  }
-  details.bet-group summary::-webkit-details-marker { display: none; }
-  details.bet-group summary .count { font-size: 11px; color: var(--text-dim); font-weight: 500; }
-  details.bet-group summary::after { content: "▾"; color: var(--amber-dim); margin-left: 8px; transition: transform 0.15s; }
-  details.bet-group[open] summary::after { transform: rotate(180deg); }
-
-  table.ev-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-  table.ev-table th {
-    background: var(--surface-2); color: var(--text-dim); font-weight: 700; font-size: 11px;
-    padding: 8px 6px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
-  }
-  table.ev-table td { padding: 8px 6px; text-align: center; border-bottom: 1px solid var(--line); }
-  table.ev-table td.horses-cell { text-align: left; }
-  table.ev-table tr:last-child td { border-bottom: none; }
-  td.ev-cell { color: var(--green); font-weight: 700; }
-
-  /* --- 予算入力 --- */
-  .budget-box {
-    display: flex; align-items: center; gap: 10px;
-    background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
-    padding: 10px 14px; margin-bottom: 14px;
-  }
-  .budget-box label { font-size: 12px; color: var(--text-dim); white-space: nowrap; }
-  .budget-box input {
-    flex: 1; background: var(--surface-2); border: 1px solid var(--line); border-radius: 4px;
-    color: var(--text); font-size: 15px; padding: 7px 10px; font-family: inherit;
-  }
-  .budget-box .unit { font-size: 12px; color: var(--text-dim); }
-  .stake-cell { color: var(--green); font-weight: 700; }
-
-  /* --- WIN5 --- */
-  .win5-banner {
-    background: linear-gradient(135deg, #1a1408, var(--surface));
-    border: 1px solid var(--amber-dim); border-radius: 8px; padding: 14px 16px; margin-bottom: 14px;
-  }
-  .win5-banner .label { font-size: 11px; font-weight: 800; color: var(--amber); letter-spacing: 0.05em; }
-  .win5-banner .races { font-size: 12.5px; color: var(--text-dim); margin-top: 6px; }
-  .win5-row { font-size: 13px; padding: 9px 0; border-bottom: 1px dashed var(--line); }
-  .win5-row:last-child { border-bottom: none; }
-  .win5-rank { display: inline-block; width: 20px; color: var(--amber-dim); font-weight: 800; }
-
-  .disclaimer {
-    margin-top: 26px; font-size: 11px; color: var(--text-dim); text-align: center; line-height: 1.7;
-  }
+  .disclaimer { margin-top: 26px; font-size: 11px; color: var(--text-dim); text-align: center; line-height: 1.7; }
 </style>
 </head>
 <body>
 <header>
   <a class="back" href="../index.html">← 今週のレース一覧</a>
   <h1>中山 11R　紫苑S</h1>
-  <div class="race-meta mono">芝2000m ／ 馬場:- ／ 天候:-</div>
-
-  <div class="tabs">
-    <button class="tab-btn active" data-tab="shutuba">出走表</button>
-    <button class="tab-btn" data-tab="prediction">予想</button>
-    <button class="tab-btn" data-tab="betting">買い目</button>
-    
-  </div>
 </header>
 
+<div class="notice">⚠ このレースはまだ正式な枠順が発表されていません。出走予定馬・予想オッズなど分かっている範囲のみの表示です（正式な馬番が決まり次第、通常の予想ページに切り替わります）。</div>
+
 <main>
-  <!-- ============ 出走表タブ（最初に表示） ============ -->
-  <div class="tab-panel active" id="panel-shutuba">
-    <div class="card summary-text">逃げ馬が4頭おり、先行争いが激化しやすくハイペース濃厚。差し・追込馬にも展開の恩恵が期待できる。</div>
-    <div class="card" style="padding:0; overflow-x:auto;">
-      <table class="shutuba-table">
-        <thead>
-          <tr>
-            <th>枠</th><th>馬番</th><th>馬名</th><th>性齢</th><th>斤量</th>
-            <th>騎手</th><th>厩舎</th><th>馬体重</th><th>人気</th><th>オッズ</th>
-          </tr>
-        </thead>
-        <tbody>
-          
-          <tr>
-            <td>nan</td>
-            <td class="mono">nan</td>
-            <td class="name-cell">アストリル</td>
-            <td class="mono">牝3</td>
-            <td class="mono">55.0</td>
-            <td>ミシェル</td>
-            <td>美浦鈴木慎</td>
-            <td class="mono">nan</td>
-            <td class="mono">nan</td>
-            <td class="mono">nan</td>
-          </tr>
-          
-          <tr>
-            <td>nan</td>
-            <td class="mono">nan</td>
-            <td class="name-cell">サムシングスイート</td>
-            <td class="mono">牝3</td>
-            <td class="mono">55.0</td>
-            <td>団野</td>
-            <td>美浦伊藤大</td>
-            <td class="mono">nan</td>
-            <td class="mono">nan</td>
-            <td class="mono">nan</td>
-          </tr>
-          
-          <tr>
-            <td>nan</td>
-            <td class="mono">nan</td>
-            <td class="name-cell">ジッピーチューン</td>
-            <td class="mono">牝3</td>
-            <td class="mono">55.0</td>
-            <td>北村友</td>
-            <td>美浦林</td>
-            <td class="mono">nan</td>
-            <td class="mono">nan</td>
-            <td class="mono">nan</td>
-          </tr>
-          
-          <tr>
-            <td>nan</td>
-            <td class="mono">nan</td>
-            <td class="name-cell">ジワタネホ</td>
-            <td class="mono">牝3</td>
-            <td class="mono">55.0</td>
-            <td>三浦</td>
-            <td>美浦中舘</td>
-            <td class="mono">nan</td>
-            <td class="mono">nan</td>
-            <td class="mono">nan</td>
-          </tr>
-          
-          <tr>
-            <td>nan</td>
-            <td class="mono">nan</td>
-            <td class="name-cell">ドリームコア</td>
-            <td class="mono">牝3</td>
-            <td class="mono">55.0</td>
-            <td>ルメール</td>
-            <td>美浦田中博</td>
-            <td class="mono">nan</td>
-            <td class="mono">nan</td>
-            <td class="mono">nan</td>
-          </tr>
-          
-          <tr>
-            <td>nan</td>
-            <td class="mono">nan</td>
-            <td class="name-cell">ナイスプレーアスク</td>
-            <td class="mono">牝3</td>
-            <td class="mono">55.0</td>
-            <td>岩田康</td>
-            <td>美浦中舘</td>
-            <td class="mono">nan</td>
-            <td class="mono">nan</td>
-            <td class="mono">nan</td>
-          </tr>
-          
-          <tr>
-            <td>nan</td>
-            <td class="mono">nan</td>
-            <td class="name-cell">ファムクラジューズ</td>
-            <td class="mono">牝3</td>
-            <td class="mono">55.0</td>
-            <td>菊沢</td>
-            <td>美浦黒岩</td>
-            <td class="mono">nan</td>
-            <td class="mono">nan</td>
-            <td class="mono">nan</td>
-          </tr>
-          
-          <tr>
-            <td>nan</td>
-            <td class="mono">nan</td>
-            <td class="name-cell">ベンヴェヌータ</td>
-            <td class="mono">牝3</td>
-            <td class="mono">55.0</td>
-            <td>石橋脩</td>
-            <td>美浦辻</td>
-            <td class="mono">nan</td>
-            <td class="mono">nan</td>
-            <td class="mono">nan</td>
-          </tr>
-          
-          <tr>
-            <td>nan</td>
-            <td class="mono">nan</td>
-            <td class="name-cell">マスターソアラ</td>
-            <td class="mono">牝3</td>
-            <td class="mono">55.0</td>
-            <td>大野</td>
-            <td>美浦蛯名正</td>
-            <td class="mono">nan</td>
-            <td class="mono">nan</td>
-            <td class="mono">nan</td>
-          </tr>
-          
-          <tr>
-            <td>nan</td>
-            <td class="mono">nan</td>
-            <td class="name-cell">リアライズルミナス</td>
-            <td class="mono">牝3</td>
-            <td class="mono">55.0</td>
-            <td>津村</td>
-            <td>栗東橋口</td>
-            <td class="mono">nan</td>
-            <td class="mono">nan</td>
-            <td class="mono">nan</td>
-          </tr>
-          
-          <tr>
-            <td>nan</td>
-            <td class="mono">nan</td>
-            <td class="name-cell">ロングトールサリー</td>
-            <td class="mono">牝3</td>
-            <td class="mono">55.0</td>
-            <td>○○</td>
-            <td>栗東福永</td>
-            <td class="mono">nan</td>
-            <td class="mono">nan</td>
-            <td class="mono">nan</td>
-          </tr>
-          
-        </tbody>
-      </table>
-    </div>
-  </div>
+  <table>
+    <thead><tr><th>暫定順</th><th>馬名</th><th>性齢</th><th>騎手</th><th>厩舎</th><th>人気</th><th>予想オッズ</th></tr></thead>
+    <tbody>
+      
+      <tr>
+        <td class="mono">1</td>
+        <td class="name-cell">アストリル</td>
+        <td class="mono">牝3</td>
+        <td>ミシェル</td>
+        <td>美浦鈴木慎</td>
+        <td class="mono">-</td>
+        <td class="mono">-</td>
+      </tr>
+      
+      <tr>
+        <td class="mono">2</td>
+        <td class="name-cell">サムシングスイート</td>
+        <td class="mono">牝3</td>
+        <td>団野</td>
+        <td>美浦伊藤大</td>
+        <td class="mono">-</td>
+        <td class="mono">-</td>
+      </tr>
+      
+      <tr>
+        <td class="mono">3</td>
+        <td class="name-cell">ジッピーチューン</td>
+        <td class="mono">牝3</td>
+        <td>北村友</td>
+        <td>美浦林</td>
+        <td class="mono">-</td>
+        <td class="mono">-</td>
+      </tr>
+      
+      <tr>
+        <td class="mono">4</td>
+        <td class="name-cell">ジワタネホ</td>
+        <td class="mono">牝3</td>
+        <td>三浦</td>
+        <td>美浦中舘</td>
+        <td class="mono">-</td>
+        <td class="mono">-</td>
+      </tr>
+      
+      <tr>
+        <td class="mono">5</td>
+        <td class="name-cell">ドリームコア</td>
+        <td class="mono">牝3</td>
+        <td>ルメール</td>
+        <td>美浦田中博</td>
+        <td class="mono">-</td>
+        <td class="mono">-</td>
+      </tr>
+      
+      <tr>
+        <td class="mono">6</td>
+        <td class="name-cell">ナイスプレーアスク</td>
+        <td class="mono">牝3</td>
+        <td>岩田康</td>
+        <td>美浦中舘</td>
+        <td class="mono">-</td>
+        <td class="mono">-</td>
+      </tr>
+      
+      <tr>
+        <td class="mono">7</td>
+        <td class="name-cell">ファムクラジューズ</td>
+        <td class="mono">牝3</td>
+        <td>菊沢</td>
+        <td>美浦黒岩</td>
+        <td class="mono">-</td>
+        <td class="mono">-</td>
+      </tr>
+      
+      <tr>
+        <td class="mono">8</td>
+        <td class="name-cell">ベンヴェヌータ</td>
+        <td class="mono">牝3</td>
+        <td>石橋脩</td>
+        <td>美浦辻</td>
+        <td class="mono">-</td>
+        <td class="mono">-</td>
+      </tr>
+      
+      <tr>
+        <td class="mono">9</td>
+        <td class="name-cell">マスターソアラ</td>
+        <td class="mono">牝3</td>
+        <td>大野</td>
+        <td>美浦蛯名正</td>
+        <td class="mono">-</td>
+        <td class="mono">-</td>
+      </tr>
+      
+      <tr>
+        <td class="mono">10</td>
+        <td class="name-cell">リアライズルミナス</td>
+        <td class="mono">牝3</td>
+        <td>津村</td>
+        <td>栗東橋口</td>
+        <td class="mono">-</td>
+        <td class="mono">-</td>
+      </tr>
+      
+      <tr>
+        <td class="mono">11</td>
+        <td class="name-cell">ロングトールサリー</td>
+        <td class="mono">牝3</td>
+        <td>○○</td>
+        <td>栗東福永</td>
+        <td class="mono">-</td>
+        <td class="mono">-</td>
+      </tr>
+      
+    </tbody>
+  </table>
 
-  <!-- ============ 予想タブ ============ -->
-  <div class="tab-panel" id="panel-prediction">
-    
-    <div class="section-title"><span class="en">Pace</span>展開予想</div>
-    <div class="card" style="overflow-x:auto;"><svg viewBox="0 0 720 298" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto; font-family:sans-serif;"><text x="0" y="20" font-size="14" font-weight="800" fill="#d64550">想定ペース: ハイペース</text><line x1="0" y1="42" x2="710" y2="42" stroke="#26332c" stroke-width="1"/><text x="0" y="36" font-size="10" fill="#8d9690">先頭側</text><text x="680" y="36" font-size="10" fill="#8d9690">後方側</text><rect x="0" y="54" width="720" height="48" fill="#d64550" fill-opacity="0.06" rx="6"/><text x="8" y="82.0" font-size="12" font-weight="700" fill="#d64550">逃げ</text><circle cx="71.0" cy="78.0" r="15.0" fill="#d64550"/><text x="71.0" y="82.0" font-size="13" font-weight="800" fill="#0b0f0d" text-anchor="middle">nan</text><circle cx="109.0" cy="78.0" r="15.0" fill="#d64550"/><text x="109.0" y="82.0" font-size="13" font-weight="800" fill="#0b0f0d" text-anchor="middle">nan</text><circle cx="147.0" cy="78.0" r="15.0" fill="#d64550"/><text x="147.0" y="82.0" font-size="13" font-weight="800" fill="#0b0f0d" text-anchor="middle">nan</text><circle cx="185.0" cy="78.0" r="15.0" fill="#d64550"/><text x="185.0" y="82.0" font-size="13" font-weight="800" fill="#0b0f0d" text-anchor="middle">nan</text><rect x="0" y="110" width="720" height="48" fill="#f0a202" fill-opacity="0.06" rx="6"/><text x="8" y="138.0" font-size="12" font-weight="700" fill="#f0a202">先行</text><circle cx="71.0" cy="134.0" r="15.0" fill="#f0a202"/><text x="71.0" y="138.0" font-size="13" font-weight="800" fill="#0b0f0d" text-anchor="middle">nan</text><circle cx="109.0" cy="134.0" r="15.0" fill="#f0a202"/><text x="109.0" y="138.0" font-size="13" font-weight="800" fill="#0b0f0d" text-anchor="middle">nan</text><circle cx="147.0" cy="134.0" r="15.0" fill="#f0a202"/><text x="147.0" y="138.0" font-size="13" font-weight="800" fill="#0b0f0d" text-anchor="middle">nan</text><rect x="0" y="166" width="720" height="48" fill="#4caf6e" fill-opacity="0.06" rx="6"/><text x="8" y="194.0" font-size="12" font-weight="700" fill="#4caf6e">差し</text><circle cx="71.0" cy="190.0" r="15.0" fill="#4caf6e"/><text x="71.0" y="194.0" font-size="13" font-weight="800" fill="#0b0f0d" text-anchor="middle">nan</text><circle cx="109.0" cy="190.0" r="15.0" fill="#4caf6e"/><text x="109.0" y="194.0" font-size="13" font-weight="800" fill="#0b0f0d" text-anchor="middle">nan</text><rect x="0" y="222" width="720" height="48" fill="#5b8ac9" fill-opacity="0.06" rx="6"/><text x="8" y="250.0" font-size="12" font-weight="700" fill="#5b8ac9">追込</text><circle cx="71.0" cy="246.0" r="15.0" fill="#5b8ac9"/><text x="71.0" y="250.0" font-size="13" font-weight="800" fill="#0b0f0d" text-anchor="middle">nan</text><circle cx="109.0" cy="246.0" r="15.0" fill="#5b8ac9"/><text x="109.0" y="250.0" font-size="13" font-weight="800" fill="#0b0f0d" text-anchor="middle">nan</text></svg></div>
-    
-
-    
-
-    <div class="section-title"><span class="en">Entries</span>出走馬ごとの評価</div>
-    <div class="card">
-      
-      <div class="horse-item">
-        <div class="horse-head">
-          <span class="horse-name"><span class="horse-num mono">nan</span>アストリル</span>
-          <span class="horse-prob mono">複勝圏内 88%</span>
-        </div>
-        <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約88%。逃げ脚質だが、このレースは逃げ馬が4頭おり先行争いが激しくなりペースが速まる可能性があるため、スタミナ面がやや不安要素。直近3走の平均着順は2.0着と好調を維持。</div>
-      </div>
-      
-      <div class="horse-item">
-        <div class="horse-head">
-          <span class="horse-name"><span class="horse-num mono">nan</span>サムシングスイート</span>
-          <span class="horse-prob mono">複勝圏内 88%</span>
-        </div>
-        <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約88%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。直近3走の平均着順は1.3着と好調を維持。</div>
-      </div>
-      
-      <div class="horse-item">
-        <div class="horse-head">
-          <span class="horse-name"><span class="horse-num mono">nan</span>ジッピーチューン</span>
-          <span class="horse-prob mono">複勝圏内 88%</span>
-        </div>
-        <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約88%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。直近3走の平均着順は2.0着と好調を維持。</div>
-      </div>
-      
-      <div class="horse-item">
-        <div class="horse-head">
-          <span class="horse-name"><span class="horse-num mono">nan</span>ジワタネホ</span>
-          <span class="horse-prob mono">複勝圏内 88%</span>
-        </div>
-        <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約88%。追込脚質で、前が止まる展開（速いペースの逃げ争いなど）になれば一気に浮上する可能性。</div>
-      </div>
-      
-      <div class="horse-item">
-        <div class="horse-head">
-          <span class="horse-name"><span class="horse-num mono">nan</span>ドリームコア</span>
-          <span class="horse-prob mono">複勝圏内 88%</span>
-        </div>
-        <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約88%。差し脚質で、直線での伸びに注目。展開が向けば台頭も。</div>
-      </div>
-      
-      <div class="horse-item">
-        <div class="horse-head">
-          <span class="horse-name"><span class="horse-num mono">nan</span>ナイスプレーアスク</span>
-          <span class="horse-prob mono">複勝圏内 88%</span>
-        </div>
-        <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約88%。逃げ脚質だが、このレースは逃げ馬が4頭おり先行争いが激しくなりペースが速まる可能性があるため、スタミナ面がやや不安要素。</div>
-      </div>
-      
-      <div class="horse-item">
-        <div class="horse-head">
-          <span class="horse-name"><span class="horse-num mono">nan</span>ファムクラジューズ</span>
-          <span class="horse-prob mono">複勝圏内 88%</span>
-        </div>
-        <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約88%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
-      </div>
-      
-      <div class="horse-item">
-        <div class="horse-head">
-          <span class="horse-name"><span class="horse-num mono">nan</span>ベンヴェヌータ</span>
-          <span class="horse-prob mono">複勝圏内 88%</span>
-        </div>
-        <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約88%。逃げ脚質だが、このレースは逃げ馬が4頭おり先行争いが激しくなりペースが速まる可能性があるため、スタミナ面がやや不安要素。直近3走の平均着順は1.0着と好調を維持。</div>
-      </div>
-      
-      <div class="horse-item">
-        <div class="horse-head">
-          <span class="horse-name"><span class="horse-num mono">nan</span>マスターソアラ</span>
-          <span class="horse-prob mono">複勝圏内 88%</span>
-        </div>
-        <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約88%。先行脚質で、前目の位置から流れに乗りやすいタイプ。直近3走の平均着順は2.5着と好調を維持。</div>
-      </div>
-      
-      <div class="horse-item">
-        <div class="horse-head">
-          <span class="horse-name"><span class="horse-num mono">nan</span>リアライズルミナス</span>
-          <span class="horse-prob mono">複勝圏内 88%</span>
-        </div>
-        <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約88%。逃げ脚質だが、このレースは逃げ馬が4頭おり先行争いが激しくなりペースが速まる可能性があるため、スタミナ面がやや不安要素。直近3走の平均着順は3.0着と好調を維持。</div>
-      </div>
-      
-      <div class="horse-item">
-        <div class="horse-head">
-          <span class="horse-name"><span class="horse-num mono">nan</span>ロングトールサリー</span>
-          <span class="horse-prob mono">複勝圏内 88%</span>
-        </div>
-        <div class="horse-reason">モデル予想では複勝圏内（3着以内）に入る確率は約88%。先行脚質で、前目の位置から流れに乗りやすいタイプ。</div>
-      </div>
-      
-    </div>
-  </div>
-
-  <!-- ============ 買い目タブ ============ -->
-  <div class="tab-panel" id="panel-betting">
-    
-    <div class="section-title"><span class="en">Betting Plan</span>AI推奨 購入プラン</div>
-    <div class="section-hint">実際の投票は複数点に分けるのが基本のため、期待値が高い順に複数の買い目を組み合わせています。予算を入れると自動で配分します。</div>
-    <div class="budget-box">
-      <label for="budgetInput">今回の予算</label>
-      <input type="number" id="budgetInput" inputmode="numeric" placeholder="例: 3000" min="0" step="100">
-      <span class="unit">円</span>
-    </div>
-    <div class="card" style="padding:0; overflow:hidden;">
-      <table class="ev-table" id="planTable">
-        <thead><tr><th>券種</th><th>買い目</th><th>オッズ</th><th>期待値</th><th>配分額</th></tr></thead>
-        <tbody>
-          
-          <tr data-ev="nan">
-            <td class="mono">単勝</td>
-            <td class="horses-cell">nan ロングトールサリー</td>
-            <td class="mono">nan</td>
-            <td class="ev-cell mono">nan%</td>
-            <td class="mono stake-cell">-</td>
-          </tr>
-          
-          <tr id="planTotalRow" style="display:none;">
-            <td colspan="4" style="text-align:right; font-weight:800;">合計</td>
-            <td class="mono" id="planTotal" style="font-weight:800; color:var(--green);">-</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="footnote" style="font-size:11px; color:var(--text-dim); margin-bottom:16px; line-height:1.6;">配分額は、各買い目の期待値の大きさに比例して予算を振り分けた目安です。1点に集中させず複数点に分けることでブレを抑える考え方に基づきます。的中や利益を保証するものではありません。</div>
-    
-
-    <div class="section-title"><span class="en">All Bets</span>券種ごとの買い目一覧（参考）</div>
-    <div class="section-hint">期待値100%を超えるものを全て表示しています。上の「購入プラン」はこの中から自動選定したものです。</div>
-    
-    <details class="bet-group">
-      <summary>単勝 <span class="count">0点</span></summary>
-      <table class="ev-table">
-        <thead><tr><th>買い目</th><th>オッズ</th><th>的中確率</th><th>期待値</th></tr></thead>
-        <tbody>
-          
-          <tr><td colspan="4" style="color:var(--text-dim);">該当なし</td></tr>
-          
-        </tbody>
-      </table>
-    </details>
-    
-  </div>
-
-  <!-- ============ WIN5タブ ============ -->
-  
-
-  <div class="disclaimer">本ページの予想は参考情報です。的中・利益を保証しません。<br>馬券の購入は必ずご自身でIPAT等の公式ルートから行ってください。</div>
+  <div class="disclaimer">本ページの情報は参考情報です。正式な出走・枠順は必ずJRA公式発表でご確認ください。</div>
 </main>
-
-<script>
-(function () {
-  // --- タブ切り替え ---
-  document.querySelectorAll('.tab-btn').forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      document.querySelectorAll('.tab-btn').forEach(function (b) { b.classList.remove('active'); });
-      document.querySelectorAll('.tab-panel').forEach(function (p) { p.classList.remove('active'); });
-      btn.classList.add('active');
-      document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
-    });
-  });
-
-  // --- 購入プランの予算按分計算 ---
-  const UNIT = 100;
-  function recalc() {
-    const budgetInput = document.getElementById('budgetInput');
-    if (!budgetInput) return;
-    const budget = parseFloat(budgetInput.value) || 0;
-    const rows = Array.from(document.querySelectorAll('#planTable tbody tr[data-ev]'));
-    const totalRow = document.getElementById('planTotalRow');
-    const totalCell = document.getElementById('planTotal');
-    if (!rows.length) return;
-
-    if (budget <= 0) {
-      rows.forEach(function (tr) { tr.querySelector('.stake-cell').textContent = '-'; });
-      if (totalRow) totalRow.style.display = 'none';
-      return;
-    }
-
-    const evs = rows.map(function (tr) { return Math.max(0, parseFloat(tr.dataset.ev) - 1); });
-    const totalWeight = evs.reduce(function (a, b) { return a + b; }, 0);
-
-    let allocated = 0;
-    rows.forEach(function (tr, i) {
-      const weight = totalWeight > 0 ? evs[i] / totalWeight : 1 / rows.length;
-      const amount = Math.floor((budget * weight) / UNIT) * UNIT;
-      allocated += amount;
-      tr.querySelector('.stake-cell').textContent = amount > 0 ? amount.toLocaleString('ja-JP') + '円' : '見送り';
-    });
-
-    if (totalRow && totalCell) {
-      totalRow.style.display = '';
-      totalCell.textContent = allocated.toLocaleString('ja-JP') + '円 / ' + budget.toLocaleString('ja-JP') + '円中';
-    }
-  }
-  const budgetInput = document.getElementById('budgetInput');
-  if (budgetInput) budgetInput.addEventListener('input', recalc);
-})();
-</script>
 </body>
 </html>
