@@ -117,7 +117,7 @@ def build_ev_table(strengths: dict, odds: dict, horse_names: dict = None, top_n:
         rows = []
         for h, o in odds["tan"].items():
             p = win_p.get(h, 0.0)
-            rows.append({"horses": label(h), "odds": o, "probability": p, "ev": p * o})
+            rows.append({"horses": label(h), "horse_numbers": [h], "odds": o, "probability": p, "ev": p * o})
         tables["単勝"] = sorted(rows, key=lambda r: -r["ev"])[:top_n]
 
     if "umaren" in odds:
@@ -125,7 +125,7 @@ def build_ev_table(strengths: dict, odds: dict, horse_names: dict = None, top_n:
         rows = []
         for key, o in odds["umaren"].items():
             p = qp.get(key, 0.0)
-            rows.append({"horses": label_set(key), "odds": o, "probability": p, "ev": p * o})
+            rows.append({"horses": label_set(key), "horse_numbers": list(key), "odds": o, "probability": p, "ev": p * o})
         tables["馬連"] = sorted(rows, key=lambda r: -r["ev"])[:top_n]
 
     if "umatan" in odds:
@@ -133,7 +133,7 @@ def build_ev_table(strengths: dict, odds: dict, horse_names: dict = None, top_n:
         rows = []
         for key, o in odds["umatan"].items():
             p = ep.get(key, 0.0)
-            rows.append({"horses": f"{label(key[0])} → {label(key[1])}", "odds": o, "probability": p, "ev": p * o})
+            rows.append({"horses": f"{label(key[0])} → {label(key[1])}", "horse_numbers": list(key), "odds": o, "probability": p, "ev": p * o})
         tables["馬単"] = sorted(rows, key=lambda r: -r["ev"])[:top_n]
 
     if "sanrenpuku" in odds:
@@ -141,7 +141,7 @@ def build_ev_table(strengths: dict, odds: dict, horse_names: dict = None, top_n:
         rows = []
         for key, o in odds["sanrenpuku"].items():
             p = tp.get(key, 0.0)
-            rows.append({"horses": label_set(key), "odds": o, "probability": p, "ev": p * o})
+            rows.append({"horses": label_set(key), "horse_numbers": list(key), "odds": o, "probability": p, "ev": p * o})
         tables["3連複"] = sorted(rows, key=lambda r: -r["ev"])[:top_n]
 
     if "sanrentan" in odds:
@@ -149,7 +149,7 @@ def build_ev_table(strengths: dict, odds: dict, horse_names: dict = None, top_n:
         rows = []
         for key, o in odds["sanrentan"].items():
             p = tfp.get(key, 0.0)
-            rows.append({"horses": f"{label(key[0])} → {label(key[1])} → {label(key[2])}", "odds": o, "probability": p, "ev": p * o})
+            rows.append({"horses": f"{label(key[0])} → {label(key[1])} → {label(key[2])}", "horse_numbers": list(key), "odds": o, "probability": p, "ev": p * o})
         tables["3連単"] = sorted(rows, key=lambda r: -r["ev"])[:top_n]
 
     return tables
@@ -204,6 +204,32 @@ def build_betting_plan(tables: dict, min_probability: float = 0.01, max_picks: i
 
     candidates.sort(key=lambda r: -r["ev"])
     return candidates[:max_picks]
+
+
+def allocate_budget(picks: list, budget: int, unit: int = 100) -> list:
+    """
+    購入プラン（複数点）に対して、期待値の大きさに比例して予算を按分する。
+    サイト上のJavaScript計算（race.html）と全く同じロジックをサーバー側でも
+    再現し、収支追跡用に「実際に賭けたことにする金額」を確定させるために使う。
+
+    戻り値: 各pickに "stake" キーを追加したリスト（stake=0の点は除外済み）
+    """
+    if not picks or budget <= 0:
+        return []
+
+    weights = [max(0.0, p["ev"] - 1.0) for p in picks]  # EV100%超過分だけを重みにする
+    total_weight = sum(weights)
+
+    result = []
+    for pick, w in zip(picks, weights):
+        weight = (w / total_weight) if total_weight > 0 else (1 / len(picks))
+        stake = int((budget * weight) // unit) * unit
+        if stake <= 0:
+            continue
+        row = dict(pick)
+        row["stake"] = stake
+        result.append(row)
+    return result
 
 
 def identify_value_horses(

@@ -42,6 +42,34 @@ jobs:
       - name: Run weekly pipeline (fetch races, predict, generate site)
         run: python -u weekly_pipeline.py
 
+      - name: Resolve tracked bets against confirmed results
+        run: python -u betting/resolve_bets.py
+
+      - name: Regenerate performance page
+        run: |
+          python -u -c "
+          from db.database import init_db, get_conn, all_resolved_bets, unresolved_bets
+          from static_site.generate_site import generate_performance_page
+          init_db()
+          with get_conn() as conn:
+              resolved = all_resolved_bets(conn)
+              pending = len(unresolved_bets(conn))
+          generate_performance_page(resolved, pending)
+          print(f'収支ページ生成: 確定{len(resolved)}件 / 未確定{pending}件')
+          "
+
+      - name: Regenerate archive page
+        run: |
+          python -u -c "
+          from db.database import init_db, get_conn, list_archived_races
+          from static_site.generate_site import generate_archive_page
+          init_db()
+          with get_conn() as conn:
+              races = list_archived_races(conn)
+          generate_archive_page(races)
+          print(f'アーカイブページ生成: {len(races)}件')
+          "
+
       - name: Commit updated data & site
         if: always()
         run: |

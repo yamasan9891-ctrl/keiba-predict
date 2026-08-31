@@ -57,6 +57,25 @@ CREATE TABLE IF NOT EXISTS entries (
     FOREIGN KEY (race_id) REFERENCES races(race_id)
 );
 
+CREATE TABLE IF NOT EXISTS tracked_bets (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    race_id TEXT,
+    race_label TEXT,          -- 「札幌11R テスト記念」のような表示用ラベル
+    bet_type TEXT,            -- 単勝/馬連/馬単/3連複/3連単
+    horses TEXT,              -- 表示用の買い目文字列（例: "5 → 3 → 1"）
+    horse_numbers TEXT,       -- 判定用にカンマ区切りの馬番だけを保存（例: "5,3,1"）
+    odds REAL,
+    predicted_probability REAL,
+    predicted_ev REAL,
+    stake INTEGER DEFAULT 5000,
+    resolved INTEGER DEFAULT 0,   -- 0=未確定 1=確定済み
+    won INTEGER,                   -- 0=外れ 1=的中（resolved=1の時のみ有効）
+    payout REAL,                   -- 実際の払戻金額
+    profit REAL,                   -- payout - stake
+    created_at TEXT DEFAULT (datetime('now')),
+    resolved_at TEXT
+);
+
 CREATE TABLE IF NOT EXISTS horses (
     horse_id TEXT PRIMARY KEY,
     horse_name TEXT,
@@ -100,7 +119,7 @@ def _migrate_schema(conn):
     """
     migrations = {
         "entries": [("finish_time", "REAL"), ("trainer_name", "TEXT")],
-        "races": [("race_number", "TEXT")],
+        "races": [("race_number", "TEXT"), ("has_prediction_page", "INTEGER DEFAULT 0")],
     }
     for table, columns in migrations.items():
         existing = {row["name"] for row in conn.execute(f"PRAGMA table_info({table})").fetchall()}
@@ -183,6 +202,61 @@ def distinct_horse_ids_without_pedigree(conn) -> list:
           AND (h.horse_id IS NULL OR h.father IS NULL OR h.mother_father IS NULL)
     """).fetchall()
     return [r["horse_id"] for r in rows]
+
+
+def insert_tracked_bet(conn, bet: dict):
+    """1件の買い目を記録する（重複防止は replace_tracked_bets_for_race 側で行う）"""
+    cols = list(bet.keys())
+    placeholders = ", ".join(["?"] * len(cols))
+    conn.execute(
+        f"INSERT INTO tracked_bets ({', '.join(cols)}) VALUES ({placeholders})",
+        [bet[c] for c in cols],
+    )
+
+
+def replace_tracked_bets_for_race(conn, race_id: str, bets: list):
+    """
+    指定レースの「まだ結果が確定していない」買い目記録を一旦削除してから、
+    新しい複数点の買い目（購入プラン全体）をまとめて記録し直す。
+    週次パイプラインが同じレースを複数回処理しても記録が重複・積み上がらないようにする。
+    既に結果が確定済み(resolved=1)の記録は消さない。
+    """
+    conn.execute("DELETE FROM tracked_bets WHERE race_id = ? AND resolved = 0", (race_id,))
+    for bet in bets:
+        insert_tracked_bet(conn, bet)
+
+
+def unresolved_bets(conn) -> list:
+    rows = conn.execute("SELECT * FROM tracked_bets WHERE resolved = 0").fetchall()
+    return [dict(r) for r in rows]
+
+
+def resolve_bet(conn, bet_id: int, won: bool, payout: float):
+    profit = payout - (conn.execute("SELECT stake FROM tracked_bets WHERE id = ?", (bet_id,)).fetchone()["stake"])
+    conn.execute(
+        "UPDATE tracked_bets SET resolved=1, won=?, payout=?, profit=?, resolved_at=datetime('now') WHERE id=?",
+        (1 if won else 0, payout, profit, bet_id),
+    )
+
+
+def all_resolved_bets(conn) -> list:
+    rows = conn.execute("SELECT * FROM tracked_bets WHERE resolved = 1 ORDER BY resolved_at DESC").fetchall()
+    return [dict(r) for r in rows]
+
+
+def mark_prediction_page_generated(conn, race_id: str):
+    """このレースの予想ページを生成したことを記録する（アーカイブ一覧に出すため）"""
+    conn.execute("UPDATE races SET has_prediction_page = 1 WHERE race_id = ?", (race_id,))
+
+
+def list_archived_races(conn, limit: int = 300) -> list:
+    """予想ページを生成したことがある全レースを、新しい順（race_id降順）で返す"""
+    rows = conn.execute(
+        "SELECT race_id, race_date, course, race_number, race_name, surface, distance "
+        "FROM races WHERE has_prediction_page = 1 ORDER BY race_id DESC LIMIT ?",
+        (limit,),
+    ).fetchall()
+    return [dict(r) for r in rows]
 
 
 if __name__ == "__main__":

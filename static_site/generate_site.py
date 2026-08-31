@@ -76,6 +76,53 @@ def generate_race_page(
     return out_path
 
 
+def generate_archive_page(races: list) -> Path:
+    """
+    過去に予想ページを生成した全レースの一覧（archive.html）を生成する。
+    races: db.database.list_archived_races() の戻り値
+    race_dateごとにグルーピングして表示する。
+    """
+    grouped = {}
+    for r in races:
+        date_key = r.get("race_date") or r["race_id"][:4]
+        grouped.setdefault(date_key, []).append(r)
+    days = [{"date": d, "races": races_in_day} for d, races_in_day in sorted(grouped.items(), reverse=True)]
+
+    template = _env.get_template("archive.html")
+    html = template.render(days=days, generated_at=dt.datetime.now().strftime("%Y-%m-%d %H:%M"))
+    out_path = DIST_DIR / "archive.html"
+    out_path.write_text(html, encoding="utf-8")
+    return out_path
+
+
+def generate_performance_page(resolved_bets: list, pending_count: int) -> Path:
+    """
+    収支ページ（static_site/dist/performance.html）を生成する。
+    resolved_bets: db.database.all_resolved_bets() の戻り値
+    """
+    total_staked = sum(b["stake"] for b in resolved_bets)
+    total_returned = sum(b["payout"] or 0 for b in resolved_bets)
+    total_profit = total_returned - total_staked
+    roi = (total_returned / total_staked * 100) if total_staked > 0 else None
+    win_count = sum(1 for b in resolved_bets if b["won"])
+
+    template = _env.get_template("performance.html")
+    html = template.render(
+        bets=resolved_bets,
+        total_staked=total_staked,
+        total_returned=total_returned,
+        total_profit=total_profit,
+        roi=roi,
+        win_count=win_count,
+        total_count=len(resolved_bets),
+        pending_count=pending_count,
+        generated_at=dt.datetime.now().strftime("%Y-%m-%d %H:%M"),
+    )
+    out_path = DIST_DIR / "performance.html"
+    out_path.write_text(html, encoding="utf-8")
+    return out_path
+
+
 def generate_win5_page(win5: dict, races: list) -> Path:
     """
     WIN5専用の独立ページを生成する（static_site/dist/win5.html）。

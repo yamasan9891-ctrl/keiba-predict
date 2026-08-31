@@ -12,12 +12,12 @@
 import argparse
 import datetime as dt
 
-from db.database import init_db, get_conn
+from db.database import init_db, get_conn, replace_tracked_bets_for_race, mark_prediction_page_generated
 from scraper.netkeiba_scraper import fetch_shutuba, fetch_this_week_race_ids, fetch_win5_race_ids, save_to_db
 from scraper.odds_scraper import fetch_all_odds
 from model.predict import predict as predict_race, precompute_current_stats
 from features.feature_engineering import load_race_entries
-from betting.ev_engine import normalize_strengths, build_ev_table, best_bet, positive_ev_rows, identify_value_horses, build_betting_plan
+from betting.ev_engine import normalize_strengths, build_ev_table, best_bet, positive_ev_rows, identify_value_horses, build_betting_plan, allocate_budget
 from betting.reasoning import generate_reason, summarize_race
 from betting.win5 import select_win5_box, build_win5_box_plan
 from static_site.generate_site import generate_index, generate_race_page, generate_win5_page
@@ -46,6 +46,28 @@ def build_race_page_data(race_id: str, race_meta: dict, stats, is_win5: bool = F
     ev_tables_positive = positive_ev_rows(ev_tables_all)
     bb = best_bet(ev_tables_all)
     betting_plan = build_betting_plan(ev_tables_all, max_picks=5)
+
+    # 「一番期待値の高い買い目に全額」ではなく、購入プラン（複数点）に5000円を
+    # 按分したものを、実際に賭けたと仮定して記録する（後日の収支追跡用）
+    race_label = f"{race_meta.get('course')} {race_meta.get('race_number')}R {race_meta.get('race_name') or ''}".strip()
+    allocated = allocate_budget(betting_plan, budget=5000)
+    if allocated:
+        tracked_rows = [
+            {
+                "race_id": race_id,
+                "race_label": race_label,
+                "bet_type": p["bet_type"],
+                "horses": p["horses"],
+                "horse_numbers": ",".join(str(h) for h in p.get("horse_numbers", [])),
+                "odds": p["odds"],
+                "predicted_probability": p["probability"],
+                "predicted_ev": p["ev"],
+                "stake": p["stake"],
+            }
+            for p in allocated
+        ]
+        with get_conn() as conn:
+            replace_tracked_bets_for_race(conn, race_id, tracked_rows)
 
     popularity = dict(zip(pred_df["horse_number"].astype(str), pred_df.get("popularity", [])))
     dark_horses = identify_value_horses(
@@ -138,6 +160,8 @@ def run_weekly(dry_run: bool = False):
         try:
             page_data, strengths = build_race_page_data(rid, meta, stats, is_win5=is_win5)
             generate_race_page(**page_data)
+            with get_conn() as conn:
+                mark_prediction_page_generated(conn, rid)
         except Exception as e:
             print(f"  [警告] {rid} の予想生成に失敗: {e}")
             continue
