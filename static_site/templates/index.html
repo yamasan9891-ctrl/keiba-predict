@@ -70,9 +70,9 @@
   }
   .date-tab.active { background: var(--navy); color: #fff; border-color: var(--navy); }
 
-  .venue-grid { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 4px; -webkit-overflow-scrolling: touch; scroll-snap-type: x mandatory; }
+  .venue-grid { display: flex; flex-wrap: wrap; gap: 6px; }
   .venue-col {
-    flex: 0 0 auto; width: 76vw; max-width: 260px; scroll-snap-align: start;
+    flex: 1 1 30%; min-width: 104px;
     background: var(--surface); border: 1px solid var(--line); border-radius: 8px; overflow: hidden;
     box-shadow: 0 1px 3px rgba(0,0,0,0.06);
   }
@@ -83,21 +83,20 @@
   .venue-col-head .n { font-size: 10.5px; opacity: 0.75; font-weight: 500; }
 
   .race-row {
-    display: flex; align-items: center; gap: 10px;
-    padding: 9px 12px; border-bottom: 1px solid var(--line); text-decoration: none; color: var(--text);
+    display: block;
+    padding: 8px 8px; border-bottom: 1px solid var(--line); text-decoration: none; color: var(--text);
   }
   .race-row:last-child { border-bottom: none; }
   .race-row:active { background: var(--surface-2); }
   .race-row .rnum {
-    flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center;
-    width: 30px; height: 22px; background: var(--blue); color: #fff;
-    font-weight: 800; font-size: 11.5px; border-radius: 4px;
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 24px; height: 19px; padding: 0 3px; background: var(--blue); color: #fff;
+    font-weight: 800; font-size: 10.5px; border-radius: 4px; margin-bottom: 3px;
   }
-  .race-row .info { flex: 1; min-width: 0; }
-  .race-row .rname { font-size: 12.5px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .race-row .rmeta { font-size: 10.5px; color: var(--text-dim); margin-top: 2px; }
+  .race-row .rname { font-size: 11.5px; font-weight: 700; line-height: 1.3; overflow-wrap: break-word; }
+  .race-row .rmeta { font-size: 9.5px; color: var(--text-dim); margin-top: 3px; line-height: 1.5; }
   .badge {
-    display: inline-block; font-size: 9px; font-weight: 800; padding: 1px 5px; border-radius: 3px; margin-left: 5px;
+    display: inline-block; font-size: 8px; font-weight: 800; padding: 1px 4px; border-radius: 3px; margin-right: 3px;
   }
   .badge.win5 { background: #fff3d6; color: var(--amber); border: 1px solid var(--amber); }
   .badge.handicap { background: #e5f3ea; color: var(--green); border: 1px solid var(--green); }
@@ -175,20 +174,16 @@
           </div>
           {% for race in races|sort(attribute='race_number') %}
           <a class="race-row" href="races/{{ race.race_id }}.html">
-            <span class="rnum mono">{{ race.race_number }}</span>
-            <span class="info">
-              <span class="rname">{{ race.race_name }}</span>
-              <div class="rmeta mono">{{ race.surface }}{{ race.distance }}m ／ {{ race.n_horses }}頭
-                {% if race.is_win5_race %}<span class="badge win5">WIN5</span>{% endif %}
-                {% if race.is_handicap %}<span class="badge handicap">ハンデ</span>{% endif %}
-              </div>
-            </span>
+            <span class="rnum mono">{{ race.race_number }}R</span>
+            {% if race.is_win5_race %}<span class="badge win5">WIN5</span>{% endif %}
+            {% if race.is_handicap %}<span class="badge handicap">ハンデ</span>{% endif %}
+            <div class="rname">{{ race.race_name }}</div>
+            <div class="rmeta mono">{{ race.surface }}{{ race.distance }}m<br>{{ race.n_horses }}頭</div>
           </a>
           {% endfor %}
         </div>
         {% endfor %}
       </div>
-      <div class="scroll-hint">← スワイプで他の開催場を見る →</div>
     </div>
     {% endfor %}
   </div>
