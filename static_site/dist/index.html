@@ -115,6 +115,22 @@
   .empty-state .board::before { content: "◆ "; }
   .empty-state p { color: var(--text-dim); font-size: 13px; line-height: 1.7; margin: 0; }
 
+  .next-week-box {
+    margin-top: 22px; background: var(--surface); border: 1px solid var(--line);
+    border-radius: 8px; padding: 14px 16px;
+  }
+  .next-week-box .label {
+    font-size: 11px; font-weight: 800; color: var(--text-dim); letter-spacing: 0.05em;
+    text-transform: uppercase; margin-bottom: 8px;
+  }
+  .next-week-box .dates { font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+  .next-week-box .courses { font-size: 12.5px; color: var(--text-dim); }
+  .next-week-box .courses .badge {
+    display: inline-block; background: var(--surface-2); border: 1px solid var(--amber-dim);
+    color: var(--amber); font-weight: 700; font-size: 11px; padding: 2px 9px;
+    border-radius: 12px; margin: 2px 4px 2px 0;
+  }
+
   footer {
     max-width: 720px; margin: 40px auto 0; padding: 16px 14px 0;
     border-top: 1px solid var(--line); font-size: 11px; color: var(--text-dim); text-align: center;
@@ -125,7 +141,7 @@
 <header>
   <p class="eyebrow">JRA Prediction Engine</p>
   <h1>今週のレース予想</h1>
-  <p class="updated mono"><span class="dot">●</span> 最終更新 2026-08-31 08:39</p>
+  <p class="updated mono"><span class="dot">●</span> 最終更新 2026-08-31 09:37</p>
   <a href="win5.html" style="display:inline-block; margin-top:10px; background:var(--amber); color:var(--bg); font-weight:800; font-size:12.5px; padding:8px 14px; border-radius:20px; text-decoration:none;">🎯 今週のWIN5を見る →</a>
   <a href="performance.html" style="display:inline-block; margin-top:10px; margin-left:8px; background:var(--surface); border:1px solid var(--amber-dim); color:var(--amber); font-weight:800; font-size:12.5px; padding:8px 14px; border-radius:20px; text-decoration:none;">📊 AI収支実績を見る →</a>
   <a href="archive.html" style="display:inline-block; margin-top:10px; margin-left:8px; background:var(--surface); border:1px solid var(--line); color:var(--text-dim); font-weight:800; font-size:12.5px; padding:8px 14px; border-radius:20px; text-decoration:none;">🗂️ 過去の予想を見る →</a>
@@ -138,6 +154,22 @@
     <div class="board mono">BOARD STANDING BY</div>
     <p>今週開催レースの出馬表はまだ公開されていません。<br>公開され次第、自動で予想を反映します（木曜更新）。</p>
   </div>
+
+
+
+<div class="next-week-box">
+  <div class="label">来週の開催予定（先出し）</div>
+  <div class="dates mono">20260912 〜 20260913</div>
+  <div class="courses">
+    
+    
+      
+    
+      
+    
+    
+  </div>
+</div>
 
 
 <footer>keiba-predict — 自動購入は行いません。すべての投票判断はご自身で。</footer>
