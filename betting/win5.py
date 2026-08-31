@@ -13,6 +13,48 @@ from itertools import product
 import numpy as np
 
 
+def select_win5_box(strengths: dict, max_horses: int = 4, relative_threshold: float = 0.3, min_horses: int = 1) -> list:
+    """
+    1レース分の「ボックス買い」対象馬を選ぶ（netkeibaのAI予想と同じ考え方）。
+    1着候補（最も確率が高い馬）を必ず含め、その確率に対してrelative_threshold以上の
+    確率を持つ馬も追加で含める。ただしmax_horsesを超えない。
+
+    戻り値: 馬番のリスト（確率が高い順）
+    """
+    ranked = sorted(strengths.items(), key=lambda x: -x[1])
+    if not ranked:
+        return []
+
+    top_prob = ranked[0][1]
+    box = []
+    for horse, prob in ranked:
+        if len(box) >= max_horses:
+            break
+        if len(box) < min_horses or prob >= top_prob * relative_threshold:
+            box.append(horse)
+    return box
+
+
+def build_win5_box_plan(race_boxes: list[list], unit_price: int = 100) -> dict:
+    """
+    5レース分のボックス（各レースの馬番リスト）から、組み合わせ点数と合計金額を計算する。
+    race_boxes: [[race1の馬番,...], [race2の馬番,...], ..., [race5の馬番,...]]
+
+    戻り値: {"combinations": 点数, "total_cost": 合計金額}
+    """
+    if len(race_boxes) != 5:
+        raise ValueError("WIN5は5レース分のボックスが必要です")
+
+    combinations = 1
+    for box in race_boxes:
+        combinations *= max(1, len(box))
+
+    return {
+        "combinations": combinations,
+        "total_cost": combinations * unit_price,
+    }
+
+
 def race_win_candidates(strengths: dict, top_n: int = 3) -> list:
     """1レース分の強さ辞書から、1着候補の上位n頭を [(horse, prob), ...] で返す"""
     ranked = sorted(strengths.items(), key=lambda x: -x[1])[:top_n]

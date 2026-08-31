@@ -19,7 +19,7 @@ from model.predict import predict as predict_race, precompute_current_stats
 from features.feature_engineering import load_race_entries
 from betting.ev_engine import normalize_strengths, build_ev_table, best_bet, positive_ev_rows, identify_value_horses, build_betting_plan
 from betting.reasoning import generate_reason, summarize_race
-from betting.win5 import race_win_candidates, build_win5_combinations
+from betting.win5 import select_win5_box, build_win5_box_plan
 from static_site.generate_site import generate_index, generate_race_page, generate_win5_page
 
 
@@ -163,11 +163,13 @@ def run_weekly(dry_run: bool = False):
     if len(win5_strengths) == len(win5_ids) and win5_ids:
         print("=== WIN5買い目を計算中 ===")
         ordered_ids = sorted(win5_strengths.keys())
-        candidates = [race_win_candidates(win5_strengths[rid], top_n=3) for rid in ordered_ids]
-        combos = build_win5_combinations(candidates, max_combos=10)
+        race_boxes = [select_win5_box(win5_strengths[rid], max_horses=4, relative_threshold=0.3) for rid in ordered_ids]
+        plan = build_win5_box_plan(race_boxes)
         win5_result = {
             "race_labels": [win5_race_labels[rid] for rid in ordered_ids],
-            "combos": combos,
+            "race_boxes": race_boxes,
+            "combinations": plan["combinations"],
+            "total_cost": plan["total_cost"],
         }
         for rid in ordered_ids:
             page_data = dict(win5_page_data[rid])
@@ -182,8 +184,9 @@ def run_weekly(dry_run: bool = False):
                 "course": win5_page_data[rid]["race"].get("course"),
                 "race_number": win5_page_data[rid]["race"].get("race_number"),
                 "race_name": win5_page_data[rid]["race"].get("race_name"),
+                "box": race_boxes[i],
             }
-            for rid in ordered_ids
+            for i, rid in enumerate(ordered_ids)
         ]
         generate_win5_page(win5_result, win5_race_summaries)
         print("WIN5専用ページを生成しました")

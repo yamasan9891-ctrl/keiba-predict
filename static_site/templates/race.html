@@ -313,12 +313,24 @@
       <div class="label">🎯 WIN5対象レース</div>
       <div class="races mono">{{ win5.race_labels|join(' / ') }}</div>
     </div>
-    <div class="section-title"><span class="en">WIN5</span>買い目候補</div>
-    <div class="card">
-      {% for c in win5.combos %}
-      <div class="win5-row mono"><span class="win5-rank">{{ loop.index }}</span>{{ c.horses|join(' - ') }}　的中確率 {{ "%.3f"|format(c.probability * 100) }}%{% if c.ev %}　期待値 {{ "%.0f"|format(c.ev * 100) }}%{% endif %}</div>
+    <div class="section-title"><span class="en">WIN5</span>組み合わせ・点数</div>
+    <div class="card" style="padding:0; overflow:hidden;">
+      {% for label in win5.race_labels %}
+      <div style="display:flex; align-items:center; padding:12px 14px; border-bottom:1px solid var(--line); gap:12px;">
+        <div style="flex:0 0 60px; font-size:12px; font-weight:800; color:var(--amber);" class="mono">{{ label }}</div>
+        <div style="flex:1; display:flex; flex-wrap:wrap; gap:6px;" class="mono">
+          {% for h in win5.race_boxes[loop.index0] %}
+          <span style="display:inline-flex; align-items:center; justify-content:center; min-width:28px; height:28px; padding:0 5px; background:var(--surface-2); border:1px solid var(--amber-dim); border-radius:5px; font-size:12.5px; font-weight:800;{% if loop.first %} background:var(--amber); color:var(--bg); border-color:var(--amber);{% endif %}">{{ h }}</span>
+          {% endfor %}
+        </div>
+      </div>
       {% endfor %}
+      <div style="display:flex; justify-content:space-between; padding:12px 14px; background:var(--surface-2);">
+        <span style="font-size:12px; color:var(--text-dim);">点数</span>
+        <span class="mono" style="font-size:15px; font-weight:800; color:var(--green);">{{ win5.combinations }}点 × 100円 = {{ "{:,}".format(win5.total_cost) }}円</span>
+      </div>
     </div>
+    <div style="font-size:11px; color:var(--text-dim); margin-top:10px; line-height:1.7;">濃い色の馬番は各レースで最も評価が高い1頭（◎）です。複数頭を組み合わせたボックス買いを想定しています。</div>
   </div>
   {% endif %}
 
