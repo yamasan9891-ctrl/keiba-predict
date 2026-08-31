@@ -363,6 +363,9 @@ def save_raw(df: pd.DataFrame, name: str, race_id: str) -> Path:
 
 def save_to_db(df: pd.DataFrame, meta: dict = None) -> None:
     init_db()
+    if df is None or df.empty:
+        print("[警告] save_to_db: 空のDataFrameが渡されたため何もしません")
+        return
     race_id = str(df["race_id"].iloc[0])
     meta = meta or df.attrs.get("meta") or {"race_id": race_id}
     meta["race_id"] = race_id

@@ -126,6 +126,10 @@ def run_weekly(dry_run: bool = False):
             print(f"  [警告] {rid} の出馬表取得に失敗: {e}")
             continue
 
+        if df is None or df.empty:
+            print(f"  [警告] {rid} の出馬表が空でした（出走取消・未発表等の可能性）。スキップします。")
+            continue
+
         save_to_db(df)
         meta = df.attrs.get("meta", {"race_id": rid})
         meta["race_id"] = rid
