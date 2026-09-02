@@ -7,7 +7,7 @@
 <style>
   :root {
     --bg: #f2f3f5; --surface: #ffffff; --surface-2: #f7f8fa; --line: #e1e4e8;
-    --amber: #c98a1f; --amber-dim: #123456; --text: #24292e; --text-dim: #6a737d;
+    --amber: #c98a1f; --amber-dim: #123456; --green: #2e8b57; --text: #24292e; --text-dim: #6a737d;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; }
@@ -24,21 +24,35 @@
   h1 { font-size: 18px; margin: 10px 0 4px; font-weight: 800; }
 
   .notice {
-    margin: 14px 14px 0; font-size: 12px; color: var(--amber);
-    background: rgba(240,162,2,0.08); border: 1px solid var(--amber-dim);
+    margin: 14px 14px 0; font-size: 12px; color: var(--amber-dim);
+    background: #fff8e6; border: 1px solid #e8d19a;
     border-radius: 6px; padding: 11px 14px; line-height: 1.6;
   }
 
-  main { max-width: 760px; margin: 0 auto; padding: 0 14px; }
+  main { max-width: 720px; margin: 0 auto; padding: 0 14px; }
 
-  table { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-top: 16px; }
-  th {
-    background: var(--surface-2); color: var(--text-dim); font-weight: 700; font-size: 10.5px;
-    padding: 8px 6px; border-bottom: 1px solid var(--line);
+  .horse-card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 8px;
+    padding: 12px 14px; margin-top: 10px;
+    box-shadow: 0 1px 2px rgba(20,30,45,0.04);
   }
-  td { padding: 9px 6px; text-align: center; border-bottom: 1px solid var(--line); }
-  td.name-cell { text-align: left; font-weight: 700; }
-  tr:last-child td { border-bottom: none; }
+  .horse-card .top-row { display: flex; align-items: center; justify-content: space-between; }
+  .horse-card .name-block { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+  .horse-card .prov {
+    flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center;
+    width: 24px; height: 24px; background: var(--surface-2); border: 1px solid var(--line);
+    color: var(--text-dim); font-weight: 800; font-size: 11.5px; border-radius: 5px;
+  }
+  .horse-card .hname { font-size: 15px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .horse-card .sexage { font-size: 11px; color: var(--text-dim); flex: 0 0 auto; }
+  .horse-card .odds-block { flex: 0 0 auto; text-align: right; }
+  .horse-card .odds-block .odds { font-size: 16px; font-weight: 800; color: var(--green); }
+  .horse-card .odds-block .pop { font-size: 10px; color: var(--text-dim); }
+  .horse-card .sub-row {
+    display: flex; gap: 14px; margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--line);
+    font-size: 11.5px; color: var(--text-dim);
+  }
+  .horse-card .sub-row span b { color: var(--text); font-weight: 700; }
 
   .disclaimer { margin-top: 26px; font-size: 11px; color: var(--text-dim); text-align: center; line-height: 1.7; }
 </style>
@@ -52,22 +66,25 @@
 <div class="notice">⚠ このレースはまだ正式な枠順が発表されていません。出走予定馬・予想オッズなど分かっている範囲のみの表示です（正式な馬番が決まり次第、通常の予想ページに切り替わります）。</div>
 
 <main>
-  <table>
-    <thead><tr><th>暫定順</th><th>馬名</th><th>性齢</th><th>騎手</th><th>厩舎</th><th>人気</th><th>予想オッズ</th></tr></thead>
-    <tbody>
-      {% for h in horses %}
-      <tr>
-        <td class="mono">{{ h.provisional_number }}</td>
-        <td class="name-cell">{{ h.name }}</td>
-        <td class="mono">{{ h.sex_age or "-" }}</td>
-        <td>{{ h.jockey_name or "未定" }}</td>
-        <td>{{ h.trainer_name or "-" }}</td>
-        <td class="mono">{{ h.popularity|int if h.popularity == h.popularity else "-" }}</td>
-        <td class="mono">{{ "%.1f"|format(h.win_odds) if h.win_odds == h.win_odds else "-" }}</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  {% for h in horses|sort(attribute='popularity') %}
+  <div class="horse-card">
+    <div class="top-row">
+      <div class="name-block">
+        <span class="prov mono">{{ h.provisional_number }}</span>
+        <span class="hname">{{ h.name }}</span>
+        <span class="sexage mono">{{ h.sex_age or "-" }}</span>
+      </div>
+      <div class="odds-block">
+        <div class="odds mono">{{ "%.1f"|format(h.win_odds) if h.win_odds == h.win_odds else "-" }}<span style="font-size:11px;">倍</span></div>
+        <div class="pop mono">{{ h.popularity|int if h.popularity == h.popularity else "-" }}番人気</div>
+      </div>
+    </div>
+    <div class="sub-row">
+      <span>騎手 <b>{{ h.jockey_name or "未定" }}</b></span>
+      <span>厩舎 <b>{{ h.trainer_name or "-" }}</b></span>
+    </div>
+  </div>
+  {% endfor %}
 
   <div class="disclaimer">本ページの情報は参考情報です。正式な出走・枠順は必ずJRA公式発表でご確認ください。</div>
 </main>
