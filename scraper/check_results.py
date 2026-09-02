@@ -70,10 +70,16 @@ def check_and_update_results():
     print("=== 収支ページを更新 ===")
     this_year = __import__("datetime").date.today().year
     with get_conn() as conn:
-        summary_bets = all_resolved_bets(conn, year=this_year)
-        display_bets = all_resolved_bets(conn, year=this_year, limit=100)
-        pending = len(unresolved_bets(conn))
-    generate_performance_page(summary_bets, display_bets, pending)
+        summary_bets = all_resolved_bets(conn, year=this_year, strategy="value")
+        display_bets = all_resolved_bets(conn, year=this_year, limit=100, strategy="value")
+        pending = len([b for b in unresolved_bets(conn) if b.get("strategy", "value") == "value"])
+        fav_summary_bets = all_resolved_bets(conn, year=this_year, strategy="favorite")
+        fav_display_bets = all_resolved_bets(conn, year=this_year, limit=100, strategy="favorite")
+        fav_pending = len([b for b in unresolved_bets(conn) if b.get("strategy") == "favorite"])
+    generate_performance_page(
+        summary_bets, display_bets, pending,
+        favorite_summary_bets=fav_summary_bets, favorite_display_bets=fav_display_bets, favorite_pending_count=fav_pending,
+    )
 
     _git_commit_and_push(f"result check: {updated}件のレース結果を反映")
     print(f"完了: {updated}件のレース結果を反映しました")

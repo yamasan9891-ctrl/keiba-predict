@@ -54,11 +54,14 @@ jobs:
           init_db()
           this_year = datetime.date.today().year
           with get_conn() as conn:
-              summary_bets = all_resolved_bets(conn, year=this_year)
-              display_bets = all_resolved_bets(conn, year=this_year, limit=100)
-              pending = len(unresolved_bets(conn))
-          generate_performance_page(summary_bets, display_bets, pending)
-          print(f'収支ページ生成: {this_year}年 集計{len(summary_bets)}件 / 表示{len(display_bets)}件 / 未確定{pending}件')
+              summary_bets = all_resolved_bets(conn, year=this_year, strategy='value')
+              display_bets = all_resolved_bets(conn, year=this_year, limit=100, strategy='value')
+              pending = len([b for b in unresolved_bets(conn) if b.get('strategy','value')=='value'])
+              fav_summary = all_resolved_bets(conn, year=this_year, strategy='favorite')
+              fav_display = all_resolved_bets(conn, year=this_year, limit=100, strategy='favorite')
+              fav_pending = len([b for b in unresolved_bets(conn) if b.get('strategy')=='favorite'])
+          generate_performance_page(summary_bets, display_bets, pending, favorite_summary_bets=fav_summary, favorite_display_bets=fav_display, favorite_pending_count=fav_pending)
+          print(f'収支ページ生成: {this_year}年 集計{len(summary_bets)}件 / 堅い本命{len(fav_summary)}件')
           "
 
       - name: Regenerate archive page (last 7 days only)
