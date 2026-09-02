@@ -137,6 +137,7 @@ def _migrate_schema(conn):
     migrations = {
         "entries": [("finish_time", "REAL"), ("trainer_name", "TEXT")],
         "races": [("race_number", "TEXT"), ("has_prediction_page", "INTEGER DEFAULT 0")],
+        "tracked_bets": [("strategy", "TEXT DEFAULT 'value'")],  # 'value'=期待値重視 / 'favorite'=堅い本命
     }
     for table, columns in migrations.items():
         existing = {row["name"] for row in conn.execute(f"PRAGMA table_info({table})").fetchall()}
@@ -231,15 +232,17 @@ def insert_tracked_bet(conn, bet: dict):
     )
 
 
-def replace_tracked_bets_for_race(conn, race_id: str, bets: list):
+def replace_tracked_bets_for_race(conn, race_id: str, bets: list, strategy: str = "value"):
     """
-    指定レースの「まだ結果が確定していない」買い目記録を一旦削除してから、
-    新しい複数点の買い目（購入プラン全体）をまとめて記録し直す。
-    週次パイプラインが同じレースを複数回処理しても記録が重複・積み上がらないようにする。
-    既に結果が確定済み(resolved=1)の記録は消さない。
+    指定レース・指定戦略の「まだ結果が確定していない」買い目記録を一旦削除してから、
+    新しい買い目をまとめて記録し直す。週次パイプラインが同じレースを複数回処理しても
+    記録が重複・積み上がらないようにする。既に結果が確定済み(resolved=1)の記録は消さない。
+    strategyで絞ることで、同じレースにvalue戦略とfavorite戦略の記録が両方あっても
+    互いを消し合わないようにする。
     """
-    conn.execute("DELETE FROM tracked_bets WHERE race_id = ? AND resolved = 0", (race_id,))
+    conn.execute("DELETE FROM tracked_bets WHERE race_id = ? AND resolved = 0 AND strategy = ?", (race_id, strategy))
     for bet in bets:
+        bet.setdefault("strategy", strategy)
         insert_tracked_bet(conn, bet)
 
 
@@ -256,18 +259,22 @@ def resolve_bet(conn, bet_id: int, won: bool, payout: float):
     )
 
 
-def all_resolved_bets(conn, year: int = None, limit: int = None) -> list:
+def all_resolved_bets(conn, year: int = None, limit: int = None, strategy: str = None) -> list:
     """
     確定済みの買い目履歴を返す。
     year を指定すると、その年の1/1〜12/31（resolved_atベース）に絞る。
     limit を指定すると、新しい順に最大limit件までに絞る（一覧表示の軽量化用。
     集計自体はこの絞り込みの外、呼び出し側で全件を別途取得すること）。
+    strategy を指定すると 'value'（期待値重視）/'favorite'（堅い本命）で絞る。
     """
     query = "SELECT * FROM tracked_bets WHERE resolved = 1"
     params = []
     if year is not None:
         query += " AND resolved_at >= ? AND resolved_at < ?"
         params.extend([f"{year}-01-01", f"{year + 1}-01-01"])
+    if strategy is not None:
+        query += " AND strategy = ?"
+        params.append(strategy)
     query += " ORDER BY resolved_at DESC"
     if limit is not None:
         query += " LIMIT ?"

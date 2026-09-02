@@ -24,7 +24,7 @@ DIST_DIR = Path(__file__).parent / "dist"
 _env = Environment(loader=FileSystemLoader(str(TEMPLATE_DIR)))
 
 
-def generate_index(days: list[dict], next_week: dict = None, preview_races: list = None) -> Path:
+def generate_index(days: list[dict], next_week: dict = None, preview_races: list = None, top_featured: list = None) -> Path:
     """
     days: [
       {"date": "2026-08-15", "weekday": "土", "races": [
@@ -37,11 +37,12 @@ def generate_index(days: list[dict], next_week: dict = None, preview_races: list
     ]
     next_week: scraper.netkeiba_scraper.fetch_next_week_preview() の戻り値
     preview_races: 枠順未発表で出走予定プレビューだけ作ったレースのリスト
+    top_featured: 週の注目レースTOP3（見出しEVが高い順）
     """
     DIST_DIR.mkdir(parents=True, exist_ok=True)
     template = _env.get_template("index.html")
     html = template.render(
-        days=days, next_week=next_week, preview_races=preview_races or [],
+        days=days, next_week=next_week, preview_races=preview_races or [], top_featured=top_featured or [],
         generated_at=dt.datetime.now().strftime("%Y-%m-%d %H:%M"),
     )
     out_path = DIST_DIR / "index.html"
@@ -73,6 +74,7 @@ def generate_race_page(
     dark_horses: list | None = None,
     betting_plan: list | None = None,
     pace_diagram_svg: str | None = None,
+    win_ev_ranking: list | None = None,
 ) -> Path:
     """
     race: {race_id, course, race_number, race_name, surface, distance, track_condition, weather, is_handicap}
@@ -90,6 +92,7 @@ def generate_race_page(
         race=race, horses=horses, ev_tables=ev_tables,
         best_bet=best_bet, race_summary_text=race_summary_text, win5=win5,
         dark_horses=dark_horses, betting_plan=betting_plan, pace_diagram_svg=pace_diagram_svg,
+        win_ev_ranking=win_ev_ranking,
     )
     out_path = races_dir / f"{race['race_id']}.html"
     out_path.write_text(html, encoding="utf-8")
@@ -115,29 +118,40 @@ def generate_archive_page(races: list) -> Path:
     return out_path
 
 
-def generate_performance_page(bets_for_summary: list, bets_for_display: list, pending_count: int) -> Path:
-    """
-    収支ページ（static_site/dist/performance.html）を生成する。
-    bets_for_summary: 集計（累計収支・回収率）に使う全件（例: 今年1年分）
-    bets_for_display: 一覧表示に使う直近分のみ（ページが重くならないよう件数を絞ったもの）
-    """
-    total_staked = sum(b["stake"] for b in bets_for_summary)
-    total_returned = sum(b["payout"] or 0 for b in bets_for_summary)
+def _summarize_bets(bets: list) -> dict:
+    total_staked = sum(b["stake"] for b in bets)
+    total_returned = sum(b["payout"] or 0 for b in bets)
     total_profit = total_returned - total_staked
     roi = (total_returned / total_staked * 100) if total_staked > 0 else None
-    win_count = sum(1 for b in bets_for_summary if b["won"])
+    win_count = sum(1 for b in bets if b["won"])
+    return {
+        "total_staked": total_staked, "total_returned": total_returned, "total_profit": total_profit,
+        "roi": roi, "win_count": win_count, "total_count": len(bets),
+    }
+
+
+def generate_performance_page(
+    bets_for_summary: list, bets_for_display: list, pending_count: int,
+    favorite_summary_bets: list = None, favorite_display_bets: list = None, favorite_pending_count: int = 0,
+) -> Path:
+    """
+    収支ページ（static_site/dist/performance.html）を生成する。
+    bets_for_summary: 期待値重視戦略の集計用全件（例: 今年1年分）
+    bets_for_display: 期待値重視戦略の一覧表示用（直近分のみ）
+    favorite_*: 「堅い本命」戦略側の同様のデータ（比較用に併記する）
+    """
+    value_stats = _summarize_bets(bets_for_summary)
+    favorite_stats = _summarize_bets(favorite_summary_bets or [])
 
     template = _env.get_template("performance.html")
     html = template.render(
         bets=bets_for_display,
-        total_staked=total_staked,
-        total_returned=total_returned,
-        total_profit=total_profit,
-        roi=roi,
-        win_count=win_count,
-        total_count=len(bets_for_summary),
         pending_count=pending_count,
+        favorite_bets=favorite_display_bets or [],
+        favorite_pending_count=favorite_pending_count,
+        favorite=favorite_stats,
         generated_at=dt.datetime.now().strftime("%Y-%m-%d %H:%M"),
+        **value_stats,
     )
     out_path = DIST_DIR / "performance.html"
     out_path.write_text(html, encoding="utf-8")

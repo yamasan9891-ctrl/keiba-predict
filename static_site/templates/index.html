@@ -129,6 +129,27 @@
     font-weight: 800; font-size: 10.5px; padding: 1px 6px; border-radius: 4px; margin-right: 8px;
     border: 1px solid var(--amber);
   }
+
+  .featured-box {
+    background: linear-gradient(135deg, #123456, #1c4d7a);
+    border-radius: 10px; padding: 16px; margin-bottom: 18px; color: #fff;
+  }
+  .featured-box .label { font-size: 11px; font-weight: 800; letter-spacing: 0.05em; opacity: 0.85; margin-bottom: 10px; }
+  .featured-item {
+    display: flex; align-items: center; gap: 10px; padding: 9px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.15); text-decoration: none; color: #fff;
+  }
+  .featured-item:last-child { border-bottom: none; }
+  .featured-item .rank {
+    flex: 0 0 auto; width: 22px; height: 22px; border-radius: 50%; background: rgba(255,255,255,0.15);
+    display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 12px;
+  }
+  .featured-item .rank.gold { background: #e8b923; color: #123456; }
+  .featured-item .info { flex: 1; min-width: 0; }
+  .featured-item .rname { font-size: 12.5px; font-weight: 700; }
+  .featured-item .rmeta { font-size: 10.5px; opacity: 0.8; margin-top: 2px; }
+  .featured-item .ev-tag { font-size: 15px; font-weight: 800; color: #ffd873; }
+
   .next-week-box .dates { font-size: 13px; font-weight: 700; margin-bottom: 6px; }
   .next-week-box .courses .badge2 {
     display: inline-block; background: var(--surface-2); border: 1px solid var(--blue);
@@ -156,6 +177,22 @@
 
 <main>
   <div class="notice">予想は参考情報です。的中・利益を保証しません。購入は必ずご自身の判断でIPAT等の公式ルートから行ってください。</div>
+
+  {% if top_featured %}
+  <div class="featured-box">
+    <div class="label">🔥 今週の注目レース TOP3（期待値順）</div>
+    {% for r in top_featured %}
+    <a class="featured-item" href="races/{{ r.race_id }}.html">
+      <span class="rank {% if loop.index == 1 %}gold{% endif %}">{{ loop.index }}</span>
+      <span class="info">
+        <div class="rname">{{ r.course }} {{ r.race_number }}R　{{ r.race_name }}</div>
+        <div class="rmeta">{{ r.race_label }}</div>
+      </span>
+      <span class="ev-tag mono">{{ "%.0f"|format(r.ev * 100) }}%</span>
+    </a>
+    {% endfor %}
+  </div>
+  {% endif %}
 
   {% if days %}
   <div class="section-block">

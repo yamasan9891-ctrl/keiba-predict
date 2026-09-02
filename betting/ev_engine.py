@@ -191,12 +191,21 @@ def build_betting_plan(tables: dict, min_probability: float = 0.01, max_picks: i
     購入プラン（候補リスト）を作る。1点だけを勧めるのは現実の買い方と
     合わないため、信頼できる範囲でEVが高い順に複数点をまとめて返す。
 
+    3連単・3連複は「的中確率が極端に低い×オッズが極端に高い」組み合わせが
+    見かけ上のEVを異常に押し上げやすく、実際には信頼できないことが多いため、
+    単勝・馬連・馬単より厳しい最低確率ラインを別途課す。
+
     戻り値: [{bet_type, horses, odds, probability, ev}, ...]  EV降順、最大max_picks件
     """
+    stricter_threshold = {
+        "3連単": 0.02,
+        "3連複": 0.02,
+    }
     candidates = []
     for bet_type, rows in tables.items():
+        threshold = stricter_threshold.get(bet_type, min_probability)
         for row in rows:
-            if row["probability"] < min_probability:
+            if row["probability"] < threshold:
                 continue
             candidate = dict(row)
             candidate["bet_type"] = bet_type

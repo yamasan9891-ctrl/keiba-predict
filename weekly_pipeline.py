@@ -20,7 +20,7 @@ from scraper.netkeiba_scraper import fetch_shutuba, fetch_this_week_race_ids, fe
 from scraper.odds_scraper import fetch_all_odds
 from model.predict import predict as predict_race, precompute_current_stats
 from features.feature_engineering import load_race_entries
-from betting.ev_engine import normalize_strengths, build_ev_table, best_bet, positive_ev_rows, identify_value_horses, build_betting_plan, allocate_budget
+from betting.ev_engine import normalize_strengths, build_ev_table, best_bet, positive_ev_rows, identify_value_horses, build_betting_plan, allocate_budget, win_probabilities
 from betting.reasoning import generate_reason, summarize_race
 from betting.win5 import select_win5_box, build_win5_box_plan
 from static_site.pace_diagram import build_pace_diagram_svg
@@ -96,6 +96,10 @@ def build_race_page_data(race_id: str, race_meta: dict, stats, is_win5: bool = F
     bb = best_bet(ev_tables_all)
     max_picks = int((strategy_config or {}).get("betting_plan_max_picks", 5))
     betting_plan = build_betting_plan(ev_tables_positive, max_picks=max_picks)
+
+    # 馬ごとの単勝期待値ランキング（全頭・EV降順）。買い目候補とは別に、
+    # 「どの馬が市場評価に対して割安/割高か」を一目で分かるようにする
+    win_ev_ranking = sorted(ev_tables_all.get("単勝", []), key=lambda r: -r["ev"])
 
     # 「一番期待値の高い買い目に全額」ではなく、購入プラン（複数点）に5000円を
     # 按分したものを、実際に賭けたと仮定して記録する（後日の収支追跡用）
@@ -179,6 +183,22 @@ def build_race_page_data(race_id: str, race_meta: dict, stats, is_win5: bool = F
     predicted_pace_label = pred_df["predicted_pace"].iloc[0] if "predicted_pace" in pred_df.columns and len(pred_df) else None
     pace_diagram_svg = build_pace_diagram_svg(pace_svg_horses, predicted_pace=predicted_pace_label)
 
+    # 「堅い本命」候補: 単勝1番人気の馬について、モデル自身の予想勝率を控えておく
+    # （日ごとに全レースを比較し、最も勝率が高いと見ているレースを後で選ぶため）
+    favorite_candidate = None
+    fav_number = next((n for n, p in popularity.items() if p == 1), None)
+    if fav_number is not None:
+        fav_win_prob = win_probabilities(strengths).get(fav_number)
+        fav_odds = odds.get("tan", {}).get(fav_number)
+        if fav_win_prob is not None and fav_odds is not None:
+            favorite_candidate = {
+                "race_id": race_id, "race_label": race_label,
+                "horse_number": fav_number, "horse_name": names.get(fav_number),
+                "win_probability": fav_win_prob, "odds": fav_odds,
+            }
+
+    headline_ev = win_ev_ranking[0]["ev"] if win_ev_ranking else None
+
     return {
         "race": race_meta,
         "horses": horses,
@@ -188,7 +208,8 @@ def build_race_page_data(race_id: str, race_meta: dict, stats, is_win5: bool = F
         "dark_horses": dark_horses,
         "betting_plan": betting_plan,
         "pace_diagram_svg": pace_diagram_svg,
-    }, strengths
+        "win_ev_ranking": win_ev_ranking,
+    }, strengths, {"favorite_candidate": favorite_candidate, "headline_ev": headline_ev, "race_label": race_label}
 
 
 def run_weekly(dry_run: bool = False):
@@ -217,6 +238,8 @@ def run_weekly(dry_run: bool = False):
 
     days_index = {}
     preview_index = []       # 枠順未発表で出走予定プレビューだけ作ったレース
+    favorite_candidates = {}  # 日付 -> [1番人気馬の情報, ...]（後で日ごとの「堅い本命」を選ぶ）
+    featured_races = []      # 全レースの「見出しEV」一覧（後で週の注目レースTOP3を選ぶ）
     win5_page_data = {}       # race_id -> page_data（WIN5対象レースのみ）
     win5_strengths = {}       # race_id -> {horse: 強さ}（WIN5対象レースのみ）
     win5_race_labels = {}     # race_id -> "○○ 11R" のような表示ラベル
@@ -259,13 +282,23 @@ def run_weekly(dry_run: bool = False):
         is_win5 = rid in win5_ids
 
         try:
-            page_data, strengths = build_race_page_data(rid, meta, stats, is_win5=is_win5, strategy_config=strategy_config)
+            page_data, strengths, race_analytics = build_race_page_data(rid, meta, stats, is_win5=is_win5, strategy_config=strategy_config)
             generate_race_page(**page_data)
             with get_conn() as conn:
                 mark_prediction_page_generated(conn, rid)
         except Exception as e:
             print(f"  [警告] {rid} の予想生成に失敗: {e}")
             continue
+
+        date_key_for_analytics = meta.get("race_date") or rid[:4]
+        if race_analytics.get("favorite_candidate"):
+            favorite_candidates.setdefault(date_key_for_analytics, []).append(race_analytics["favorite_candidate"])
+        if race_analytics.get("headline_ev") is not None:
+            featured_races.append({
+                "race_id": rid, "race_label": race_analytics["race_label"],
+                "course": meta.get("course"), "race_number": page_data["race"]["race_number"],
+                "race_name": meta.get("race_name"), "ev": race_analytics["headline_ev"],
+            })
 
         if is_win5:
             win5_page_data[rid] = page_data
@@ -322,6 +355,31 @@ def run_weekly(dry_run: bool = False):
 
     days = [{"date": d, "weekday": "", "races": races} for d, races in sorted(days_index.items())]
 
+    # 日ごとに「モデルが最も自信を持って勝つと見ている1番人気」のレースを1つずつ選び、
+    # 「堅い本命」戦略として1000円で記録する（期待値重視の戦略とは別の、比較用の安全な戦略）
+    print("=== 堅い本命ピックを選定中 ===")
+    for date_key, candidates in favorite_candidates.items():
+        if not candidates:
+            continue
+        best = max(candidates, key=lambda c: c["win_probability"])
+        with get_conn() as conn:
+            replace_tracked_bets_for_race(conn, best["race_id"], [{
+                "race_id": best["race_id"],
+                "race_label": best["race_label"],
+                "bet_type": "単勝",
+                "horses": f"{best['horse_number']} {best['horse_name']}",
+                "horse_numbers": str(best["horse_number"]),
+                "odds": best["odds"],
+                "predicted_probability": best["win_probability"],
+                "predicted_ev": best["win_probability"] * best["odds"],
+                "stake": 1000,
+            }], strategy="favorite")
+        print(f"  {date_key}: {best['race_label']} {best['horse_name']}（勝率目安{best['win_probability']*100:.0f}%）")
+
+    # 週の全レースの中から「見出しEV」が高い順にTOP3を選び、トップページで目立たせる
+    featured_races.sort(key=lambda r: -r["ev"])
+    top_featured = featured_races[:3]
+
     print("=== 来週の開催予定を取得中（軽量） ===")
     try:
         next_week = fetch_next_week_preview()
@@ -329,7 +387,7 @@ def run_weekly(dry_run: bool = False):
         print(f"[警告] 来週プレビュー取得に失敗: {e}")
         next_week = None
 
-    generate_index(days, next_week=next_week, preview_races=preview_index)
+    generate_index(days, next_week=next_week, preview_races=preview_index, top_featured=top_featured)
     print("=== 完了 ===")
 
 

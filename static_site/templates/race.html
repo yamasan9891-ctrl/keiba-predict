@@ -255,6 +255,27 @@
     <div class="card" style="overflow-x:auto;">{{ pace_diagram_svg | safe }}</div>
     {% endif %}
 
+    {% if win_ev_ranking %}
+    <div class="section-title"><span class="en">EV Ranking</span>単勝期待値ランキング</div>
+    <div class="section-hint">AIが「市場の評価（オッズ）に対して割安・割高」と判断した順に、全頭を並べています。</div>
+    <div class="card" style="padding:0; overflow:hidden;">
+      <table class="ev-table">
+        <thead><tr><th>順位</th><th>馬名</th><th>オッズ</th><th>勝率目安</th><th>期待値</th></tr></thead>
+        <tbody>
+          {% for r in win_ev_ranking %}
+          <tr{% if r.ev > 1.0 %} style="background:rgba(46,139,87,0.06);"{% endif %}>
+            <td class="mono">{{ loop.index }}</td>
+            <td class="horses-cell">{{ r.horses }}</td>
+            <td class="mono">{{ "%.1f"|format(r.odds) }}</td>
+            <td class="mono">{{ "%.1f"|format(r.probability * 100) }}%</td>
+            <td class="mono" style="font-weight:700; color:{{ 'var(--green)' if r.ev > 1.0 else 'var(--text-dim)' }};">{{ "%.0f"|format(r.ev * 100) }}%</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+
     {% if dark_horses %}
     <div class="section-title"><span class="en">Dark Horses</span>穴馬候補</div>
     <div class="section-hint">人気は低いのに、モデルの評価に対してオッズが割安な馬です。</div>
