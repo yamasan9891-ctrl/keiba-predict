@@ -7,7 +7,7 @@
 <style>
   :root {
     --bg: #f2f3f5; --surface: #ffffff; --surface-2: #f7f8fa; --line: #e1e4e8;
-    --amber: #e8960c; --amber-dim: #1a3c66; --text: #24292e; --text-dim: #6a737d;
+    --amber: #c98a1f; --amber-dim: #123456; --green: #2e8b57; --text: #24292e; --text-dim: #6a737d;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; }
@@ -20,25 +20,39 @@
   a { color: inherit; }
 
   header { padding: 16px 16px 14px; border-bottom: 1px solid var(--line); }
-  .back { font-size: 12px; color: var(--text-dim); text-decoration: none; }
+  .back { display:inline-flex; align-items:center; gap:4px; font-size: 13px; font-weight:700; color: var(--amber-dim); text-decoration: none; padding:7px 12px; background:var(--surface); border:1px solid var(--line); border-radius:6px; }
   h1 { font-size: 18px; margin: 10px 0 4px; font-weight: 800; }
 
   .notice {
-    margin: 14px 14px 0; font-size: 12px; color: var(--amber);
-    background: rgba(240,162,2,0.08); border: 1px solid var(--amber-dim);
+    margin: 14px 14px 0; font-size: 12px; color: var(--amber-dim);
+    background: #fff8e6; border: 1px solid #e8d19a;
     border-radius: 6px; padding: 11px 14px; line-height: 1.6;
   }
 
-  main { max-width: 760px; margin: 0 auto; padding: 0 14px; }
+  main { max-width: 720px; margin: 0 auto; padding: 0 14px; }
 
-  table { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-top: 16px; }
-  th {
-    background: var(--surface-2); color: var(--text-dim); font-weight: 700; font-size: 10.5px;
-    padding: 8px 6px; border-bottom: 1px solid var(--line);
+  .horse-card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 8px;
+    padding: 12px 14px; margin-top: 10px;
+    box-shadow: 0 1px 2px rgba(20,30,45,0.04);
   }
-  td { padding: 9px 6px; text-align: center; border-bottom: 1px solid var(--line); }
-  td.name-cell { text-align: left; font-weight: 700; }
-  tr:last-child td { border-bottom: none; }
+  .horse-card .top-row { display: flex; align-items: center; justify-content: space-between; }
+  .horse-card .name-block { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+  .horse-card .prov {
+    flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center;
+    width: 24px; height: 24px; background: var(--surface-2); border: 1px solid var(--line);
+    color: var(--text-dim); font-weight: 800; font-size: 11.5px; border-radius: 5px;
+  }
+  .horse-card .hname { font-size: 15px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .horse-card .sexage { font-size: 11px; color: var(--text-dim); flex: 0 0 auto; }
+  .horse-card .odds-block { flex: 0 0 auto; text-align: right; }
+  .horse-card .odds-block .odds { font-size: 16px; font-weight: 800; color: var(--green); }
+  .horse-card .odds-block .pop { font-size: 10px; color: var(--text-dim); }
+  .horse-card .sub-row {
+    display: flex; gap: 14px; margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--line);
+    font-size: 11.5px; color: var(--text-dim);
+  }
+  .horse-card .sub-row span b { color: var(--text); font-weight: 700; }
 
   .disclaimer { margin-top: 26px; font-size: 11px; color: var(--text-dim); text-align: center; line-height: 1.7; }
 </style>
@@ -52,192 +66,331 @@
 <div class="notice">⚠ このレースはまだ正式な枠順が発表されていません。出走予定馬・予想オッズなど分かっている範囲のみの表示です（正式な馬番が決まり次第、通常の予想ページに切り替わります）。</div>
 
 <main>
-  <table>
-    <thead><tr><th>暫定順</th><th>馬名</th><th>性齢</th><th>騎手</th><th>厩舎</th><th>人気</th><th>予想オッズ</th></tr></thead>
-    <tbody>
-      
-      <tr>
-        <td class="mono">1</td>
-        <td class="name-cell">アスタールフナ</td>
-        <td class="mono">牝4</td>
-        <td>岩田望</td>
-        <td>栗東中竹</td>
-        <td class="mono">-</td>
-        <td class="mono">-</td>
-      </tr>
-      
-      <tr>
-        <td class="mono">2</td>
-        <td class="name-cell">イノキ</td>
-        <td class="mono">牡4</td>
-        <td>丸山</td>
-        <td>美浦岩戸</td>
-        <td class="mono">-</td>
-        <td class="mono">-</td>
-      </tr>
-      
-      <tr>
-        <td class="mono">3</td>
-        <td class="name-cell">キタノライブリー</td>
-        <td class="mono">牝4</td>
-        <td>木幡初</td>
-        <td>美浦本間</td>
-        <td class="mono">-</td>
-        <td class="mono">-</td>
-      </tr>
-      
-      <tr>
-        <td class="mono">4</td>
-        <td class="name-cell">キョウエイカンフ</td>
-        <td class="mono">牡6</td>
-        <td>吉田豊</td>
-        <td>美浦勢司</td>
-        <td class="mono">-</td>
-        <td class="mono">-</td>
-      </tr>
-      
-      <tr>
-        <td class="mono">5</td>
-        <td class="name-cell">サマースイートピー</td>
-        <td class="mono">牝4</td>
-        <td>杉原</td>
-        <td>美浦千葉</td>
-        <td class="mono">-</td>
-        <td class="mono">-</td>
-      </tr>
-      
-      <tr>
-        <td class="mono">6</td>
-        <td class="name-cell">サヨノジャンボリー</td>
-        <td class="mono">牡4</td>
-        <td>大野</td>
-        <td>美浦小笠</td>
-        <td class="mono">-</td>
-        <td class="mono">-</td>
-      </tr>
-      
-      <tr>
-        <td class="mono">7</td>
-        <td class="name-cell">サードウインド</td>
-        <td class="mono">牝4</td>
-        <td>武藤</td>
-        <td>美浦西田</td>
-        <td class="mono">-</td>
-        <td class="mono">-</td>
-      </tr>
-      
-      <tr>
-        <td class="mono">8</td>
-        <td class="name-cell">ジャスパーソレイユ</td>
-        <td class="mono">牡4</td>
-        <td>川田</td>
-        <td>栗東森秀</td>
-        <td class="mono">-</td>
-        <td class="mono">-</td>
-      </tr>
-      
-      <tr>
-        <td class="mono">9</td>
-        <td class="name-cell">ドントゥザムーン</td>
-        <td class="mono">牡4</td>
-        <td>木幡巧</td>
-        <td>美浦高木</td>
-        <td class="mono">-</td>
-        <td class="mono">-</td>
-      </tr>
-      
-      <tr>
-        <td class="mono">10</td>
-        <td class="name-cell">ピコニ</td>
-        <td class="mono">牡5</td>
-        <td>酒井</td>
-        <td>美浦牧</td>
-        <td class="mono">-</td>
-        <td class="mono">-</td>
-      </tr>
-      
-      <tr>
-        <td class="mono">11</td>
-        <td class="name-cell">ホウオウプレミア</td>
-        <td class="mono">牡7</td>
-        <td>岩田康</td>
-        <td>美浦奥村武</td>
-        <td class="mono">-</td>
-        <td class="mono">-</td>
-      </tr>
-      
-      <tr>
-        <td class="mono">12</td>
-        <td class="name-cell">ボルセーナ</td>
-        <td class="mono">牝4</td>
-        <td>松若</td>
-        <td>栗東奥村豊</td>
-        <td class="mono">-</td>
-        <td class="mono">-</td>
-      </tr>
-      
-      <tr>
-        <td class="mono">13</td>
-        <td class="name-cell">ホープエトワール</td>
-        <td class="mono">牡4</td>
-        <td>秋山稔</td>
-        <td>美浦天間</td>
-        <td class="mono">-</td>
-        <td class="mono">-</td>
-      </tr>
-      
-      <tr>
-        <td class="mono">14</td>
-        <td class="name-cell">モーゲンセン</td>
-        <td class="mono">牡3</td>
-        <td>戸崎圭</td>
-        <td>美浦斎藤誠</td>
-        <td class="mono">-</td>
-        <td class="mono">-</td>
-      </tr>
-      
-      <tr>
-        <td class="mono">15</td>
-        <td class="name-cell">ラヴァグロウ</td>
-        <td class="mono">牝6</td>
-        <td>丸田</td>
-        <td>美浦畠山</td>
-        <td class="mono">-</td>
-        <td class="mono">-</td>
-      </tr>
-      
-      <tr>
-        <td class="mono">16</td>
-        <td class="name-cell">ルクスレイモンド</td>
-        <td class="mono">牡3</td>
-        <td>坂井</td>
-        <td>美浦上原佑</td>
-        <td class="mono">-</td>
-        <td class="mono">-</td>
-      </tr>
-      
-      <tr>
-        <td class="mono">17</td>
-        <td class="name-cell">ルーフオブヘヴン</td>
-        <td class="mono">牝5</td>
-        <td>佐々木</td>
-        <td>美浦武藤</td>
-        <td class="mono">-</td>
-        <td class="mono">-</td>
-      </tr>
-      
-      <tr>
-        <td class="mono">18</td>
-        <td class="name-cell">レヴィテーション</td>
-        <td class="mono">牝5</td>
-        <td>黛</td>
-        <td>美浦中川</td>
-        <td class="mono">-</td>
-        <td class="mono">-</td>
-      </tr>
-      
-    </tbody>
-  </table>
+  
+  <div class="horse-card">
+    <div class="top-row">
+      <div class="name-block">
+        <span class="prov mono">1</span>
+        <span class="hname">アスタールフナ</span>
+        <span class="sexage mono">牝4</span>
+      </div>
+      <div class="odds-block">
+        <div class="odds mono">-<span style="font-size:11px;">倍</span></div>
+        <div class="pop mono">-番人気</div>
+      </div>
+    </div>
+    <div class="sub-row">
+      <span>騎手 <b>北村友</b></span>
+      <span>厩舎 <b>栗東中竹</b></span>
+    </div>
+  </div>
+  
+  <div class="horse-card">
+    <div class="top-row">
+      <div class="name-block">
+        <span class="prov mono">2</span>
+        <span class="hname">イノキ</span>
+        <span class="sexage mono">牡4</span>
+      </div>
+      <div class="odds-block">
+        <div class="odds mono">-<span style="font-size:11px;">倍</span></div>
+        <div class="pop mono">-番人気</div>
+      </div>
+    </div>
+    <div class="sub-row">
+      <span>騎手 <b>菊沢</b></span>
+      <span>厩舎 <b>美浦岩戸</b></span>
+    </div>
+  </div>
+  
+  <div class="horse-card">
+    <div class="top-row">
+      <div class="name-block">
+        <span class="prov mono">3</span>
+        <span class="hname">キタノライブリー</span>
+        <span class="sexage mono">牝4</span>
+      </div>
+      <div class="odds-block">
+        <div class="odds mono">-<span style="font-size:11px;">倍</span></div>
+        <div class="pop mono">-番人気</div>
+      </div>
+    </div>
+    <div class="sub-row">
+      <span>騎手 <b>木幡初</b></span>
+      <span>厩舎 <b>美浦本間</b></span>
+    </div>
+  </div>
+  
+  <div class="horse-card">
+    <div class="top-row">
+      <div class="name-block">
+        <span class="prov mono">4</span>
+        <span class="hname">キョウエイカンフ</span>
+        <span class="sexage mono">牡6</span>
+      </div>
+      <div class="odds-block">
+        <div class="odds mono">-<span style="font-size:11px;">倍</span></div>
+        <div class="pop mono">-番人気</div>
+      </div>
+    </div>
+    <div class="sub-row">
+      <span>騎手 <b>石橋脩</b></span>
+      <span>厩舎 <b>美浦勢司</b></span>
+    </div>
+  </div>
+  
+  <div class="horse-card">
+    <div class="top-row">
+      <div class="name-block">
+        <span class="prov mono">5</span>
+        <span class="hname">サマースイートピー</span>
+        <span class="sexage mono">牝4</span>
+      </div>
+      <div class="odds-block">
+        <div class="odds mono">-<span style="font-size:11px;">倍</span></div>
+        <div class="pop mono">-番人気</div>
+      </div>
+    </div>
+    <div class="sub-row">
+      <span>騎手 <b>内田博</b></span>
+      <span>厩舎 <b>美浦千葉</b></span>
+    </div>
+  </div>
+  
+  <div class="horse-card">
+    <div class="top-row">
+      <div class="name-block">
+        <span class="prov mono">6</span>
+        <span class="hname">サヨノジャンボリー</span>
+        <span class="sexage mono">牡4</span>
+      </div>
+      <div class="odds-block">
+        <div class="odds mono">-<span style="font-size:11px;">倍</span></div>
+        <div class="pop mono">-番人気</div>
+      </div>
+    </div>
+    <div class="sub-row">
+      <span>騎手 <b>大野</b></span>
+      <span>厩舎 <b>美浦小笠</b></span>
+    </div>
+  </div>
+  
+  <div class="horse-card">
+    <div class="top-row">
+      <div class="name-block">
+        <span class="prov mono">7</span>
+        <span class="hname">サードウインド</span>
+        <span class="sexage mono">牝4</span>
+      </div>
+      <div class="odds-block">
+        <div class="odds mono">-<span style="font-size:11px;">倍</span></div>
+        <div class="pop mono">-番人気</div>
+      </div>
+    </div>
+    <div class="sub-row">
+      <span>騎手 <b>ミシェル</b></span>
+      <span>厩舎 <b>美浦西田</b></span>
+    </div>
+  </div>
+  
+  <div class="horse-card">
+    <div class="top-row">
+      <div class="name-block">
+        <span class="prov mono">8</span>
+        <span class="hname">ジャスパーソレイユ</span>
+        <span class="sexage mono">牡4</span>
+      </div>
+      <div class="odds-block">
+        <div class="odds mono">-<span style="font-size:11px;">倍</span></div>
+        <div class="pop mono">-番人気</div>
+      </div>
+    </div>
+    <div class="sub-row">
+      <span>騎手 <b>団野</b></span>
+      <span>厩舎 <b>栗東森秀</b></span>
+    </div>
+  </div>
+  
+  <div class="horse-card">
+    <div class="top-row">
+      <div class="name-block">
+        <span class="prov mono">9</span>
+        <span class="hname">ドントゥザムーン</span>
+        <span class="sexage mono">牡4</span>
+      </div>
+      <div class="odds-block">
+        <div class="odds mono">-<span style="font-size:11px;">倍</span></div>
+        <div class="pop mono">-番人気</div>
+      </div>
+    </div>
+    <div class="sub-row">
+      <span>騎手 <b>三浦</b></span>
+      <span>厩舎 <b>美浦高木</b></span>
+    </div>
+  </div>
+  
+  <div class="horse-card">
+    <div class="top-row">
+      <div class="name-block">
+        <span class="prov mono">10</span>
+        <span class="hname">ピコニ</span>
+        <span class="sexage mono">牡5</span>
+      </div>
+      <div class="odds-block">
+        <div class="odds mono">-<span style="font-size:11px;">倍</span></div>
+        <div class="pop mono">-番人気</div>
+      </div>
+    </div>
+    <div class="sub-row">
+      <span>騎手 <b>木幡巧</b></span>
+      <span>厩舎 <b>美浦牧</b></span>
+    </div>
+  </div>
+  
+  <div class="horse-card">
+    <div class="top-row">
+      <div class="name-block">
+        <span class="prov mono">11</span>
+        <span class="hname">ホウオウプレミア</span>
+        <span class="sexage mono">牡7</span>
+      </div>
+      <div class="odds-block">
+        <div class="odds mono">-<span style="font-size:11px;">倍</span></div>
+        <div class="pop mono">-番人気</div>
+      </div>
+    </div>
+    <div class="sub-row">
+      <span>騎手 <b>岩田康</b></span>
+      <span>厩舎 <b>美浦奥村武</b></span>
+    </div>
+  </div>
+  
+  <div class="horse-card">
+    <div class="top-row">
+      <div class="name-block">
+        <span class="prov mono">12</span>
+        <span class="hname">ボルセーナ</span>
+        <span class="sexage mono">牝4</span>
+      </div>
+      <div class="odds-block">
+        <div class="odds mono">-<span style="font-size:11px;">倍</span></div>
+        <div class="pop mono">-番人気</div>
+      </div>
+    </div>
+    <div class="sub-row">
+      <span>騎手 <b>松若</b></span>
+      <span>厩舎 <b>栗東奥村豊</b></span>
+    </div>
+  </div>
+  
+  <div class="horse-card">
+    <div class="top-row">
+      <div class="name-block">
+        <span class="prov mono">13</span>
+        <span class="hname">ホープエトワール</span>
+        <span class="sexage mono">牡4</span>
+      </div>
+      <div class="odds-block">
+        <div class="odds mono">-<span style="font-size:11px;">倍</span></div>
+        <div class="pop mono">-番人気</div>
+      </div>
+    </div>
+    <div class="sub-row">
+      <span>騎手 <b>菅原隆</b></span>
+      <span>厩舎 <b>美浦天間</b></span>
+    </div>
+  </div>
+  
+  <div class="horse-card">
+    <div class="top-row">
+      <div class="name-block">
+        <span class="prov mono">14</span>
+        <span class="hname">モーゲンセン</span>
+        <span class="sexage mono">牡3</span>
+      </div>
+      <div class="odds-block">
+        <div class="odds mono">-<span style="font-size:11px;">倍</span></div>
+        <div class="pop mono">-番人気</div>
+      </div>
+    </div>
+    <div class="sub-row">
+      <span>騎手 <b>津村</b></span>
+      <span>厩舎 <b>美浦斎藤誠</b></span>
+    </div>
+  </div>
+  
+  <div class="horse-card">
+    <div class="top-row">
+      <div class="name-block">
+        <span class="prov mono">15</span>
+        <span class="hname">ラヴァグロウ</span>
+        <span class="sexage mono">牝6</span>
+      </div>
+      <div class="odds-block">
+        <div class="odds mono">-<span style="font-size:11px;">倍</span></div>
+        <div class="pop mono">-番人気</div>
+      </div>
+    </div>
+    <div class="sub-row">
+      <span>騎手 <b>丸田</b></span>
+      <span>厩舎 <b>美浦畠山</b></span>
+    </div>
+  </div>
+  
+  <div class="horse-card">
+    <div class="top-row">
+      <div class="name-block">
+        <span class="prov mono">16</span>
+        <span class="hname">ルクスレイモンド</span>
+        <span class="sexage mono">牡3</span>
+      </div>
+      <div class="odds-block">
+        <div class="odds mono">-<span style="font-size:11px;">倍</span></div>
+        <div class="pop mono">-番人気</div>
+      </div>
+    </div>
+    <div class="sub-row">
+      <span>騎手 <b>○○</b></span>
+      <span>厩舎 <b>美浦上原佑</b></span>
+    </div>
+  </div>
+  
+  <div class="horse-card">
+    <div class="top-row">
+      <div class="name-block">
+        <span class="prov mono">17</span>
+        <span class="hname">ルーフオブヘヴン</span>
+        <span class="sexage mono">牝5</span>
+      </div>
+      <div class="odds-block">
+        <div class="odds mono">-<span style="font-size:11px;">倍</span></div>
+        <div class="pop mono">-番人気</div>
+      </div>
+    </div>
+    <div class="sub-row">
+      <span>騎手 <b>武藤</b></span>
+      <span>厩舎 <b>美浦武藤</b></span>
+    </div>
+  </div>
+  
+  <div class="horse-card">
+    <div class="top-row">
+      <div class="name-block">
+        <span class="prov mono">18</span>
+        <span class="hname">レヴィテーション</span>
+        <span class="sexage mono">牝5</span>
+      </div>
+      <div class="odds-block">
+        <div class="odds mono">-<span style="font-size:11px;">倍</span></div>
+        <div class="pop mono">-番人気</div>
+      </div>
+    </div>
+    <div class="sub-row">
+      <span>騎手 <b>○○</b></span>
+      <span>厩舎 <b>美浦中川</b></span>
+    </div>
+  </div>
+  
 
   <div class="disclaimer">本ページの情報は参考情報です。正式な出走・枠順は必ずJRA公式発表でご確認ください。</div>
 </main>

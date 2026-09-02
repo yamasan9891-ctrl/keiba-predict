@@ -10,11 +10,11 @@
     --surface: #ffffff;
     --surface-2: #f7f8fa;
     --line: #e1e4e8;
-    --navy: #1a3c66;
-    --blue: #2f6fb5;
+    --navy: #123456;
+    --blue: #2c5f96;
     --red: #d0392b;
     --green: #2e8b57;
-    --amber: #e8960c;
+    --amber: #c98a1f;
     --text: #24292e;
     --text-dim: #6a737d;
   }
@@ -129,6 +129,33 @@
     font-weight: 800; font-size: 10.5px; padding: 1px 6px; border-radius: 4px; margin-right: 8px;
     border: 1px solid var(--amber);
   }
+  .preview-venue { margin-top: 10px; }
+  .preview-venue:first-of-type { margin-top: 4px; }
+  .preview-venue-head {
+    font-size: 11.5px; font-weight: 800; color: var(--amber-dim);
+    margin-bottom: 4px; padding-bottom: 3px; border-bottom: 1px solid var(--line);
+  }
+
+  .featured-box {
+    background: linear-gradient(135deg, #123456, #1c4d7a);
+    border-radius: 10px; padding: 16px; margin-bottom: 18px; color: #fff;
+  }
+  .featured-box .label { font-size: 11px; font-weight: 800; letter-spacing: 0.05em; opacity: 0.85; margin-bottom: 10px; }
+  .featured-item {
+    display: flex; align-items: center; gap: 10px; padding: 9px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.15); text-decoration: none; color: #fff;
+  }
+  .featured-item:last-child { border-bottom: none; }
+  .featured-item .rank {
+    flex: 0 0 auto; width: 22px; height: 22px; border-radius: 50%; background: rgba(255,255,255,0.15);
+    display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 12px;
+  }
+  .featured-item .rank.gold { background: #e8b923; color: #123456; }
+  .featured-item .info { flex: 1; min-width: 0; }
+  .featured-item .rname { font-size: 12.5px; font-weight: 700; }
+  .featured-item .rmeta { font-size: 10.5px; opacity: 0.8; margin-top: 2px; }
+  .featured-item .ev-tag { font-size: 15px; font-weight: 800; color: #ffd873; }
+
   .next-week-box .dates { font-size: 13px; font-weight: 700; margin-bottom: 6px; }
   .next-week-box .courses .badge2 {
     display: inline-block; background: var(--surface-2); border: 1px solid var(--blue);
@@ -146,7 +173,7 @@
 <header>
   <p class="eyebrow">JRA Prediction Engine</p>
   <h1>今週のレース予想</h1>
-  <p class="updated mono"><span class="dot">●</span> 最終更新 2026-08-31 11:16</p>
+  <p class="updated mono"><span class="dot">●</span> 最終更新 2026-09-02 14:01</p>
   <div class="quicklinks">
     <a class="primary" href="win5.html">🎯 今週のWIN5を見る →</a>
     <a class="secondary" href="performance.html">📊 AI収支実績を見る →</a>
@@ -156,6 +183,8 @@
 
 <main>
   <div class="notice">予想は参考情報です。的中・利益を保証しません。購入は必ずご自身の判断でIPAT等の公式ルートから行ってください。</div>
+
+  
 
   
   <div class="empty-state">
@@ -170,41 +199,164 @@
       <div class="label">⚠ 出走予定（枠順発表待ち）</div>
       <div class="hint">正式な枠順がまだ発表されていないレースです。馬名・騎手・予想オッズなど分かっている範囲だけ先に見られます。</div>
       
-      <a class="race-link" href="races/202601020509.html"><span class="rn mono">9R</span>札幌 Fビレッジ特別</a>
+      <div class="preview-venue">
+        <div class="preview-venue-head">中山</div>
+        
+        <a class="race-link" href="races/202606040101.html"><span class="rn mono">1R</span>3歳以上障害OP</a>
+        
+        <a class="race-link" href="races/202606040201.html"><span class="rn mono">1R</span>3歳以上障害未勝利</a>
+        
+        <a class="race-link" href="races/202606040110.html"><span class="rn mono">10R</span>白井特別</a>
+        
+        <a class="race-link" href="races/202606040210.html"><span class="rn mono">10R</span>セプテンバーS</a>
+        
+        <a class="race-link" href="races/202606040111.html"><span class="rn mono">11R</span>京成杯AH</a>
+        
+        <a class="race-link" href="races/202606040211.html"><span class="rn mono">11R</span>紫苑S</a>
+        
+        <a class="race-link" href="races/202606040112.html"><span class="rn mono">12R</span>3歳以上1勝クラス</a>
+        
+        <a class="race-link" href="races/202606040212.html"><span class="rn mono">12R</span>3歳以上1勝クラス</a>
+        
+        <a class="race-link" href="races/202606040102.html"><span class="rn mono">2R</span>3歳未勝利</a>
+        
+        <a class="race-link" href="races/202606040202.html"><span class="rn mono">2R</span>2歳未勝利</a>
+        
+        <a class="race-link" href="races/202606040103.html"><span class="rn mono">3R</span>2歳未勝利</a>
+        
+        <a class="race-link" href="races/202606040203.html"><span class="rn mono">3R</span>3歳未勝利</a>
+        
+        <a class="race-link" href="races/202606040104.html"><span class="rn mono">4R</span>2歳未勝利</a>
+        
+        <a class="race-link" href="races/202606040204.html"><span class="rn mono">4R</span>3歳未勝利</a>
+        
+        <a class="race-link" href="races/202606040105.html"><span class="rn mono">5R</span>2歳新馬</a>
+        
+        <a class="race-link" href="races/202606040205.html"><span class="rn mono">5R</span>2歳新馬</a>
+        
+        <a class="race-link" href="races/202606040106.html"><span class="rn mono">6R</span>2歳新馬</a>
+        
+        <a class="race-link" href="races/202606040206.html"><span class="rn mono">6R</span>2歳新馬</a>
+        
+        <a class="race-link" href="races/202606040107.html"><span class="rn mono">7R</span>3歳未勝利</a>
+        
+        <a class="race-link" href="races/202606040207.html"><span class="rn mono">7R</span>3歳未勝利</a>
+        
+        <a class="race-link" href="races/202606040108.html"><span class="rn mono">8R</span>3歳以上1勝クラス</a>
+        
+        <a class="race-link" href="races/202606040208.html"><span class="rn mono">8R</span>3歳以上1勝クラス</a>
+        
+        <a class="race-link" href="races/202606040109.html"><span class="rn mono">9R</span>古作特別</a>
+        
+        <a class="race-link" href="races/202606040209.html"><span class="rn mono">9R</span>浦安特別</a>
+        
+      </div>
       
-      <a class="race-link" href="races/202601020510.html"><span class="rn mono">10R</span>札幌 札幌スポニチ賞</a>
+      <div class="preview-venue">
+        <div class="preview-venue-head">札幌</div>
+        
+        <a class="race-link" href="races/202601020501.html"><span class="rn mono">1R</span>2歳未勝利</a>
+        
+        <a class="race-link" href="races/202601020601.html"><span class="rn mono">1R</span>3歳未勝利</a>
+        
+        <a class="race-link" href="races/202601020510.html"><span class="rn mono">10R</span>札幌スポニチ賞</a>
+        
+        <a class="race-link" href="races/202601020610.html"><span class="rn mono">10R</span>HTB賞</a>
+        
+        <a class="race-link" href="races/202601020511.html"><span class="rn mono">11R</span>札幌2歳S</a>
+        
+        <a class="race-link" href="races/202601020611.html"><span class="rn mono">11R</span>丹頂S</a>
+        
+        <a class="race-link" href="races/202601020512.html"><span class="rn mono">12R</span>3歳以上1勝クラス</a>
+        
+        <a class="race-link" href="races/202601020612.html"><span class="rn mono">12R</span>3歳以上1勝クラス</a>
+        
+        <a class="race-link" href="races/202601020502.html"><span class="rn mono">2R</span>2歳未勝利</a>
+        
+        <a class="race-link" href="races/202601020602.html"><span class="rn mono">2R</span>2歳未勝利</a>
+        
+        <a class="race-link" href="races/202601020503.html"><span class="rn mono">3R</span>3歳未勝利</a>
+        
+        <a class="race-link" href="races/202601020603.html"><span class="rn mono">3R</span>3歳未勝利</a>
+        
+        <a class="race-link" href="races/202601020504.html"><span class="rn mono">4R</span>3歳未勝利</a>
+        
+        <a class="race-link" href="races/202601020604.html"><span class="rn mono">4R</span>3歳未勝利</a>
+        
+        <a class="race-link" href="races/202601020505.html"><span class="rn mono">5R</span>2歳新馬</a>
+        
+        <a class="race-link" href="races/202601020605.html"><span class="rn mono">5R</span>3歳未勝利</a>
+        
+        <a class="race-link" href="races/202601020506.html"><span class="rn mono">6R</span>3歳未勝利</a>
+        
+        <a class="race-link" href="races/202601020606.html"><span class="rn mono">6R</span>3歳以上1勝クラス</a>
+        
+        <a class="race-link" href="races/202601020507.html"><span class="rn mono">7R</span>3歳以上1勝クラス</a>
+        
+        <a class="race-link" href="races/202601020607.html"><span class="rn mono">7R</span>3歳以上1勝クラス</a>
+        
+        <a class="race-link" href="races/202601020508.html"><span class="rn mono">8R</span>3歳以上1勝クラス</a>
+        
+        <a class="race-link" href="races/202601020608.html"><span class="rn mono">8R</span>3歳以上1勝クラス</a>
+        
+        <a class="race-link" href="races/202601020509.html"><span class="rn mono">9R</span>Fビレッジ特別</a>
+        
+        <a class="race-link" href="races/202601020609.html"><span class="rn mono">9R</span>旭川特別</a>
+        
+      </div>
       
-      <a class="race-link" href="races/202601020511.html"><span class="rn mono">11R</span>札幌 札幌2歳ステークス</a>
-      
-      <a class="race-link" href="races/202606040109.html"><span class="rn mono">9R</span>中山 古作特別</a>
-      
-      <a class="race-link" href="races/202606040110.html"><span class="rn mono">10R</span>中山 白井特別</a>
-      
-      <a class="race-link" href="races/202606040111.html"><span class="rn mono">11R</span>中山 京成杯AH</a>
-      
-      <a class="race-link" href="races/202609040109.html"><span class="rn mono">9R</span>阪神 出石特別</a>
-      
-      <a class="race-link" href="races/202609040110.html"><span class="rn mono">10R</span>阪神 西宮ステークス</a>
-      
-      <a class="race-link" href="races/202609040111.html"><span class="rn mono">11R</span>阪神 エニフステークス</a>
-      
-      <a class="race-link" href="races/202601020609.html"><span class="rn mono">9R</span>札幌 旭川特別</a>
-      
-      <a class="race-link" href="races/202601020610.html"><span class="rn mono">10R</span>札幌 HTB賞</a>
-      
-      <a class="race-link" href="races/202601020611.html"><span class="rn mono">11R</span>札幌 丹頂S</a>
-      
-      <a class="race-link" href="races/202606040209.html"><span class="rn mono">9R</span>中山 浦安特別</a>
-      
-      <a class="race-link" href="races/202606040210.html"><span class="rn mono">10R</span>中山 セプテンバーS</a>
-      
-      <a class="race-link" href="races/202606040211.html"><span class="rn mono">11R</span>中山 紫苑S</a>
-      
-      <a class="race-link" href="races/202609040209.html"><span class="rn mono">9R</span>阪神 武田尾特別</a>
-      
-      <a class="race-link" href="races/202609040210.html"><span class="rn mono">10R</span>阪神 オークランドTRT</a>
-      
-      <a class="race-link" href="races/202609040211.html"><span class="rn mono">11R</span>阪神 セントウルS</a>
+      <div class="preview-venue">
+        <div class="preview-venue-head">阪神</div>
+        
+        <a class="race-link" href="races/202609040101.html"><span class="rn mono">1R</span>2歳未勝利</a>
+        
+        <a class="race-link" href="races/202609040201.html"><span class="rn mono">1R</span>2歳未勝利</a>
+        
+        <a class="race-link" href="races/202609040110.html"><span class="rn mono">10R</span>西宮S</a>
+        
+        <a class="race-link" href="races/202609040210.html"><span class="rn mono">10R</span>オークランドTRT</a>
+        
+        <a class="race-link" href="races/202609040111.html"><span class="rn mono">11R</span>エニフS</a>
+        
+        <a class="race-link" href="races/202609040211.html"><span class="rn mono">11R</span>セントウルS</a>
+        
+        <a class="race-link" href="races/202609040112.html"><span class="rn mono">12R</span>3歳以上1勝クラス</a>
+        
+        <a class="race-link" href="races/202609040212.html"><span class="rn mono">12R</span>3歳以上2勝クラス</a>
+        
+        <a class="race-link" href="races/202609040102.html"><span class="rn mono">2R</span>2歳未勝利</a>
+        
+        <a class="race-link" href="races/202609040202.html"><span class="rn mono">2R</span>3歳未勝利</a>
+        
+        <a class="race-link" href="races/202609040103.html"><span class="rn mono">3R</span>3歳未勝利</a>
+        
+        <a class="race-link" href="races/202609040203.html"><span class="rn mono">3R</span>3歳未勝利</a>
+        
+        <a class="race-link" href="races/202609040104.html"><span class="rn mono">4R</span>3歳未勝利</a>
+        
+        <a class="race-link" href="races/202609040204.html"><span class="rn mono">4R</span>3歳未勝利</a>
+        
+        <a class="race-link" href="races/202609040105.html"><span class="rn mono">5R</span>2歳新馬</a>
+        
+        <a class="race-link" href="races/202609040205.html"><span class="rn mono">5R</span>2歳新馬</a>
+        
+        <a class="race-link" href="races/202609040106.html"><span class="rn mono">6R</span>2歳新馬</a>
+        
+        <a class="race-link" href="races/202609040206.html"><span class="rn mono">6R</span>3歳以上1勝クラス</a>
+        
+        <a class="race-link" href="races/202609040107.html"><span class="rn mono">7R</span>3歳以上1勝クラス</a>
+        
+        <a class="race-link" href="races/202609040207.html"><span class="rn mono">7R</span>3歳以上1勝クラス</a>
+        
+        <a class="race-link" href="races/202609040108.html"><span class="rn mono">8R</span>3歳以上1勝クラス</a>
+        
+        <a class="race-link" href="races/202609040208.html"><span class="rn mono">8R</span>3歳以上1勝クラス</a>
+        
+        <a class="race-link" href="races/202609040109.html"><span class="rn mono">9R</span>出石特別</a>
+        
+        <a class="race-link" href="races/202609040209.html"><span class="rn mono">9R</span>武田尾特別</a>
+        
+      </div>
       
     </div>
   </div>
