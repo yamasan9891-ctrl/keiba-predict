@@ -251,6 +251,41 @@ def _add_trainer_history_features(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+def _add_sire_produce_features(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    「父馬・母父馬の産駒が実際にどれだけ走っているか」という実力データを追加する。
+    今までは父・母父を単なる「カテゴリ（名前）」としてしか使っておらず、
+    人気血統かどうかという名前の印象に頼っていた。ここでは実際の産駒全体の
+    複勝率を集計し、「この血統は実際に走る血統かどうか」を数値化する
+    （同じ産駒（自分自身）の結果は含めないようリークを避ける）。
+    サンプル数が少ない血統（産駒データがまだ少ない父馬等）は信頼できないため無効化する。
+    """
+    for parent_col, prefix in [("father", "sire"), ("mother_father", "bms")]:
+        rate_col, n_col = f"{prefix}_produce_place_rate", f"{prefix}_produce_n"
+        if parent_col not in df.columns:
+            df[rate_col] = np.nan
+            df[n_col] = 0
+            continue
+
+        df = df.sort_values([parent_col, "race_id"]).reset_index(drop=True)
+        parent_values = df[parent_col]
+
+        def _expanding_stats(group: pd.DataFrame, rate_col=rate_col, n_col=n_col) -> pd.DataFrame:
+            finish = group["finish_pos"].astype(float)
+            prior = finish.shift(1)
+            n = prior.expanding().count()
+            rate = prior.expanding().apply(lambda s: (s <= 3).mean() if len(s) else np.nan)
+            rate[n < 20] = np.nan  # 産駒サンプルが少なすぎる場合は信頼できないため無効化
+            group[rate_col] = rate
+            group[n_col] = n
+            return group
+
+        df = df.groupby(parent_col, group_keys=False, dropna=False).apply(_expanding_stats)
+        df[parent_col] = parent_values.values
+
+    return df
+
+
 CATEGORICAL_COLS = ["prior_running_style", "surface", "track_condition", "father", "mother_father", "predicted_pace"]
 
 FEATURE_COLS = [
@@ -268,6 +303,7 @@ FEATURE_COLS = [
     "avg_last_3f", "avg_speed_figure", "best_speed_figure", "avg_opponent_strength",
     "jockey_place_rate", "jockey_n_races", "jockey_course_place_rate", "pace_advantage",
     "days_since_last_race", "post_position_bias", "trainer_place_rate", "trainer_n_races",
+    "sire_produce_place_rate", "sire_produce_n", "bms_produce_place_rate", "bms_produce_n",
 ] + CATEGORICAL_COLS
 
 
@@ -292,6 +328,9 @@ def build_features(df: pd.DataFrame) -> pd.DataFrame:
 
     # 調教師の成績も馬・騎手とは独立に計算できる
     df = _add_trainer_history_features(df)
+
+    # 血統は「名前」だけでなく「実際に走っているか」も見る
+    df = _add_sire_produce_features(df)
 
     # 休み明け間隔・枠順バイアスは開催日ベースで計算する
     df = _add_layoff_and_post_bias(df)
