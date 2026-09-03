@@ -271,7 +271,6 @@ def run_weekly(dry_run: bool = False):
                         "race_id": rid, "course": meta.get("course"),
                         "race_number": meta.get("race_number") or str(int(rid[-2:])),
                         "race_name": meta.get("race_name"),
-                        "race_date": meta.get("race_date"),
                     })
                 except Exception as e:
                     print(f"  [警告] {rid} のプレビュー作成に失敗: {e}")
@@ -311,6 +310,8 @@ def run_weekly(dry_run: bool = False):
         days_index.setdefault(date_key, []).append({
             "race_id": rid,
             "course": meta.get("course"),
+            "meeting_label": meta.get("meeting_label") or meta.get("course"),
+            "post_time": meta.get("post_time"),
             "race_number": page_data["race"]["race_number"],
             "race_name": meta.get("race_name") or rid,
             "surface": meta.get("surface"),
@@ -319,6 +320,7 @@ def run_weekly(dry_run: bool = False):
             "n_horses": len(df),
             "is_win5_race": is_win5,
             "is_handicap": bool(meta.get("is_handicap")),
+            "grade": meta.get("grade"),
         })
         print(f"  ✓ {rid} の予想ページを生成しました")
 

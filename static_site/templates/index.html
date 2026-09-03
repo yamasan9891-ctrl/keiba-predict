@@ -77,10 +77,10 @@
     box-shadow: 0 1px 3px rgba(0,0,0,0.06);
   }
   .venue-col-head {
-    background: var(--navy); color: #fff; padding: 9px 12px; font-weight: 800; font-size: 13.5px;
-    display: flex; justify-content: space-between; align-items: center;
+    background: var(--navy); color: #fff; padding: 8px 10px; font-weight: 800; font-size: 11.5px;
+    display: flex; justify-content: space-between; align-items: center; gap: 4px;
   }
-  .venue-col-head .n { font-size: 10.5px; opacity: 0.75; font-weight: 500; }
+  .venue-col-head .n { font-size: 10px; opacity: 0.75; font-weight: 500; flex: 0 0 auto; }
 
   .race-row {
     display: block;
@@ -129,11 +129,6 @@
     font-weight: 800; font-size: 10.5px; padding: 1px 6px; border-radius: 4px; margin-right: 8px;
     border: 1px solid var(--amber);
   }
-  .preview-date {
-    font-size: 12px; font-weight: 800; color: var(--text); margin-top: 12px;
-    padding: 4px 8px; background: var(--surface-2); border-radius: 4px; display: inline-block;
-  }
-  .preview-date:first-of-type { margin-top: 6px; }
   .preview-venue { margin-top: 10px; }
   .preview-venue:first-of-type { margin-top: 4px; }
   .preview-venue-head {
@@ -217,16 +212,17 @@
         {% for course, races in day.races|sort(attribute='course')|groupby('course') %}
         <div class="venue-col">
           <div class="venue-col-head">
-            {{ course }}
+            {{ races[0].meeting_label or course }}
             <span class="n">{{ races|length }}R</span>
           </div>
           {% for race in races|sort(attribute='race_number') %}
           <a class="race-row" href="races/{{ race.race_id }}.html">
             <span class="rnum mono">{{ race.race_number }}R</span>
+            {% if race.grade %}<span class="badge grade">{{ race.grade }}</span>{% endif %}
             {% if race.is_win5_race %}<span class="badge win5">WIN5</span>{% endif %}
             {% if race.is_handicap %}<span class="badge handicap">ハンデ</span>{% endif %}
             <div class="rname">{{ race.race_name }}</div>
-            <div class="rmeta mono">{{ race.surface }}{{ race.distance }}m<br>{{ race.n_horses }}頭</div>
+            <div class="rmeta mono">{% if race.post_time %}{{ race.post_time }}発走<br>{% endif %}{{ race.surface }}{{ race.distance }}m ／ {{ race.n_horses }}頭</div>
           </a>
           {% endfor %}
         </div>
@@ -247,16 +243,13 @@
     <div class="preview-box">
       <div class="label">⚠ 出走予定（枠順発表待ち）</div>
       <div class="hint">正式な枠順がまだ発表されていないレースです。馬名・騎手・予想オッズなど分かっている範囲だけ先に見られます。</div>
-      {% for date, date_races in preview_races|sort(attribute='race_date')|groupby('race_date') %}
-      <div class="preview-date mono">{{ date or "日付未定" }}</div>
-      {% for course, races in date_races|sort(attribute='course')|groupby('course') %}
+      {% for course, races in preview_races|sort(attribute='course')|groupby('course') %}
       <div class="preview-venue">
         <div class="preview-venue-head">{{ course }}</div>
         {% for r in races|sort(attribute='race_number') %}
         <a class="race-link" href="races/{{ r.race_id }}.html"><span class="rn mono">{{ r.race_number }}R</span>{{ r.race_name }}</a>
         {% endfor %}
       </div>
-      {% endfor %}
       {% endfor %}
     </div>
   </div>
