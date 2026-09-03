@@ -271,6 +271,7 @@ def run_weekly(dry_run: bool = False):
                         "race_id": rid, "course": meta.get("course"),
                         "race_number": meta.get("race_number") or str(int(rid[-2:])),
                         "race_name": meta.get("race_name"),
+                        "race_date": meta.get("race_date"),
                     })
                 except Exception as e:
                     print(f"  [警告] {rid} のプレビュー作成に失敗: {e}")

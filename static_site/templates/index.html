@@ -129,6 +129,11 @@
     font-weight: 800; font-size: 10.5px; padding: 1px 6px; border-radius: 4px; margin-right: 8px;
     border: 1px solid var(--amber);
   }
+  .preview-date {
+    font-size: 12px; font-weight: 800; color: var(--text); margin-top: 12px;
+    padding: 4px 8px; background: var(--surface-2); border-radius: 4px; display: inline-block;
+  }
+  .preview-date:first-of-type { margin-top: 6px; }
   .preview-venue { margin-top: 10px; }
   .preview-venue:first-of-type { margin-top: 4px; }
   .preview-venue-head {
@@ -242,13 +247,16 @@
     <div class="preview-box">
       <div class="label">⚠ 出走予定（枠順発表待ち）</div>
       <div class="hint">正式な枠順がまだ発表されていないレースです。馬名・騎手・予想オッズなど分かっている範囲だけ先に見られます。</div>
-      {% for course, races in preview_races|sort(attribute='course')|groupby('course') %}
+      {% for date, date_races in preview_races|sort(attribute='race_date')|groupby('race_date') %}
+      <div class="preview-date mono">{{ date or "日付未定" }}</div>
+      {% for course, races in date_races|sort(attribute='course')|groupby('course') %}
       <div class="preview-venue">
         <div class="preview-venue-head">{{ course }}</div>
         {% for r in races|sort(attribute='race_number') %}
         <a class="race-link" href="races/{{ r.race_id }}.html"><span class="rn mono">{{ r.race_number }}R</span>{{ r.race_name }}</a>
         {% endfor %}
       </div>
+      {% endfor %}
       {% endfor %}
     </div>
   </div>
