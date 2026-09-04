@@ -136,7 +136,7 @@ def _migrate_schema(conn):
     """
     migrations = {
         "entries": [("finish_time", "REAL"), ("trainer_name", "TEXT")],
-        "races": [("race_number", "TEXT"), ("has_prediction_page", "INTEGER DEFAULT 0")],
+        "races": [("race_number", "TEXT"), ("has_prediction_page", "INTEGER DEFAULT 0"), ("meeting_label", "TEXT"), ("post_time", "TEXT")],
         "tracked_bets": [("strategy", "TEXT DEFAULT 'value'")],  # 'value'=期待値重視 / 'favorite'=堅い本命
     }
     for table, columns in migrations.items():
