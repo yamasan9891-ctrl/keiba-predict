@@ -6,8 +6,8 @@
 <title>今週のWIN5 | keiba-predict</title>
 <style>
   :root {
-    --bg: #0b0f0d; --surface: #131a16; --surface-2: #1a2420; --line: #26332c;
-    --amber: #f0a202; --amber-dim: #8a6417; --green: #4caf6e; --text: #ece7da; --text-dim: #8d9690;
+    --bg: #f2f3f5; --surface: #ffffff; --surface-2: #f7f8fa; --line: #e1e4e8;
+    --amber: #c98a1f; --amber-dim: #123456; --green: #2e8b57; --text: #24292e; --text-dim: #6a737d;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; }
@@ -20,7 +20,7 @@
   a { color: inherit; text-decoration: none; }
 
   header { padding: 20px 14px 14px; border-bottom: 1px solid var(--line); }
-  .back { font-size: 12px; color: var(--text-dim); }
+  .back { display:inline-flex; align-items:center; gap:4px; font-size: 13px; font-weight:700; color: var(--amber-dim); text-decoration: none; padding:7px 12px; background:var(--surface); border:1px solid var(--line); border-radius:6px; }
   .eyebrow { font-size: 11px; letter-spacing: 0.14em; color: var(--amber-dim); text-transform: uppercase; margin: 10px 0 6px; font-weight: 700; }
   h1 { font-size: 22px; margin: 0 0 6px; font-weight: 800; }
   .updated { color: var(--text-dim); font-size: 11.5px; }
@@ -58,7 +58,7 @@
     background: var(--surface-2); border: 1px solid var(--amber-dim);
     border-radius: 5px; font-size: 13px; font-weight: 800; color: var(--text);
   }
-  .horse-chip.top { background: var(--amber); color: var(--bg); border-color: var(--amber); }
+  .horse-chip.top { background: var(--amber); color: #ffffff; border-color: var(--amber); }
 
   .total-row {
     display: flex; justify-content: space-between; align-items: center;
@@ -82,7 +82,7 @@
   <a class="back" href="index.html">← 今週のレース一覧</a>
   <p class="eyebrow">WIN5</p>
   <h1>今週のWIN5</h1>
-  <p class="updated mono">最終更新 2026-08-31 08:32</p>
+  <p class="updated mono">最終更新 2026-09-04 11:05</p>
 </header>
 
 <main>
@@ -99,7 +99,13 @@
       </div>
       <div class="box-horses mono">
         
-        <span class="horse-chip top">nan</span>
+        <span class="horse-chip top">1</span>
+        
+        <span class="horse-chip">2</span>
+        
+        <span class="horse-chip">3</span>
+        
+        <span class="horse-chip">4</span>
         
       </div>
     </a>
@@ -111,7 +117,13 @@
       </div>
       <div class="box-horses mono">
         
-        <span class="horse-chip top">nan</span>
+        <span class="horse-chip top">1</span>
+        
+        <span class="horse-chip">2</span>
+        
+        <span class="horse-chip">5</span>
+        
+        <span class="horse-chip">8</span>
         
       </div>
     </a>
@@ -123,7 +135,13 @@
       </div>
       <div class="box-horses mono">
         
-        <span class="horse-chip top">nan</span>
+        <span class="horse-chip top">2</span>
+        
+        <span class="horse-chip">4</span>
+        
+        <span class="horse-chip">6</span>
+        
+        <span class="horse-chip">5</span>
         
       </div>
     </a>
@@ -135,7 +153,13 @@
       </div>
       <div class="box-horses mono">
         
-        <span class="horse-chip top">nan</span>
+        <span class="horse-chip top">1</span>
+        
+        <span class="horse-chip">2</span>
+        
+        <span class="horse-chip">4</span>
+        
+        <span class="horse-chip">6</span>
         
       </div>
     </a>
@@ -147,14 +171,20 @@
       </div>
       <div class="box-horses mono">
         
-        <span class="horse-chip top">nan</span>
+        <span class="horse-chip top">1</span>
+        
+        <span class="horse-chip">2</span>
+        
+        <span class="horse-chip">4</span>
+        
+        <span class="horse-chip">6</span>
         
       </div>
     </a>
     
     <div class="total-row">
       <span class="label">点数</span>
-      <span class="value mono">1点 × 100円 = 100円</span>
+      <span class="value mono">1024点 × 100円 = 102,400円</span>
     </div>
   </div>
   <div class="footnote">濃い色の馬番は各レースで最も評価が高い1頭（◎）です。ボックスは「このレースはこの中のどれかが来る」という想定で、複数頭を組み合わせて購入することを前提にしています。点数・金額は目安であり、実際の購入内容はご自身でIPAT等の画面で確定してください。</div>
