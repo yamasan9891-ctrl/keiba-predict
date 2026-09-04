@@ -209,7 +209,7 @@ def build_race_page_data(race_id: str, race_meta: dict, stats, is_win5: bool = F
         "betting_plan": betting_plan,
         "pace_diagram_svg": pace_diagram_svg,
         "win_ev_ranking": win_ev_ranking,
-    }, strengths, {"favorite_candidate": favorite_candidate, "headline_ev": headline_ev, "race_label": race_label}
+    }, strengths, {"favorite_candidate": favorite_candidate, "headline_ev": headline_ev, "race_label": race_label, "tan_odds": odds.get("tan", {})}
 
 
 def run_weekly(dry_run: bool = False):
@@ -242,6 +242,7 @@ def run_weekly(dry_run: bool = False):
     featured_races = []      # 全レースの「見出しEV」一覧（後で週の注目レースTOP3を選ぶ）
     win5_page_data = {}       # race_id -> page_data（WIN5対象レースのみ）
     win5_strengths = {}       # race_id -> {horse: 強さ}（WIN5対象レースのみ）
+    win5_odds = {}            # race_id -> {horse: 単勝オッズ}（WIN5対象レースのみ、EVベース絞り込み用）
     win5_race_labels = {}     # race_id -> "○○ 11R" のような表示ラベル
 
     for rid in race_ids:
@@ -304,6 +305,7 @@ def run_weekly(dry_run: bool = False):
         if is_win5:
             win5_page_data[rid] = page_data
             win5_strengths[rid] = strengths
+            win5_odds[rid] = race_analytics.get("tan_odds", {})
             win5_race_labels[rid] = f"{meta.get('course')} {page_data['race']['race_number']}R"
 
         # race_dateが未取得のため、race_id先頭の年+今週末の日付を仮のグルーピングキーにする
@@ -329,7 +331,7 @@ def run_weekly(dry_run: bool = False):
     if len(win5_strengths) == len(win5_ids) and win5_ids:
         print("=== WIN5買い目を計算中 ===")
         ordered_ids = sorted(win5_strengths.keys())
-        race_boxes = [select_win5_box(win5_strengths[rid], max_horses=4, relative_threshold=0.3) for rid in ordered_ids]
+        race_boxes = [select_win5_box(win5_strengths[rid], win5_odds.get(rid, {}), max_horses=3, ev_threshold=0.6) for rid in ordered_ids]
         plan = build_win5_box_plan(race_boxes)
         win5_result = {
             "race_labels": [win5_race_labels[rid] for rid in ordered_ids],

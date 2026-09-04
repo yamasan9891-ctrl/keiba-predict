@@ -13,11 +13,15 @@ from itertools import product
 import numpy as np
 
 
-def select_win5_box(strengths: dict, max_horses: int = 4, relative_threshold: float = 0.3, min_horses: int = 1) -> list:
+def select_win5_box(strengths: dict, odds: dict = None, max_horses: int = 3, ev_threshold: float = 0.6, min_horses: int = 1) -> list:
     """
     1レース分の「ボックス買い」対象馬を選ぶ（netkeibaのAI予想と同じ考え方）。
-    1着候補（最も確率が高い馬）を必ず含め、その確率に対してrelative_threshold以上の
-    確率を持つ馬も追加で含める。ただしmax_horsesを超えない。
+    以前は「確率が上位馬の何割以上か」という相対値だけで絞っていたが、
+    それだと点数が膨らみやすいため、オッズを掛けた期待値(EV)ベースで絞る方式に変更した。
+    1着候補（最も確率が高い馬）は必ず含め、それ以外は「期待値が一定以上」の馬だけを追加する。
+    これにより、期待値の乏しい馬は自然と削られ、点数（組み合わせ数）が絞られる。
+
+    odds を渡さない場合は、確率のみでの簡易フォールバック（相対30%以上）を使う。
 
     戻り値: 馬番のリスト（確率が高い順）
     """
@@ -30,8 +34,17 @@ def select_win5_box(strengths: dict, max_horses: int = 4, relative_threshold: fl
     for horse, prob in ranked:
         if len(box) >= max_horses:
             break
-        if len(box) < min_horses or prob >= top_prob * relative_threshold:
+        if len(box) < min_horses:
             box.append(horse)
+            continue
+        if odds:
+            o = odds.get(horse)
+            ev = prob * o if o else 0
+            if ev >= ev_threshold:
+                box.append(horse)
+        else:
+            if prob >= top_prob * 0.3:
+                box.append(horse)
     return box
 
 
