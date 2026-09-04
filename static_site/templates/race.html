@@ -230,7 +230,7 @@
             <td class="mono">{{ h.horse_number }}</td>
             <td class="name-cell">
               <div class="name-with-photo">
-                {% if h.photo_url %}<img class="horse-photo" src="{{ h.photo_url }}" loading="lazy" alt="">{% endif %}
+                {# 写真の照合が未確認のため一時的に非表示にしています #}
                 <span>{{ h.name }}</span>
               </div>
             </td>
@@ -295,7 +295,7 @@
       <div class="horse-item">
         <div class="horse-head">
           <span class="horse-name" style="display:flex; align-items:center;">
-            {% if h.photo_url %}<img class="horse-photo" src="{{ h.photo_url }}" loading="lazy" alt="">{% endif %}
+            {# 写真の照合が未確認のため一時的に非表示にしています #}
             <span><span class="horse-num mono">{{ h.horse_number }}</span>{{ h.name }}</span>
           </span>
           <span class="horse-prob mono">複勝圏内 {{ "%.0f"|format(h.place_probability * 100) }}%</span>
