@@ -75,7 +75,7 @@ def build_race_page_data(race_id: str, race_meta: dict, stats, is_win5: bool = F
     """1レース分の予想・EV・理由をまとめて計算する。戻り値は (page_data辞書, 単勝確率dict)"""
     race_meta = dict(race_meta)
     if not race_meta.get("race_number"):
-        race_meta["race_number"] = str(int(race_id[-2:]))  # race_id末尾2桁がR番号
+        race_meta["race_number"] = int(race_id[-2:])  # race_id末尾2桁がR番号（文字列だと"10"<"2"の順序バグになるためint）
     race_meta["is_win5_race"] = is_win5
 
     pred_df = predict_race(race_id, stats=stats)
@@ -269,7 +269,7 @@ def run_weekly(dry_run: bool = False):
                     build_entries_preview(rid, meta, df)
                     preview_index.append({
                         "race_id": rid, "course": meta.get("course"),
-                        "race_number": meta.get("race_number") or str(int(rid[-2:])),
+                        "race_number": meta.get("race_number") or int(rid[-2:]),
                         "race_name": meta.get("race_name"),
                         "race_date": meta.get("race_date"),
                     })

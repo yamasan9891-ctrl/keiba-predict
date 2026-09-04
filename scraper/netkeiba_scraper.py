@@ -111,7 +111,7 @@ def _extract_meta_from_soup(race_id: str, soup: BeautifulSoup) -> dict:
         y, mo, d, c, rn = title_match.groups()
         race_date = f"{y}-{int(mo):02d}-{int(d):02d}"
         course = c
-        race_number = rn
+        race_number = int(rn)  # 文字列のままだと"10"<"2"のような順序バグになるためint化
 
     return {
         "race_id": race_id,
