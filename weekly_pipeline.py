@@ -381,6 +381,9 @@ def run_weekly(dry_run: bool = False):
         print(f"  {date_key}: {best['race_label']} {best['horse_name']}（勝率目安{best['win_probability']*100:.0f}%）")
 
     # 週の全レースの中から「見出しEV」が高い順にTOP3を選び、トップページで目立たせる
+    # ev が NaN（計算できなかった）のレースは並び替えで不安定な挙動になり、
+    # 意図せずTOP3に紛れ込んでしまうため、有効な数値のレースだけに絞ってから並び替える
+    featured_races = [r for r in featured_races if r["ev"] == r["ev"]]  # NaNはNaN != NaNでFalseになる性質を利用
     featured_races.sort(key=lambda r: -r["ev"])
     top_featured = featured_races[:3]
 
