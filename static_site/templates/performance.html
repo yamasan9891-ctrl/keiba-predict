@@ -113,7 +113,7 @@
           <span class="result-badge {{ 'win' if b.won else 'lose' }}">{{ '的中' if b.won else '不的中' }}</span>
         </div>
         <div class="horses">{{ b.bet_type }}　{{ b.horses }}</div>
-        <div class="detail mono">オッズ{{ "%.1f"|format(b.odds) }}倍 ／ 賭け金{{ "{:,}".format(b.stake) }}円 ／ 払戻{{ "{:,}".format(b.payout|int) }}円 ／ <span class="profit {{ 'plus' if b.profit >= 0 else 'minus' }}">{{ "{:+,}".format(b.profit|int) }}円</span></div>
+        <div class="detail mono">オッズ{{ "%.1f"|format(b.odds) if b.odds is not none else "-" }}倍 ／ 賭け金{{ "{:,}".format(b.stake) if b.stake is not none else "-" }}円 ／ 払戻{{ "{:,}".format(b.payout|int) if b.payout is not none else "-" }}円 ／ <span class="profit {{ 'plus' if (b.profit or 0) >= 0 else 'minus' }}">{{ "{:+,}".format(b.profit|int) if b.profit is not none else "-" }}円</span></div>
       </div>
       {% endfor %}
     {% else %}
@@ -151,7 +151,7 @@
           <span class="result-badge {{ 'win' if b.won else 'lose' }}">{{ '的中' if b.won else '不的中' }}</span>
         </div>
         <div class="horses">{{ b.bet_type }}　{{ b.horses }}</div>
-        <div class="detail mono">オッズ{{ "%.1f"|format(b.odds) }}倍 ／ 賭け金{{ "{:,}".format(b.stake) }}円 ／ 払戻{{ "{:,}".format(b.payout|int) }}円 ／ <span class="profit {{ 'plus' if b.profit >= 0 else 'minus' }}">{{ "{:+,}".format(b.profit|int) }}円</span></div>
+        <div class="detail mono">オッズ{{ "%.1f"|format(b.odds) if b.odds is not none else "-" }}倍 ／ 賭け金{{ "{:,}".format(b.stake) if b.stake is not none else "-" }}円 ／ 払戻{{ "{:,}".format(b.payout|int) if b.payout is not none else "-" }}円 ／ <span class="profit {{ 'plus' if (b.profit or 0) >= 0 else 'minus' }}">{{ "{:+,}".format(b.profit|int) if b.profit is not none else "-" }}円</span></div>
       </div>
       {% endfor %}
     {% else %}

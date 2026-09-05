@@ -119,7 +119,7 @@ def generate_archive_page(races: list) -> Path:
 
 
 def _summarize_bets(bets: list) -> dict:
-    total_staked = sum(b["stake"] for b in bets)
+    total_staked = sum(b["stake"] or 0 for b in bets)
     total_returned = sum(b["payout"] or 0 for b in bets)
     total_profit = total_returned - total_staked
     roi = (total_returned / total_staked * 100) if total_staked > 0 else None
