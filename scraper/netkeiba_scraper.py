@@ -410,16 +410,33 @@ def save_to_db(df: pd.DataFrame, meta: dict = None) -> None:
     meta = meta or df.attrs.get("meta") or {"race_id": race_id}
     meta["race_id"] = race_id
 
-    rename = {
-        "着 順": "finish_pos", "枠": "post_position", "馬 番": "horse_number",
-        "斤量": "weight_carried", "単勝 オッズ": "win_odds", "人 気": "popularity",
-        "馬体重 (増減)": "horse_weight_raw", "後3F": "last_3f", "コーナー 通過順": "passing",
-        "馬名": "horse_name", "タイム": "finish_time_raw", "厩舎": "trainer_name",
-        "着順": "finish_pos", "枠番": "post_position", "馬番": "horse_number",
-        "単勝": "win_odds", "人気": "popularity", "馬体重": "horse_weight_raw",
-        "上がり": "last_3f", "通過": "passing",
-    }
-    d = df.rename(columns={k: v for k, v in rename.items() if k in df.columns})
+    # 長い（より具体的な）キーワードから順に判定する
+    # （例: "単勝オッズ"を"単勝"より先に見ないと、意図しない方に決まる可能性があるため）
+    rename_targets = [
+        ("着順", "finish_pos"), ("枠番", "post_position"), ("枠", "post_position"),
+        ("馬番", "horse_number"), ("斤量", "weight_carried"),
+        ("単勝オッズ", "win_odds"), ("オッズ", "win_odds"), ("単勝", "win_odds"), ("人気", "popularity"),
+        ("馬体重", "horse_weight_raw"), ("後3F", "last_3f"), ("コーナー通過順", "passing"),
+        ("馬名", "horse_name"), ("タイム", "finish_time_raw"), ("厩舎", "trainer_name"),
+        ("上がり", "last_3f"), ("通過", "passing"),
+    ]
+    rename_targets.sort(key=lambda x: -len(x[0]))  # 長いキーワードを優先して判定する
+
+    def _norm(col) -> str:
+        return str(col).replace("\n", "").replace(" ", "").replace("　", "")
+
+    # 完全一致ではなく、改行・空白を除去した上で「含んでいるか」で判定する
+    # （実際の列名には "馬番\n\n" や "馬体重(増減)" のような表記ゆれがあり、
+    #  完全一致だとリネームが一切効かず horse_number 等が常にNULLで保存される
+    #  致命的なバグになっていた）
+    rename = {}
+    for col in df.columns:
+        norm_col = _norm(col)
+        for keyword, target in rename_targets:
+            if keyword in norm_col and target not in rename.values():
+                rename[col] = target
+                break
+    d = df.rename(columns=rename)
 
     def _parse_finish_time(raw) -> float:
         """'1:33.4'（1分33秒4）のような表記を秒数(93.4)に変換する"""
