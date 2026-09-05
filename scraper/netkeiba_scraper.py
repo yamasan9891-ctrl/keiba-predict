@@ -452,6 +452,24 @@ def save_to_db(df: pd.DataFrame, meta: dict = None) -> None:
         frac_digits = len(m.group(3))
         return minutes * 60 + seconds + frac / (10 ** frac_digits)
 
+    def _safe_int(val):
+        """出走取消等で '**' のような非数値プレースホルダーが入ることがあるため、
+        数値に変換できない場合は例外を出さずNoneにする"""
+        try:
+            if pd.isna(val):
+                return None
+            return int(float(val))
+        except (ValueError, TypeError):
+            return None
+
+    def _safe_float(val):
+        try:
+            if pd.isna(val):
+                return None
+            return float(val)
+        except (ValueError, TypeError):
+            return None
+
     entries = []
     n_horses = len(d)
     for _, r in d.iterrows():
@@ -465,22 +483,22 @@ def save_to_db(df: pd.DataFrame, meta: dict = None) -> None:
 
         entries.append({
             "race_id": race_id,
-            "horse_number": int(r["horse_number"]) if pd.notna(r.get("horse_number")) else None,
-            "post_position": int(r["post_position"]) if pd.notna(r.get("post_position")) else None,
+            "horse_number": _safe_int(r.get("horse_number")),
+            "post_position": _safe_int(r.get("post_position")),
             "horse_id": r.get("horse_id"),
             "horse_name": r.get("horse_name"),
             "jockey_id": r.get("jockey_id"),
             "jockey_name": None,
             "trainer_name": r.get("trainer_name"),
-            "weight_carried": float(r["weight_carried"]) if pd.notna(r.get("weight_carried")) else None,
+            "weight_carried": _safe_float(r.get("weight_carried")),
             "horse_weight": float(w_match.group(1)) if w_match else None,
             "horse_weight_diff": float(wd_match.group(1)) if wd_match else None,
             "running_style": infer_running_style(r.get("passing"), n_horses) if "passing" in d.columns else None,
-            "last_3f": float(r["last_3f"]) if pd.notna(r.get("last_3f")) else None,
+            "last_3f": _safe_float(r.get("last_3f")),
             "finish_time": _parse_finish_time(r.get("finish_time_raw")),
             "finish_pos": finish_pos,
-            "win_odds": float(r["win_odds"]) if pd.notna(r.get("win_odds")) else None,
-            "popularity": int(r["popularity"]) if pd.notna(r.get("popularity")) else None,
+            "win_odds": _safe_float(r.get("win_odds")),
+            "popularity": _safe_int(r.get("popularity")),
             "is_placed": (1 if finish_pos and finish_pos <= 3 else (0 if finish_pos else None)),
         })
 
