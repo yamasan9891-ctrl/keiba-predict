@@ -13,38 +13,51 @@ from itertools import product
 import numpy as np
 
 
-def select_win5_box(strengths: dict, odds: dict = None, max_horses: int = 3, ev_threshold: float = 0.6, min_horses: int = 1) -> list:
+def select_win5_box(strengths: dict, odds: dict = None, popularity: dict = None) -> list:
     """
     1レース分の「ボックス買い」対象馬を選ぶ（netkeibaのAI予想と同じ考え方）。
-    以前は「確率が上位馬の何割以上か」という相対値だけで絞っていたが、
-    それだと点数が膨らみやすいため、オッズを掛けた期待値(EV)ベースで絞る方式に変更した。
-    1着候補（最も確率が高い馬）は必ず含め、それ以外は「期待値が一定以上」の馬だけを追加する。
-    これにより、期待値の乏しい馬は自然と削られ、点数（組み合わせ数）が絞られる。
 
-    odds を渡さない場合は、確率のみでの簡易フォールバック（相対30%以上）を使う。
+    1着候補の確率（＝一番手の自信度）に応じて頭数を変える：
+      80%以上（圧倒的な本命）        → 1頭のみ
+      50%以上80%未満                → 2頭
+      25%以上50%未満                → 3頭
+      25%未満（大混戦・軸不在）      → 4頭
+    さらに、上記で選ばれなかった馬の中に「人気は低いが期待値が高い」穴馬
+    （popularity・oddsが分かる場合のみ判定）が居れば、追加で1頭まで加える。
 
-    戻り値: 馬番のリスト（確率が高い順）
+    戻り値: 馬番のリスト（確率が高い順、穴馬を追加した場合は末尾に付く）
     """
     ranked = sorted(strengths.items(), key=lambda x: -x[1])
     if not ranked:
         return []
 
     top_prob = ranked[0][1]
-    box = []
-    for horse, prob in ranked:
-        if len(box) >= max_horses:
-            break
-        if len(box) < min_horses:
-            box.append(horse)
-            continue
-        if odds:
+    if top_prob >= 0.80:
+        max_horses = 1
+    elif top_prob >= 0.50:
+        max_horses = 2
+    elif top_prob >= 0.25:
+        max_horses = 3
+    else:
+        max_horses = 4
+
+    box = [h for h, _ in ranked[:max_horses]]
+
+    # 穴馬の追加判定: box外の馬の中で、人気が低い(5番人気以下)のに
+    # 期待値(確率×オッズ)が1.0(=100%)を超える馬がいれば1頭だけ追加する
+    if odds and popularity:
+        best_dark = None
+        for horse, prob in ranked[max_horses:]:
+            pop = popularity.get(horse)
             o = odds.get(horse)
-            ev = prob * o if o else 0
-            if ev >= ev_threshold:
-                box.append(horse)
-        else:
-            if prob >= top_prob * 0.3:
-                box.append(horse)
+            if pop is None or o is None or pop < 5:
+                continue
+            ev = prob * o
+            if ev > 1.0 and (best_dark is None or ev > best_dark[1]):
+                best_dark = (horse, ev)
+        if best_dark:
+            box.append(best_dark[0])
+
     return box
 
 
