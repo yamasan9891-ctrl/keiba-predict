@@ -15,7 +15,7 @@ import datetime as dt
 import pandas as pd
 from pathlib import Path
 
-from db.database import init_db, get_conn, replace_tracked_bets_for_race, mark_prediction_page_generated, save_predictions, get_strategy_config
+from db.database import init_db, get_conn, replace_tracked_bets_for_race, mark_prediction_page_generated, save_predictions, get_strategy_config, any_race_already_finished
 from scraper.netkeiba_scraper import fetch_shutuba, fetch_this_week_race_ids, fetch_win5_race_ids, fetch_next_week_preview, save_to_db
 from scraper.odds_scraper import fetch_all_odds
 from model.predict import predict as predict_race, precompute_current_stats
@@ -330,7 +330,17 @@ def run_weekly(dry_run: bool = False):
         print(f"  ✓ {rid} の予想ページを生成しました")
 
     # WIN5対象5レース全部の予想が揃っていれば、組み合わせを計算して該当ページに反映する
-    if len(win5_strengths) == len(win5_ids) and win5_ids:
+    with get_conn() as conn:
+        win5_deadline_passed = any_race_already_finished(conn, list(win5_ids))
+
+    if win5_deadline_passed:
+        print("=== WIN5は対象レースの一部が既に終了しているため、今週分の更新はスキップします ===")
+        win5_race_summaries = [
+            {"race_id": rid, "course": win5_page_data.get(rid, {}).get("race", {}).get("course")}
+            for rid in win5_ids if rid in win5_page_data
+        ]
+        generate_win5_page(None, win5_race_summaries, deadline_passed=True)
+    elif len(win5_strengths) == len(win5_ids) and win5_ids:
         print("=== WIN5買い目を計算中 ===")
         ordered_ids = sorted(win5_strengths.keys())
         race_boxes = [select_win5_box(win5_strengths[rid], win5_odds.get(rid, {}), win5_popularity.get(rid, {})) for rid in ordered_ids]

@@ -220,14 +220,20 @@ def update_race_result_section(race_id: str, comparison: list) -> bool:
     return True
 
 
-def generate_win5_page(win5: dict, races: list) -> Path:
+def generate_win5_page(win5: dict, races: list, deadline_passed: bool = False) -> Path:
     """
     WIN5専用の独立ページを生成する（static_site/dist/win5.html）。
-    win5: {"race_labels":[...], "combos":[...]}
+    win5: {"race_labels":[...], "combos":[...]} または None（deadline_passed時）
     races: WIN5対象5レースの簡易情報 [{race_id, course, race_number, race_name}, ...]
+    deadline_passed: 対象レースの1つ以上が既に終了している場合True
+        （WIN5は1レース目の発走前でないと購入できないため、古いデータを
+        misleading に出し続けるより「本日分は締切済み」と正直に表示する）
     """
     template = _env.get_template("win5.html")
-    html = template.render(win5=win5, races=races, generated_at=dt.datetime.now().strftime("%Y-%m-%d %H:%M"))
+    html = template.render(
+        win5=win5, races=races, deadline_passed=deadline_passed,
+        generated_at=dt.datetime.now().strftime("%Y-%m-%d %H:%M"),
+    )
     out_path = DIST_DIR / "win5.html"
     out_path.write_text(html, encoding="utf-8")
     return out_path

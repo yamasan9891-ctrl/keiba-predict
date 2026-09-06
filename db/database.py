@@ -404,6 +404,22 @@ def update_strategy_config(conn, key: str, value: float, note: str = None):
     )
 
 
+def any_race_already_finished(conn, race_ids: list) -> bool:
+    """
+    指定したレースのうち、1つでも既に結果（着順）が確定しているものがあるか調べる。
+    WIN5は対象5レースの1着目が発走する前でないと購入できないため、
+    1つでも終わっていれば「今日はもう間に合わない」と判断するのに使う。
+    """
+    if not race_ids:
+        return False
+    placeholders = ",".join("?" for _ in race_ids)
+    row = conn.execute(
+        f"SELECT COUNT(*) as c FROM entries WHERE race_id IN ({placeholders}) AND finish_pos IS NOT NULL",
+        race_ids,
+    ).fetchone()
+    return row["c"] > 0
+
+
 if __name__ == "__main__":
     init_db()
     print(f"DB初期化しました: {DB_PATH}")

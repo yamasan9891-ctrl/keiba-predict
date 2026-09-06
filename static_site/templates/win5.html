@@ -86,7 +86,11 @@
 </header>
 
 <main>
-  {% if races %}
+  {% if deadline_passed %}
+  <div class="empty-state">
+    <p>⏰ 今週のWIN5は、対象レースの一部が既に発走・終了しているため、本日分の購入受付は締切済みです。<br>来週分は、対象レースが発表され次第、発走前に自動で更新されます。</p>
+  </div>
+  {% elif races %}
   <div class="section-title">組み合わせ・点数</div>
   <div class="section-hint">各レースの◎（一番評価が高い馬）と、まとめて狙う馬をボックスで表示しています。タップするとそのレースの詳細に飛べます。</div>
 
