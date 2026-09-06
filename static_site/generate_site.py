@@ -201,7 +201,7 @@ def update_race_result_section(race_id: str, comparison: list) -> bool:
         f'<div class="card" style="font-size:12.5px; color:var(--text-dim); margin-bottom:10px;">{summary}</div>\n'
         '<div class="card" style="padding:0; overflow:hidden;">\n'
         '<table class="result-table">\n'
-        '<thead><tr><th>AI予想順位</th><th>馬名</th><th>予想確率</th><th>実際の着順</th></tr></thead>\n'
+        '<thead><tr><th>AI予想順位</th><th>馬名</th><th>複勝率予想</th><th>実際の着順</th></tr></thead>\n'
         f'<tbody>{"".join(rows_html)}</tbody>\n'
         '</table>\n'
         '</div>\n'
