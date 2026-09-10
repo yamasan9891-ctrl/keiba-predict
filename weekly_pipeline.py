@@ -90,9 +90,28 @@ def build_race_page_data(race_id: str, race_meta: dict, stats, is_win5: bool = F
     except Exception as e:
         print(f"オッズ取得失敗（単勝以外はEV計算をスキップ）: {e}")
 
+    popularity = dict(zip(pred_df["horse_number"].astype(str), pred_df.get("popularity", [])))
+
     ev_tables_all = build_ev_table(strengths, odds, names)
     ev_threshold = (strategy_config or {}).get("ev_threshold", 1.0)
     ev_tables_positive = positive_ev_rows(ev_tables_all, threshold=ev_threshold)
+
+    # 自動チューニングで「この人気帯が良い」と決まっている場合、購入プランの
+    # 候補もその人気帯に絞る（-1は「絞り込みなし」を意味する）
+    pop_min = (strategy_config or {}).get("popularity_min", -1)
+    pop_max = (strategy_config or {}).get("popularity_max", -1)
+    if pop_min is not None and pop_max is not None and pop_min >= 0 and pop_max >= 0:
+        def _within_popularity_range(row):
+            for h in row.get("horse_numbers", []):
+                p = popularity.get(str(h))
+                if p is None or not (pop_min <= p <= pop_max):
+                    return False
+            return True
+        ev_tables_positive = {
+            bet_type: [r for r in rows if _within_popularity_range(r)]
+            for bet_type, rows in ev_tables_positive.items()
+        }
+
     bb = best_bet(ev_tables_all)
     max_picks = int((strategy_config or {}).get("betting_plan_max_picks", 5))
     betting_plan = build_betting_plan(ev_tables_positive, max_picks=max_picks)
@@ -123,7 +142,6 @@ def build_race_page_data(race_id: str, race_meta: dict, stats, is_win5: bool = F
         with get_conn() as conn:
             replace_tracked_bets_for_race(conn, race_id, tracked_rows)
 
-    popularity = dict(zip(pred_df["horse_number"].astype(str), pred_df.get("popularity", [])))
     dark_horses = identify_value_horses(
         strengths, odds.get("tan", {}), popularity, names,
         popularity_threshold=5, ev_threshold=ev_threshold,
