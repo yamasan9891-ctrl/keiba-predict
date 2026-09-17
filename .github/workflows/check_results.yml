@@ -35,8 +35,24 @@ jobs:
         if: always()
         run: |
           git add -f data/keiba.db static_site/dist
-          git diff --cached --quiet || git commit -m "result check safety commit"
-          git push || echo "push対象なし、または失敗"
+          git diff --cached --quiet && echo "変更なし、コミットをスキップします" && exit 0
+          git commit -m "result check safety commit"
+          for i in 1 2 3 4 5; do
+            if git push; then
+              echo "push成功（${i}回目）"
+              exit 0
+            fi
+            echo "push失敗（${i}回目）。最新を取り込んで再試行します..."
+            git fetch origin main
+            if ! git rebase origin/main; then
+              git checkout --ours data/keiba.db 2>/dev/null || true
+              git add data/keiba.db
+              git -c core.editor=true rebase --continue || git rebase --abort
+            fi
+            sleep 5
+          done
+          echo "::error::5回試行してもpushできませんでした。手動確認が必要です。"
+          exit 1
 
   deploy-pages:
     needs: check-results
